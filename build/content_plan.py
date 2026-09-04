@@ -66,7 +66,7 @@ def build(d, PDF=False):
 
     d.callout('Why the boot prompt is a path, not a wall of text',
       'Claude Code reads the repository. A pasted PDF is a snapshot it cannot re-read, cannot grep, and cannot check against the current state of the code. So each boot prompt names the files to read - CLAUDE.md, your lane brief, the contract - and the agent reads them itself. This document is for the humans on the team. The markdown in docs/ is for the agents.',
-      BLUE, (0.94,0.965,0.99))
+      color=BLUE, bg=(0.94,0.965,0.99))
 
     d.h2('What is already written, and what this adds')
 
@@ -103,7 +103,7 @@ def build(d, PDF=False):
 
     d.callout('There is no application code in this repository. None.',
       'apps/web/ does not exist. No Next.js app, no route handlers, no components, no domain functions, no ML service beyond its contract file. node_modules is not installed. The database has never been created. What exists is a complete and internally consistent specification, plus the schema and the contracts it is built on.',
-      RED, (0.995,0.955,0.95))
+      color=RED, bg=(0.995,0.955,0.95))
 
     d.p('That is a better position than it sounds, and worse than it looks. Better, because the expensive decisions - the data model, the API surface, the demo numbers, the ownership boundaries - are made and frozen, which is exactly the work that six parallel agents cannot do concurrently. Worse, because every line of the product itself is still ahead of us and the first ninety minutes are single-threaded on one person.')
 
@@ -146,7 +146,7 @@ def build(d, PDF=False):
 
     d.callout('C4, C5 and C9 are the three that win it.',
       'A rupee figure with its downside next to it. A model that refuses to answer when it should not answer. A gain that is computed by subtraction and can be verified live. If you are out of time, those three survive and everything else is negotiable. Section 07 is the pre-agreed order in which everything else goes.',
-      GOLD)
+      color=GOLD)
 
     d.h2('The hero moment, so every lane knows what it is serving')
 
@@ -170,7 +170,7 @@ def build(d, PDF=False):
 
     d.callout('The suggested column is a suggestion. Trade in the first ten minutes, then stop.',
       'Two constraints only. Shreya takes Lane 4, as agreed. And Lane 2 needs whoever is most comfortable with Python, pandas and a command line - that lane fails on environment problems more than on modelling. Everything else is genuinely interchangeable. What is not negotiable is that the trading stops at minute ten and nobody touches another lane\'s files afterwards.',
-      GREEN, (0.95,0.98,0.96))
+      color=GREEN, bg=(0.95,0.98,0.96))
 
     d.h2('Why Lane 6 is consoles plus the deck')
 
@@ -235,7 +235,7 @@ def build(d, PDF=False):
 
     d.callout('Rebase, never merge. And an unpushed branch does not exist.',
       'Six branches repeatedly merging main into themselves produces a history where git blame is useless and the same conflict resurfaces at every sync. Rebase keeps it linear and resolves each conflict once. If you hit a conflict in a file you do not own: abort the rebase, take theirs, re-apply your own change. Do not fix their file. And push every commit - a laptop that dies with four hours of unpushed work has cost the team those four hours twice.',
-      RED, (0.995,0.955,0.95))
+      color=RED, bg=(0.995,0.955,0.95))
 
     d.h2('Step 3 - boot your agent')
 
@@ -254,7 +254,7 @@ def build(d, PDF=False):
 
     d.callout('The H-numbers in docs/ assume 72 hours. You have about 54, and roughly 36 of them are working hours per person.',
       'Every role brief in docs/roles/ is written on a 72-hour scale, H0 to H72. That scale was built for a 3-day hackathon with two sleep blocks. Your window is Friday afternoon to Monday morning. Do not try to reconcile the numbers in your head at hour 40 - use the compression table below, which maps every milestone the briefs reference onto a wall-clock time. Where they disagree, this table wins.',
-      GOLD)
+      color=GOLD)
 
     d.h2('The compression table')
 
@@ -418,7 +418,7 @@ def build(d, PDF=False):
 
     d.callout('The cut list is Lane 1\'s to invoke, at Sunday 20:00, out loud.',
       'Not a vote and not a discussion - a call, made by the one person whose job is integration and who can see all six branches. If nobody has authority to say "we are dropping the FPO console, stop working on it", the team drops nothing and finishes six things at 70% instead of four things at 95%. Four at 95% wins.',
-      GOLD)
+      color=GOLD)
 
     # ==================== 08 THE PROTOCOL ====================
     d.h1('The Protocol for Six Agents in One Repository','08')
@@ -547,7 +547,7 @@ def build(d, PDF=False):
 
     d.callout('The one sentence to keep in front of you for three days',
       'The binding constraint on farmer price realisation is not information - it is the ability to wait. We are not building a price dashboard. We are building a waiting product: it tells a farmer whether waiting pays, by how much, with what confidence, and then removes the liquidity and storage reasons he could not wait. Every task in this document serves that sentence. If a task does not serve it, cut it.',
-      GREEN, (0.95,0.98,0.96))
+      color=GREEN, bg=(0.95,0.98,0.96))
 
 
 # ============================================================================
@@ -578,7 +578,8 @@ Hard rules for you specifically:
 After each task run `npm run typecheck && npm run test`, then commit
 ({prefix}: ...) and push. Commit every 30-45 minutes.
 
-Start with {first} and tell me your plan before you write any files.
+Start with {first}
+and tell me your plan before you write any files.
 """.strip()
 
 BOOT = {}
