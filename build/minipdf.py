@@ -200,9 +200,12 @@ class Doc:
         for raw in text.split('\n'):
             raw = raw.replace('\t','    ')
             lines += wrap(raw,'C',size,self.cw-20) if sw(raw,'C',size)>self.cw-20 else [raw]
-        h=len(lines)*lead+14
+        h=len(lines)*lead+14+(12 if label else 0)
         if self.y-h < self.mb and h < (self.H-self.mt-self.mb):
             self.newpage()
+        if label:
+            self.need(12)
+            self._t(self.ml,self.y,label,'HB',7.6,(0.06,0.42,0.28)); self.y-=11
         i=0
         while i < len(lines):
             avail=int((self.y-self.mb-14)//lead)

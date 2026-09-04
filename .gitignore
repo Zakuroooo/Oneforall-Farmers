@@ -1,1 +1,48 @@
+# ── Secrets: never commit ────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ── Node ─────────────────────────────────────────────────────────────────────
+node_modules/
+.next/
+out/
+dist/
+.turbo/
+*.tsbuildinfo
+
+# ── Python (services/ml) ─────────────────────────────────────────────────────
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# ── Data: raw downloads and trained models stay out of git ───────────────────
+# Large binaries in git make every clone slow and every merge painful.
+# R2: commit the ingestion SCRIPT and the seed CSV (< 5 MB). Never the raw dump.
+services/ml/data/raw/
+services/ml/models/*.txt
+services/ml/models/*.pkl
+services/ml/models/*.joblib
+!services/ml/models/.gitkeep
+
+# ── Test + build artefacts ───────────────────────────────────────────────────
+playwright-report/
+test-results/
+coverage/
+
+# ── Editor / OS ──────────────────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# ── Agent scratch ────────────────────────────────────────────────────────────
 /.claude
+build/__pycache__/
+build/_p*.md
+build/_p*.pdf
+build/test.pdf
