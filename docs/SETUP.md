@@ -93,7 +93,11 @@ Verify:
 adb version && sdkmanager --list_installed
 ```
 
-**If `adb version` says "command not found", stop and fix it here.** Every later error becomes unreadable when the SDK is not on the PATH.
+**If `adb version` says "command not found", you skipped §3.** This trips people because `sdkmanager` runs *fine* without it — the Homebrew cask symlinks `sdkmanager` into `/opt/homebrew/bin`, so §4 appears to work. But `adb` is installed **by** `sdkmanager`, after the cask, into `$ANDROID_HOME/platform-tools/`, and nothing symlinks it. Go back and run §3; the file is already downloaded, you just cannot see it.
+
+Ignore `WARNING: The SDK Manager CLI tool (sdkmanager) is deprecated.` It still works, and the replacement `android` binary is newer than the version of these instructions everyone else on the team is following.
+
+**Do not go past this section until `adb version` prints a version.** Every later error becomes unreadable when the SDK is not on the PATH.
 
 ---
 
@@ -151,8 +155,15 @@ React Native's docs recommend `watchman`, and on macOS Homebrew it pulls **15 de
 This is the command that creates `app/`. Run it from the repo root:
 
 ```bash
-cd "/Users/pranaysarkar/Desktop/Oneforall Farmers" && RN=$(npm view react-native@0.76 version) && npx @react-native-community/cli@latest init MandiSetu --directory app --version "$RN" --pm npm --skip-git-init
+cd "/Users/pranaysarkar/Desktop/Oneforall Farmers" && RN=$(npm view react-native@0.76 version | tail -1 | sed "s/.*'\(.*\)'.*/\1/") && echo "→ react-native $RN" && npx @react-native-community/cli@latest init MandiSetu --directory app --version "$RN" --pm npm --skip-git-init
 ```
+
+Two prompts to expect:
+
+- **`Ok to proceed? (y)`** — that is `npx` fetching the CLI itself. Yes.
+- **Anything mentioning CocoaPods or `pod install`** — **no**. That is the iOS half of the template. We ship an Android APK on two phones; iOS is not in the plan, and on a machine without CocoaPods that prompt is a four-minute failure for zero benefit.
+
+> The `tail -1 | sed` is not decoration. `0.76` is a *range*, and when more than one `0.76.x` exists `npm view` prints one `react-native@0.76.9 '0.76.9'` line per match instead of a bare version — so the naive `RN=$(npm view …)` hands `--version` a multi-line string. This pulls the last match and unwraps the quotes, and still works when only one version matches.
 
 | Flag | Why |
 |---|---|
