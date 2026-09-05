@@ -1,234 +1,245 @@
 # MANDI-SETU — Repository Instructions
 
 > **Every Claude Code session in this repository loads this file automatically. Read it fully before your first edit.**
-> If you are a teammate's agent, you also have exactly one role brief in `docs/roles/`. Read that too. Read nothing else in `docs/roles/` — the other briefs are not your job.
+
+**Smart India Hackathon 2026 · Problem Statement 26132 · Government of Maharashtra**
+Team of six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**
+
+---
+
+## 0. First thing: who are you?
+
+The user will tell you their name — *"I am Pranay"*, *"I am Akash"*. When they do:
+
+1. Read **`docs/roles/<NAME>.md`**. That is their PRD, TRD, and ordered task list. It is self-contained.
+2. Read **`docs/architecture/00_CANON.md`** — the schema, the invariants, the API contract.
+3. Read the one lane document their role doc points at.
+4. Then start on task 1. Do not read all thirteen architecture files first.
+
+If the user has not said who they are, ask once, then proceed.
+
+| Name | Lane | Role doc | Lane doc |
+|---|---|---|---|
+| **Akash** | Backend — API, auth, escrow FSM, matching | `docs/roles/AKASH.md` | `06_BACKEND_ARCHITECTURE.md` |
+| **Kartik** | Data acquisition + DevOps + deploy | `docs/roles/KARTIK.md` | `04_DATA_ARCHITECTURE.md`, `08_DEVOPS_AND_DEPLOY.md` |
+| **Nikhil** | Forecasting model (LightGBM quantile) | `docs/roles/NIKHIL.md` | `05_AI_ARCHITECTURE.md` §1–2 |
+| **Nilesh** | Decision engine, costs, refusal, pledge | `docs/roles/NILESH.md` | `05_AI_ARCHITECTURE.md` §1, §3 |
+| **Pranay** | Farmer app (Expo) — screens S1–S16 | `docs/roles/PRANAY.md` | `07_FRONTEND_ARCHITECTURE.md` |
+| **Shreya** | Buyer/FPO screens, i18n, voice, pitch | `docs/roles/SHREYA.md` | `07_FRONTEND_ARCHITECTURE.md`, `11_DEMO_AND_PITCH.md` |
 
 ---
 
 ## 1. What we are building
 
-**MANDI-SETU** — a market-intelligence and transaction-enablement platform for farmers of Maharashtra. Smart India Hackathon 2026, Problem Statement **26132**, Government of Maharashtra.
-
-The full problem analysis, research base, and long-term architecture live in `MANDI-SETU_SIH2026_PS26132_Playbook.md` (55 pages). **Read Chapters 02, 04, 05 and 06 of it before writing domain logic.** This file is the build contract; the playbook is the reasoning behind it.
+A **market-intelligence and transaction-enablement platform for farmers of Maharashtra**. Scope: Maharashtra only. Two crops, six markets, real data.
 
 ### The one-sentence thesis
 
 > The binding constraint on farmer price realisation is not information — it is **the ability to wait**. Farmers already suspect prices will rise; they sell at harvest because they cannot afford not to. So we are not building a price dashboard. We are building a **waiting product**: a system that tells a farmer whether waiting pays, by how much, with what confidence, and then removes the liquidity and storage reasons they could not wait.
 
-Every feature must answer: *does this help a farmer wait profitably, or help a buyer trust a lot enough to pay more for it?* If neither, it is out of scope for these three days.
+Every feature must answer: *does this help a farmer wait profitably, or help a buyer trust a lot enough to pay more for it?* If neither, it is out of scope.
 
 ### The hero feature
 
-`POST /api/window/recommend` → returns **SELL_NOW / HOLD / SPLIT / NO_ADVICE** with expected rupee gain per quintal, a confidence band, and the costs it netted out. Everything else on screen exists to make that recommendation credible. If this endpoint is weak, the project is weak.
+`POST /api/v1/window/recommend` → returns **SELL_NOW / SELL_ELSEWHERE / HOLD / SPLIT / NO_ADVICE** with expected rupee gain per quintal, a p10–p90 confidence band, and the costs it netted out. Everything else on screen exists to make that recommendation credible. **If this endpoint is weak, the project is weak.**
+
+### The shape of the product
+
+**One Expo codebase, two navigators.** The farmer app and the buyer console are the *same* React Native app; the JWT's `role` claim selects `FarmerNavigator` or `BuyerNavigator` at the root. `npx expo start --web` produces a browser build of the same code for the buyer at no extra cost.
+
+There is **no separate web project**, no Next.js, no second frontend repo.
 
 ---
 
-## 2. Non-negotiable invariants
+## 2. The invariants — I1 to I16
 
-These are not style preferences. Breaking one is a bug even if tests pass.
+Breaking one is a bug even if the tests pass. **`docs/architecture/00_CANON.md` §3 is the authoritative statement of every invariant, including the numbering.** The table below is the same list in short form — if it ever disagrees with CANON, CANON wins and this table is the bug.
 
-| # | Invariant | Why |
+| # | Invariant |
+|---|---|
+| **I1** | **All money is integer paise.** Never float, never rupees. Fields end `_paise`. Format only at the render edge, via `formatPaise()`. |
+| **I2** | **Quantities are integer kilograms** (`_kg`). 1 qtl = 100 kg. **Store kg, display quintals.** |
+| **I3** | **Rates and shares are basis points** (`_bps`). 10000 bps = 100%. |
+| **I4** | **Every read of user-owned data is scoped by the JWT actor**, never by a client-supplied ID. Use `guard()`. **Return 404, not 403** — a 403 confirms the row exists. |
+| **I5** | **`audit_log`, `escrow_events`, `dispute_events`, `realisation_ledger` are append-only.** No `UPDATE`, no `DELETE`, ever. |
+| **I6** | **The model may refuse.** When the p10–p90 band exceeds the threshold, return `NO_ADVICE` with a reason. Never invent a confident number. |
+| **I7** | **The demo makes zero live external network calls.** Ingestion is an offline CLI that writes to Postgres. |
+| **I8** | **Generated data is labelled generated.** Every price row carries `source` and `source_url`; the UI badges anything not `AGMARKNET`/`MSAMB`. |
+| **I9** | **No Aadhaar numbers, ever.** Not hashed, not encrypted, not in seed data, not "just for the demo". **Phone is the identifier.** |
+| **I10** | **No secrets in git.** Only `.env.example`, with empty values. A leaked key gets rotated — deleting the line does not remove it from history. |
+| **I11** | **State transitions go through the FSM only.** `api/app/domain/escrow.py` is the sole place a transaction status changes. No ad-hoc `status = 'RELEASED'` anywhere. |
+| **I12** | **Every route validates its input with a Pydantic schema.** No hand-rolled parsing, no `dict[str, Any]` bodies. |
+| **I13** | **If pledge interest ≥ expected gain, no pledge card.** The server returns `None`. |
+| **I14** | **Never log phone numbers, OTPs, or full payloads.** `redact()` at the boundary. |
+| **I15** | **No `random.random()` / `Math.random()` for anything security-relevant.** OTPs come from `secrets`. |
+| **I16** | **Both numbers, always.** The worst case renders at the **same font size** as the expected gain — never smaller, greyer, collapsed, or behind a tap. |
+
+**The two a judge will actually test:** **I4** (they will try another farmer's ID) and **I6** (they will ask what happens when the model is wrong). Both must be demonstrable, not describable.
+
+---
+
+## 3. Stack — fixed, do not substitute
+
+| Layer | Choice | Note |
 |---|---|---|
-| **I1** | **All money is integer paise.** Never a float, never rupees. Field names end in `Paise`. Format for display only at the render edge, via `formatPaise()`. | Floats lose money. A judge who spots `0.1 + 0.2` in a price product is done with you. |
-| **I2** | **Every DB read of user-owned data is scoped by the session actor.** Never trust an ID from the client. Use `guard()` from `src/lib/guard.ts`. | Fetching `/api/lots/<someone-else's-id>` and getting data is the single most common bug in hackathon marketplaces, and the technical panel will try it. |
-| **I3** | **`realisation_ledger` and `audit_log` are append-only.** No `UPDATE`, no `DELETE`, ever. Each row carries `prevHash` and `hash`. | Transparent transaction records are a stated PS outcome. A ledger you can silently edit is not a record. |
-| **I4** | **The model must be allowed to refuse.** When the p10–p90 forecast band exceeds the configured threshold, return `action: 'NO_ADVICE'` with a reason. Never invent a confident number. | A wrong HOLD costs a farmer real money. Refusal is the ethical position and it is also our strongest demo moment. |
-| **I5** | **The demo makes zero live external network calls.** All demo data is seeded into Postgres. External ingestion is an offline job that writes to the DB. | Venue wifi will fail. It always fails. |
-| **I6** | **Synthetic data is labelled synthetic in the UI.** If a price series is generated rather than observed, `PriceObs.source = 'SYNTHETIC'` and the chart shows a badge. | Presenting generated data as government data to a government panel is the one mistake you cannot recover from. |
-| **I7** | **No secrets in git.** Only `.env.example` is committed. No API keys, no tokens, no connection strings in code or docs. | — |
-| **I8** | **No Aadhaar numbers stored, ever.** Not hashed, not encrypted, not "just for the demo". Phone number is the identifier. | Legal exposure and it is trivially avoidable. |
-| **I9** | **State transitions go through the FSM.** `src/lib/domain/escrow.ts` is the only place a transaction status changes. No ad-hoc `status = 'RELEASED'` anywhere. | Money state machines that can skip states are how funds get released without delivery. |
-| **I10** | **Every API route validates its input with the Zod schema from `@mandi/contracts`.** No hand-rolled parsing, no `as any`. | One validation layer, one source of truth, no drift between client and server. |
+| App | **Expo / React Native**, one codebase | native + `expo start --web`, role-based navigators |
+| Navigation | React Navigation | |
+| State | **TanStack Query + React Context** | **no Redux** |
+| Charts | `victory-native` | |
+| API | **FastAPI**, Pydantic v2, SQLAlchemy 2.0, Alembic | |
+| DB | **PostgreSQL 16** in Docker | enums as `text` + `CHECK`, not native PG enums |
+| ML | **LightGBM quantile regression**, in-process in the API | `objective='quantile'`, α ∈ {0.1, 0.5, 0.9} |
+| Python | **3.11** — `uv venv --python 3.11` | 3.14 has no LightGBM wheel. Not negotiable. |
+| i18n | Plain JSON dictionaries + React Context | **no i18n library** |
+| Voice | Pre-generated Marathi mp3 clips, stitched by `expo-av` | offline by design; `expo-speech` fallback |
+| Deploy | one **EC2 t3.small**, nginx, docker-compose | swap file required |
+| Wire format | **`snake_case` end to end** | the frontend reads `expected_gain_paise` directly, no aliasing |
+
+**No new dependency without asking the team.** Every added package is a lock-file conflict and a supply-chain risk. The stack above is sufficient.
 
 ---
 
-## 3. You are one of five agents. Stay in your lane.
+## 4. Repo layout
 
-Five people are building this repository **simultaneously**, each with their own Claude Code session. The largest risk to this project is not missing features — it is two agents editing the same file and destroying each other's work at merge time.
+```
+api/                    FastAPI service           — Akash (+ Nikhil/Nilesh in app/ml/, app/domain/decide.py)
+  app/main.py           routers, middleware
+  app/models.py         SQLAlchemy models
+  app/schemas.py        Pydantic request/response
+  app/deps.py           guard(), get_db, current_actor
+  app/routers/          auth, prices, window, lots, grade, pools, demands,
+                        match, offers, escrow, ledger, disputes, meta
+  app/domain/           decide.py, costs.py, grading.py, matching.py,
+                        split.py, escrow.py, pledge.py, ledger.py
+  app/ml/               features.py, train.py, predict.py, backtest.py, model_card.json
+  alembic/              migrations
+  seed/                 run_all.py, 00_reference.py, 10_prices.py, 20_demo_story.py
+  tests/
+ingest/                 offline data CLI          — Kartik
+app/                    Expo app                  — Pranay (farmer), Shreya (buyer/i18n/voice)
+  src/lib/              api.ts, money.ts, offline.ts, i18n.tsx, voice.ts
+  src/components/       ui/, charts/, farmer/, buyer/
+  src/screens/          farmer/ (S1–S16), buyer/ (S17–S25)
+  assets/voice/mr/      pre-generated Marathi clips
+nginx/  infra/  scripts/  docker-compose.yml       — Kartik
+docs/architecture/      the baseline (00–11 + README)
+docs/roles/             one file per person
+docs/reference/         PLAYBOOK.md (55-page research base), DATA_SOURCE_RECIPES.md
+docs/BLOCKERS.md        append-only, everyone
+```
 
-### The ownership rule
-
-**You may create, edit, or delete only files under paths your role owns.** If you need a change in a file owned by another role:
+**Ownership is by directory.** You may create, edit, or delete only files in your lane. If you need a change in someone else's file:
 
 1. **Do not edit it.** Not even a one-line fix. Not even if it is obviously wrong.
-2. Append a request to `docs/BLOCKERS.md` in the given format.
-3. Write a local stub or a `TODO(Rn):` comment in *your own* file and keep moving.
-4. R1 resolves it at the next sync window.
+2. Append to `docs/BLOCKERS.md` in the format in §7.
+3. Stub it in *your own* file with `TODO(<name>):` and keep moving.
+4. Say it in the group chat.
 
-The only exceptions: `docs/BLOCKERS.md` (everyone appends) and your own role brief.
-
-### Ownership map
-
-| Path | Owner | Notes |
-|---|---|---|
-| `CLAUDE.md`, `docs/00_*`, `docs/01_*`, `docs/02_*` | **R1** | R1 only. `01_CONTRACTS.md` is frozen — see §5. |
-| `docs/03_DEMO_AND_SEED.md` | **R5** | |
-| `docs/roles/Rn_*.md` | **Rn** | Your own brief only. |
-| `docs/BLOCKERS.md` | **all** | Append-only. Never rewrite another entry. |
-| `prisma/schema.prisma`, `prisma/migrations/` | **R1** | Schema changes are requests, not edits. |
-| `prisma/seed/00_reference.ts` | **R1** | Districts, markets, commodities, warehouses, cost tables. |
-| `prisma/seed/10_prices.ts` | **R2** | Price history. |
-| `prisma/seed/20_demo_story.ts` | **R5** | The demo narrative rows. |
-| `packages/contracts/` | **R1** | Zod schemas + shared types. Frozen after H4. |
-| `apps/web/src/lib/*.ts` | **R1** | `db`, `auth`, `guard`, `money`, `http`, `env`. |
-| `apps/web/src/lib/domain/` | **R3** | FSM, matching, fair-split, ledger, grading rules. |
-| `apps/web/src/lib/ml.ts` | **R2** | The ML service client. |
-| `apps/web/src/app/api/auth/**` | **R1** | |
-| `apps/web/src/app/api/prices/**`, `api/window/**` | **R2** | |
-| `apps/web/src/app/api/{lots,grade,pools,demands,match,offers,escrow,ledger,disputes}/**` | **R3** | |
-| `apps/web/src/app/(farmer)/**` | **R4** | |
-| `apps/web/src/app/(buyer)/**`, `(fpo)/**`, `(admin)/**` | **R5** | |
-| `apps/web/src/components/ui/**` | **R1** | shadcn primitives, installed once at H2. Do not modify; compose. |
-| `apps/web/src/components/farmer/**`, `components/charts/**` | **R4** | R5 imports charts, does not edit them. |
-| `apps/web/src/components/buyer/**` | **R5** | |
-| `apps/web/messages/{en,mr}.json` | **R4** | Need a string? Request it. Do not add keys yourself. |
-| `services/ml/**` | **R2** | Entire Python service. |
-| `docker-compose.yml`, `.env.example`, root `package.json`, CI | **R1** | |
-| `tests/e2e/**` | **R5** | |
-
-If a path is not listed and not obviously inside someone's tree, it belongs to R1. Ask.
+The only shared file is `docs/BLOCKERS.md`, and it is append-only — never rewrite someone else's entry.
 
 ---
 
-## 4. Roles at a glance
+## 5. Coding standards
 
-| ID | Codename | Mission | Branch |
-|---|---|---|---|
-| **R1** | **SPINE** | Architecture, DB, auth, contracts, integration, deploy. Unblocks everyone. | `r1-spine` |
-| **R2** | **ORACLE** | Data ingestion, price forecasting, the sale-window optimiser. The differentiator. | `r2-oracle` |
-| **R3** | **LEDGER** | Lots, grading, matching, offers, escrow FSM, hash-chained ledger, disputes. | `r3-ledger` |
-| **R4** | **KISAN** | Farmer PWA. Mobile-first, Marathi-first, low-literacy UX. What judges see first. | `r4-kisan` |
-| **R5** | **BAZAAR** | Buyer + FPO + admin consoles, demo dataset, E2E tests, deck and narrative. | `r5-bazaar` |
+**Python (api/, ingest/)**
+- Type hints on every function signature. Pydantic v2 for all request/response models.
+- Every route: `guard()` → Pydantic validation → a function in `app/domain/` → typed response. **Business logic never lives in a route handler.**
+- Errors: raise `AppError(code, message, status)`. The middleware renders `{"error": {"code": ..., "message": ...}}`. Never leak a stack trace, a raw SQL error, or a Prisma/SQLAlchemy repr to the client.
+- Money arithmetic uses `//`, never `/`. Grep your own diff for `float(`, `/ 100`, `round(`.
 
----
+**TypeScript (app/)**
+- Strict mode. No `any`. No `@ts-ignore`. No non-null `!` on anything from the network.
+- The wire format is `snake_case` and the frontend reads it directly. Do not add a camelCase mapping layer.
+- Money is a `number` of paise and is formatted **only** by `formatPaise()` at the render edge.
+- Every screen renders four states: **loading · empty · error · data**. A screen with only the happy path is not done.
+- Marathi is the default locale. English is the fallback.
 
-## 5. The contract freeze
-
-`docs/01_CONTRACTS.md`, `packages/contracts/`, and `prisma/schema.prisma` are **frozen at H4** (end of the joint lockdown session). After that:
-
-- Everyone builds against the contract, not against each other's code.
-- R4 and R5 build UI against contract-shaped fixtures **before** R2 and R3 have working endpoints. That is the point of freezing.
-- A contract change requires: a `docs/BLOCKERS.md` entry tagged `CONTRACT`, R1's approval, and R1 announcing it in the group chat. Expect this to happen two or three times. Expect it to happen *zero* times after H38.
-
-**Additive changes are cheap. Renames and type changes are expensive. Prefer adding an optional field over changing an existing one.**
+**Both**
+- `snake_case` in SQL and on the wire, `camelCase` inside TS, `snake_case` inside Python.
+- Dates are `date`/`Date`, never a string, never an epoch int.
+- Comments explain **why**, never what. Match the density of the surrounding file.
+- Delete dead code as you go. No commented-out blocks "in case".
 
 ---
 
 ## 6. Commands
 
 ```bash
-npm install                  # root, installs all workspaces
-npm run db:up                # docker compose up postgres
-npm run db:push              # prisma db push (dev; R1 owns migrations)
-npm run db:seed              # runs prisma/seed/*.ts in order
-npm run dev                  # next dev on :3000
-npm run ml                   # uvicorn ML service on :8000
-npm run verify               # typecheck + lint + unit tests + build  <- MUST pass before you push
-npm run test:e2e             # playwright, R5
+docker compose up -d --build
+docker compose exec api alembic upgrade head
+docker compose exec api python -m seed.run_all
+bash scripts/smoke.sh
 ```
-
-ML service, from `services/ml/`:
 
 ```bash
-uv venv --python 3.11        # NOT python3 — the default is 3.14, no LightGBM wheel exists
-source .venv/bin/activate
-uv pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
+cd app && npm install && npx expo start
 ```
 
----
+```bash
+cd api && uv venv --python 3.11 && source .venv/bin/activate && uv pip install -r requirements.txt
+```
 
-## 7. Coding standards
-
-- **TypeScript strict.** No `any`. No `@ts-ignore`. No non-null `!` on values that come from the network or DB.
-- **Server components by default.** `'use client'` only where you need state, effects, or handlers.
-- **Every API route:** `guard()` → Zod `.parse()` → domain function → typed response. Business logic lives in `src/lib/domain/`, never inline in a route handler.
-- **Errors:** throw `AppError(code, message, status)` from `src/lib/http.ts`. The route wrapper turns it into `{ error: { code, message } }`. Never leak a stack trace or a raw Prisma error to the client.
-- **Naming:** `camelCase` in TS, `snake_case` in SQL, Prisma `@map` bridges them. Money fields end `Paise`. Quantities are **integer kilograms** and end `Kg` (`qtyKg`; 1 quintal = 100 kg — display in quintals, store in kg). Rates and shares are **basis points** and end `Bps`. Dates are `Date`, never a string, never a timestamp integer.
-- **No new dependency without R1's approval.** Every added package is a merge conflict in `package-lock.json` and a supply-chain risk. The stack in §8 is sufficient.
-- **Comments explain *why*, never *what*.** Match the density of the surrounding file.
-- **Delete dead code as you go.** Do not leave commented-out blocks "in case".
+`scripts/smoke.sh` must pass before every push. It includes the cross-actor 404 check (I4).
 
 ---
 
-## 8. Stack — fixed, do not substitute
+## 7. Git protocol
 
-| Layer | Choice |
-|---|---|
-| Monorepo | npm workspaces |
-| Web | Next.js 15 App Router, React 19, TypeScript strict |
-| Styling | Tailwind CSS v4 + shadcn/ui |
-| Charts | Recharts |
-| DB | PostgreSQL 16 (Docker locally, Neon in production) |
-| ORM | Prisma |
-| Validation | Zod, shared via `@mandi/contracts` |
-| Auth | Phone + OTP, bcrypt PIN, JWT in httpOnly cookie via `jose` |
-| i18n | Plain JSON dictionaries + React context. **No i18n library.** |
-| ML | Python **3.11**, FastAPI, LightGBM, pandas, numpy, statsmodels |
-| Tests | Vitest (unit), Playwright (E2E) |
-| Deploy | Vercel (web), Fly.io or Railway (ML), Neon (DB) |
-
----
-
-## 9. Git protocol
-
-- Branch per role: `r1-spine` … `r5-bazaar`. Never commit to `main` directly.
-- **Commit every 20–30 minutes.** Small commits. `Rn: <what changed>`.
+- Branch per person: `akash`, `kartik`, `nikhil`, `nilesh`, `pranay`, `shreya`. **Never commit to `main` directly.**
+- **Commit every 20–30 minutes.** Small commits, message `<name>: <what changed>`.
 - **Push every hour.** An unpushed branch is work that does not exist.
-- `npm run verify` must pass before every push. A broken push blocks four other people.
 - **Rebase, never merge:** `git fetch origin && git rebase origin/main`.
-- **Never `git push --force` to a shared branch. Never touch `main` history.**
-- R1 merges all branches into `main` at each sync window. Everyone rebases immediately after.
-- If you hit a conflict in a file you do not own: **abort the rebase, take theirs, re-apply your own change.** Do not "fix" their file.
+- **Never `git push --force` to a shared branch. Never rewrite `main`.**
+- Conflict in a file you do not own: **abort the rebase, take theirs, re-apply your own change.** Do not "fix" their file.
 
----
-
-## 10. Definition of done
-
-A task is done when **all** of these hold. Not four of five.
-
-1. `npm run verify` passes.
-2. The endpoint or screen works against **seeded** data, with no external network call.
-3. Zod validation on every input; invalid input returns a 400 with a coded error, not a 500.
-4. Authorization: another farmer's ID returns 403/404, never their data. You have tested this by hand.
-5. Money is paise everywhere in the path. You have grepped your diff for `parseFloat`, `Number(`, and `.toFixed`.
-6. The empty state, loading state, and error state all render — not just the happy path.
-7. Marathi strings exist for anything a farmer sees (request them from R4 if missing).
-8. Committed and pushed.
-
----
-
-## 11. When you are blocked
-
-Do not stall and do not silently invent a workaround in someone else's file. In this order:
-
-1. **Is it in the contract?** If yes, build against the contract with a fixture. The other side will catch up.
-2. **Can you stub it?** Write the stub in *your* directory, mark `TODO(Rn):`, keep going. Stubs at H12 are fine. Stubs at H58 are not.
-3. **Append to `docs/BLOCKERS.md`:**
+### Blocker format — `docs/BLOCKERS.md`
 
 ```markdown
-### [R2 → R1] CONTRACT: ForecastPoint needs a `dataQuality` field
-- **What I need:** `dataQuality: 'OBSERVED'|'IMPUTED'|'SYNTHETIC'` on `ForecastPoint`.
-- **Why:** I cannot honour I6 without it — the chart has no way to badge the series.
-- **Blocking:** R2-4, and R4's chart component downstream.
-- **Workaround in place:** returning it in `meta` for now.
-- **Raised:** Day 1 H09
+### [Pranay → Nilesh] CONTRACT: window response needs `refusal_reason`
+- **What I need:** `refusal_reason` on the NO_ADVICE response.
+- **Why:** the refusal screen has nothing to render without it.
+- **Blocking:** P6, and the beat-11 demo moment.
+- **Workaround in place:** hardcoded Marathi string in a fixture.
+- **Raised:** H14
 ```
 
-4. Say it in the group chat. `BLOCKERS.md` is the record; chat is the alert. Both, always.
-
-**Never leave a blocker undeclared for more than 30 minutes.** The cost of a blocker is not your idle time — it is the wrong thing four other people build on top of it.
+`BLOCKERS.md` is the record; the group chat is the alert. **Both, always, within 30 minutes.** A blocker nobody declared is the most expensive object in this repository.
 
 ---
 
-## 12. Things that will lose us the hackathon
+## 8. Definition of done
 
-Read this list once a day.
+A task is done when **all** of these hold. Not four of six.
 
-- **A feature that only works in one hand-typed path.** Judges click the second thing. Every screen needs a real empty state.
-- **A live API call in the demo.** See I5.
-- **A confident forecast with no interval.** A point prediction with no uncertainty is not intelligence; it is a guess with a chart. p10/p50/p90 or nothing.
-- **An unverified number on a slide.** Every external figure needs provenance or it comes off the slide. See the playbook's `[VERIFY]` discipline.
-- **Blockchain theatre.** We use a hash-chained append-only table and we can explain exactly why that is the right call and a chain is not. Do not add a chain. Read playbook Ch 08.
-- **Feature work after freeze (H58).** Nothing new after H58. Nothing. The last 14 hours are integration, seeding, deploy, and three full rehearsals.
-- **Silence.** A blocker nobody declared is the most expensive object in this repository.
+1. It works against **seeded** data, with **no live external network call**.
+2. Input validated; invalid input returns a coded 400, never a 500.
+3. Authorization tested by hand: another actor's ID returns **404**, never their data.
+4. Money is integer paise along the whole path. You have grepped your diff for `float`, `parseFloat`, `/ 100`, `toFixed`.
+5. Loading, empty, error and data states all render — not just the happy path.
+6. Marathi strings exist for anything a farmer sees.
+7. Committed and pushed.
+
+---
+
+## 9. Things that will lose us the hackathon
+
+Read this once a day.
+
+- **A feature that works only in one hand-typed path.** Judges click the second thing. Every screen needs a real empty state.
+- **A live API call during the demo.** Venue wifi fails. It always fails.
+- **A confident forecast with no interval.** p10/p50/p90 or nothing.
+- **An unverified number on a slide.** No source → the number comes off the slide.
+- **Unlabelled synthetic data shown to a government panel.** The one unrecoverable mistake available to this team.
+- **Blockchain theatre.** We use a hash-chained append-only table and we can explain exactly why a chain is the wrong tool. Do not add a chain.
+- **Feature work after H30.** Nothing new. The last six hours are integration, seeding, deploy, and three rehearsals.
+- **Silence.** See §7.
+
+---
+
+## 10. Why this project exists
+
+Every year, farmers in Maharashtra sell at harvest for less than their crop is worth, because they cannot afford to wait — and some of them do not survive that gap.
+
+We cannot fix the whole of that. What we can build is a system that tells a farmer whether waiting pays, in his language, with the worst case shown next to the best one, **and that refuses to answer when it does not know.**
+
+That last clause is the product. Everything else is engineering.

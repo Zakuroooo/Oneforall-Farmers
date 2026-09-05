@@ -82,6 +82,7 @@ uv pip install -r requirements.txt
 | **I13** | **The pledge card renders only when `expected_gain_paise > interest_paise`.** Enforced in the decision engine, not in the UI. | This is the line that proves you understood the ethics, not just the features. |
 | **I14** | **Never log phone numbers, OTPs, or full request payloads.** | |
 | **I15** | **No `random` for anything security-relevant.** OTPs from `secrets.randbelow`. The seed PRNG is statistical only. | |
+| **I16** | **Both numbers, always.** Wherever an upside is shown, the downside is shown beside it **at the same font size**. `worst_case_paise` is never smaller, greyer, collapsed, or behind a tap than the expected gain. | A product that shows only the gain has become an advertisement. This is the invariant the whole pitch rests on, and it is checked by measuring pixels, not by reading code. |
 
 ---
 

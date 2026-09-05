@@ -1,38 +1,38 @@
-# ── Secrets: never commit ────────────────────────────────────────────────────
+# ── Secrets: never commit ─────────────────────────────────────────────────────
+# I10. If one of these ever lands in a commit, ROTATE THE KEY — removing the line
+# later does not remove the blob from history.
 .env
 .env.local
 .env.*.local
 *.pem
 *.key
+*.keystore
+*.jks
 
-# ── Node ─────────────────────────────────────────────────────────────────────
-node_modules/
-.next/
-out/
-dist/
-.turbo/
-*.tsbuildinfo
-
-# ── Python (services/ml) ─────────────────────────────────────────────────────
+# ── Python — api/ and ingest/ ─────────────────────────────────────────────────
 .venv/
+venv/
 __pycache__/
-*.pyc
+*.py[cod]
 .pytest_cache/
 .ruff_cache/
+.mypy_cache/
+*.egg-info/
 
-# ── Data: raw downloads and trained models stay out of git ───────────────────
-# Large binaries in git make every clone slow and every merge painful.
-# R2: commit the ingestion SCRIPT and the seed CSV (< 5 MB). Never the raw dump.
-services/ml/data/raw/
-services/ml/models/*.txt
-services/ml/models/*.pkl
-services/ml/models/*.joblib
-!services/ml/models/.gitkeep
+# ── Node / Expo — app/ ───────────────────────────────────────────────────────
+node_modules/
+.expo/
+web-build/
+dist/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
 
-# ── Test + build artefacts ───────────────────────────────────────────────────
-playwright-report/
-test-results/
+# ── Test + coverage artefacts ────────────────────────────────────────────────
 coverage/
+test-results/
+htmlcov/
+.coverage
 
 # ── Editor / OS ──────────────────────────────────────────────────────────────
 .DS_Store
@@ -42,7 +42,31 @@ coverage/
 
 # ── Agent scratch ────────────────────────────────────────────────────────────
 /.claude
-build/__pycache__/
-build/_p*.md
-build/_p*.pdf
-build/test.pdf
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  DELIBERATELY NOT IGNORED — read before you add a rule below this line
+# ─────────────────────────────────────────────────────────────────────────────
+#
+#  api/app/ml/models/*.pkl        Nikhil's 42 trained quantile models (N7).
+#                                 Yes, binaries in git. Here it is correct: the
+#                                 t3.small must never have to train, and a model
+#                                 that exists only on one laptop is a single point
+#                                 of failure with a name. Keep n_estimators modest
+#                                 so they stay small.
+#
+#  ingest/data/*.csv              Kartik's extracted Agmarknet rows (K1).
+#                                 I7 — the demo makes ZERO live external network
+#                                 calls. The deploy box seeds from these committed
+#                                 CSVs. If they are gitignored, the box cannot seed
+#                                 without hitting agmarknet.gov.in from the venue,
+#                                 which is the failure mode I7 exists to prevent.
+#                                 Keep the extract trimmed (two commodities, six
+#                                 markets, ~2 years) — that is a few hundred KB.
+#
+#  app/assets/audio/**            Shreya's pre-generated Marathi mp3 clips (SH2).
+#                                 Same reason: beat 7 is "airplane mode on, tap 🔊
+#                                 again, it still speaks." That only works if the
+#                                 clips are in the bundle.
+#
+#  Do not add a blanket *.pkl, *.csv or *.mp3 rule. It will silently break the
+#  offline demo and you will find out at H34.

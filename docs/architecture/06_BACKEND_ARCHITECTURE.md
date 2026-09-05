@@ -281,26 +281,26 @@ def counter(offer_id: str, price_paise_per_qtl: int, actor: User, db) -> Offer:
 
 ```python
 LEGAL: dict[str, set[str]] = {
-    "CREATED":    {"FUNDS_HELD", "CANCELLED"},
-    "FUNDS_HELD": {"DISPATCHED", "REFUNDED", "DISPUTED"},
-    "DISPATCHED": {"RECEIVED", "DISPUTED"},
-    "RECEIVED":   {"RELEASED", "DISPUTED"},
-    "RELEASED":   set(),          # terminal
-    "REFUNDED":   set(),          # terminal
-    "CANCELLED":  set(),          # terminal
-    "DISPUTED":   {"RELEASED", "REFUNDED", "SPLIT_SETTLED"},
+    "CREATED":      {"ESCROW_HELD", "CANCELLED"},
+    "ESCROW_HELD":  {"DISPATCHED", "REFUNDED", "DISPUTED"},
+    "DISPATCHED":   {"DELIVERED", "DISPUTED"},
+    "DELIVERED":    {"RELEASED", "DISPUTED"},
+    "RELEASED":     set(),          # terminal
+    "REFUNDED":     set(),          # terminal
+    "CANCELLED":    set(),          # terminal
+    "DISPUTED":     {"RELEASED", "REFUNDED", "SPLIT_SETTLED"},
     "SPLIT_SETTLED": set(),
 }
 
 ACTOR: dict[tuple[str, str], set[str]] = {
-    ("CREATED",    "FUNDS_HELD"):    {"BUYER"},
-    ("FUNDS_HELD", "DISPATCHED"):    {"FARMER", "FPO"},      # not the buyer
-    ("DISPATCHED", "RECEIVED"):      {"BUYER"},              # not the farmer
-    ("RECEIVED",   "RELEASED"):      {"BUYER", "ADMIN"},
-    ("FUNDS_HELD", "REFUNDED"):      {"ADMIN"},
-    ("DISPUTED",   "RELEASED"):      {"ADMIN"},
-    ("DISPUTED",   "REFUNDED"):      {"ADMIN"},
-    ("DISPUTED",   "SPLIT_SETTLED"): {"ADMIN"},
+    ("CREATED",      "ESCROW_HELD"):  {"BUYER"},
+    ("ESCROW_HELD",  "DISPATCHED"):   {"FARMER", "FPO"},      # not the buyer
+    ("DISPATCHED",   "DELIVERED"):    {"BUYER"},              # not the farmer
+    ("DELIVERED",    "RELEASED"):     {"BUYER", "ADMIN"},
+    ("ESCROW_HELD",  "REFUNDED"):     {"ADMIN"},
+    ("DISPUTED",     "RELEASED"):     {"ADMIN"},
+    ("DISPUTED",     "REFUNDED"):     {"ADMIN"},
+    ("DISPUTED",     "SPLIT_SETTLED"): {"ADMIN"},
     ...
 }
 

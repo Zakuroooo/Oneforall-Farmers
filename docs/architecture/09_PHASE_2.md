@@ -145,9 +145,9 @@ That paragraph is Phase 3's entire fundraising and government-pilot pitch. It ex
 **Changes:** each transition additionally calls the payment provider, and each provider webhook maps back to exactly one transition.
 
 ```
-BUYER pays              →  provider: create order + capture   →  FUNDS_HELD
+BUYER pays              →  provider: create order + capture   →  ESCROW_HELD
 FARMER dispatches       →  (no money movement)                →  DISPATCHED
-BUYER confirms receipt  →  (no money movement)                →  RECEIVED
+BUYER confirms receipt  →  (no money movement)                →  DELIVERED
 system/QA passes        →  provider: transfer to farmer       →  RELEASED
 dispute upheld          →  provider: refund                   →  REFUNDED
 ```
