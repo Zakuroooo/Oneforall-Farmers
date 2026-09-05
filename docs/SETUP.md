@@ -134,13 +134,15 @@ ABC123XYZ	device
 
 ---
 
-## 6. Watchman
+## 6. Watchman — skip it
+
+React Native's docs recommend `watchman`, and on macOS Homebrew it pulls **15 dependencies** (boost, folly, fbthrift, fb303, edencommon…) plus upgrades to `openssl@3` and `python@3.14`.
+
+**Say no.** What watchman buys you is fewer Metro file-watching misses in *large* monorepos. `app/src` is a few dozen files; Node's built-in watcher is fine at that size. If Metro ever starts missing your saves, install it *then*, with an actual symptom to justify the dependency tree.
 
 ```bash
-brew install watchman
+# brew install watchman     # not now — 15 deps for a problem we don't have
 ```
-
-Optional but do it — without it Metro's file watching on macOS gets flaky in ways that look like your code not saving.
 
 ---
 
@@ -167,15 +169,43 @@ cd "/Users/pranaysarkar/Desktop/Oneforall Farmers/app" && npm i @react-navigatio
 
 `react-native-sound`, `react-native-tts` and `react-native-image-picker` come later, at P9 and P13. Seven native modules added at once means a broken Gradle build has seven suspects; this way each one gets its own build and its own blame.
 
+And one dev dependency:
+
+```bash
+cd "/Users/pranaysarkar/Desktop/Oneforall Farmers/app" && npm i -D @types/jest
+```
+
+The template ships `jest` itself but not its types, and our `tsconfig.json` lists `jest` under `types`. Without this, `npx tsc --noEmit` fails on **`Cannot find type definition file for 'jest'`** before it has looked at a single line of our code — which reads like our code is broken when it is one missing `@types` package.
+
 ---
 
 ## 8. Move the staged source files in
 
 ```bash
-cd "/Users/pranaysarkar/Desktop/Oneforall Farmers" && cp -R p0-staging/app/src app/src && cp p0-staging/app/tsconfig.json app/tsconfig.json && mkdir -p app/android/app/src/main/res/xml && cp p0-staging/app/android/app/src/main/res/xml/network_security_config.xml app/android/app/src/main/res/xml/ && rm -rf p0-staging
+cd "/Users/pranaysarkar/Desktop/Oneforall Farmers" && cp -R p0-staging/app/src app/src && cp p0-staging/app/tsconfig.json app/tsconfig.json && mkdir -p app/android/app/src/main/res/xml && cp p0-staging/app/android/app/src/main/res/xml/network_security_config.xml app/android/app/src/main/res/xml/
 ```
 
-`p0-staging/` exists only because `cli init` refuses to run into a directory that already exists, so the source files could not be written to `app/` before you scaffolded. This is the one command that retires it.
+`p0-staging/` exists only because `cli init` refuses to run into a directory that already exists, so the source files could not be written to `app/` before you scaffolded.
+
+**`App.tsx` is not in that command and `p0-staging/` is not deleted yet.** Both happen in §12, after the first green build.
+
+### 8.1 One line in `AndroidManifest.xml`
+
+Copying `network_security_config.xml` in does nothing on its own. **Android never reads that file unless the manifest points at it** — and the failure mode is silent: the file is there, it looks right, and every API call still fails.
+
+The template generates the manifest, so this is edited **in place**, never overwritten:
+
+```bash
+cd "/Users/pranaysarkar/Desktop/Oneforall Farmers/app" && sed -i '' 's|android:allowBackup="false"|android:allowBackup="false" android:networkSecurityConfig="@xml/network_security_config"|' android/app/src/main/AndroidManifest.xml && grep -n networkSecurityConfig android/app/src/main/AndroidManifest.xml
+```
+
+**The `grep` at the end is the point.** If it prints a line, it worked. If it prints nothing, the anchor was not there — open `app/android/app/src/main/AndroidManifest.xml` and add this attribute by hand, anywhere inside the opening `<application` tag:
+
+```
+android:networkSecurityConfig="@xml/network_security_config"
+```
+
+> **About the template's debug manifest.** RN ships `android/app/src/debug/AndroidManifest.xml` with `android:usesCleartextTraffic="true"` so Metro can serve over HTTP. Leave it. Once a `networkSecurityConfig` exists, **it takes precedence** on API 24+ — so our four-host allow-list governs even in debug, and Metro still works because it is reached at `localhost:8081` over `adb reverse`, which is on the list. We end up stricter than the template's own default, not looser.
 
 ---
 
@@ -237,10 +267,35 @@ java -version            # 17.0.x
 adb devices              # your phone, status "device"
 sdkmanager --list_installed
 ls app/src/lib/money.ts  # the staged files landed
+grep -c networkSecurityConfig app/android/app/src/main/AndroidManifest.xml   # must print 1
 ```
 
 ```bash
 cd "/Users/pranaysarkar/Desktop/Oneforall Farmers/app" && npx react-native run-android
 ```
 
-The last one puts the React Native welcome screen on your phone. That is P0 complete — tell Claude and `App.tsx` gets replaced with the real navigator tree.
+The last one puts the **React Native welcome screen** on your phone. Stop there and go to §12.
+
+---
+
+## 12. Only after the welcome screen — swap in the real app
+
+The welcome screen is the checkpoint that proves the toolchain works: JDK, SDK, Gradle, cable, phone. **Do not skip past it.** If our navigator tree lands before that first green build, a Gradle problem and a bad import produce the same red screen and you debug both at once.
+
+Once you have seen it:
+
+```bash
+cd "/Users/pranaysarkar/Desktop/Oneforall Farmers" && cp p0-staging/app/App.tsx app/App.tsx && rm -rf p0-staging
+```
+
+Then reload — press **`r`** in the Metro terminal, or shake the phone and tap *Reload*. No rebuild needed; this is JavaScript, and Metro is already running.
+
+You should get a **splash spinner**, then the **language picker (S1)**, because there is no token on the device yet. Four Marathi tabs appear only after login — that is `RootNavigator` doing its one job.
+
+| What you see | Meaning |
+|---|---|
+| Spinner that never resolves | `AuthProvider` is waiting on `/auth/me` and the API does not exist yet — expected until Akash's A0. It falls through to S1 once the request fails. |
+| `Unable to resolve module @react-navigation/native` | step 7's `npm i` did not finish. Re-run it. |
+| Red screen naming a file | that one is mine — send me the top three lines |
+
+That is **P0 complete**. Commit and push.

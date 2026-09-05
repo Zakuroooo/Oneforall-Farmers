@@ -95,6 +95,22 @@ Names are the six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**.
 - **Workaround in place:** `app/src/lib/api.ts` calls `/ai/window/recommend` and says why in a comment. **Nilesh: mount the router at `/ai`.** `NILESH.md` already lists `routers/ai.py`, so this is a doc bug, not a design disagreement.
 - **Raised:** H0
 
+### [Pranay → Shreya] DECISION: auth state landed in `lib/auth.tsx`, not `context/AuthContext`
+- **What I need:** nothing — recording a lane decision I made unilaterally so you can reverse it cheaply.
+- **Why:** `07_FRONTEND_ARCHITECTURE.md` §1 lists `src/context/{AuthContext, LocaleContext}` under your name. The **same section** gives me `RootNavigator.tsx`, whose entire body is `const { user } = useAuth()` — so P0 could not compile without an auth context, and I am not creating files in `src/context/`.
+- **Blocking:** was blocking P0. Not any more.
+- **Workaround in place:** `app/src/lib/auth.tsx` — `AuthProvider` + `useAuth`, in my lane. The reasoning beyond "P0 needed it": token storage (`getToken`/`setToken`/`clearToken`) and `getMe()` all live in `lib/api.ts`, which is mine, so splitting the state that wraps them into your lane makes every auth change a two-person edit. **`LocaleContext` is untouched and still yours.** If you'd rather own it, build `context/AuthContext.tsx`, keep the `useAuth` signature, and I change one import line.
+- **One thing to preserve if you do rewrite it:** it does **not** decode the JWT. The role comes from `AuthRes.user` at sign-in and `GET /auth/me` on a cold start. A client-side `role` claim read would work and would quietly imply that routing is an authorization boundary — it isn't, the server is (I4).
+- **Raised:** H0
+
+### [Pranay → Shreya] CONTRACT: two different paths for i18n across the docs
+- **What I need:** you to pick one, and to say which in the group chat before SH1.
+- **Why:** `07_FRONTEND_ARCHITECTURE.md` §1 puts it at **`src/i18n/{index.tsx, mr.json, hi.json, en.json}`**. `CLAUDE.md` §4 and the ownership table at the top of this file both say **`src/lib/i18n.tsx`** with `app/messages/**` for the dictionaries. Those are three different locations for the JSON.
+- **Blocking:** nothing of mine — I import `t` from wherever you put it, and until SH1 lands my Marathi is hardcoded with `TODO(shreya):` next to it.
+- **Workaround in place:** none needed. Flagging it because you will otherwise pick one, and then find the other path cited in a doc at H20 and wonder which is stale. Neither is: they were written at different times.
+- **My preference, weakly held:** `src/lib/i18n.tsx` + `src/i18n/*.json`. `lib/` is where the other cross-cutting modules already are, and it keeps the dictionaries out of `lib/`.
+- **Raised:** H0
+
 ---
 
 ## Resolved before H0 — decisions and doc corrections
