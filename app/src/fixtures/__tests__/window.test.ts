@@ -134,7 +134,7 @@ describe('every fixture', () => {
   });
 
   it.each(all)('%s labels its data source (I8)', (_name, fx) => {
-    expect(['AGMARKNET', 'MSAMB', 'GENERATED', 'MANUAL']).toContain(fx.data_source);
+    expect(['AGMARKNET', 'MSAMB', 'ARCHIVE', 'IMPUTED', 'SYNTHETIC']).toContain(fx.data_source);
   });
 
   it.each(all)('%s keeps every paise value an integer (I1)', (_name, fx) => {

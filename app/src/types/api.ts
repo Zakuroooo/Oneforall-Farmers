@@ -26,8 +26,17 @@ export type Role = 'FARMER' | 'BUYER';
 /**
  * CANON §7 — `source` on every price row, and `data_source` on the window
  * response. Anything that is not AGMARKNET or MSAMB gets badged in the UI (I8).
+ *
+ * ★ BUG FIXED, not invented: an earlier draft of this file had `GENERATED` and
+ *   `MANUAL` — values that do not exist anywhere in CANON. The actual CHECK
+ *   constraint is `00_CANON.md` §6.3's `price_obs.source in ('AGMARKNET','MSAMB',
+ *   'ARCHIVE','IMPUTED','SYNTHETIC')`, which is what the real Postgres DB will
+ *   enforce. Two other docs (`07_FRONTEND_ARCHITECTURE.md` §5,
+ *   `PRANAY.md` §2.7) each cite a different 4-of-5 subset of this same list —
+ *   CANON's schema wins per this repo's own precedence rule (see BLOCKERS.md's
+ *   resolved invariant-numbering entry for the same reasoning applied before).
  */
-export type DataSource = 'AGMARKNET' | 'MSAMB' | 'GENERATED' | 'MANUAL';
+export type DataSource = 'AGMARKNET' | 'MSAMB' | 'ARCHIVE' | 'IMPUTED' | 'SYNTHETIC';
 
 export type Grade = 'A' | 'B' | 'C';
 

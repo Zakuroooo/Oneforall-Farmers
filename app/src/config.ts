@@ -84,3 +84,14 @@ export const CACHE_STALE_MS = 5 * 60 * 1000;
 export const CHAT_POLL_MS = 4000;
 
 export const DEFAULT_HORIZON_DAYS = 14;
+
+/**
+ * The demo scenario — the same commodity/market pair CANON §7.4's own example
+ * uses (`cmd_onion` / `mkt_lasalgaon`). There is no commodity/market picker
+ * screen in scope yet, so every farmer screen reads today's price for this pair
+ * until one exists. TODO(pranay): replace with the farmer's own selection once a
+ * settings or profile screen carries it — likely derived from `district_id` at
+ * registration, but that is a real design decision, not a default to guess at now.
+ */
+export const DEFAULT_COMMODITY_ID = 'cmd_onion';
+export const DEFAULT_MARKET_ID = 'mkt_lasalgaon';
