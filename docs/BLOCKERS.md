@@ -61,7 +61,39 @@ Names are the six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**.
 
 ## Open
 
-*(nothing yet — H0)*
+### [Pranay → Nilesh] ★ CONTRACT: `alt_market` has no defined populated shape
+- **What I need:** the keys `alt_market` carries when `action === 'SELL_ELSEWHERE'`.
+- **Why:** `00_CANON.md` §7.4 shows the field **only as `null`**. The DB has `alt_market_id text references markets(id)` (CANON §6), and `NILESH.md` line 35 says `# AltMarket | null (set on SELL_ELSEWHERE)` — but `AltMarket` is defined nowhere. SELL_ELSEWHERE is one of five actions the hero endpoint can return; if a judge taps the Pune row and the card renders `undefined`, that is the hero endpoint failing live.
+- **Blocking:** P5 (the S9 verdict card), and any demo beat that shows SELL_ELSEWHERE.
+- **Workaround in place:** `app/src/types/api.ts` defines a minimal `AltMarket` — `{market_id, name_mr, net_paise_per_qtl, distance_km}` — carrying a `TODO(nilesh):`, and `fixtures/window.ts` has `fxSellElsewhere` populating it from CANON §7.3's `/prices/nearby` example (mkt_pune / पुणे / 195730 / 168 km) so the gap is visible to the type checker rather than discovered on stage. **If your shape differs, mine is the one that changes** — tell me and I will change it.
+- **Raised:** H0
+
+### [Pranay → Nilesh] ★ BUG: CANON §7.4's pledge `interest_paise` is 10× its own formula
+- **What I need:** confirmation of which is right, and a correction to whichever is wrong.
+- **Why:** CANON §7.4's example response prints `interest_paise: 92200` (₹922). CANON §8's formula, on the same numbers, gives:
+  ```
+  interest = loan_paise * rate_bps_annual * days // (10000 * 365)
+           = 3400000 * 900 * 11 // 3650000
+           = 9221                                        # ₹92, not ₹922
+  ```
+  This is the same class of error as the ₹62,900 → ₹6,290 bug caught before H0, in the same document, one section apart. ₹92 of interest to unlock ₹6,290 of gain is a sentence a judge will hear and check.
+- **Blocking:** nothing hard — `is_worthwhile` is `true` either way (629000 > 9221 > and > 92200), so beat 9 survives on either number. It is the **narrated figure** that is at risk.
+- **Workaround in place:** the fixture uses **9221**, the formula's answer, on the grounds that the formula is what ships and the example is prose. Documented inline in `fixtures/window.ts`.
+- **Raised:** H0
+
+### [Pranay → Shreya] CONTRACT: I need `Skeleton`, `ErrorState`, `EmptyState` from SH2
+- **What I need:** `app/src/components/ui/{Skeleton,ErrorState,EmptyState}.tsx`, and their prop signatures whenever you have them — I will import against the signature before the file exists.
+- **Why:** CLAUDE.md §5 requires four states per screen and `components/ui/**` is your lane, so I cannot create them. Building fifteen happy-path screens now and retrofitting three states each at H26 is how the states end up missing.
+- **Blocking:** nothing yet — soft-blocks the polish pass on P4–P16.
+- **Workaround in place:** `app/src/components/farmer/States.tsx`, deliberately un-styled and marked `TODO(shreya):`. Delete it when SH2 lands; it is one import line per screen. **One constraint from my side:** `NO_ADVICE` is a 200 with a body and must never route through `ErrorState` — a refusal that renders as a crash with a retry button is the opposite of I6.
+- **Raised:** H0
+
+### [Pranay → everyone] BUG: `CLAUDE.md` §1 gives the hero endpoint path without `/ai`
+- **What I need:** nothing from anyone — recording it so nobody builds against the wrong path.
+- **Why:** `CLAUDE.md` §1 writes the hero as `POST /api/v1/window/recommend`. `00_CANON.md` §7.4 has it at **`POST /api/v1/ai/window/recommend`**. CANON wins by its own precedence rule. A 404 on the hero endpoint at beat 8 would take the demo apart, and it would look like the server was down rather than like a path typo.
+- **Blocking:** nothing — caught before either side was written.
+- **Workaround in place:** `app/src/lib/api.ts` calls `/ai/window/recommend` and says why in a comment. **Nilesh: mount the router at `/ai`.** `NILESH.md` already lists `routers/ai.py`, so this is a doc bug, not a design disagreement.
+- **Raised:** H0
 
 ---
 

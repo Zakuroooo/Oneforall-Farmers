@@ -1,0 +1,32 @@
+{
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+
+    // The four the RN template leaves off, and each one has caught a real bug in a
+    // React Native codebase before:
+    //
+    //   noUncheckedIndexedAccess  — `points[0]` is `T | undefined`. Forecast arrays
+    //                               come from the network and can be empty; this is
+    //                               what stops `points[0].p50` from shipping.
+    //   exactOptionalPropertyTypes — an optional key cannot be set to `undefined`,
+    //                               which keeps "absent" and "present but null"
+    //                               distinct. CANON returns null, never absent.
+    //   noFallthroughCasesInSwitch — the S9 verdict switch has five arms.
+    //   noUnusedLocals            — dead imports after a refactor.
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+
+    "skipLibCheck": true,
+    "types": ["jest", "react-native"],
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*", "App.tsx", "index.js"],
+  "exclude": ["node_modules", "android", "ios", "**/*.test.ts", "**/__tests__/**"]
+}
