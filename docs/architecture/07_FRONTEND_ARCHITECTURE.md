@@ -8,14 +8,16 @@
 **The frontend is what judges see. Everything else is inference.** A perfect backend behind a screen that shows `undefined` scores zero.
 
 **Your two hard invariants:**
-- **Pranay:** worst case at the *same font size* as best case (F8). Not 20 and 14. Twenty and twenty.
+- **Pranay:** worst case at the *same font size* as expected gain (**I16**). Not 20 and 14. Twenty and twenty.
 - **Shreya:** zero English on any farmer screen in Marathi mode, and voice that works with wifi off.
+
+> **Stack changed 2026-09-05 — this is now React Native CLI, not Expo.** Any `expo-` import below is pre-change; translate with `12_STACK.md` §4. `12_STACK.md` is authoritative on packages.
 
 ---
 
 ## 1. One codebase, two apps
 
-**Expo / React Native.** Native for the farmer, `expo start --web` for the buyer console. Same repo, same components, same API client.
+**React Native CLI 0.76.** The farmer app and the buyer console are the same binary; the JWT `role` claim picks the navigator. **The buyer runs on a second device, not a browser** — RN CLI has no web target and we chose not to build one (`12_STACK.md` §0).
 
 ```
 app/
@@ -39,9 +41,11 @@ app/
 │  │  ├─ money.ts                # formatPaise, Devanagari digits. Pranay.
 │  │  ├─ voice.ts                # clip sequencing + TTS fallback. Shreya.
 │  │  └─ offline.ts              # last-known-value cache. Pranay.
-│  ├─ i18n/  { index.tsx, mr.json, en.json }        # Shreya
+│  ├─ i18n/  { index.tsx, mr.json, hi.json, en.json }  # Shreya — mr default, hi, en
+│  ├─ fixtures/                    # CANON-§7-shaped fixtures. How you work before an endpoint exists.
 │  └─ context/ { AuthContext, LocaleContext }       # Shreya
-└─ assets/audio/mr/*.mp3          # Shreya
+├─ assets/audio/mr/*.mp3           # Shreya — committed, I7
+└─ android/app/src/main/res/xml/network_security_config.xml   # Pranay, P0 — 12_STACK §7.3
 ```
 
 **Role-based navigation, one root:**
@@ -61,7 +65,10 @@ No route guards to forget. A buyer cannot reach a farmer screen because the navi
 The wire format is `snake_case` (CANON §4). **Do not alias to camelCase.** Reading `expected_gain_paise` in TSX is mildly ugly and eliminates an entire class of five-person drift bug.
 
 ```ts
-const BASE = process.env.EXPO_PUBLIC_API_URL + '/api/v1';
+import { API_BASE_URL } from '../config';   // 12_STACK §7.2 — RN CLI has no EXPO_PUBLIC_*
+const BASE = API_BASE_URL;
+
+export const USE_FIXTURES = false;   // flip true to work before an endpoint exists
 
 export class ApiError extends Error {
   constructor(public code: string, message: string, public status: number) { super(message); }
@@ -113,12 +120,12 @@ export type WindowRes = {
 ```ts
 const DEV = ['०','१','२','३','४','५','६','७','८','९'];
 
-export function formatPaise(paise: number, locale: 'mr' | 'en' = 'mr'): string {
-  const rupees = Math.round(paise / 100);            // display only. never for arithmetic.
-  const grouped = groupIndian(Math.abs(rupees));     // 62900 -> "62,900"
-  const digits  = locale === 'mr'
-    ? grouped.replace(/\d/g, d => DEV[+d])
-    : grouped;
+export function formatPaise(paise: number, locale: Locale = 'mr'): string {
+  const rupees = Math.trunc(paise / 100);            // display only. never for arithmetic.
+  const grouped = groupIndian(Math.abs(rupees));     // 6290 -> "6,290"
+  const digits  = locale === 'en'                    // mr AND hi both use Devanagari
+    ? grouped
+    : grouped.replace(/\d/g, d => DEV[+d]);
   return `${rupees < 0 ? '−' : ''}₹${digits}`;
 }
 
@@ -127,10 +134,10 @@ export const qtlFromKg = (kg: number) => kg / 100;   // display only
 
 Three rules:
 1. **Paise → rupees happens only in this file, only for display.** Never send a rupee number back to the server.
-2. **Indian grouping**, not `toLocaleString('en-US')`. ₹६२,९०० not ₹62.9K and not ₹6,29,00.
+2. **Indian grouping**, not `toLocaleString('en-US')`. ₹६,२९० not ₹62.9K and not ₹6,29,00.
 3. **Store kg, show quintals.** `40 क्विंटल`, never `4000 किलो`.
 
-`formatPaise(6290000, 'mr')` → `"₹६२,९००"`. Write a unit test for that exact call.
+`formatPaise(629000, 'mr')` → `"₹६,२९०"`. Write a unit test for that exact call.
 
 ---
 
@@ -145,12 +152,11 @@ Everything else exists to make this credible. Layout from `01_PRD.md` §6.
 │                                        │
 │           ८ दिवस थांबा                 │   32px bold. the verdict.
 │                                        │
-│      अपेक्षित फायदा  + ₹६२,९००         │   28px, green
-│                                        │
 │  ┌──────────────┬──────────────────┐   │
-│  │ चांगल्यास    │ वाईट झाल्यास     │   │
-│  │ + ₹६२,९००    │ − ₹४८,०००        │   │  ← 20px BOTH. (F8)
+│  │ अपेक्षित     │ वाईट झाल्यास     │   │
+│  │ + ₹६,२९०    │ − ₹४,८००        │   │  ← 20px BOTH. (I16)
 │  └──────────────┴──────────────────┘   │
+│   expected_gain_paise │ worst_case_paise    ← the only two money fields here
 │                                        │
 │  विश्वास: ●●●○  मध्यम                 │
 │                                        │
@@ -163,9 +169,11 @@ Everything else exists to make this credible. Layout from `01_PRD.md` §6.
 └────────────────────────────────────────┘
 ```
 
+> **There is no "best case" on this screen and no `best_case_paise` in the API.** CANON §7.4 returns exactly two headline numbers: `expected_gain_paise` (the p50 outcome net of costs) and `worst_case_paise` (the p10 outcome net of costs). An earlier draft of this file paired "best" against "worst" and repeated the expected number in the good column — that overstates the upside and names a field the server never sends. **Expected versus worst. Those two, at the same size.**
+
 ### The five rules of this screen
 
-1. **★ Worst case at the SAME font size as best case.** 20px both. Measure it in the inspector; do not eyeball it. This is the one visual decision that makes the honesty claim structural instead of rhetorical, and it is the thing to point at when a judge asks how you avoid over-promising.
+1. **★ Worst case at the SAME font size as the expected gain.** 20px both. Measure it in the inspector; do not eyeball it. This is the one visual decision that makes the honesty claim structural instead of rhetorical, and it is the thing to point at when a judge asks how you avoid over-promising.
 2. **The verdict is words, not a number.** `८ दिवस थांबा` ("wait 8 days"), not `p50 = 1,89,300`. A farmer needs a decision.
 3. **Costs are one tap away, never hidden.** `₹4,250` visible in the collapsed row; five lines on tap.
 4. **The pledge card renders only when the server sent `pledge_quote != null`.** Do not compute worthwhileness client-side — the server already refused to send it (I13). Trust that.
@@ -197,7 +205,7 @@ Everything else exists to make this credible. Layout from `01_PRD.md` §6.
 
 ## 5. Charts — `components/charts/` (Pranay)
 
-`victory-native`. Two charts, both non-negotiable in shape.
+**`react-native-svg`, hand-rolled — no chart library.** Two charts, both non-negotiable in shape. `12_STACK.md` §3.1 has the ~60 lines and the reasoning: `victory-native` v40+ drags in Skia and Reanimated to draw a shaded polygon, and a hand-rolled component lets us enforce the band rule structurally instead of by discipline.
 
 ### `PriceHistory`
 - 90 days of modal price, line + light min/max band
@@ -217,6 +225,8 @@ Everything else exists to make this credible. Layout from `01_PRD.md` §6.
 
 **Never render the p50 line without the shaded p10–p90 band.** A point forecast with no interval is the exact thing we claim to be better than; drawing one, even for five minutes during development, is how it ends up in a screenshot on a slide.
 
+**Enforce it in the type, not in a code review.** `ForecastFan` takes `{p10, p50, p90}` — all three required — and draws the band polygon before the line. There is no prop combination that produces a bare p50.
+
 A vertical marker at the recommended `hold_days` ties the chart to the verdict.
 
 ---
@@ -226,23 +236,33 @@ A vertical marker at the recommended `hold_days` ties the chart to the verdict.
 Plain JSON + Context. **No i18n library** — a dependency for a dictionary lookup is not worth a lockfile conflict.
 
 ```tsx
+type Locale = 'mr' | 'hi' | 'en';
+const DICTS: Record<Locale, Record<string, string>> = { mr, hi, en };
+
 export function useT() {
   const { locale } = useLocale();
   return (key: string, vars?: Record<string, string|number>) => {
-    let s = (locale === 'mr' ? mr : en)[key] ?? key;
+    let s = DICTS[locale][key] ?? key;
     for (const [k, v] of Object.entries(vars ?? {})) s = s.replace(`{${k}}`, String(v));
     return s;
   };
 }
 ```
 
+**Three locales: `mr` (default) · `hi` · `en`.** Hindi was Phase 2 in an earlier draft; it is in Phase 1 as **SH9**. Text only — **the voice clips are Marathi.** Tripling the clip set is not affordable in 36 hours, and we say that plainly rather than shipping a Hindi 🔊 button that falls back to a robotic device voice.
+
 ### Rules
 
 1. **`t('key')` never returns English in Marathi mode.** A missing key returns the key itself, which looks broken in dev and is caught before the demo. Silent English fallback is *invisible* in dev and glaring on stage.
-2. **Devanagari numerals everywhere a farmer sees a number.** ४० क्विंटल, ₹६२,९००, ८ दिवस.
-3. **Marathi first, English second.** Write `mr.json` first, then translate to `en.json`. Building in English and translating later produces English sentence structure in Marathi words.
+2. **Devanagari numerals everywhere a farmer sees a number.** ४० क्विंटल, ₹६,२९०, ८ दिवस. Marathi and Hindi share the script, so `devNum()` serves both.
+3. **Marathi first, then Hindi, then English.** Write `mr.json` first. Building in English and translating later produces English sentence structure in Marathi words.
 4. **Marathi strings are ~40% longer than English.** Every container wraps. Test the longest string on the smallest screen — this is the #1 source of demo-day layout breakage.
-5. **The API sends `explain_mr` and `explain_en`.** Server-authored sentences are not translated client-side; pick the field by locale.
+5. **The API sends `explain_mr`, `explain_hi` and `explain_en`.** Server-authored sentences are not translated client-side; pick the field by locale.
+6. **All three dictionaries have the same keys.** A key in `mr.json` and missing from `hi.json` is a screen that renders a raw key on stage. Assert it:
+   ```bash
+   node -e "const a=require('./src/i18n/mr.json'),b=require('./src/i18n/hi.json'),c=require('./src/i18n/en.json');
+   for (const k of Object.keys(a)) if (!(k in b) || !(k in c)) console.log('MISSING', k)"
+   ```
 
 ### The audit
 ```bash
@@ -263,22 +283,24 @@ OFFLINE (once, at H12, by Shreya)
   scripts/gen_tts.py  ──Sarvam TTS──►  assets/audio/mr/*.mp3  ──►  committed to git
 ════════════════════════════════════════════════════════════════════
 RUNTIME (on the phone, no network)
-  voice.speak(verdict)  ──►  clip list  ──►  expo-av sequential play
+  voice.speak(verdict)  ──►  clip list  ──►  react-native-sound sequential play
 ```
 
 ~40 phrase clips + digit/number-word clips. **Committed as mp3.** Total under 2 MB.
 
 ```ts
-// ₹62,900 -> ['baasasht','hazaar','naushe','rupaye']
-export function decomposeRupees(n: number): string[] { /* Marathi number words */ }
+import Sound from 'react-native-sound';
+
+// Takes PAISE and truncates internally — the caller never divides (I1).
+// ₹6,290 (629_000 paise) -> ['baasasht','hazaar','naushe','rupaye']
+export function decomposeRupees(paise: number): string[] {
+  const rupees = Math.trunc(Math.abs(paise) / 100);   // the ONLY division in this file
+  /* Marathi number words */
+}
 
 export async function speak(clips: string[]) {
   for (const c of clips) {
-    const s = new Audio.Sound();
-    await s.loadAsync(CLIPS[c]);              // bundled asset, no fetch
-    await s.playAsync();
-    await waitForFinish(s);
-    await s.unloadAsync();
+    await playOnce(CLIPS[c]);        // bundled asset, no fetch — CLIPS is a static require map
   }
 }
 
@@ -286,25 +308,28 @@ export async function speakVerdict(v: WindowRes, t: TFn) {
   if (v.action === 'NO_ADVICE') return speak(['we_cannot_advise', 'too_uncertain']);
   await speak([
     'wait_for', ...decomposeDays(v.hold_days!), 'days',
-    'expected_gain', ...decomposeRupees(v.expected_gain_paise! / 100), 'rupees',
-    'worst_case',    ...decomposeRupees(Math.abs(v.worst_case_paise!) / 100), 'rupees_loss',
+    'expected_gain', ...decomposeRupees(v.expected_gain_paise!), 'rupees',
+    'worst_case',    ...decomposeRupees(v.worst_case_paise!),    'rupees_loss',
   ]);
 }
 ```
 
+> **`CLIPS` must be a static `require` map**, written out key by key. `require(\`./audio/${name}.mp3\`)` resolves to nothing at runtime — Metro bundles by static analysis and a template literal is invisible to it. This fails silently: the app runs, the button does nothing.
+
 ### Rules
 
 1. **Zero network calls at playback.** (I7) A TTS API call on stage over venue wifi is a guaranteed silence.
-2. **`expo-speech` with `mr-IN` as fallback** if a clip is missing — degraded but audible.
-3. **The voice says the worst case too.** If the audio only reads the gain, the audio is lying about the product. Same principle as F8.
+2. **`react-native-tts` with `mr-IN` as fallback** if a clip is missing — degraded but audible. It depends on a device Marathi voice that a ₹7,000 phone may not have, so it is a fallback, never the plan.
+3. **The voice says the worst case too.** If the audio only reads the gain, the audio is lying about the product. Same principle as **I16**.
 4. **Airplane mode is the demo.** Turn wifi off on stage, tap 🔊, it speaks. That moment is worth more than three features.
 5. **Generate the clips at H12, before sleep.** This is the last external network dependency in the project — finish it early. A missing clip at H31 has no fix.
+6. **Marathi only.** Hindi and English text are in Phase 1 (SH9); Hindi and English *audio* are not. Say so if asked — a tri-lingual clip set is ~120 files nobody has time to check.
 
-### Voice IN — exactly one screen (A3)
+### Voice IN — cut from Phase 1
 
-Lot creation only. `expo-speech-recognition`, `mr-IN`, → **pre-fills the form** → **farmer confirms by tap**.
+Speech-to-text for lot creation was in an earlier draft (`expo-speech-recognition`). **It is cut.** The RN CLI equivalent (`@react-native-voice/voice`) is another native module on the critical path for a feature no demo beat needs, and the failure mode — a misheard "40 quintal" becoming "14 quintal" in a posted lot — is a real financial error.
 
-**Never silently commit on voice.** A misheard "40 quintal" becoming "14 quintal" in a posted lot is a real financial error. Speech is an input aid, not a decision.
+If it ever returns: **never silently commit on voice.** Speech pre-fills the form; the farmer confirms by tap.
 
 ---
 
@@ -430,8 +455,8 @@ Show `फेरी १/३` (round 1 of 3). At round 3, disable the input and ex
 ## 12. Definition of done — frontend
 
 ### Pranay
-1. `formatPaise(6290000,'mr') === '₹६२,९००'` — unit tested.
-2. **S9 worst case and best case are the same font size.** Verified in the inspector.
+1. `formatPaise(629000,'mr') === '₹६,२९०'` — unit tested.
+2. **S9 worst case and expected gain render at the same font size.** Verified in the inspector.
 3. Forecast chart **never** renders p50 without the p10–p90 band.
 4. Pledge card renders **only** when `pledge_quote != null`.
 5. `/prices/nearby` reordering is visible — the net column explains the order.
@@ -454,10 +479,11 @@ Show `फेरी १/३` (round 1 of 3). At round 3, disable the input and ex
 
 | Item | Why later |
 |---|---|
-| Second frontend (separate Next.js buyer web) | ~4 hours to duplicate the API client and auth for zero demo gain. `expo start --web` is the same product. |
+| Second frontend (separate buyer web console) | ~4 hours to duplicate the API client and auth for zero demo gain. The buyer runs **the same binary on a second device** — same code, same `BuyerNavigator`, and two phones side by side is a clearer stage picture than a phone plus a browser. `react-native-web` is the Phase-2 path if a desktop console is ever asked for. |
 | Push notifications ("your price target was hit") | Genuinely valuable; needs a device-token backend + FCM. |
 | Full offline mutation queue | Reads offline is the credible claim. Queued writes need conflict resolution. |
-| More languages (Hindi, Marwari) | The architecture already supports it — add a JSON file. |
+| Voice **input** (speak instead of type) | Cut from Phase 1 — see §7. Output-only is the honest claim. |
+| More languages (Marwari, Gujarati) | Marathi, Hindi and English ship in Phase 1. The architecture is a JSON file per locale — adding a fourth is an afternoon of translation, not engineering. |
 | Real generative voice assistant | See `05_AI_ARCHITECTURE.md` §9. A hallucinating advisor inverts the thesis. |
 | Skeleton-perfect animation polish | Nobody scored a hackathon on easing curves. |
 | Accessibility audit (screen readers, contrast) | Should happen; will not happen in 36 hours. Say so if asked. |

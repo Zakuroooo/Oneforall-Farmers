@@ -248,8 +248,8 @@ python scripts/gen_tts.py
   → ~40 phrase clips  ("थांबा", "दिवस", "जास्त मिळू शकतात", "आम्ही सल्ला देणार नाही", …)
   → digit clips        (०–९, दहा…नव्वद, शंभर, हजार, लाख, रुपये)
   → app/assets/audio/mr/*.mp3   COMMITTED
-Runtime: voice.ts decomposes ₹62,900 → [बासष्ट, हजार, नऊशे, रुपये] → expo-av sequence
-Fallback: expo-speech with locale 'mr-IN' if a clip is missing
+Runtime: voice.ts decomposes ₹6,290 → [सहा, हजार, दोनशे, नव्वद, रुपये] → react-native-sound sequence
+Fallback: react-native-tts with locale 'mr-IN' if a clip is missing
 ```
 **Zero network at playback. Works in airplane mode.** That is the demo moment.
 

@@ -644,8 +644,8 @@ Response — **every key always present**; `pledge_quote` is a required key with
   "hold_p50_net_paise_per_qtl": 209650,
   "hold_p10_net_paise_per_qtl": 181925,
 
-  "expected_gain_paise": 62900,
-  "worst_case_paise": -48000,
+  "expected_gain_paise": 629000,
+  "worst_case_paise": -480000,
 
   "costs": {
     "transport_paise_per_qtl": 8000,
@@ -666,11 +666,29 @@ Response — **every key always present**; `pledge_quote` is a required key with
 
   "refusal_reason": null,
   "model_card": { "mase": 0.71, "coverage_80_bps": 7840 },
-  "explain_mr": "११ दिवस थांबल्यास सरासरी ₹६२९ जास्त मिळू शकतात.",
-  "explain_en": "Holding 11 days could earn ₹629 more on average.",
+  "explain_mr": "११ दिवस थांबल्यास सरासरी ₹६,२९० जास्त मिळू शकतात.",
+  "explain_en": "Holding 11 days could earn ₹6,290 more on average.",
   "data_source": "AGMARKNET"
 }
 ```
+
+**Units — read this before you write either side of this endpoint.**
+
+| Field | Unit | Basis |
+|---|---|---|
+| `sell_now_net_paise_per_qtl`, `hold_p50_net_paise_per_qtl`, `hold_p10_net_paise_per_qtl` | paise | **per quintal** — the suffix says so |
+| every key inside `costs` | paise | **per quintal** — the suffix says so |
+| **`expected_gain_paise`**, **`worst_case_paise`** | paise | **the whole lot.** No `_per_qtl` suffix ⇒ a total. |
+
+```python
+qty_qtl             = qty_kg // 100                                            # I2
+expected_gain_paise = (hold_p50_net_paise_per_qtl - sell_now_net_paise_per_qtl) * qty_qtl
+worst_case_paise    = (hold_p10_net_paise_per_qtl - sell_now_net_paise_per_qtl) * qty_qtl
+```
+
+The worked example above is arithmetically closed and you should check it: `(209650 − 193925) × 40 = 629000` and `(181925 − 193925) × 40 = −480000`. **If your response does not satisfy those two identities, one of your units is wrong** — and a 100× unit error is the single most likely bug in this endpoint.
+
+> **The demo figure is ₹6,290, not ₹62,900.** An earlier draft of this file, both frontend mockups and the demo script all carried ₹62,900 with these same per-quintal nets. That is an **81% onion price move in eleven days**; these nets are an 8.1% move. The number was never derived from anything. ₹6,290 on four tonnes is what an 8% move actually pays, it is roughly a month of agricultural wages, and it is a number a judge can recompute from the screen. **Never put a rupee figure on a screen or a slide that you have not multiplied out by hand.**
 
 **Refusal — the same shape, and it must be reachable with seeded data:**
 ```json

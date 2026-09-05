@@ -18,7 +18,7 @@
 Read Pranay's §1.2. The user is a Nashik onion farmer who **may not read English at all** and may read Marathi slowly. For him:
 
 - **Marathi is not a setting.** It is the default, and English is the option.
-- **₹62,900 is not a number he reads.** ₹६२,९०० is.
+- **₹6,290 is not a number he reads.** ₹६,२९० is.
 - **🔊 is not an accessibility feature.** It is the primary interface for a farmer who cannot read the verdict card at all.
 
 A team that ships an English app with a Marathi toggle has built a product for the judges. A team that ships Marathi-first with a working voice button has built a product for the user. **The judges can tell the difference, and one of them is from Maharashtra.**
@@ -27,32 +27,32 @@ A team that ships an English app with a Marathi toggle has built a product for t
 
 Demo beat 6 (`11_DEMO_AND_PITCH.md` §1): Pranay taps 🔊 on the verdict card and the phone says, in Marathi:
 
-> *"थांबा. बारा दिवस. अपेक्षित फायदा बासष्ट हजार नऊशे रुपये."*
-> *(Wait. Twelve days. Expected gain sixty-two thousand nine hundred rupees.)*
+> *"थांबा. अकरा दिवस. अपेक्षित फायदा सहा हजार दोनशे नव्वद रुपये."*
+> *(Wait. Eleven days. Expected gain six thousand two hundred ninety rupees.)*
 
 Then beat 7: **airplane mode on, tap it again, it still speaks.**
 
-That second part is the whole point. A cloud TTS call is a demo that fails on venue wifi (I7). **Pre-generated mp3 clips committed to the repo, sequenced by `expo-av`, work in a Faraday cage.** Which is roughly what a hackathon venue is.
+That second part is the whole point. A cloud TTS call is a demo that fails on venue wifi (I7). **Pre-generated mp3 clips committed to the repo, sequenced by `react-native-sound`, work in a Faraday cage.** Which is roughly what a hackathon venue is.
 
 ### 1.4 The number-speaking problem — read this before you write any code
 
-You cannot pre-generate a clip for every possible rupee amount. ₹62,900 is one of millions.
+You cannot pre-generate a clip for every possible rupee amount. ₹6,290 is one of millions.
 
 **So decompose the number into clips you do have:**
 
 ```
-6290000 paise  →  ₹62,900  →  ["बासष्ट", "हजार", "नऊशे", "रुपये"]
-                              (sixty-two)(thousand)(nine hundred)(rupees)
+629000 paise  →  ₹6,290  →  ["सहा", "हजार", "दोनशे", "नव्वद", "रुपये"]
+                              (six)(thousand)(two hundred)(ninety)(rupees)
 ```
 
 You need a clip set of roughly:
-- **0–99** in Marathi (Marathi numerals are irregular below 100 — बासष्ट for 62 is not composable from six and two, so record all of them)
+- **0–99** in Marathi (Marathi numerals are irregular below 100 — नव्वद for 90 is not composable from nine and ten, so record all of them)
 - **शंभर / हजार / लाख** (hundred / thousand / lakh)
-- **१००–९००** as शंभर-multiples (नऊशे = nine hundred)
+- **१००–९००** as शंभर-multiples (दोनशे = two hundred)
 - **रुपये, क्विंटल, दिवस, टक्के** (rupees, quintal, days, percent)
 - The ~40 phrase clips (see SH4)
 
-**Test with the ugly numbers, not the round ones.** ₹1,00,000 is easy. Test **₹62,900** (the demo figure), **₹1,42,000** (the best case, needs लाख), and **−₹48,000** (the worst case, needs a leading "उणे"/loss word). If the worst case cannot be spoken, I16 is broken in the audio channel even if it is fine on screen.
+**Test with the ugly numbers, not the round ones.** ₹1,00,000 is easy. Test **₹6,290** (the demo figure), **₹1,42,000** (an FPO pooled-lot total — the first figure that needs लाख), and **−₹4,800** (the worst case, needs a leading "उणे"/loss word). If the worst case cannot be spoken, I16 is broken in the audio channel even if it is fine on screen.
 
 ### 1.5 What you own
 
@@ -172,7 +172,7 @@ Keep clips short and trimmed. Leading silence is what makes a sequenced sentence
 // app/src/lib/voice.ts
 import { Audio } from 'expo-av';
 
-/** 6290000 paise -> ['sixtytwo','thousand','ninehundred','rupees'] */
+/** 629000 paise -> ['sixtytwo','thousand','ninehundred','rupees'] */
 export function decomposeRupees(paise: number): string[] { ... }
 
 export async function speak(clips: string[]): Promise<void> {
@@ -205,8 +205,8 @@ Not at hour 34.
 2. Airplane mode ON
 3. Open S9 (Pranay's verdict card)
 4. Tap 🔊
-5. It must say: थांबा · बारा दिवस · अपेक्षित फायदा · बासष्ट हजार नऊशे रुपये
-6. Then tap through to the worst case and confirm −₹48,000 speaks too
+5. It must say: थांबा · अकरा दिवस · अपेक्षित फायदा · सहा हजार दोनशे नव्वद रुपये
+6. Then tap through to the worst case and confirm −₹4,800 speaks too
 ```
 
 If this fails at H20 you have sixteen hours to fix it. If you first try it at H34, beat 7 comes out of the demo and the offline claim comes off the slide.
@@ -239,8 +239,8 @@ Never `{error.message}`. A backend `AppError` message is English and a raw fetch
 1. `mr.json` covers **every** farmer screen. Grep any farmer screen for a bare English string → **zero hits**.
 2. All numbers a farmer sees are in Devanagari. Days, percents, dates, quintals.
 3. Six `components/ui/` components, done by H8, and Pranay is importing them.
-4. **🔊 speaks ₹62,900 in Marathi in airplane mode on a real Android phone.** Tested at H20.
-5. The worst case (−₹48,000) speaks too, with the loss word.
+4. **🔊 speaks ₹6,290 in Marathi in airplane mode on a real Android phone.** Tested at H20.
+5. The worst case (−₹4,800) speaks too, with the loss word.
 6. S17, S18, S19 (incl. COMBINATION), S21, S24 work against seeded data.
 7. **S24 shows whatever `/meta/data-provenance` returns** — including a non-zero SYNTHETIC count.
 8. Nine slides, every external number sourced on its own slide.
@@ -256,7 +256,7 @@ Never `{error.message}`. A backend `AppError` message is English and a raw fetch
 | **SH0** | **★ `components/ui/` — six components + `i18n.tsx`** | Pranay imports `<Card>` and `<Button>` and deletes his local copies | nothing |
 | **SH1** | **`mr.json` + `en.json`** for every farmer screen, Devanagari numerals | Zero bare English strings on any farmer screen | Pranay's key requests |
 | **SH2** | **★ `scripts/gen_tts.py`** — ~40 phrases + 0–99 + hundreds + units | Clips generated **and committed** under `app/assets/audio/` | nothing |
-| **SH3** | **★★ `lib/voice.ts`** — decompose + sequence + `expo-speech` fallback | ₹62,900 speaks correctly from clips | SH2 |
+| **SH3** | **★★ `lib/voice.ts`** — decompose + sequence + `expo-speech` fallback | ₹6,290 speaks correctly from clips | SH2 |
 | **SH4** | **★★ Airplane-mode test on a real phone, at H20** | 🔊 works with no network, worst case included | SH3, Pranay P3 |
 | **SH5** | **S17 login + S18 post demand** | A buyer logs in and posts a 100 qtl demand | Akash A1, A7 |
 | **SH6** | **★ S19 matches incl. COMBINATION + S21 offer/counter** | A 100 qtl demand shows a 3-lot bundle; a counter round-trips | Akash A7, A8 |

@@ -13,7 +13,7 @@ Memorise the order. Do not improvise a new order on stage.
 
 ```
 Marathi → login → home (price + source badge) → history → forecast (fan) →
-model card → VERDICT (HOLD +₹62,900, worst −₹48,000) → cost breakdown →
+model card → VERDICT (HOLD +₹6,290, worst −₹4,800) → cost breakdown →
 pledge card → 🔊 voice → AIRPLANE MODE → offline banner → voice again →
 back online → create lot → assay → grade B + tip →
 [buyer tab] post demand → matches incl. COMBINATION → offer ₹1,900 →
@@ -28,7 +28,7 @@ accept → escrow timeline → FPO split → provenance screen →
 | **2** | **Price + provenance** | Home: today's Lasalgaon onion price, source badge | *"₹1,850 a quintal. That badge says ARCHIVE — it's real Agmarknet data from a public mirror, and I'll show you the row count later."* | 0:30 |
 | **3** | **History + forecast fan** | 180-day chart, then the p10/p50/p90 fan | *"We don't show a line. We show a band, because a point forecast with no uncertainty is a guess with a chart."* | 0:45 |
 | **4** | **Model card** | MASE, coverage, known limitations | *"MASE 0.83 — better than seasonal-naive. 81% of actuals land inside our band, and we're targeting 80. It says right here that we can't see export bans coming."* | 0:40 |
-| **5** | **★ THE VERDICT** | HOLD · **+₹62,900** · worst case **−₹48,000** | *"Hold 12 days. Expected gain ₹62,900 on 40 quintals — net of transport, commission, storage and spoilage. Worst case, he loses ₹48,000. Same font size. He gets both numbers or neither."* | **1:10** |
+| **5** | **★ THE VERDICT** | HOLD · **+₹6,290** · worst case **−₹4,800** | *"Hold 11 days. Expected gain ₹6,290 on 40 quintals — net of transport, commission, storage and spoilage. Worst case, he loses ₹4,800. Same font size. He gets both numbers or neither."* | **1:10** |
 | **6** | **Cost breakdown + pledge** | Every deduction itemised; pledge card | *"Every rupee we netted out, itemised. And this — 'indicative simulation, not a lender quote' — because we're not a lender. If the interest exceeded the gain, this card would not appear at all."* | 0:45 |
 | **7** | **★ Voice, then airplane mode** | 🔊 speaks it in Marathi → **enable airplane mode** → stale banner → 🔊 **still speaks** | *"Now watch."* [airplane mode] *"Yesterday 3pm's data — it says so. And the voice still works, because the Marathi audio is on the phone, not in the cloud. A farmer in a field with no signal still gets the advice — including the worst case."* | **1:00** |
 | **8** | **Lot → assay → grade** | Create lot, 6 questions, grade B + improvement tip | *"Six questions he can answer standing in his field. Grade B. And a tip: sorting for size moves this to A and adds 8% to the price."* | 0:50 |
@@ -89,7 +89,7 @@ Slides are the frame around the demo, not a substitute for it. **Demo first if t
 | 1 | *"Is this real data or did you make it up?"* | Kartik | *"Real. 1,458 rows of Agmarknet modal prices, Jan 2023 to Dec 2024, six markets, from a public archived mirror — here's the URL. 18 rows are forward-filled across gaps of three days or less and they're labelled IMPUTED. Zero synthetic. Here's the provenance endpoint, live."* |
 | 2 | *"Where did ₹3.50 per quintal per kilometre come from?"* | Kartik | The **most likely detailed question**, because a domain expert can check it from memory. Give the source, or say *"that's an estimate from X, and it's marked as an estimate in our cost table."* **Never "I don't know."** |
 | 3 | *"How accurate is your model?"* | Nikhil | *"MASE 0.83 against a seasonal-naive baseline, so 17% better than 'assume last week repeats'. But accuracy is the wrong question for us — what matters is whether the band is honest. 81% of actual prices fall inside our p10–p90, and we designed for 80. If that number were 40% we'd be lying to farmers with a nice chart."* |
-| 4 | *"What if the model is wrong?"* | Nilesh | *"Then the farmer loses money, which is why the worst case is in the same font size as the best case, and why the app refuses when the band is too wide. Let me show you the refusal."* → **go to beat 11** |
+| 4 | *"What if the model is wrong?"* | Nilesh | *"Then the farmer loses money, which is why the worst case is in the same font size as the expected gain, and why the app refuses when the band is too wide. Let me show you the refusal."* → **go to beat 11** |
 | 5 | *"Why not blockchain?"* | Akash | *"Because what we need is tamper-evidence and auditability, and an append-only Postgres table with a hash chain gives us both — every row carries the previous row's hash, so you can't alter history without breaking the chain. A distributed ledger would add consensus overhead to solve a trust problem we don't have: there's one operator, and the auditor is the government. We'd rather be able to explain our design than name-drop one."* |
 | 6 | *"How does this scale?"* | Kartik | The three ordered steps from `08_DEVOPS_AND_DEPLOY.md` §8. **Never invent a throughput number.** |
 | 7 | *"Can I see another farmer's data?"* | Akash | *"Try it."* Hand them the phone. Every user-owned read is scoped from the JWT and returns 404 — not 403, because a 403 tells you the row exists. **Have the curl ready in `smoke.sh`.** |

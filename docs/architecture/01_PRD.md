@@ -182,11 +182,11 @@ S9 must be right. Everything else is context for it.
 │      └──────────────────────────┘      │
 │                                        │
 │   जास्त मिळू शकतात                     │
-│   + ₹६२,९००          ← 32px            │  ← total for the lot, not per qtl
+│   + ₹६,२९०          ← 32px            │  ← total for the lot, not per qtl
 │                                        │
 │  ┌──────────────┬──────────────────┐   │
 │  │ चांगल्यास    │ वाईट झाल्यास     │   │  ← SAME FONT SIZE. 20px both. (F8)
-│  │ + ₹६२,९००    │ − ₹४८,०००        │   │
+│  │ + ₹६,२९०    │ − ₹४,८००        │   │
 │  └──────────────┴──────────────────┘   │
 │                                        │
 │  खात्री: मध्यम ●●○                     │  ← confidence dots

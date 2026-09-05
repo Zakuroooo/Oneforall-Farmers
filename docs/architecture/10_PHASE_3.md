@@ -153,7 +153,7 @@ Everything that made Phase 1 defensible carries through unchanged. Write these i
 | **The model may refuse** | The most important one. Scale creates pressure to always have an answer. Resist it. |
 | Provenance on every price row | "Where did this number come from" must remain answerable at 300 markets |
 | No Aadhaar, ever | Phone is the identifier, at any scale |
-| Both numbers, always — best case *and* worst case | The single most farmer-protective rule in the product |
+| Both numbers, always — expected gain *and* worst case | The single most farmer-protective rule in the product |
 | No blockchain | The answer does not change because the system got bigger |
 
 **The refusal invariant is the one that will be attacked.** At scale, someone will argue that `NO_ADVICE` hurts engagement metrics. The counter-argument is in Phase 2's data: the coverage number and the loss cases on the scorecard are only credible *because* the system declines to answer when it cannot. Delete the refusal and every number the product reports becomes unfalsifiable.
@@ -183,7 +183,7 @@ Six people cannot run 300 markets across four states. The honest statement of wh
 
 > *"Phase 3 is scale, and we've written down what has to be true before we're allowed to start it: 80% band coverage on at least a hundred real recommendations, a positive median gain with the losses counted in, and 40% of pilot farmers coming back for a second season. If the second one fails, we don't scale — we go back and find out why our advice didn't pay. We'd rather tell you that now than discover it at 10,000 farmers."*
 >
-> *"The one thing we'd build in Phase 3 that we can't build now is pledge finance, and it's the whole point. Right now we can tell a farmer that waiting fourteen days is worth ₹62,900 — but if he needs money on Tuesday, we've just told him something painful. Phase 3 is where a warehouse receipt and a lender let him actually wait. We're not the lender. What we add is the thing a lender can't price on their own: how long the loan should run, and what the downside looks like if the price falls. That's the p10 we're already computing."*
+> *"The one thing we'd build in Phase 3 that we can't build now is pledge finance, and it's the whole point. Right now we can tell a farmer that waiting eleven days is worth ₹6,290 — but if he needs money on Tuesday, we've just told him something painful. Phase 3 is where a warehouse receipt and a lender let him actually wait. We're not the lender. What we add is the thing a lender can't price on their own: how long the loan should run, and what the downside looks like if the price falls. That's the p10 we're already computing."*
 
 **Two sentences on the ethics, unprompted, because it is the true reason the project exists:**
 

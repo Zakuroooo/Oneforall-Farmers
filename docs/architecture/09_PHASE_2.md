@@ -105,7 +105,7 @@ create table advice_log (
   model_version text not null,
   created_at    timestamptz not null default now()
 );
--- append-only. never update a past verdict. (I3)
+-- append-only. never update a past verdict. (I5)
 
 create table advice_outcome (
   advice_id     text primary key references advice_log(id),
@@ -188,7 +188,7 @@ The uncomfortable arithmetic: the farmers with the least ability to wait — the
 
 | Channel | What it carries | Cost |
 |---|---|---|
-| **Outbound SMS** | The verdict in one line: *"कांदा: थांबा. १२ दिवसांत अंदाजे ₹६२,९०० जास्त. सर्वात वाईट: ₹४८,००० कमी."* | ~₹0.15/SMS |
+| **Outbound SMS** | The verdict in one line: *"कांदा: थांबा. १२ दिवसांत अंदाजे ₹६,२९० जास्त. सर्वात वाईट: ₹४,८०० कमी."* | ~₹0.15/SMS |
 | **Missed-call IVR** | Farmer gives a missed call, system calls back and speaks today's price + the verdict, using the **same pre-generated Marathi clips** as the app's voice feature | ~₹0.30/min |
 | **Inbound SMS** | `KANDA LASALGAON` → price + verdict reply | ~₹0.15 |
 

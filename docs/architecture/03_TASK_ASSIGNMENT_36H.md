@@ -77,7 +77,7 @@ H33 ─ H36      Deck + three timed rehearsals.
 | **Kartik** | `seed/00_reference.py` — 8 districts, 12 markets, 4 commodities, cost table, 6 warehouses | `select count(*) from markets` = 12 |
 | **Nikhil** | `ml/features.py` — lag/rolling/calendar feature builder over a DataFrame | unit-tested on a fake 300-row series |
 | **Nilesh** | `domain/costs.py` — `CostBreakdown` from `cost_tables` + spoilage + storage, **all integer paise** | `pytest`: five lines sum to total, exactly |
-| **Pranay** | `lib/api.ts` (typed fetch + error envelope), `lib/money.ts` (`formatPaise`, Devanagari digits), navigation shell | `formatPaise(6290000,'mr')` → `"₹६२,९००"` |
+| **Pranay** | `lib/api.ts` (typed fetch + error envelope), `lib/money.ts` (`formatPaise`, Devanagari digits), navigation shell | `formatPaise(629000,'mr')` → `"₹६,२९०"` |
 | **Shreya** | `components/ui/` — Button, Card, Badge, Empty, Skeleton, ErrorState | all six render in a scratch screen |
 
 ### ★ H4 · THE DATA GATE
@@ -142,7 +142,7 @@ H33 ─ H36      Deck + three timed rehearsals.
 | P1 | S1–S3 language picker, phone/OTP, profile | can log in on a real phone |
 | P2 | **S4 Home** — today's price, source badge, the one big CTA | renders from `/prices/series` |
 | P3 | **S9 Verdict card** against **Nilesh's H2 hardcoded response** | matches the `01_PRD` §6 layout |
-| P4 | **★ Worst case at the SAME font size as best case (F8)** | measure it; 20 sp both, not 20 and 14 |
+| P4 | **★ Worst case at the SAME font size as the expected gain (I16)** | measure it; 20 sp both, not 20 and 14 |
 | P5 | **S10 Cost breakdown** — five lines + total, expandable | lines sum to the displayed total |
 | P6 | **S5 history chart** + **S7 forecast fan** with a shaded p10–p90 band | **no point line without the band** |
 | P7 | **S6 nearby mandis** — gross, transport, **net**, ordered by net | the reordering is visible to the eye |
@@ -155,7 +155,7 @@ H33 ─ H36      Deck + three timed rehearsals.
 | S2 | `components/ui/*` finished and used by Pranay | Pranay imports, never re-implements |
 | S3 | S17 buyer login, S18 post demand | buyer can create a demand |
 | S4 | **★ `scripts/gen_tts.py`** — ~40 phrases + digit clips → `assets/audio/mr/` | mp3s committed |
-| S5 | `lib/voice.ts` — number decomposition + `expo-av` sequencing + `expo-speech` fallback | ₹62,900 plays correctly **in airplane mode** |
+| S5 | `lib/voice.ts` — number decomposition + `expo-av` sequencing + `expo-speech` fallback | ₹6,290 plays correctly **in airplane mode** |
 | S6 | **S24 provenance screen** from `/meta/data-provenance` | matches the DB |
 
 ---
@@ -271,7 +271,7 @@ Every hackathon post-mortem has the same sentence in it: *"we were still adding 
 The golden path:
 ```
 Marathi → login → home (price + source badge) → history → forecast (fan) →
-model card → VERDICT (HOLD +₹62,900, worst −₹48,000) → cost breakdown →
+model card → VERDICT (HOLD +₹6,290, worst −₹4,800) → cost breakdown →
 pledge card → 🔊 voice → AIRPLANE MODE → offline banner → voice again →
 back online → create lot → assay → grade B + tip →
 [buyer tab] post demand → matches incl. COMBINATION → offer ₹1,900 →
@@ -307,7 +307,7 @@ Screen recording + voiceover of the full golden path. **Before fatigue. Before a
 | *"Is this real government data?"* | Sources, row counts, date range. Then open the provenance screen on the phone. |
 | *"Did you rig the NO_ADVICE threshold?"* | "No — it's one number in config, and onion's real volatility triggers it. Here's soybean with the same threshold giving a confident HOLD." |
 | *"Why not blockchain?"* | "Append-only table with FK integrity and an actor-stamped event log. The trust problem here is *who did what when*, not *who owns the ledger*. A chain would add cost and latency and solve nothing we have." |
-| *"What if the forecast is wrong?"* | "Then the farmer loses money, which is why the worst case is the same font size as the best case, and why the model refuses when the band is too wide. Coverage is X% — measured, not claimed." |
+| *"What if the forecast is wrong?"* | "Then the farmer loses money, which is why the worst case is the same font size as the expected gain, and why the model refuses when the band is too wide. Coverage is X% — measured, not claimed." |
 | *"How is this different from Agmarknet or eNAM?"* | "They publish prices. We net out transport and commission, forecast a band, and tell him whether waiting pays — and then remove the reason he couldn't wait." |
 | *"Is the pledge loan real?"* | "It's a simulation and labelled as one on every screen. The arithmetic is real; the lender integration is Phase 2. We won't put a lender's terms on a slide we haven't verified." |
 | *"Scale?"* | One t3.small, ~20 concurrent. Then name the known work. Never invent a load number. |
@@ -323,7 +323,7 @@ Screen recording + voiceover of the full golden path. **Before fatigue. Before a
 5. **Money is paise. Quantity is kg. Rates are bps.** Grep your own diff for `float`, `/ 100`, `round(`, `toFixed` before you push.
 6. **Zero external network calls in the runtime path.** If you add one, you have broken the demo.
 7. **Test the 404 by hand.** Not "the guard function exists" — actually curl farmer A's token against farmer B's lot.
-8. **Say the number out loud before you believe it.** ₹62,900 on 40 quintals of onion is ₹1,572/qtl of gain. Is that plausible? If a number is absurd, the pipeline is wrong, and a judge will spot it faster than you will.
+8. **Say the number out loud before you believe it.** ₹6,290 on 40 quintals of onion is ₹157/qtl of gain. Is that plausible? If a number is absurd, the pipeline is wrong, and a judge will spot it faster than you will.
 
 ---
 

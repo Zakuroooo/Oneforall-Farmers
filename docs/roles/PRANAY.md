@@ -20,9 +20,9 @@ This produces five hard design consequences, and they are not negotiable:
 | Consequence | Why |
 |---|---|
 | **Marathi by default, no toggle needed** | English-first with a language switch is a product for us, not for him |
-| **Devanagari numerals** — ₹६२,९०० not ₹62,900 | If he reads Marathi, he reads Marathi digits |
+| **Devanagari numerals** — ₹६,२९० not ₹6,290 | If he reads Marathi, he reads Marathi digits |
 | **One decision per screen** | Two questions on one screen is one question too many |
-| **The worst case at the same font size as the best case** | This is invariant I16 and it is the ethical centre of the product |
+| **The worst case at the same font size as the expected gain** | This is invariant I16 and it is the ethical centre of the product |
 | **Works with no signal** | Last-known value + a timestamp banner, never a spinner forever |
 
 ### 1.3 What you own
@@ -72,10 +72,10 @@ This produces five hard design consequences, and they are not negotiable:
 │         १२ दिवस                        │   ← 20 sp
 │                                        │
 │  अपेक्षित फायदा                        │
-│      + ₹६२,९००                         │   ← 28 sp, green
+│      + ₹६,२९०                         │   ← 28 sp, green
 │                                        │
 │  सर्वात वाईट स्थिती                     │
-│      − ₹४८,०००                         │   ← 20 sp, red  ← I16: SAME SIZE as below
+│      − ₹४,८००                         │   ← 20 sp, red  ← I16: SAME SIZE as below
 │  सर्वात चांगली स्थिती                    │
 │      + ₹१,४२,०००                       │   ← 20 sp, green ← I16: SAME SIZE as above
 │                                        │
@@ -184,7 +184,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 ```ts
 const DEV = ['०','१','२','३','४','५','६','७','८','९'];
 
-/** Indian grouping: 62900 -> "62,900", 142000 -> "1,42,000" */
+/** Indian grouping: 6290 -> "6,290", 142000 -> "1,42,000" */
 function groupIndian(n: number): string {
   const s = String(n);
   if (s.length <= 3) return s;
@@ -207,10 +207,10 @@ export function qtl(kg: number): number { return Math.round(kg / 100); }
 **The test you must write first, before any screen:**
 
 ```ts
-expect(formatPaise(6290000, 'mr')).toBe('₹६२,९००');
-expect(formatPaise(6290000, 'en')).toBe('₹62,900');
+expect(formatPaise(629000, 'mr')).toBe('₹६,२९०');
+expect(formatPaise(629000, 'en')).toBe('₹6,290');
 expect(formatPaise(14200000, 'mr')).toBe('₹१,४२,०००');   // Indian grouping, not 142,000
-expect(formatPaise(-4800000, 'mr')).toBe('−₹४८,०००');
+expect(formatPaise(-480000, 'mr')).toBe('−₹४,८००');
 ```
 
 That third case is the one that breaks if you use `toLocaleString('en-US')`. Indian grouping is not en-US grouping and a judge from Maharashtra will notice `₹142,000` instantly.
@@ -283,8 +283,8 @@ export const fxHold: WindowRes = {
   action: 'HOLD',
   hold_days: 12,
   best_day: '2026-09-18',
-  expected_gain_paise: 6290000,
-  worst_case_paise: -4800000,
+  expected_gain_paise: 629000,
+  worst_case_paise: -480000,
   best_case_paise: 14200000,
   confidence_bps: 7800,
   band_width_bps: 1800,
@@ -304,7 +304,7 @@ export const fxNoAdvice: WindowRes = { /* ... BAND_TOO_WIDE ... */ };
 2. Marathi is the default. No bare English string on any farmer screen.
 3. Every screen: loading, empty, error, data. Verified by stopping the API and clicking through.
 4. `formatPaise` is the only `/ 100` in `app/src/`. Grep it.
-5. S9's worst case and best case are the same font size. Measured, not assumed.
+5. S9's worst case and expected gain render at the same font size. Measured, not assumed.
 6. No chart shows p50 without its band.
 7. Airplane mode: S4 and S9 still render, with the stale banner.
 8. `npx tsc --noEmit` clean. No `any`, no `@ts-ignore`.
@@ -318,11 +318,11 @@ Do them in this order. Each one's "done when" is a test you perform, not a feeli
 
 | # | Task | Done when | Blocked by |
 |---|---|---|---|
-| **P0** | **Scaffold** — Expo app, TypeScript strict, navigation, `lib/api.ts`, `lib/money.ts` + its tests, the four-state pattern, fixtures | `npx expo start` opens; `formatPaise(6290000,'mr') === '₹६२,९००'` passes | nothing |
+| **P0** | **Scaffold** — Expo app, TypeScript strict, navigation, `lib/api.ts`, `lib/money.ts` + its tests, the four-state pattern, fixtures | `npx expo start` opens; `formatPaise(629000,'mr') === '₹६,२९०'` passes | nothing |
 | **P1** | **S1–S3** language picker, phone/OTP, profile | Can log in on a real phone and land on S4 | Akash A1 (fixture until then) |
 | **P2** | **★ S4 Home** — today's price, source badge, one big CTA | Renders from `/prices/series`; badge shows the real source | Kartik K4 |
 | **P3** | **★ S9 Verdict card** against the fixture, then the live endpoint | Matches §1.6 layout exactly | fixture, then Nilesh L5 |
-| **P4** | **★★ I16 — worst case at the SAME font size as best case** | Screenshot measured: both 20 sp | P3 |
+| **P4** | **★★ I16 — worst case at the SAME font size as the expected gain** | Screenshot measured: both 20 sp | P3 |
 | **P5** | **S10 Cost breakdown** — five lines + total, expandable | The five lines sum to the displayed total, verified by hand | P3 |
 | **P6** | **S5 history + S7 forecast fan** with a shaded p10–p90 band | No point line renders without its band | Kartik K4, Nikhil N2 |
 | **P7** | **S6 nearby mandis** — gross, transport, **net**, ordered by net | The gross-vs-net reordering is visible to the eye | Kartik K6 |
@@ -331,7 +331,7 @@ Do them in this order. Each one's "done when" is a test you perform, not a feeli
 | **P10** | **★ S14 offers + counter — with the forecast above the input** | The forecast band is visibly above the counter-price box | Akash's offers endpoints |
 | **P11** | **Offline** — `useOfflineQuery` + the stale banner on S4 and S9 | Airplane mode: both screens render with a timestamp | P2, P3 |
 | **P12** | **S8 model card, S11 pledge card, S15 escrow timeline** | S11 is **absent** when the server returns no pledge (I13) | Nilesh L4, L6 |
-| **P13** | Wire Shreya's `lib/voice.ts` into S9's 🔊 button | ₹62,900 plays in Marathi **in airplane mode** | Shreya SH5 |
+| **P13** | Wire Shreya's `lib/voice.ts` into S9's 🔊 button | ₹6,290 plays in Marathi **in airplane mode** | Shreya SH5 |
 | **P14** | **Demo rehearsal** — drive the golden path three times | You can do beats 1–11 without looking at notes | H33 |
 
 **P0 through P4 are the critical path of the entire project's frontend.** If you get to H12 with S9 rendering correctly from a fixture and I16 honoured, everything after that is addition rather than risk.

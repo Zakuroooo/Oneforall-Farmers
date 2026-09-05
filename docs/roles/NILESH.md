@@ -103,7 +103,7 @@ hold_p10_net_paise_per_qtl      net per qtl at the recommended day, downside
 
 The two totals are what the farmer reads; the three per-qtl figures are what makes them checkable. `expected_gain_paise` is `(hold_p50_net − sell_now_net) × qty_qtl`, and a judge who does that multiplication on a phone calculator must get your number back exactly. That is why they are all in the response instead of just the total.
 
-**`worst_case_paise` must be computed honestly.** It is the p10 price at the recommended sell day, minus every holding cost that accrued, times the quantity. On the seeded onion HOLD it comes out around **−₹48,000** on 40 quintals against a +₹62,900 expected gain, and that negative number goes on screen in the same font size as the positive one.
+**`worst_case_paise` must be computed honestly.** It is the p10 price at the recommended sell day, minus every holding cost that accrued, times the quantity. On the seeded onion HOLD it comes out around **−₹4,800** on 40 quintals against a +₹6,290 expected gain, and that negative number goes on screen in the same font size as the positive one.
 
 If you find yourself tempted to compute the worst case as "expected gain minus a small buffer" so it looks less alarming — that is the exact failure this invariant exists to prevent. The whole pitch is *"he gets both numbers or neither."*
 
@@ -336,7 +336,7 @@ You take **question 4** (*"what if the model is wrong?"*) and **question 9** (*"
 
 Question 4's answer, verbatim from the pitch doc:
 
-> *"Then the farmer loses money, which is why the worst case is in the same font size as the best case, and why the app refuses when the band is too wide. Let me show you the refusal."*
+> *"Then the farmer loses money, which is why the worst case is in the same font size as the expected gain, and why the app refuses when the band is too wide. Let me show you the refusal."*
 
 Then **hand it to beat 11.** Do not explain the refusal — show it. A judge watching a product decline to answer remembers that far longer than any explanation of why it declined.
 

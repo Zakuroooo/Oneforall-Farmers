@@ -11,21 +11,27 @@ Team of six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**
 
 The user will tell you their name — *"I am Pranay"*, *"I am Akash"*. When they do:
 
-1. Read **`docs/roles/<NAME>.md`**. That is their PRD, TRD, and ordered task list. It is self-contained.
-2. Read **`docs/architecture/00_CANON.md`** — the schema, the invariants, the API contract.
-3. Read the one lane document their role doc points at.
-4. Then start on task 1. Do not read all thirteen architecture files first.
+1. Read **`docs/PLAN.md`** — the universal plan. All 73 tasks, who blocks whom, the hour-by-hour. **Read §0 and §5 in full; you only need your own block of §3.**
+2. Read **`docs/roles/<NAME>.md`**. That is their PRD, TRD, and ordered task list. It is self-contained.
+3. Read **`docs/architecture/00_CANON.md`** — the schema, the invariants, the API contract. **This is the file that lets everyone work in parallel: build against the contract, not against a person.**
+4. If they touch `app/`, read **`docs/architecture/12_STACK.md`** — the stack changed to React Native CLI on 2026-09-05.
+5. Read the one lane document their role doc points at.
+6. Then start on task 1. Do not read all fourteen architecture files first.
+
+**Nobody waits for a teammate.** If task N needs an endpoint that does not exist yet, build against a fixture shaped exactly like `00_CANON.md` §7, leave a `TODO(<owner>):`, and keep going. `docs/PLAN.md` §0 explains the rule; §5 lists what every person can start at hour zero.
 
 If the user has not said who they are, ask once, then proceed.
 
 | Name | Lane | Role doc | Lane doc |
 |---|---|---|---|
-| **Akash** | Backend — API, auth, escrow FSM, matching | `docs/roles/AKASH.md` | `06_BACKEND_ARCHITECTURE.md` |
-| **Kartik** | Data acquisition + DevOps + deploy | `docs/roles/KARTIK.md` | `04_DATA_ARCHITECTURE.md`, `08_DEVOPS_AND_DEPLOY.md` |
+| **Akash** | Backend **lead** — API, auth, escrow FSM, matching | `docs/roles/AKASH.md` | `06_BACKEND_ARCHITECTURE.md` |
+| **Kartik** | Backend **support** + data acquisition + deploy | `docs/roles/KARTIK.md` | `04_DATA_ARCHITECTURE.md`, `08_DEVOPS_AND_DEPLOY.md` |
 | **Nikhil** | Forecasting model (LightGBM quantile) | `docs/roles/NIKHIL.md` | `05_AI_ARCHITECTURE.md` §1–2 |
 | **Nilesh** | Decision engine, costs, refusal, pledge | `docs/roles/NILESH.md` | `05_AI_ARCHITECTURE.md` §1, §3 |
-| **Pranay** | Farmer app (Expo) — screens S1–S16 | `docs/roles/PRANAY.md` | `07_FRONTEND_ARCHITECTURE.md` |
-| **Shreya** | Buyer/FPO screens, i18n, voice, pitch | `docs/roles/SHREYA.md` | `07_FRONTEND_ARCHITECTURE.md`, `11_DEMO_AND_PITCH.md` |
+| **Pranay** | Frontend **lead** — farmer app, screens S1–S16 | `docs/roles/PRANAY.md` | `07_FRONTEND_ARCHITECTURE.md` |
+| **Shreya** | Frontend — buyer/FPO screens, i18n, voice, pitch | `docs/roles/SHREYA.md` | `07_FRONTEND_ARCHITECTURE.md`, `11_DEMO_AND_PITCH.md` |
+
+**Three lanes, two people each:** Pranay + Shreya on the app · Akash + Kartik on the API · Nikhil + Nilesh on the model. Within a lane the first name listed is the lead and owns the shared files.
 
 ---
 
@@ -45,7 +51,7 @@ Every feature must answer: *does this help a farmer wait profitably, or help a b
 
 ### The shape of the product
 
-**One Expo codebase, two navigators.** The farmer app and the buyer console are the *same* React Native app; the JWT's `role` claim selects `FarmerNavigator` or `BuyerNavigator` at the root. `npx expo start --web` produces a browser build of the same code for the buyer at no extra cost.
+**One React Native codebase, two navigators.** The farmer app and the buyer console are the *same* React Native app; the JWT's `role` claim selects `FarmerNavigator` or `BuyerNavigator` at the root. The buyer runs the **same binary on a second device** — there is no web build. See `docs/architecture/12_STACK.md` §0 for why.
 
 There is **no separate web project**, no Next.js, no second frontend repo.
 
@@ -80,22 +86,29 @@ Breaking one is a bug even if the tests pass. **`docs/architecture/00_CANON.md` 
 
 ## 3. Stack — fixed, do not substitute
 
+> **`docs/architecture/12_STACK.md` is the complete, authoritative list.** The table below is the summary. If they disagree, 12_STACK wins.
+> **Changed 2026-09-05: React Native CLI, not Expo.** Anything you read with an `expo-` import is pre-change — translate it with 12_STACK §4.
+
 | Layer | Choice | Note |
 |---|---|---|
-| App | **Expo / React Native**, one codebase | native + `expo start --web`, role-based navigators |
-| Navigation | React Navigation | |
+| App | **React Native CLI** 0.76.x, one codebase | **not Expo**; role-based navigators; no web build |
+| Navigation | React Navigation v7 | `native-stack` + `bottom-tabs` |
 | State | **TanStack Query + React Context** | **no Redux** |
-| Charts | `victory-native` | |
+| Charts | **`react-native-svg`, hand-rolled** (~60 lines) | **no victory-native** — 12_STACK §3.1 |
+| Carousel | **`FlatList` horizontal + `pagingEnabled`** | no carousel library |
+| Chat | **TanStack Query 4 s polling** | no websockets |
+| Call | **`Linking.openURL('tel:…')`** | built in, zero deps |
 | API | **FastAPI**, Pydantic v2, SQLAlchemy 2.0, Alembic | |
 | DB | **PostgreSQL 16** in Docker | enums as `text` + `CHECK`, not native PG enums |
 | ML | **LightGBM quantile regression**, in-process in the API | `objective='quantile'`, α ∈ {0.1, 0.5, 0.9} |
 | Python | **3.11** — `uv venv --python 3.11` | 3.14 has no LightGBM wheel. Not negotiable. |
-| i18n | Plain JSON dictionaries + React Context | **no i18n library** |
-| Voice | Pre-generated Marathi mp3 clips, stitched by `expo-av` | offline by design; `expo-speech` fallback |
+| JDK | **17** | RN 0.73+ requires exactly 17. Not 11, not 21. |
+| i18n | Plain JSON dictionaries + React Context | **no i18n library**; `mr` · `hi` · `en` |
+| Voice | Pre-generated Marathi mp3 clips, sequenced by **`react-native-sound`** | offline by design; **`react-native-tts`** fallback |
 | Deploy | one **EC2 t3.small**, nginx, docker-compose | swap file required |
 | Wire format | **`snake_case` end to end** | the frontend reads `expected_gain_paise` directly, no aliasing |
 
-**No new dependency without asking the team.** Every added package is a lock-file conflict and a supply-chain risk. The stack above is sufficient.
+**No new dependency without asking the team.** Every added package is a lock-file conflict and a supply-chain risk. The stack above is sufficient. `12_STACK.md` §2 lists what is explicitly banned.
 
 ---
 
@@ -116,14 +129,18 @@ api/                    FastAPI service           — Akash (+ Nikhil/Nilesh in 
   seed/                 run_all.py, 00_reference.py, 10_prices.py, 20_demo_story.py
   tests/
 ingest/                 offline data CLI          — Kartik
-app/                    Expo app                  — Pranay (farmer), Shreya (buyer/i18n/voice)
-  src/lib/              api.ts, money.ts, offline.ts, i18n.tsx, voice.ts
+app/                    React Native CLI app      — Pranay (farmer), Shreya (buyer/i18n/voice)
+  src/lib/              api.ts, money.ts, offline.ts, i18n.tsx, voice.ts, config.ts
   src/components/       ui/, charts/, farmer/, buyer/
-  src/screens/          farmer/ (S1–S16), buyer/ (S17–S25)
-  assets/voice/mr/      pre-generated Marathi clips
+  src/screens/          farmer/ (S1–S16, S26), buyer/ (S17–S25, S27)
+  src/fixtures/         CANON-shaped fixtures — how you work before an endpoint exists
+  assets/audio/mr/      pre-generated Marathi clips (committed — I7)
+  android/              native project — network_security_config.xml lives here
 nginx/  infra/  scripts/  docker-compose.yml       — Kartik
-docs/architecture/      the baseline (00–11 + README)
+docs/PLAN.md            ★ the universal plan — all 73 tasks, everyone
+docs/architecture/      the baseline (00–12 + README)
 docs/roles/             one file per person
+docs/design/            CLAUDE_DESIGN_PROMPT.md
 docs/reference/         PLAYBOOK.md (55-page research base), DATA_SOURCE_RECIPES.md
 docs/BLOCKERS.md        append-only, everyone
 ```
@@ -164,6 +181,8 @@ The only shared file is `docs/BLOCKERS.md`, and it is append-only — never rewr
 
 ## 6. Commands
 
+> **None of these work yet.** The repo is documentation-only until **K0** (compose), **A0** (API skeleton) and **P0** (app scaffold) land. That is expected, not a bug.
+
 ```bash
 docker compose up -d --build
 docker compose exec api alembic upgrade head
@@ -172,8 +191,10 @@ bash scripts/smoke.sh
 ```
 
 ```bash
-cd app && npm install && npx expo start
+cd app && npm install && npx react-native run-android
 ```
+
+Needs **JDK 17** and an Android SDK. First run on a cold machine downloads for 15–30 minutes — start it before you read anything. `10.0.2.2` is the host from inside the emulator, not `localhost`; see `12_STACK.md` §7.
 
 ```bash
 cd api && uv venv --python 3.11 && source .venv/bin/activate && uv pip install -r requirements.txt

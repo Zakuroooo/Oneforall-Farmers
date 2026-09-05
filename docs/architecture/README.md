@@ -73,7 +73,7 @@ Breaking one is a bug even if the tests pass. Full statements in `00_CANON.md` Â
 | **I8** | **Synthetic or imputed data is labelled in the UI.** Every price row carries `source` and `source_url`. |
 | **I9** | **Quantities are integer kilograms** (`_kg`), displayed in quintals. **Rates are basis points** (`_bps`). |
 | **I10** | **Every route validates its input with a Pydantic schema.** No hand-rolled parsing. |
-| **I11** | **Both numbers, always.** The worst case renders at the same font size as the best case. |
+| **I16** | **Both numbers, always.** The worst case renders at the same font size as the expected gain. |
 | **I12** | **Never log phone numbers, OTPs, or full payloads.** `redact()` at the boundary. |
 | **I13** | **If pledge interest â‰¥ expected gain, no pledge card.** Server returns `None`. |
 | **I14** | **No `random.random()` / `Math.random()` for anything security-relevant.** OTPs from `secrets`. |

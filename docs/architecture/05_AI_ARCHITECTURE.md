@@ -482,7 +482,7 @@ Four sentences, every number measured, and the limitation named before anyone as
 | Gain is absurd (₹6 lakh on 40 qtl) | a 100× unit error in the cost table or the kg↔qtl conversion | check `// 100`; check Kartik's units |
 | Endpoint 500s | unwrapped model call | wrap it, degrade to NO_ADVICE (I12) |
 
-**Say every number out loud before you believe it.** ₹62,900 on 40 quintals is ₹1,572/qtl of gain on a ₹1,850 base — a 85% move. That is *high* for 14 days; plausible for onion, absurd for soybean. If a number is absurd, the pipeline is wrong, and a judge will spot it faster than you will.
+**Say every number out loud before you believe it.** ₹6,290 on 40 quintals is ₹157/qtl of gain on a ₹1,850 base — an 8.5% move. That is *high* for 14 days; plausible for onion, absurd for soybean. If a number is absurd, the pipeline is wrong, and a judge will spot it faster than you will.
 
 ---
 
