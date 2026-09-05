@@ -155,3 +155,57 @@ export const fxSellElsewhere: WindowRes = {
   explain_mr: 'पुण्यात नेल्यास खर्च वजा जाता ₹७२२ जास्त मिळतील.',
   explain_en: 'Taking it to Pune nets ₹722 more after costs.',
 };
+
+/**
+ * SELL_NOW. The model has no better option to offer — no other market beats this
+ * one net, and holding is not expected to pay. There is nothing to hold against,
+ * so `hold_p50/p10_net` are null the same way `fxSellElsewhere` leaves them null,
+ * and both money fields are zero: this action is not claiming an incremental
+ * upside over some alternative, it is saying the alternative is not there.
+ */
+export const fxSellNow: WindowRes = {
+  ...fxHold,
+  action: 'SELL_NOW',
+  hold_days: 0,
+  confidence: 'HIGH',
+  band_width_bps: 950,
+  hold_p50_net_paise_per_qtl: null,
+  hold_p10_net_paise_per_qtl: null,
+  expected_gain_paise: 0,
+  worst_case_paise: 0,
+  alt_market: null,
+  pledge_quote: null,
+  explain_mr: 'सध्याची किंमत हीच सर्वोत्तम आहे. आताच विका.',
+  explain_en: 'The current price is the best available. Sell today.',
+};
+
+/**
+ * SPLIT. NILESH.md §... calls this "sell part now for liquidity, hold part —
+ * when the gain is real but the risk is material." The numbers are built to
+ * show exactly that: the expected gain is real and positive, but the worst case
+ * is *larger in magnitude* than the gain — the downside outweighs the upside,
+ * which is the actual reason a hedge (sell half, hold half) beats an all-in bet
+ * either way.
+ *
+ *   expected_gain_paise = (201925 − 193925) × 40 =  320000  = ₹3,200
+ *   worst_case_paise    = (178925 − 193925) × 40 = −600000  = −₹6,000
+ *
+ * Costs are the same market/logistics numbers as `fxHold` — costs come from
+ * transport and handling, not from which verdict the model reaches, so reusing
+ * them is realistic, not lazy.
+ */
+export const fxSplit: WindowRes = {
+  ...fxHold,
+  action: 'SPLIT',
+  hold_days: 9,
+  confidence: 'MEDIUM',
+  band_width_bps: 2800,
+  hold_p50_net_paise_per_qtl: 201925,
+  hold_p10_net_paise_per_qtl: 178925,
+  expected_gain_paise: (201925 - 193925) * DEMO_QTY_QTL,
+  worst_case_paise: (178925 - 193925) * DEMO_QTY_QTL,
+  alt_market: null,
+  pledge_quote: null,
+  explain_mr: 'अर्धा माल आताच विका, उरलेला ९ दिवस थांबवा — जोखीम मध्यम आहे.',
+  explain_en: 'Sell half now, hold the rest for 9 days — the risk is moderate.',
+};

@@ -10,6 +10,8 @@
  * and we are on React Native CLI. This file is the mechanism.
  */
 
+import type { Grade } from './types/api';
+
 /**
  * ★ How the app reaches the API in development. Three transports; we default to the
  *   first, and the choice is not cosmetic — one of them dies at the venue.
@@ -95,3 +97,24 @@ export const DEFAULT_HORIZON_DAYS = 14;
  */
 export const DEFAULT_COMMODITY_ID = 'cmd_onion';
 export const DEFAULT_MARKET_ID = 'mkt_lasalgaon';
+
+/**
+ * `POST /ai/window/recommend`'s request body, CANON §7.4's own example values —
+ * there is no lot-creation flow (S12, P9) or grading flow (S13) in scope yet, so
+ * S9 asks for the same demo lot every other fixture in this app already agrees
+ * on: 4000 kg, grade B. TODO(pranay): P9/P10 replace these with the farmer's
+ * actual lot once one exists to ask about.
+ */
+export const DEFAULT_QTY_KG = 4000;
+export const DEFAULT_GRADE: Grade = 'B';
+
+/**
+ * ★ Not in CANON's wire contract — `05_AI_ARCHITECTURE.md` §6 and `NILESH.md` §2
+ *   both document `NO_ADVICE_BAND_BPS=3500` (35%) as the server's refusal
+ *   threshold, tuned server-side, not sent in `WindowRes`. PRANAY.md §1.7's own
+ *   refusal-screen mockup renders it anyway ("मर्यादा: ३५%") for context next to
+ *   `band_width_bps`. This is a real gap: if Nilesh retunes the threshold, this
+ *   constant goes stale with no signal that it has. Update it by hand if he
+ *   changes `NO_ADVICE_BAND_BPS`, or ask him to put it on the response instead.
+ */
+export const NO_ADVICE_BAND_THRESHOLD_BPS = 3500;

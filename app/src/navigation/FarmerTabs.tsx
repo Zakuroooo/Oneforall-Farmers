@@ -19,6 +19,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import S04_Home from '../screens/farmer/S04_Home';
+import S09_Verdict from '../screens/farmer/S09_Verdict';
 import { Soon } from '../screens/Soon';
 
 export type FarmerTabParamList = {
@@ -34,8 +35,7 @@ export type FarmerTabParamList = {
  * S4 off the back stack entirely; a farmer tapping back from the verdict should
  * return to the price he just saw, not to whichever tab he was on before Home).
  *
- * ★ `S9_Verdict` is `Soon` until P3. TODO(pranay): P3 replaces this one line with
- *   the real verdict screen — the route name and the push from S4 do not change.
+ * `S9_Verdict` is the real screen as of P3.
  */
 export type HomeStackParamList = {
   S4_Home: undefined;
@@ -43,13 +43,12 @@ export type HomeStackParamList = {
 };
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
-const S9Soon = () => <Soon label="S9 · निर्णय" />;
 
 function HomeStackNavigator() {
   return (
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="S4_Home" component={S04_Home} />
-      <HomeStack.Screen name="S9_Verdict" component={S9Soon} />
+      <HomeStack.Screen name="S9_Verdict" component={S09_Verdict} />
     </HomeStack.Navigator>
   );
 }
