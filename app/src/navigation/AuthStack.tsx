@@ -7,6 +7,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { useAuth } from '../lib/auth';
 import S01_Language from '../screens/farmer/S01_Language';
 import S02_Phone from '../screens/farmer/S02_Phone';
 import S03_Profile from '../screens/farmer/S03_Profile';
@@ -20,9 +21,10 @@ import S03_Profile from '../screens/farmer/S03_Profile';
  *   inspector, and survives into anything that persists navigation state. That puts
  *   a phone number and a live OTP somewhere I14 says they must never be.
  *
- *   TODO(pranay): P1 carries them in a small in-memory holder next to `AuthProvider`
- *     — set on S2, read once by S3, cleared on success. Never in navigation state,
- *     never in AsyncStorage.
+ *   P1 carries them instead in `setPendingAuth`/`getPendingAuth`/`clearPendingAuth`
+ *   — a module-level holder next to `AuthProvider` in `lib/auth.tsx`. Set on S2,
+ *   read once by S3, cleared on success. Never in navigation state, never in
+ *   AsyncStorage.
  */
 export type AuthStackParamList = {
   S1_Language: undefined;
@@ -33,9 +35,14 @@ export type AuthStackParamList = {
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export function AuthStack() {
+  // `hasLocale` is resolved in the same boot effect as the token check, before
+  // `AuthStack` ever mounts — so this is a stable value on first render, not a
+  // race. A returning farmer who already picked मराठी skips straight to S2.
+  const { hasLocale } = useAuth();
+
   return (
     <Stack.Navigator
-      initialRouteName="S1_Language"
+      initialRouteName={hasLocale ? 'S2_Phone' : 'S1_Language'}
       screenOptions={{ headerShown: false }}>
       <Stack.Screen name="S1_Language" component={S01_Language} />
       <Stack.Screen name="S2_Phone" component={S02_Phone} />

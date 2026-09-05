@@ -67,8 +67,15 @@ export const API_BASE_URL = __DEV__
  *
  * Rung 1 is the deployed API. Rung 2 is the API on the laptop over a phone hotspot.
  * Rung 3 is this. It exists because venue wifi fails, and it always fails.
+ *
+ * ★ Currently `true` for a second reason: `api/` does not exist in this repo yet —
+ *   A0/A1 have not landed. Every screen from S1 onward has nothing to talk to.
+ *   TODO(pranay): flip back to `false` the moment Akash's A1 is live and reachable
+ *   — this is a dev-time necessity right now, not a demo-day setting, and leaving
+ *   it `true` past that point means testing against stale fixtures without
+ *   noticing the real endpoint drifted.
  */
-export const USE_FIXTURES = false;
+export const USE_FIXTURES = true;
 
 /** How long a cached response stays fresh before the stale banner appears. */
 export const CACHE_STALE_MS = 5 * 60 * 1000;

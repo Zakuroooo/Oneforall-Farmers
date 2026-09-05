@@ -31,6 +31,7 @@ import React, {
 } from 'react';
 
 import { ApiError, clearToken, getMe, getToken, setToken } from './api';
+import { getLocale } from './locale';
 import type { AuthRes, User } from '../types/api';
 
 /**
@@ -47,6 +48,12 @@ type AuthState =
 interface AuthContextValue {
   status: AuthState['status'];
   user: User | null;
+  /**
+   * Resolved in the same boot effect as the token, so it is available the instant
+   * `AuthStack` first renders — no second flash while S1 decides whether to show
+   * itself. `false` means S1 has never run on this device.
+   */
+  hasLocale: boolean;
   /** Call with the whole `AuthRes` from `verifyOtp` / `register`. */
   signIn: (res: AuthRes) => Promise<void>;
   signOut: () => Promise<void>;
@@ -54,14 +61,41 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+/**
+ * The phone and the verified-or-not OTP code, in transit from S2 to S3.
+ *
+ * ★ I14. This is deliberately a module-level variable, not React state and not
+ *   AsyncStorage. It never re-renders anything, it is never serialized, it does
+ *   not survive a JS reload, and nothing outside S2/S3 ever touches it. Putting a
+ *   phone number and a live OTP in navigation params or persisted storage is
+ *   exactly the disclosure I14 exists to prevent — see the TODO this replaces in
+ *   `AuthStack.tsx`.
+ */
+let pendingAuth: { phone: string; code: string } | null = null;
+
+export function setPendingAuth(phone: string, code: string): void {
+  pendingAuth = { phone, code };
+}
+
+export function getPendingAuth(): { phone: string; code: string } | null {
+  return pendingAuth;
+}
+
+export function clearPendingAuth(): void {
+  pendingAuth = null;
+}
+
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({ status: 'loading', user: null });
+  const [hasLocale, setHasLocale] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
 
     (async () => {
-      const token = await getToken();
+      const [token, locale] = await Promise.all([getToken(), getLocale()]);
+      if (!cancelled) setHasLocale(locale !== null);
+
       if (!token) {
         if (!cancelled) setState({ status: 'signed-out', user: null });
         return;
@@ -99,8 +133,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const value = useMemo<AuthContextValue>(
-    () => ({ status: state.status, user: state.user, signIn, signOut }),
-    [state, signIn, signOut],
+    () => ({ status: state.status, user: state.user, hasLocale, signIn, signOut }),
+    [state, hasLocale, signIn, signOut],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -20,7 +20,9 @@ import { API_BASE_URL } from '../config';
 import type {
   ApiErrorBody,
   AuthRes,
+  District,
   ForecastRes,
+  Locale,
   ModelCard,
   NearbyRes,
   OtpRequestRes,
@@ -121,16 +123,32 @@ export const requestOtp = (phone: string) =>
 export const verifyOtp = (phone: string, code: string) =>
   post<AuthRes>('/auth/otp/verify', { phone, code });
 
+/**
+ * ★ CONTRACT GAP, blocker filed: CANON §7.1 documents this body as `{phone, code,
+ *   name, role, locale, district_id}` — no `village` — but CANON §6.2's `farmers`
+ *   table has a nullable `village` column, and PRANAY.md's S3 spec ("Name,
+ *   district, village") requires collecting it. `village` is sent as an optional
+ *   extra field: harmless if Akash's A1 ignores it today, and the field the DB
+ *   already has room for once he doesn't.
+ */
 export const register = (body: {
   phone: string;
   code: string;
   name: string;
   role: 'FARMER' | 'BUYER';
-  locale: string;
+  locale: Locale;
   district_id: string;
+  village?: string;
 }) => post<AuthRes>('/auth/register', body);
 
 export const getMe = () => get<{ user: User }>('/auth/me');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Reference — §7.2. Kartik's K5 does not exist yet — S3 reads `fixtures/auth.ts`
+// (`fxDistricts`) until it does.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getDistricts = () => get<District[]>('/ref/districts');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Prices — §7.3

@@ -111,6 +111,27 @@ Names are the six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**.
 - **My preference, weakly held:** `src/lib/i18n.tsx` + `src/i18n/*.json`. `lib/` is where the other cross-cutting modules already are, and it keeps the dictionaries out of `lib/`.
 - **Raised:** H0
 
+### [Pranay → Akash] CONTRACT: `users.locale` CHECK constraint excludes `hi`
+- **What I need:** `00_CANON.md` §6.2's `users` table has `locale text not null default 'mr' check (locale in ('mr','en'))` — no `hi`. Widen the constraint to `('mr','hi','en')`.
+- **Why:** Hindi is a committed Phase-1 feature (`PLAN.md` §8, task **SH9** — "Hindi as a third locale"), and the client's own `Locale` type (`types/api.ts`) already includes it. S1 (my language picker) offers मराठी/हिंदी/English today; the moment a farmer picks हिंदी and registers, `/auth/register`'s `locale: 'hi'` will violate this constraint and 500 or 400 — the exact "confident feature, broken contract" bug this repo's own discipline exists to catch before H30, not after.
+- **Blocking:** nothing today — S3's fixture doesn't touch a real DB — but it will block SH9 + any real farmer registration in Hindi the moment A1 is live.
+- **Workaround in place:** none needed on my side; the client sends whatever the user actually picked, which is correct. The constraint is the thing that's out of date.
+- **Raised:** H0 (P1)
+
+### [Pranay → Akash] CONTRACT: `village` missing from `/auth/register`'s documented body
+- **What I need:** add `village` (optional) to `00_CANON.md` §7.1's `/auth/register` row: `{phone, code, name, role, locale, district_id, village?}`.
+- **Why:** `00_CANON.md` §6.2's `farmers` table already has a nullable `village` column, and `PRANAY.md` §1.4's own S3 spec says "Name, district, village." The endpoint table is the one place that's missing it.
+- **Blocking:** nothing today — S3 sends `village` as an extra optional field already (harmless if A1 ignores it); it just isn't formally in the contract yet, which means A1 could reasonably drop it on the floor without anyone noticing until a demo lot's village shows up blank.
+- **Workaround in place:** `lib/api.ts`'s `register()` types `village?: string` and sends it when non-empty. Once this is in CANON, that's already correct — nothing to change on my side.
+- **Raised:** H0 (P1)
+
+### [Pranay → Akash] DECISION: how S2/S3 resolve `/auth/otp/verify`'s deliberately identical error
+- **What I need:** confirm this matches what A1 will actually do, or tell me before it lands.
+- **Why:** CANON §7.1 says wrong-code and unknown-phone return the *identical* error on `verify` — correctly, to prevent phone enumeration — but that means the client can never know in advance which case a failure is. I resolved it as: **always try `verify` first; on any server-returned failure (not a network failure), fall through to S3 and let `/auth/register` — which re-validates `{phone, code}` independently — be the final arbiter.** A genuinely wrong code fails there too, with an unambiguous error that sends the farmer back to S2. This matches CANON's own "Post-OTP for new users" phrasing (`PRANAY.md` §1.4), but it's an inference, not something CANON states outright — worth you confirming `register` really does independently re-check the OTP rather than trusting a prior `verify` call, since the client-side flow only works if it does.
+- **Blocking:** nothing today — S2/S3 route through `fixtures/auth.ts` (verify always fails there, by design, exercising this exact path) — but it needs your sign-off before L5/A1 integration.
+- **Workaround in place:** see `fixtures/auth.ts`'s file-level comment for the full reasoning.
+- **Raised:** H0 (P1)
+
 ---
 
 ## Resolved before H0 — decisions and doc corrections
