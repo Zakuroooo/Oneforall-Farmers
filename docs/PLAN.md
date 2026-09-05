@@ -69,7 +69,7 @@ Everything on this page exists to make that paragraph true.
 
 | Person | Lane | Owns | Task IDs |
 |---|---|---|---|
-| **Pranay** | **Frontend — lead** | Farmer app S1–S16, `lib/{api,money,offline}.ts`, app scaffold | **P0–P16** (17) |
+| **Pranay** | **Frontend — lead** | Farmer app S1–S16 + S26 + S28, `lib/{api,money,offline}.ts`, `config.ts`, app scaffold, `app/android/` | **P0–P16** (17) |
 | **Shreya** | **Frontend** | Buyer S17–S25, `components/ui/**`, i18n, voice, deck | **SH0–SH10** (11) |
 | **Akash** | **Backend — lead** | API, auth, escrow FSM, matching, ledger | **A0–A14** (15) |
 | **Kartik** | **Backend — support** + data + deploy | Ingest, seed, price routes, Docker, nginx, EC2 | **K0–K11** (12) |
@@ -186,7 +186,7 @@ Everything on this page exists to make that paragraph true.
 | **P13** | ★★ Wire Shreya's `lib/voice.ts` into S9's 🔊 button | ₹6,290 plays in Marathi **in airplane mode** | **SH3** |
 | **P14** | ★★ **Demo rehearsal** — drive the golden path three times | Beats 1–11 without looking at notes | H33 |
 | **P15** | **NEW — S26 chat + call button** | Farmer messages a buyer; call opens the dialer; number never rendered | A14, SH0 |
-| **P16** | **NEW — S16 assistant** — tri-lingual Q&A over canned intents | Eight questions answered in the active locale | L9, SH9 |
+| **P16** | **NEW — S28 assistant** — tri-lingual Q&A over canned intents | Eight questions answered in the active locale | L9, SH9 |
 
 ### SHREYA — buyer, language, voice, pitch — SH0–SH10
 
@@ -330,7 +330,7 @@ Added 2026-09-05. **These were not in the original plan.** Here is what they cos
 | **Call button** | inside **P15** | **~30 min.** `Linking.openURL('tel:…')` plus a server endpoint that logs the *event* and returns the number without ever logging it (I14). | **Build it.** Highest ratio of demo value to cost on this page. |
 | **Hindi** | **SH9** | **~3 h.** One more JSON file, one more picker option, one more `explain_hi` on the server. **No Hindi voice clips** — the clip set is Marathi-only and tripling it is not affordable. | **Build it, text only.** Say plainly that voice is Marathi in Phase 1. |
 | **Farmer ↔ buyer chat** | **A14 · P15 · SH10** | **~6 h across three people.** Two screens, four endpoints, 4-second polling (12_STACK §3.3). No websockets. | **Build it if A9 lands by H20.** Otherwise cut — it is not on the golden path. |
-| **Tri-lingual assistant** | **L9 · P16** | **~5 h.** Eight canned intents, answered from data the app already has, in the active locale. **Not an LLM** — a routed FAQ over real numbers. | **Cut first if anything slips.** |
+| **Tri-lingual assistant** | **L9 · P16** (S28) | **~5 h.** Eight canned intents, answered from data the app already has, in the active locale. **Not an LLM** — a routed FAQ over real numbers. | **Cut first if anything slips.** |
 
 ### On the assistant, so nobody oversells it
 

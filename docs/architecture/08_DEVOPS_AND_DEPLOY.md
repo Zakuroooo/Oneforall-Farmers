@@ -16,9 +16,9 @@
                          │
                     ┌────▼────┐
                     │  nginx  │  :80  (:443 if a domain lands in time)
-                    └──┬───┬──┘
-                 /api  │   │  /  (static Expo web build)
-                    ┌──▼───────┐
+                    └────┬────┘
+                 /api    │    /media → disk
+                    ┌────▼─────┐
                     │   api    │  FastAPI :8000, gunicorn+uvicorn, 2 workers
                     │  + model │  LightGBM pickle in-process
                     └────┬─────┘
@@ -61,17 +61,11 @@ services:
       -w 2 -b 0.0.0.0:8000 --timeout 60 --access-logfile -
     restart: unless-stopped
 
-  web:
-    build:
-      context: ./app
-      dockerfile: Dockerfile.web       # expo export:web -> static
-    restart: unless-stopped
-
   nginx:
     image: nginx:alpine
     ports: ["80:80"]
     volumes: [./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro]
-    depends_on: [api, web]
+    depends_on: [api]
     restart: unless-stopped
 
 volumes: { pgdata: , media: }
@@ -151,7 +145,8 @@ DATA_GOV_API_KEY=
 SARVAM_API_KEY=                # offline TTS generation only
 
 # ---- frontend
-EXPO_PUBLIC_API_URL=http://localhost:8000
+# NOTHING.  React Native CLI has no env injection — no EXPO_PUBLIC_* equivalent.
+# The API base URL is a committed constant in app/src/config.ts (Pranay, P0).
 ```
 
 **Rules:**
@@ -237,7 +232,7 @@ def reset():
 |---|---|---|---|
 | **1** | Everything works | Live demo on EC2, phone over wifi | Kartik, H28 |
 | **2** | EC2 unreachable / venue blocks it | **Laptop + `docker compose up` locally**, phone on a hotspot | everyone, verified H30 |
-| **3** | Docker or the DB will not start | **Expo Go on the phone against `localhost` on the laptop** | Pranay, verified H31 |
+| **3** | Docker or the DB will not start | **Flip `USE_FIXTURES = true` in `app/src/config.ts` and rebuild** — the app runs the whole golden path off committed fixtures with no API at all | Pranay, verified H31 |
 | **4** | Nothing runs | **★ Play the H32 screen recording** | Shreya, recorded H32 |
 
 **Rung 4 is the one people skip and the one that saves them.** Record the full golden path with voiceover at **H32** — before fatigue, before anything breaks. It takes 20 minutes. If the box dies at H35, it is the difference between a demo and an apology.

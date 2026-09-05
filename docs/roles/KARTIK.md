@@ -167,7 +167,7 @@ After the H28 deploy, run `scripts/smoke.sh` **against the EC2 host**, not local
 |---|---|---|
 | 1 | Everything works | Live on EC2, phone over wifi |
 | 2 | EC2 unreachable | Laptop `docker compose up`, phone on a hotspot |
-| 3 | Docker won't start | Expo Go against localhost |
+| 3 | Docker or the DB won't start | `USE_FIXTURES = true` — app runs off fixtures, no API |
 | 4 | Nothing runs | **Play the H32 recording** |
 
 You own rungs 1–3. Have rung 2 tested — meaning you have actually run the app against your laptop over a phone hotspot at least once, before demo day.

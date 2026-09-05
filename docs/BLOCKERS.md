@@ -43,12 +43,17 @@ Names are the six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**.
 
 | Owner | Lane | Their files |
 |---|---|---|
-| **Akash** | Backend | `api/app/main.py`, `deps.py`, `models.py`, `schemas.py`, `routers/**` (except `window`, `prices`), `domain/{grading,matching,split,escrow,ledger}.py`, `alembic/**` |
-| **Kartik** | Data + DevOps | `ingest/**`, `api/seed/{00_reference,10_prices}.py`, `api/app/routers/{prices,meta}.py`, `docker-compose.yml`, `nginx/**`, `infra/**`, `scripts/**`, `.env.example` |
-| **Nikhil** | Forecasting | `api/app/ml/**` and the committed model pickles |
-| **Nilesh** | Decision engine | `api/app/domain/{decide,costs,pledge}.py`, `api/app/config.py`, `api/app/routers/{window,ai}.py` |
-| **Pranay** | Farmer app | `app/src/screens/farmer/**`, `app/src/components/farmer/**`, `app/src/lib/{api,money,offline}.ts` |
-| **Shreya** | Buyer + language | `app/src/screens/buyer/**`, `app/src/components/ui/**`, `app/src/lib/{i18n,voice}.ts`, `app/messages/**`, `app/assets/audio/**`, `scripts/gen_tts.py`, `docs/deck/**` |
+| **Akash** | **Backend — lead** | `api/app/main.py`, `deps.py`, `models.py`, `schemas.py`, `routers/**` (except `window`, `prices`, `meta`), `domain/{grading,matching,split,escrow,ledger}.py`, `alembic/**` |
+| **Kartik** | **Data + DevOps, then backend support to Akash** | `ingest/**`, `api/seed/{00_reference,10_prices}.py`, `api/app/routers/{prices,meta}.py`, `docker-compose.yml`, `nginx/**`, `infra/**`, `scripts/**`, `.env.example` |
+| **Nikhil** | **Forecasting (model training)** | `api/app/ml/**` and the committed model pickles |
+| **Nilesh** | **Decision engine (model training)** | `api/app/domain/{decide,costs,pledge}.py`, `api/app/config.py`, `api/app/routers/{window,ai}.py` |
+| **Pranay** | **Frontend — lead.** Farmer app | `app/src/screens/farmer/**`, `app/src/components/{farmer,charts}/**`, `app/src/lib/{api,money,offline}.ts`, `app/src/config.ts`, `app/App.tsx`, the navigators, **`app/android/**` and `app/ios/**`** |
+| **Shreya** | **Frontend.** Buyer console + language | `app/src/screens/buyer/**`, `app/src/components/ui/**`, `app/src/lib/{i18n,voice}.ts`, `app/messages/**`, `app/assets/audio/**`, `scripts/gen_tts.py`, `docs/deck/**` |
+
+**Two things about this table that changed and that people get wrong:**
+
+- **Kartik's lane is data and deploy *first*.** He does not start backend support until K1 (the data gate, H4) and K9 (the deploy rehearsal, H28) are behind him. If Akash is blocked at H6 and Kartik is still scraping, the answer is a fixture, not Kartik.
+- **`app/android/` is Pranay's**, and it is checked into git — React Native CLI commits the native projects where Expo did not. A Gradle or manifest change is a change everyone pulls, so it gets announced in the group chat. This is also why Shreya's audio bugs land on Pranay's desk first: the require map and `Sound.setCategory` live on his side of the line.
 
 **Contract questions go to the contract, not to a person.** `docs/architecture/00_CANON.md` is authoritative: *"if another doc contradicts this one, this one wins."* If a role doc disagrees with CANON, CANON is right and the role doc is a bug — file it here.
 
@@ -57,6 +62,78 @@ Names are the six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**.
 ## Open
 
 *(nothing yet — H0)*
+
+---
+
+## Resolved before H0 — decisions and doc corrections
+
+These are logged because **the baseline documents changed after they were written**, and a team member who read an early copy is holding stale information. Read this section once before you start. Every entry is a real change to something someone would otherwise have built.
+
+### [Pranay → everyone] DECISION: React Native **CLI**, not Expo
+- **What changed:** The app is `npx @react-native-community/cli init`, not `create-expo-app`. `12_STACK.md` is the new authority on every dependency.
+- **Why:** Expo's config-plugin and prebuild layers are a class of failure we cannot debug at H30, and the escape hatch (`expo prebuild`) lands in RN CLI anyway — at the worst possible moment.
+- **Consequences you must absorb:**
+  - **There is no web build.** RN CLI has no `--web`. **The buyer console is the same APK on a second Android device**, not a browser tab. Any doc that says `expo start --web` is stale — report it.
+  - `app/android/` and `app/ios/` are **checked into git** and owned by Pranay. A Gradle change is a change everyone pulls.
+  - **Android 9+ blocks cleartext HTTP.** Needs `network_security_config.xml` scoped to `10.0.2.2`, the LAN IP and `localhost` — **never `usesCleartextTraffic="true"` globally.** `12_STACK.md` §7.3.
+  - Emulator → host is **`10.0.2.2`**, not `localhost`.
+  - **JDK 17 exactly.** Not 11, not 21.
+  - No `EXPO_PUBLIC_*`. The base URL is `app/src/config.ts`, committed, **no secrets in it ever (I10)**.
+- **The `expo-*` replacements:** `expo-av` → **`react-native-sound`** · `expo-speech` → **`react-native-tts`** (fallback only) · `expo-secure-store` → **AsyncStorage, as a declared gap** · `expo-speech-recognition` → **cut from Phase 1**.
+- **Raised:** H0
+
+### [Pranay → everyone] DECISION: role split revised
+- **Frontend:** Pranay (lead) + Shreya. **Backend:** Akash (main), Kartik supporting **after** K1 and K9 land. **Model training:** Nikhil + Nilesh.
+- **Why it matters for blockers:** if Akash is blocked at H6 and Kartik is still on the data ladder, **the answer is a fixture, not Kartik.** Pulling him off data to unblock backend puts the H4 data gate at risk, and the data gate is the one gate that cannot be recovered later.
+- **Raised:** H0
+
+### [Pranay → everyone] ★★ BUG: the demo figure was wrong by 10× — ₹62,900 → **₹6,290**
+- **What was wrong:** several documents carried `expected_gain_paise: 6290000` (₹62,900) and `worst_case_paise: -4800000` (−₹48,000).
+- **The arithmetic:** on the canonical 4000 kg (40 qtl) lot, `(209650 − 193925) × 40 = 629000` paise = **₹6,290**, and `(181925 − 193925) × 40 = −480000` = **−₹4,800**.
+- **Why it had to be fixed:** ₹62,900 on 40 quintals implies an **81% onion price move in 11 days**. ₹6,290 implies **8.1%**. The first number is not a typo a judge forgives — it is a claim that the product does not understand its own units, made to a panel that knows onion prices from memory.
+- **Who this touches:** **Shreya rehearses the corrected figure** (beat 5, slide 4) — the old number is in no script any more. Pranay's fixture and Nilesh's worked example both use the corrected values.
+- **The rule that follows:** the `_per_qtl` fields are **per quintal**; `expected_gain_paise` and `worst_case_paise` are **whole-lot totals**. **Never put a rupee figure on a screen or a slide you have not multiplied out by hand.**
+- **Raised:** H0
+
+### [Pranay → everyone] ★ BUG: six API fields that do not exist were being built against
+- **What was wrong:** an early fixture in `PRANAY.md` carried `best_case_paise`, `best_day`, `confidence_bps`, `costs_paise`, `model_version` and `source_summary`. **None of them are in `00_CANON.md` §7.4.**
+- **Why this is worse than a normal bug:** a screen built on an invented fixture renders perfectly in every rehearsal and breaks the first time it touches the real endpoint. Every one of those reads becomes `undefined`.
+- **Corrections applied:** `confidence` is the enum `"LOW" | "MEDIUM" | "HIGH"`, **not** a bps number. Costs are `costs.{...}_paise_per_qtl` with `total_paise_per_qtl`. There is no best case and no best day.
+- **★ And I16 was being misread as a consequence.** I16 compares the worst case to **the expected gain** — not to a best case, which does not exist. Both render at **28 sp**. The old S9 mockup had them both at 20 sp with an invented `+₹1,42,000` best-case row above them.
+- **The rule:** **if a key is not in CANON §7.4, it is not in your fixture.** Need one? File a blocker. Do not add it yourself.
+- **Raised:** H0
+
+### [Pranay → everyone] BUG: invariant numbering was inconsistent across four documents
+- **`00_CANON.md` §3 is the authority: I1–I16.** `docs/architecture/README.md` carried the pre-CANON numbering with `I16` spliced in, so it disagreed with CANON on I2, I5, I6, I9 and I11–I15. An earlier draft of `07_FRONTEND` also called I16 "F8".
+- **If a role doc cites an invariant number, check it against CANON §3 before you trust it.** The two a judge tests are **I4** (cross-actor 404) and **I6** (refusal) — not I4 and I5.
+- **Raised:** H0
+
+### [Pranay → everyone] DECISION: the hold window is **11 days** (अकरा दिवस)
+- Several documents said 12. The canonical demo verdict is **HOLD, 11 days**, and Shreya's voice clip set records **अकरा**.
+- **Raised:** H0
+
+### [Pranay → Shreya] BUG: `PRANAY.md` P13 named the wrong task as its blocker
+- P13 (wiring 🔊 into S9) said *"Blocked by: Shreya SH5"*. **SH5 is buyer login.** The voice library is **SH3**. Corrected.
+- **Raised:** H0
+
+### [Pranay → everyone] DECISION: the assistant is **S28**, and S16 is the FPO split
+- An early draft of `PRANAY.md` had S16 as the assistant, disagreeing with **both** `07_FRONTEND` §10 and `01_PRD`, which agree S16 is the FPO pool/split view. Those two win.
+- **S15 is "My lots / my offers"** and the escrow timeline is a **component inside it**, reusing what Shreya builds for S22 — that reconciles `01_PRD`'s "Transaction timeline" reading without inventing a screen number.
+- **New screens:** **S26** farmer chat + call (Pranay P15) · **S27** buyer chat (Shreya SH10) · **S28** assistant (Pranay P16).
+- **Raised:** H0
+
+### [Pranay → everyone] DECISION: JWT lives in AsyncStorage in Phase 1, and we say so
+- CANON and `02_TRD` said `react-native-keychain`; `12_STACK` §6 said AsyncStorage with a declared gap. **The declared gap is now the statement in all three**, because it is the truth about what ships.
+- **The answer if asked:** *"Phase 2 uses `react-native-keychain`. In Phase 1 it's a 72-hour JWT on a device the farmer owns, and we wrote that down rather than implying a keystore we didn't build."*
+- **Why this framing and not the other:** a doc that claims a keystore the code does not have is a doc that fails the one question — *"show me"* — that a security-minded judge actually asks.
+- **Raised:** H0
+
+### [Pranay → Nikhil, Kartik] ★ CONTRACT: the demo script now has **⟨placeholders⟩** where your numbers go
+- **What changed:** `11_DEMO_AND_PITCH.md` no longer contains a MASE, a coverage percentage, a row count or a synthetic count. They are `⟨X⟩`, `⟨Y⟩`, `⟨N⟩`, `⟨S⟩`.
+- **Why:** the file said *MASE 0.83 / 81% coverage* while CANON's example model card said *0.71 / 78.4%*. **Both were invented.** One of them was going to be narrated on stage as a measured fact.
+- **What I need:** **Nikhil** fills MASE and coverage from the real backtest (N5). **Kartik** fills row count, date range and synthetic count from `/meta/data-provenance` (K7).
+- **When:** at **H30**, out loud, together, from the running system — not from any document. Slide 7 should be a **screenshot** of the provenance endpoint, not retyped numbers.
+- **Raised:** H0
 
 ---
 

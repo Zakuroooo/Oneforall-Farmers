@@ -9,7 +9,7 @@ Team: Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya
 
 > **The binding constraint on farmer price realisation is not information — it is the ability to wait.** Farmers already suspect prices will rise; they sell at harvest because they cannot afford not to. So we are not building a price dashboard. We are building a **waiting product**: a system that tells a farmer whether waiting pays, by how much, with what confidence, and then removes the liquidity and storage reasons they could not wait.
 
-**The hero feature is one endpoint.** `POST /api/v1/window/recommend` returns **SELL_NOW / SELL_ELSEWHERE / HOLD / SPLIT / NO_ADVICE** with expected rupee gain per quintal, a confidence band, and the costs it netted out. Everything else on screen exists to make that recommendation credible. If this endpoint is weak, the project is weak.
+**The hero feature is one endpoint.** `POST /api/v1/ai/window/recommend` returns **SELL_NOW / SELL_ELSEWHERE / HOLD / SPLIT / NO_ADVICE** with the expected rupee gain **on the whole lot**, a p10–p90 confidence band, and the costs it netted out. Everything else on screen exists to make that recommendation credible. If this endpoint is weak, the project is weak.
 
 **Every feature must answer:** *does this help a farmer wait profitably, or help a buyer trust a lot enough to pay more for it?* If neither, it is out of scope.
 
@@ -18,10 +18,10 @@ Team: Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya
 ## If you only read three things
 
 1. **`00_CANON.md`** — the schema, the invariants, the API contract. Everything else defers to this file.
-2. **Your own lane document** (table below).
-3. **`03_TASK_ASSIGNMENT_36H.md`** — the clock. Your tasks, by hour, by name.
+2. **Your own role document** — `docs/roles/<YOUR-NAME>.md`. It is your PRD, your TRD, and your ordered task list, and it is self-contained.
+3. **`docs/PLAN.md`** — the universal plan. Where your tasks sit relative to everyone else's, and what happens if you slip.
 
-Everything else is reference. Do not read all twelve files before you start; read your three and begin.
+Everything else is reference. Do not read all thirteen files before you start; read your three and begin.
 
 ---
 
@@ -29,7 +29,7 @@ Everything else is reference. Do not read all twelve files before you start; rea
 
 | # | File | Read it if you are… | What it is |
 |---|---|---|---|
-| **00** | [00_CANON.md](00_CANON.md) | **everyone, first** | 24-table Postgres DDL, invariants **I1–I15**, the full `/api/v1` contract, ownership map by name. **This file wins every disagreement.** |
+| **00** | [00_CANON.md](00_CANON.md) | **everyone, first** | 24-table Postgres DDL, invariants **I1–I16**, the full `/api/v1` contract, ownership map by name. **This file wins every disagreement.** |
 | **01** | [01_PRD.md](01_PRD.md) | everyone | Scope **F1–F19 + A1–A4**, the 25-screen inventory, hero and refusal mockups, 7 open decisions |
 | **02** | [02_TRD_SYSTEM_DESIGN.md](02_TRD_SYSTEM_DESIGN.md) | everyone | System context, repo tree, the 12-step hero request trace, `guard()`, the escrow FSM, docker-compose, deploy sequence, risk register |
 | **03** | [03_TASK_ASSIGNMENT_36H.md](03_TASK_ASSIGNMENT_36H.md) | **everyone, second** | The 36-hour clock. Per-person task tables, the H4 data gate, the H12 integration stitch, mandatory staggered sleep, the H30 hard freeze |
@@ -41,6 +41,9 @@ Everything else is reference. Do not read all twelve files before you start; rea
 | **09** | [09_PHASE_2.md](09_PHASE_2.md) | after H36 only | **F20 realisation tracking** (the trust flywheel), real escrow, nightly ingestion, SMS/IVR, conformal intervals |
 | **10** | [10_PHASE_3.md](10_PHASE_3.md) | after Phase 2 only | The four gates, pooled models at 300 markets, **real pledge finance**, institutional integration |
 | **11** | [11_DEMO_AND_PITCH.md](11_DEMO_AND_PITCH.md) | **everyone, by H30** | The 11-beat demo script, the 9-slide deck, **the eleven questions and their answers**, the fallback plan |
+| **12** | [12_STACK.md](12_STACK.md) | **Pranay, Shreya — first** | **Every dependency in the product, by name and version.** Why RN CLI and not Expo, the `expo-*` → community replacement map, the Android cleartext fix, JDK 17, the emulator's `10.0.2.2` |
+
+**Not in this folder but read by everyone: [`docs/PLAN.md`](../PLAN.md)** — the universal plan. All 73 tasks by ID and owner, the dependency graph, the hour grid, the four gates, and what gets cut first.
 
 ---
 
@@ -48,38 +51,41 @@ Everything else is reference. Do not read all twelve files before you start; rea
 
 | You | Read, in this order |
 |---|---|
-| **Akash** (backend) | `00_CANON` → `06_BACKEND` → `03_TASKS` §5 (A1–A6) → `11_DEMO` Q5, Q7 |
-| **Kartik** (data + devops) | `00_CANON` §6 → `04_DATA` → `08_DEVOPS` → `03_TASKS` §5 (K1–K7) → `11_DEMO` Q1, Q2, Q6 |
-| **Nikhil** (forecasting) | `00_CANON` §7 → `05_AI` §1–2 → `03_TASKS` §5 (N1–N5) → `11_DEMO` Q3 |
-| **Nilesh** (decision engine) | `00_CANON` §7 → `05_AI` §1, §3 → `03_TASKS` §5 (L1–L7) → `11_DEMO` Q4, Q9 |
-| **Pranay** (farmer app) | `00_CANON` §7 → `07_FRONTEND` → `01_PRD` §screens → `03_TASKS` §5 (P1–P8) |
-| **Shreya** (buyer web, i18n, voice, pitch) | `07_FRONTEND` → `11_DEMO` **in full** → `03_TASKS` §5 (S1–S6) |
+| **Akash** (backend — lead) | `00_CANON` → `06_BACKEND` → `docs/roles/AKASH.md` (A0–A14) → `11_DEMO` Q5, Q7 |
+| **Kartik** (data + devops, then backend support) | `00_CANON` §6 → `04_DATA` → `08_DEVOPS` → `docs/roles/KARTIK.md` (K0–K11) → `11_DEMO` Q1, Q2, Q6 |
+| **Nikhil** (forecasting) | `00_CANON` §7 → `05_AI` §1–2 → `docs/roles/NIKHIL.md` (N0–N7) → `11_DEMO` Q3 |
+| **Nilesh** (decision engine) | `00_CANON` §7 → `05_AI` §1, §3 → `docs/roles/NILESH.md` (L0–L9) → `11_DEMO` Q4, Q9 |
+| **Pranay** (farmer app — frontend lead) | `00_CANON` §7 → `12_STACK` → `07_FRONTEND` → `docs/roles/PRANAY.md` (P0–P16) |
+| **Shreya** (buyer console, i18n, voice, pitch) | `12_STACK` → `07_FRONTEND` → `11_DEMO` **in full** → `docs/roles/SHREYA.md` (SH0–SH10) |
+
+**Everyone also reads `docs/PLAN.md`** — the universal plan: all 73 tasks by ID, the dependency graph, the hour-by-hour grid, and the cut order.
 
 ---
 
-## The invariants — all fifteen, in one place
+## The invariants — all sixteen, in one place
 
-Breaking one is a bug even if the tests pass. Full statements in `00_CANON.md` §5.
+Breaking one is a bug even if the tests pass. **This table is `00_CANON.md` §3 in short form. If the two ever disagree, CANON wins and this table is the bug.**
 
 | # | Invariant |
 |---|---|
 | **I1** | **All money is integer paise.** Never float, never rupees. Fields end `_paise`. Format only at the render edge. |
-| **I2** | **No secrets in git.** Only `.env.example`, with empty values. A leaked key gets rotated — deleting the line does not remove it from history. |
-| **I3** | **`audit_log`, `escrow_events`, `dispute_events`, `realisation_ledger` are append-only.** No `UPDATE`, no `DELETE`, ever. |
-| **I4** | **Every read of user-owned data is scoped by the session actor**, from the JWT, never from a client-supplied ID. Use `guard()`. **404, not 403.** |
-| **I5** | **The model may refuse.** When the band exceeds the threshold, return `NO_ADVICE` with a reason. Never invent a confident number. |
-| **I6** | **State transitions go through the FSM only.** `domain/escrow.py` is the sole place a transaction status changes. |
+| **I2** | **Quantities are integer kilograms** (`_kg`). 1 qtl = 100 kg. **Store kg, display quintals.** |
+| **I3** | **Rates and shares are basis points** (`_bps`). 10000 bps = 100%. |
+| **I4** | **Every read of user-owned data is scoped by the JWT actor**, never by a client-supplied ID. Use `guard()`. **Return 404, not 403** — a 403 confirms the row exists. |
+| **I5** | **`audit_log`, `escrow_events`, `dispute_events`, `realisation_ledger` are append-only.** No `UPDATE`, no `DELETE`, ever. |
+| **I6** | **The model may refuse.** When the p10–p90 band exceeds the threshold, return `NO_ADVICE` with a reason. Never invent a confident number. |
 | **I7** | **The demo makes zero live external network calls.** Ingestion is an offline CLI that writes to Postgres. |
-| **I8** | **Synthetic or imputed data is labelled in the UI.** Every price row carries `source` and `source_url`. |
-| **I9** | **Quantities are integer kilograms** (`_kg`), displayed in quintals. **Rates are basis points** (`_bps`). |
-| **I10** | **Every route validates its input with a Pydantic schema.** No hand-rolled parsing. |
-| **I16** | **Both numbers, always.** The worst case renders at the same font size as the expected gain. |
-| **I12** | **Never log phone numbers, OTPs, or full payloads.** `redact()` at the boundary. |
-| **I13** | **If pledge interest ≥ expected gain, no pledge card.** Server returns `None`. |
-| **I14** | **No `random.random()` / `Math.random()` for anything security-relevant.** OTPs from `secrets`. |
-| **I15** | **No Aadhaar numbers, ever.** Not hashed, not encrypted, not in seed data. **Phone is the identifier.** |
+| **I8** | **Generated data is labelled generated.** Every price row carries `source` and `source_url`; the UI badges anything not `AGMARKNET`/`MSAMB`. |
+| **I9** | **No Aadhaar numbers, ever.** Not hashed, not encrypted, not in seed data, not "just for the demo". **Phone is the identifier.** |
+| **I10** | **No secrets in git.** Only `.env.example`, with empty values. A leaked key gets rotated — deleting the line does not remove it from history. |
+| **I11** | **State transitions go through the FSM only.** `api/app/domain/escrow.py` is the sole place a transaction status changes. |
+| **I12** | **Every route validates its input with a Pydantic schema.** No hand-rolled parsing, no `dict[str, Any]` bodies. |
+| **I13** | **If pledge interest ≥ expected gain, no pledge card.** The server returns `None`. Enforced in the decision engine, not in the UI. |
+| **I14** | **Never log phone numbers, OTPs, or full payloads.** `redact()` at the boundary. |
+| **I15** | **No `random.random()` / `Math.random()` for anything security-relevant.** OTPs from `secrets`. |
+| **I16** | **Both numbers, always.** The worst case renders at the **same font size** as the expected gain — never smaller, greyer, collapsed, or behind a tap. |
 
-**The two that will be tested by a judge:** I4 (they will try another farmer's ID) and I5 (they will ask what happens when the model is wrong). Have both ready to demonstrate, not describe.
+**The two that will be tested by a judge:** **I4** (they will try another farmer's ID) and **I6** (they will ask what happens when the model is wrong). Have both ready to demonstrate, not describe.
 
 ---
 
@@ -87,9 +93,9 @@ Breaking one is a bug even if the tests pass. Full statements in `00_CANON.md` �
 
 | Layer | Choice | Note |
 |---|---|---|
-| App | **Expo / React Native**, one codebase | native + `expo start --web`, role-based navigators |
+| App | **React Native CLI** 0.76.x, one codebase | **not Expo**; role-based navigators; no web build. See `12_STACK.md`. |
 | State | TanStack Query + React Context | **no Redux** |
-| Charts | `victory-native` | |
+| Charts | `react-native-svg`, hand-rolled | not `victory-native` |
 | API | **FastAPI**, Pydantic v2, SQLAlchemy 2.0, Alembic | |
 | DB | **PostgreSQL 16** in Docker | enums as `text` + `CHECK`, not native PG enums |
 | ML | **LightGBM quantile regression**, in-process in the API | `objective='quantile'`, α ∈ {0.1, 0.5, 0.9} |
@@ -127,7 +133,7 @@ bash scripts/smoke.sh
 ```
 
 ```bash
-cd app && npx expo start
+cd app && npm install && npx react-native run-android
 ```
 
 ```bash
@@ -155,6 +161,6 @@ Read once a day.
 
 Every year, farmers in Maharashtra sell at harvest for less than their crop is worth, because they cannot afford to wait — and some of them do not survive that gap.
 
-We cannot fix the whole of that. What we can build is a system that tells a farmer whether waiting pays, in his language, with the worst case shown next to the best one, **and that refuses to answer when it does not know.**
+We cannot fix the whole of that. What we can build is a system that tells a farmer whether waiting pays, in his language, with the worst case shown next to the expected gain, **and that refuses to answer when it does not know.**
 
 That last clause is the product. Everything else is engineering.

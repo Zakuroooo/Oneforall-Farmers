@@ -27,14 +27,22 @@ accept → escrow timeline → FPO split → provenance screen →
 | **1** | **Marathi first** | App opens in Marathi, no toggle needed | *"This opens in Marathi because our user reads Marathi. English is the fallback, not the default."* | 0:20 |
 | **2** | **Price + provenance** | Home: today's Lasalgaon onion price, source badge | *"₹1,850 a quintal. That badge says ARCHIVE — it's real Agmarknet data from a public mirror, and I'll show you the row count later."* | 0:30 |
 | **3** | **History + forecast fan** | 180-day chart, then the p10/p50/p90 fan | *"We don't show a line. We show a band, because a point forecast with no uncertainty is a guess with a chart."* | 0:45 |
-| **4** | **Model card** | MASE, coverage, known limitations | *"MASE 0.83 — better than seasonal-naive. 81% of actuals land inside our band, and we're targeting 80. It says right here that we can't see export bans coming."* | 0:40 |
+| **4** | **Model card** | MASE, coverage, known limitations | *"MASE ⟨X⟩ — better than seasonal-naive. ⟨Y⟩% of actuals land inside our band, and we're targeting 80. It says right here that we can't see export bans coming."* | 0:40 |
 | **5** | **★ THE VERDICT** | HOLD · **+₹6,290** · worst case **−₹4,800** | *"Hold 11 days. Expected gain ₹6,290 on 40 quintals — net of transport, commission, storage and spoilage. Worst case, he loses ₹4,800. Same font size. He gets both numbers or neither."* | **1:10** |
 | **6** | **Cost breakdown + pledge** | Every deduction itemised; pledge card | *"Every rupee we netted out, itemised. And this — 'indicative simulation, not a lender quote' — because we're not a lender. If the interest exceeded the gain, this card would not appear at all."* | 0:45 |
 | **7** | **★ Voice, then airplane mode** | 🔊 speaks it in Marathi → **enable airplane mode** → stale banner → 🔊 **still speaks** | *"Now watch."* [airplane mode] *"Yesterday 3pm's data — it says so. And the voice still works, because the Marathi audio is on the phone, not in the cloud. A farmer in a field with no signal still gets the advice — including the worst case."* | **1:00** |
 | **8** | **Lot → assay → grade** | Create lot, 6 questions, grade B + improvement tip | *"Six questions he can answer standing in his field. Grade B. And a tip: sorting for size moves this to A and adds 8% to the price."* | 0:50 |
 | **9** | **★ Negotiate — the middleman beat** | Buyer posts demand → matches incl. **COMBINATION** → offer ₹1,900 → **farmer counters ₹2,000 with the forecast on screen** → buyer ₹1,960 → accept | *"The buyer needs 100 quintals; no single farmer has that, so we combined three. He offers ₹1,900. Now look at the farmer's counter screen — **his own forecast is sitting right above the input box.** He isn't guessing. That's the middleman's entire informational advantage, handed to the farmer."* | **1:30** |
-| **10** | **Escrow + split + provenance** | Timeline of states; FPO split summing to exactly 100%; provenance screen | *"Money held until delivery is confirmed. Three farmers, split by quantity **and grade**, adding to exactly 100% — and no pool forms if any member would do worse alone. And here's the data behind everything: 1,458 rows, zero synthetic."* | 0:50 |
+| **10** | **Escrow + split + provenance** | Timeline of states; FPO split summing to exactly 100%; provenance screen | *"Money held until delivery is confirmed. Three farmers, split by quantity **and grade**, adding to exactly 100% — and no pool forms if any member would do worse alone. And here's the data behind everything: ⟨N⟩ rows, ⟨S⟩ synthetic."* | 0:50 |
 | **11** | **★★ THE REFUSAL** | Second crop → **NO_ADVICE** + Marathi reason | *"Now the same question on a different crop — and the product refuses. The band is too wide to be useful, so it says so instead of inventing a number. A wrong HOLD costs a farmer real money. **We'd rather say nothing than guess.**"* | **0:50** |
+
+### ★ The ⟨angle brackets⟩ are not a formatting quirk — read this before you rehearse
+
+**Every ⟨X⟩ above is a number nobody has measured yet.** MASE and coverage come from Nikhil's backtest (N5). Row count and synthetic count come from Kartik's provenance endpoint (K7). Neither exists at H0.
+
+**Fill them in from the running system at H30, out loud, together — and then never change them again.** Do not fill them in from this document, from a role doc, or from a fixture: `00_CANON.md`'s example response carries `mase: 0.71, coverage_80_bps: 7840` and an earlier draft of this file said `0.83 / 81%`. **Both are made up.** One of them was going to end up narrated on stage as fact.
+
+This is §3's rule applied to the script instead of the slides: *an unverified number is worse than no number.* A judge who asks "is that 0.83 from your backtest or from your plan?" and gets a pause has learned something about the whole pitch.
 
 **Total ≈ 8:30.** Cut beat 6's pledge card first if you are over. **Never cut 5, 7, 9, or 11.**
 
@@ -70,8 +78,8 @@ Slides are the frame around the demo, not a substitute for it. **Demo first if t
 | 3 | **What we built** | One line: *"A system that tells a farmer whether waiting pays, by how much, with what confidence — and then removes the reasons he couldn't wait."* |
 | 4 | **The verdict, screenshotted** | The HOLD card with both numbers. Let the screenshot argue. |
 | 5 | **★ How we're honest** | Three bullets: forecast bands not points · the model can refuse · every price row carries its source. **This is the differentiator slide.** |
-| 6 | **Architecture** | One diagram. Expo → FastAPI → Postgres, model in-process, ingestion offline. No microservice fantasy. |
-| 7 | **Data** | Row count, date range, source, **synthetic count (zero, or the true number)**. Numbers, not adjectives. |
+| 6 | **Architecture** | One diagram. React Native → FastAPI → Postgres, model in-process, ingestion offline. No microservice fantasy. |
+| 7 | **Data** | Row count, date range, source, **synthetic count (zero, or the true number)**. Numbers, not adjectives. **Screenshot the provenance endpoint rather than retyping it** — then the slide cannot drift from the system. |
 | 8 | **Phase 2 / Phase 3, gated** | The four Phase 3 gates. *"We've written down what has to be true before we're allowed to scale."* |
 | 9 | **Why it matters** | One sentence, said plainly, not dramatised. See §7. |
 
@@ -86,9 +94,9 @@ Slides are the frame around the demo, not a substitute for it. **Demo first if t
 
 | # | Question | Who | The answer |
 |---|---|---|---|
-| 1 | *"Is this real data or did you make it up?"* | Kartik | *"Real. 1,458 rows of Agmarknet modal prices, Jan 2023 to Dec 2024, six markets, from a public archived mirror — here's the URL. 18 rows are forward-filled across gaps of three days or less and they're labelled IMPUTED. Zero synthetic. Here's the provenance endpoint, live."* |
+| 1 | *"Is this real data or did you make it up?"* | Kartik | *"Real. ⟨N⟩ rows of Agmarknet modal prices, ⟨date range⟩, six markets, from a public archived mirror — here's the URL. ⟨M⟩ rows are forward-filled across gaps of three days or less and they're labelled IMPUTED. ⟨S⟩ synthetic. Here's the provenance endpoint, live."* |
 | 2 | *"Where did ₹3.50 per quintal per kilometre come from?"* | Kartik | The **most likely detailed question**, because a domain expert can check it from memory. Give the source, or say *"that's an estimate from X, and it's marked as an estimate in our cost table."* **Never "I don't know."** |
-| 3 | *"How accurate is your model?"* | Nikhil | *"MASE 0.83 against a seasonal-naive baseline, so 17% better than 'assume last week repeats'. But accuracy is the wrong question for us — what matters is whether the band is honest. 81% of actual prices fall inside our p10–p90, and we designed for 80. If that number were 40% we'd be lying to farmers with a nice chart."* |
+| 3 | *"How accurate is your model?"* | Nikhil | *"MASE ⟨X⟩ against a seasonal-naive baseline, so ⟨X⟩ better than 'assume last week repeats'. But accuracy is the wrong question for us — what matters is whether the band is honest. ⟨Y⟩% of actual prices fall inside our p10–p90, and we designed for 80. If that number were 40% we'd be lying to farmers with a nice chart."* |
 | 4 | *"What if the model is wrong?"* | Nilesh | *"Then the farmer loses money, which is why the worst case is in the same font size as the expected gain, and why the app refuses when the band is too wide. Let me show you the refusal."* → **go to beat 11** |
 | 5 | *"Why not blockchain?"* | Akash | *"Because what we need is tamper-evidence and auditability, and an append-only Postgres table with a hash chain gives us both — every row carries the previous row's hash, so you can't alter history without breaking the chain. A distributed ledger would add consensus overhead to solve a trust problem we don't have: there's one operator, and the auditor is the government. We'd rather be able to explain our design than name-drop one."* |
 | 6 | *"How does this scale?"* | Kartik | The three ordered steps from `08_DEVOPS_AND_DEPLOY.md` §8. **Never invent a throughput number.** |
@@ -110,7 +118,7 @@ Slides are the frame around the demo, not a substitute for it. **Demo first if t
 |---|---|---|
 | 1 | Everything works | Live on EC2, phone over wifi |
 | 2 | EC2 unreachable | Laptop `docker compose up`, phone on a hotspot |
-| 3 | Docker won't start | Expo Go against localhost |
+| 3 | Docker or the DB won't start | `USE_FIXTURES = true` — app runs off fixtures, no API |
 | 4 | Nothing runs | **Play the H32 recording** |
 
 **Do not debug on stage.** If a beat fails, say *"that's the live box — let me show you the recording of that flow"*, switch to rung 4 for that beat only, and continue. Ten seconds of composure beats two minutes of terminal.
@@ -123,7 +131,7 @@ Slides are the frame around the demo, not a substitute for it. **Demo first if t
 
 1. `curl <host>/api/v1/meta/health` → `model_loaded: true`, `price_row_count` > 1000
 2. App open, **already logged in**, Marathi selected, on the home screen
-3. Buyer console open in a second tab, **already logged in**
+3. **Buyer console on the second Android device**, same APK, **already logged in** as a buyer
 4. Airplane mode **off**, wifi connected, brightness up, notifications silenced
 5. `docker compose logs -f api` running on a second screen if you have one
 6. Fallback video **open in a tab**, paused at 0:00
@@ -137,7 +145,7 @@ Slides are the frame around the demo, not a substitute for it. **Demo first if t
 
 Do not dramatise this. Say it plainly, once, and stop.
 
-> *"Every year, farmers in Maharashtra sell at harvest for less than their crop is worth, because they can't afford to wait — and some of them don't survive that gap. We can't fix the whole of that. What we built tells a farmer whether waiting pays, in his language, with the worst case shown next to the best one, and it refuses to answer when it doesn't know. That's the part we could actually make honest in thirty-six hours."*
+> *"Every year, farmers in Maharashtra sell at harvest for less than their crop is worth, because they can't afford to wait — and some of them don't survive that gap. We can't fix the whole of that. What we built tells a farmer whether waiting pays, in his language, with the worst case shown at the same size as the gain, and it refuses to answer when it doesn't know. That's the part we could actually make honest in thirty-six hours."*
 
 **Then stop talking.** Do not add a thank-you paragraph, a vision statement, or a market-size figure. The silence after that sentence is doing more work than anything you could put in it.
 

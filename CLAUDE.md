@@ -20,18 +20,22 @@ The user will tell you their name — *"I am Pranay"*, *"I am Akash"*. When they
 
 **Nobody waits for a teammate.** If task N needs an endpoint that does not exist yet, build against a fixture shaped exactly like `00_CANON.md` §7, leave a `TODO(<owner>):`, and keep going. `docs/PLAN.md` §0 explains the rule; §5 lists what every person can start at hour zero.
 
+**If the user is starting cold, point them at `docs/START_HERE.md`** — it has one copy-pasteable kickoff prompt per person, the four gates, and the fixture-first rule in one page. It is the shortest path from "I am Pranay" to a first commit.
+
 If the user has not said who they are, ask once, then proceed.
 
 | Name | Lane | Role doc | Lane doc |
 |---|---|---|---|
 | **Akash** | Backend **lead** — API, auth, escrow FSM, matching | `docs/roles/AKASH.md` | `06_BACKEND_ARCHITECTURE.md` |
-| **Kartik** | Backend **support** + data acquisition + deploy | `docs/roles/KARTIK.md` | `04_DATA_ARCHITECTURE.md`, `08_DEVOPS_AND_DEPLOY.md` |
+| **Kartik** | Data acquisition + deploy **first**, then backend support | `docs/roles/KARTIK.md` | `04_DATA_ARCHITECTURE.md`, `08_DEVOPS_AND_DEPLOY.md` |
 | **Nikhil** | Forecasting model (LightGBM quantile) | `docs/roles/NIKHIL.md` | `05_AI_ARCHITECTURE.md` §1–2 |
 | **Nilesh** | Decision engine, costs, refusal, pledge | `docs/roles/NILESH.md` | `05_AI_ARCHITECTURE.md` §1, §3 |
 | **Pranay** | Frontend **lead** — farmer app, screens S1–S16 | `docs/roles/PRANAY.md` | `07_FRONTEND_ARCHITECTURE.md` |
 | **Shreya** | Frontend — buyer/FPO screens, i18n, voice, pitch | `docs/roles/SHREYA.md` | `07_FRONTEND_ARCHITECTURE.md`, `11_DEMO_AND_PITCH.md` |
 
 **Three lanes, two people each:** Pranay + Shreya on the app · Akash + Kartik on the API · Nikhil + Nilesh on the model. Within a lane the first name listed is the lead and owns the shared files.
+
+**Kartik's ordering is deliberate and people get it wrong.** He is on data and deploy *first* — K1 is the H4 data gate and K9 is the H28 deploy rehearsal. He does not start backend support until both are behind him. If Akash is blocked at H6 and Kartik is still scraping, **the answer is a fixture, not Kartik** — pulling him off the data ladder puts at risk the one gate that cannot be recovered later.
 
 ---
 
@@ -137,10 +141,11 @@ app/                    React Native CLI app      — Pranay (farmer), Shreya (b
   assets/audio/mr/      pre-generated Marathi clips (committed — I7)
   android/              native project — network_security_config.xml lives here
 nginx/  infra/  scripts/  docker-compose.yml       — Kartik
+docs/START_HERE.md      ★ six kickoff prompts, one per person — the entry point
 docs/PLAN.md            ★ the universal plan — all 73 tasks, everyone
 docs/architecture/      the baseline (00–12 + README)
 docs/roles/             one file per person
-docs/design/            CLAUDE_DESIGN_PROMPT.md
+docs/design/            CLAUDE_DESIGN_PROMPT.md — the claude.ai/design prompts
 docs/reference/         PLAYBOOK.md (55-page research base), DATA_SOURCE_RECIPES.md
 docs/BLOCKERS.md        append-only, everyone
 ```

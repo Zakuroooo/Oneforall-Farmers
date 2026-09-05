@@ -71,7 +71,7 @@ You need a clip set of roughly:
 
 ### 1.6 The buyer console — S17–S25
 
-The buyer runs on **the same binary**. JWT `role === 'BUYER'` selects `BuyerNavigator`. `npx expo start --web` gives you a browser build of the identical code — that is how the buyer gets a desktop console without a second project.
+The buyer runs on **the same binary**. JWT `role === 'BUYER'` selects `BuyerNavigator` at the root of `App.tsx`. There is no separate buyer project and **no web build** — React Native CLI has no web target. On stage the buyer is a **second Android device running the identical APK**, logged in with a buyer phone number. Two phones side by side is also a clearer picture for a judge than a phone plus a browser tab.
 
 | ID | Screen | Must do | Priority |
 |---|---|---|---|
@@ -170,29 +170,36 @@ Keep clips short and trimmed. Leading silence is what makes a sequenced sentence
 
 ```ts
 // app/src/lib/voice.ts
-import { Audio } from 'expo-av';
+import Sound from 'react-native-sound';
+import Tts from 'react-native-tts';
 
-/** 629000 paise -> ['sixtytwo','thousand','ninehundred','rupees'] */
+/** 629000 paise -> ['saha','hazar','donshe','navvad','rupaye'] */
 export function decomposeRupees(paise: number): string[] { ... }
 
-export async function speak(clips: string[]): Promise<void> {
-  for (const c of clips) {
-    const { sound } = await Audio.Sound.createAsync(CLIPS[c]);   // static require map
-    await sound.playAsync();
-    await new Promise<void>(r => sound.setOnPlaybackStatusUpdate(s => {
-      if (s.isLoaded && s.didJustFinish) { sound.unloadAsync(); r(); }
-    }));
-  }
+function play(clip: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    // CLIPS is a STATIC require map — see the note below.
+    const s = new Sound(CLIPS[clip], (err) => {
+      if (err) return reject(err);
+      s.play(() => { s.release(); resolve(); });
+    });
+  });
 }
 
-export async function speakVerdict(w: WindowRes): Promise<void> {
-  const clips = [w.action.toLowerCase(), ...];   // action, days, gain
+export async function speak(clips: string[]): Promise<void> {
+  for (const c of clips) await play(c);          // sequential; concurrent playback overlaps
+}
+
+export async function speakVerdict(w: WindowRes, t: TFn): Promise<void> {
+  const clips = [w.action.toLowerCase(), ...];   // action, days, gain, then the worst case
   try { await speak(clips); }
-  catch { Speech.speak(verdictText(w), { language: 'mr-IN' }); }   // expo-speech fallback
+  catch { Tts.setDefaultLanguage('mr-IN'); Tts.speak(verdictText(w, t)); }   // fallback
 }
 ```
 
-**`expo-speech` is the fallback, not the primary.** It depends on the device's installed Marathi voice, which a ₹7,000 Android may not have — so it fails silently on exactly the phone we are building for. The mp3 path must be the one that runs.
+**`react-native-tts` is the fallback, not the primary.** It depends on the device's installed Marathi voice, which a ₹7,000 Android may not have — so it fails silently on exactly the phone we are building for. The mp3 path must be the one that runs.
+
+`Sound.setCategory('Playback')` once at app start, or Android will duck your clips under the ringer volume instead of the media volume.
 
 The clip map must be a **static `require` object**, not a dynamic path string. Metro bundles what it can see statically; `require(\`./audio/${name}.mp3\`)` resolves to nothing at runtime and you will find out on the phone, not in the simulator.
 
@@ -256,12 +263,19 @@ Never `{error.message}`. A backend `AppError` message is English and a raw fetch
 | **SH0** | **★ `components/ui/` — six components + `i18n.tsx`** | Pranay imports `<Card>` and `<Button>` and deletes his local copies | nothing |
 | **SH1** | **`mr.json` + `en.json`** for every farmer screen, Devanagari numerals | Zero bare English strings on any farmer screen | Pranay's key requests |
 | **SH2** | **★ `scripts/gen_tts.py`** — ~40 phrases + 0–99 + hundreds + units | Clips generated **and committed** under `app/assets/audio/` | nothing |
-| **SH3** | **★★ `lib/voice.ts`** — decompose + sequence + `expo-speech` fallback | ₹6,290 speaks correctly from clips | SH2 |
+| **SH3** | **★★ `lib/voice.ts`** — decompose + sequence + `react-native-tts` fallback | ₹6,290 speaks correctly from clips | SH2 |
 | **SH4** | **★★ Airplane-mode test on a real phone, at H20** | 🔊 works with no network, worst case included | SH3, Pranay P3 |
 | **SH5** | **S17 login + S18 post demand** | A buyer logs in and posts a 100 qtl demand | Akash A1, A7 |
 | **SH6** | **★ S19 matches incl. COMBINATION + S21 offer/counter** | A 100 qtl demand shows a 3-lot bundle; a counter round-trips | Akash A7, A8 |
 | **SH7** | **★ S24 provenance** | Renders `/meta/data-provenance` verbatim, source URL tappable | Kartik K7 |
 | **SH8** | **Deck (9 slides) + narration + H32 recording** | Three full rehearsals done; recording on two devices | H32 |
+| **SH9** | **`hi.json` — Hindi as a third locale** | Picker shows मराठी / हिंदी / English; all three files complete, no missing keys | SH1 |
+| **SH10** | **S27 buyer chat** *(if time)* | Buyer replies to a farmer; the thread renders on both devices | Akash A14, Pranay P15 |
+
+**Two notes on SH9 and SH10, because they are new and the scope is easy to over-read:**
+
+- **SH9 is text only.** Three JSON files and one more option in the picker. **There are no Hindi voice clips** — the clip set is Marathi and tripling it is not affordable in 36 hours. When a judge asks, the honest sentence is *"text is Marathi, Hindi and English; voice is Marathi, because we recorded a real clip set rather than shipping a cloud TTS call that dies on venue wifi."* That answer is stronger than a claim of three-language audio you cannot demonstrate offline.
+- **SH10 is the last thing on this list for a reason.** It depends on two other people's tasks landing (A14 and P15) and it is **not on the golden path** — no demo beat fails without it. If H30 arrives and the farmer side is half-built, ship the farmer side read-only and cut the buyer reply. See `docs/PLAN.md` §9.
 
 **SH0 blocks Pranay and nothing blocks SH0.** Do it first, in the first three hours, before you look at a buyer screen. Every hour Pranay spends hand-rolling a Button is an hour not spent on S9.
 

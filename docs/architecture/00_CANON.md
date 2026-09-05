@@ -36,19 +36,19 @@
 
 | Layer | Choice | Notes |
 |---|---|---|
-| **Client** | **Expo / React Native, single codebase** | One app. Farmer stack + buyer stack behind role-based navigators. `expo start` for phone via QR, `expo start --web` for the buyer console in a browser tab. **Not two codebases.** |
+| **Client** | **React Native CLI 0.76.x, single codebase** | One app, one binary. Farmer stack + buyer stack behind role-based navigators, selected by the JWT `role` claim. **Not Expo** and **no web build** — RN CLI has no web target. The buyer console is the same binary on a second Android device. See `12_STACK.md`. |
 | Navigation | React Navigation (native-stack + bottom-tabs) | |
 | Client state | TanStack Query (server state) + React Context (auth, locale) | No Redux. |
-| Charts | `victory-native` or `react-native-svg-charts` | Pick one at H1 and never revisit. |
+| Charts | **`react-native-svg`, hand-rolled** | Not `victory-native` — that pulls Skia + Reanimated for one fan chart. ~60 lines of `<Path>`. `12_STACK.md` §3.1. |
 | **API** | **FastAPI**, Python 3.11 | `uvicorn` behind nginx |
 | Validation | **Pydantic v2** on every request and response | The Zod schemas in `packages/contracts/` are the Next.js-era ancestor. Field names carry over; the code does not. |
 | ORM | SQLAlchemy 2.0 (declarative) + Alembic | |
 | **DB** | PostgreSQL 16, Docker container on EC2 | |
 | **ML** | Python 3.11, LightGBM (quantile objective), pandas, numpy, statsmodels | Served in-process by the same FastAPI app under `/ai/*`. **No separate ML service in Phase 1** — one less thing to deploy. |
-| Auth | Phone + OTP → JWT. `expo-secure-store` on native, httpOnly cookie on web | |
-| i18n | Plain JSON dictionaries + React Context. **No i18n library.** | |
-| Voice out | Sarvam TTS clips **pre-generated at build time**, committed as `.mp3`, played by `expo-av` | Zero network calls at runtime |
-| Voice in | `expo-speech-recognition` or platform ASR, **one screen only** | Pre-fills a form; never commits |
+| Auth | Phone + OTP → JWT, stored in **AsyncStorage** (Phase 1) | No web target, so no cookie path. **Declared gap: the token is not in the OS keystore** — `react-native-keychain` is the Phase-2 fix. See `12_STACK.md` §6. |
+| i18n | Plain JSON dictionaries + React Context. **No i18n library.** | Three locales ship in Phase 1: `mr` (default), `hi`, `en`. |
+| Voice out | Sarvam TTS clips **pre-generated at build time**, committed as `.mp3`, played by `react-native-sound` | Zero network calls at runtime. `react-native-tts` is the fallback. |
+| Voice in | **Cut from Phase 1.** | A misheard "40 quintal" → "14 quintal" is a financial error. `07_FRONTEND_ARCHITECTURE.md` §7. |
 | Photos | Local disk on EC2 behind nginx `/media/`, S3 optional | |
 | Payments | **None.** Escrow is a state machine in our own Postgres. | See §3 I11 |
 | Infra | Single EC2 instance, `docker-compose`, nginx reverse proxy | |
@@ -123,11 +123,11 @@ def qtl(kg: int) -> float:
 
 ```ts
 // src/lib/money.ts
-export const formatPaise = (p: number, locale: 'mr' | 'en') => ...   // "₹१,४२८" / "₹1,428"
-export const toQuintal   = (kg: number) => kg / 100;
+export const formatPaise = (p: number, locale: Locale) => ...   // "₹१,४२८" / "₹1,428"
+export const toQuintal   = (kg: number) => Math.floor(kg / 100);   // display only; floor, never round
 ```
 
-**Devanagari numerals in Marathi.** `₹१,४२८`, not `₹1,428`, when `locale === 'mr'`. Digits `०१२३४५६७८९`.
+**Devanagari numerals in Marathi.** `₹१,४२८`, not `₹1,428`, when `locale === 'mr'`. Digits `०१२३४५६७८९`. Hindi uses the same Devanagari digits; English uses Latin.
 
 ---
 

@@ -124,7 +124,7 @@ Say these out loud on the roadmap slide. Deferring on purpose is competence; pre
 
 ## 5. Screen inventory
 
-**23 screens, one Expo codebase.** Farmer stack = Pranay. Buyer stack + shared UI = Shreya.
+**23 screens, one React Native codebase, one binary.** Farmer stack = Pranay. Buyer stack + shared UI = Shreya.
 
 ### Farmer (14) — Pranay
 
@@ -275,7 +275,7 @@ We cut 13 hours of work. A judge cannot see any of it.
 | Cut | Instead | Saves | What a judge notices |
 |---|---|---|---|
 | Razorpay / real payments | Escrow FSM in our own Postgres, append-only event log, labelled *"payment rails simulated — the state machine is real"* | ~6 h | Nothing. The FSM is the interesting part and it's fully real. |
-| Two separate frontends | One Expo codebase, role-based navigators, `--web` for buyer | ~4 h | Nothing. Arguably a *plus*: "one codebase, native and web." |
+| Two separate frontends | One React Native codebase, role-based navigators, buyer runs the same binary on a second device | ~4 h | Nothing. Arguably a *plus*: "one codebase, one APK, two roles." |
 | Live FPO pool formation + consent flow | Seeded pool + one read-only split screen with correct arithmetic and the Pareto guard | ~3 h | Nothing, if the arithmetic is right and `vs_solo` is shown per member. |
 
 And one dependency deleted for free: **Nilesh's decision layer is arithmetic.** It does not need Nikhil's trained model to start — it needs a `(p10, p50, p90)` triple. Nilesh builds against a **stubbed forecast from H2** and swaps in the real one at H12. That removes a 6-hour serial block from the critical path at zero cost.

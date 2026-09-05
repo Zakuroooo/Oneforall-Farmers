@@ -28,9 +28,9 @@
 │                     ONLINE  (the demo — zero external calls, I7)            │
 │                                                                             │
 │    ┌──────────────────────┐          ┌──────────────────────┐               │
-│    │  Expo app (native)   │          │  Expo web (buyer)    │               │
+│    │  RN app · device A   │          │  RN app · device B   │               │
 │    │  farmer navigator    │          │  buyer navigator     │               │
-│    │  Marathi · offline   │          │  browser tab         │               │
+│    │  Marathi · offline   │          │  SAME BINARY, role   │               │
 │    └──────────┬───────────┘          └──────────┬───────────┘               │
 │               │      HTTPS /api/v1 (JWT)        │                           │
 │               └────────────────┬────────────────┘                           │
@@ -73,7 +73,7 @@
 | Decision | Reason | The alternative we rejected |
 |---|---|---|
 | **One FastAPI process serves both API and ML** | The model is a 2 MB LightGBM pickle loaded once at startup. A separate service means a second container, a second deploy, a network hop, an auth key, and a new failure mode — for nothing. | Separate ML microservice. Correct at scale, wrong at 36 hours. |
-| **One Expo codebase, role navigators** | Farmer needs native (camera, offline, audio). Buyer needs a browser. Expo gives both from one tree. Saves ~4 h and removes a whole second build pipeline. | Expo + separate Next.js buyer app. |
+| **One React Native codebase, role navigators** | Both users need native — the farmer for camera, offline cache and audio, the buyer for the same lot photos and the same push-free polling. The JWT `role` claim picks the navigator at the root, so the buyer console costs one `if`. Two phones side by side is also a clearer stage picture than a phone plus a browser. | Expo (rejected — see `12_STACK.md` §1) or a separate Next.js buyer app (~4 h for zero demo gain). |
 | **Postgres in Docker on the same EC2** | One `docker compose up`. No managed-DB latency, no VPC config, no cost. | Neon/RDS. Adds a network dependency to a demo that must survive bad wifi. |
 | **`snake_case` on the wire** | Python-native. No serialiser aliasing, no camel/snake drift between five people. | camelCase JSON + Pydantic aliases. One more thing to get wrong at 3am. |
 | **Text + CHECK instead of PG enums** | `ALTER TYPE` mid-hackathon is painful and blocks. A CHECK constraint is a one-line migration. | Native PG enums. |
@@ -140,9 +140,10 @@ mandi-setu/
 │   ├── 20_demo_story.py                #   the 11-beat demo rows: farmers, buyers, pools, offers
 │   └── run_all.py
 │
-├── app/                                # ── Expo ──
-│   ├── app.json  package.json  App.tsx
-│   ├── assets/audio/{mr,en}/*.mp3      #   Shreya — pre-generated TTS, committed
+├── app/                                # ── React Native CLI ──
+│   ├── package.json  index.js  App.tsx
+│   ├── android/  ios/                  #   checked in — RN CLI native projects
+│   ├── assets/audio/{mr,hi}/*.mp3      #   Shreya — pre-generated TTS, committed
 │   └── src/
 │       ├── lib/  api.ts money.ts storage.ts voice.ts        # api+money Pranay, voice Shreya
 │       ├── i18n/ mr.json en.json index.tsx                  # Shreya
@@ -190,7 +191,10 @@ mandi-setu/
              hold_net_p50(d) = p50(d) − transport − commission − loading
                                − storage·d − spoilage(d)
              hold_net_p10(d) = same with p10(d)
-       c. best_day = argmax hold_net_p50(d)
+       c. best_day = argmax hold_net_p50(d)      ← INTERNAL ONLY. Not a response
+                                                   field. It is surfaced as
+                                                   `hold_days`, and there is no
+                                                   `best_case_paise` anywhere.
        d. band_width_bps = 10000·(p90−p10)/p50   at best_day
        e. IF band_width_bps > 3500 → NO_ADVICE / BAND_TOO_WIDE          (I6)
           IF history_rows < 180    → NO_ADVICE / INSUFFICIENT_HISTORY
@@ -200,13 +204,15 @@ mandi-setu/
           IF an alt market's net beats this market's best hold → SELL_ELSEWHERE
           IF gain is positive but band straddles zero → SPLIT (half now, half later)
           ELSE → HOLD
-       g. expected_gain_paise = gain_per_qtl · qty_kg / 100
-          worst_case_paise    = (hold_net_p10(best) − sell_now_net) · qty_kg / 100
+       g. expected_gain_paise = gain_per_qtl · (qty_kg // 100)
+          worst_case_paise    = (hold_net_p10(best) − sell_now_net) · (qty_kg // 100)
+          — the `·_per_qtl` values are PER QUINTAL; these two are WHOLE-LOT
+            totals. Integer division, and the // comes first. (I1)
  9. pledge.quote()           → loan, interest, is_worthwhile.               [Nilesh]
                                is_worthwhile == False → return None        (I13)
 10. persist                  → INSERT recommendations (audit trail + the demo replays it)
 11. WindowRes                → Pydantic serialises. Every key present. pledge_quote nullable.
-12. Expo                     → VerdictCard renders. formatPaise() at the render edge only.
+12. React Native            → VerdictCard renders. formatPaise() at the render edge only.
                                Voice clip stitched locally from assets/audio.  (I7, A2)
 ```
 
@@ -283,7 +289,9 @@ POST /auth/otp/request   { phone }
 POST /auth/otp/verify    { phone, code }
   → attempts >= 5 → 429.  Wrong code and unknown phone return the IDENTICAL error.
   → JWT: { sub: user_id, role, exp: +7d }, HS256, secret from env
-  → native: client stores in expo-secure-store · web: httpOnly Secure SameSite=Lax cookie
+  → client stores the JWT in AsyncStorage.  No web target, so no cookie path.
+    Declared gap, not an oversight: not the OS keystore in Phase 1.
+    react-native-keychain is the Phase-2 fix (12_STACK §6, §9).
 ```
 
 **Authorization — one function, used everywhere:**
@@ -403,7 +411,7 @@ docker compose exec api python -m seed.run_all
 bash scripts/smoke.sh          # curls every endpoint; non-zero exit = do not proceed
 ```
 
-**Client:** `expo start` and show the QR (a real phone in the judge's hand beats a simulator every time). `expo start --web` in a second browser tab for the buyer console. **Do not attempt an EAS build in 36 hours** — a build queue is a dependency you cannot control.
+**Client:** `npx react-native run-android` onto **two** real phones — device A logs in as the farmer, device B as the buyer, same APK, role from the JWT. A real phone in the judge's hand beats a simulator every time. **Build the release APK by H28 and side-load it**, so the demo does not depend on Metro, a USB cable, or the laptop staying awake. There is no `--web` and no EAS build; RN CLI has neither.
 
 **Fallback ladder, decided now so nobody improvises at H35:**
 1. Deployed EC2 + phone over wifi
@@ -455,7 +463,7 @@ SARVAM_API_KEY=                 # BLANK in git. Used only by scripts/gen_tts.py,
 | Model MASE ≥ 1.0 | Medium | High | Seasonal-naive is itself a legitimate baseline. Report the honest number and say *"our quantile model beats naive by X%"* — or if it doesn't, ship the naive band and say why. A judge respects the measurement more than the number. | Nikhil |
 | NO_ADVICE never fires on real data | Medium | High | Onion is chosen because it does. Verify at H14 with the real series. If it doesn't, the threshold is wrong, not the data — but **never rig a row**. | Nikhil, Nilesh |
 | Akash overloaded (auth+lots+offers+escrow+disputes+matching) | **High** | High | Kartik owns `ref/prices/meta` routers and takes disputes at H22 if Akash is behind. Reassess at H12 and H20. | Akash |
-| Voice clips missing at demo time | Medium | Medium | `expo-speech` fallback wired from the start; the button never appears broken | Shreya |
+| Voice clips missing at demo time | Medium | Medium | `react-native-tts` fallback wired from the start; the button never appears broken | Shreya |
 | Deploy fails at H33 | Medium | **Fatal** | **Rehearse the deploy at H28.** H32 fallback video. Four-rung fallback ladder. | Kartik |
 | Two people edit the same file | Medium | High | Ownership map, `00_CANON.md` §11. Blocker instead of edit. No exceptions, not even one-liners. | everyone |
 | Shreya unavailable | Unknown | Medium | Cut buyer to 3 read-only screens; Pranay absorbs i18n; voice-in drops (voice-out stays) | Pranay |

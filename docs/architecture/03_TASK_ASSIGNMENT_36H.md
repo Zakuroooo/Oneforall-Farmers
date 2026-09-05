@@ -55,13 +55,13 @@ H33 ─ H36      Deck + three timed rehearsals.
 | **Kartik** | Hit Agmarknet / data.gov.in **now**. Find out in hour 1 whether the data exists, not hour 9. |
 | **Nikhil** | `requirements.txt` pinned, `uv venv --python 3.11`, LightGBM imports. **Verify 3.11, not 3.14.** |
 | **Nilesh** | `schemas/ai.py` — the full `WindowRes` Pydantic model from CANON §7.4, returning **hardcoded values**. |
-| **Pranay** | `npx create-expo-app`, TypeScript, React Navigation, one screen renders on a real phone via QR |
-| **Shreya** | `i18n/mr.json` + `en.json` with the **~60 keys the verdict and home screens need**. Locale context works. |
+| **Pranay** | `npx @react-native-community/cli init MandiSetu`, TypeScript strict, React Navigation, one screen renders on a real Android device over USB |
+| **Shreya** | `i18n/mr.json` + `hi.json` + `en.json` with the **~60 keys the verdict and home screens need**. Locale context works. |
 
 **H2 exit criteria — all four, or you do not proceed:**
 1. `alembic upgrade head` creates 24 tables on a clean DB.
 2. `GET /api/v1/ai/window/recommend` returns a **hardcoded but contract-shaped** `WindowRes`.
-3. Expo app runs on a real phone and shows Marathi text.
+3. The RN app runs on a real Android device and shows Marathi text.
 4. Everyone has pushed a branch and can pull everyone else's.
 
 > **The point of the hardcoded verdict at H2:** Pranay builds the entire hero screen against it starting at H2 instead of H12. That single decision removes the longest serial dependency in the project.
@@ -155,7 +155,7 @@ H33 ─ H36      Deck + three timed rehearsals.
 | S2 | `components/ui/*` finished and used by Pranay | Pranay imports, never re-implements |
 | S3 | S17 buyer login, S18 post demand | buyer can create a demand |
 | S4 | **★ `scripts/gen_tts.py`** — ~40 phrases + digit clips → `assets/audio/mr/` | mp3s committed |
-| S5 | `lib/voice.ts` — number decomposition + `expo-av` sequencing + `expo-speech` fallback | ₹6,290 plays correctly **in airplane mode** |
+| S5 | `lib/voice.ts` — number decomposition + `react-native-sound` sequencing + `react-native-tts` fallback | ₹6,290 plays correctly **in airplane mode** |
 | S6 | **S24 provenance screen** from `/meta/data-provenance` | matches the DB |
 
 ---
