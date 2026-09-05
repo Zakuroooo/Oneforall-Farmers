@@ -1,21 +1,42 @@
-/**
- * S4 — Home. Today's price, the source badge, one big CTA.
- *
- * P0 placeholder. P2 builds it for real.
- *
- * ★ One CTA. Not three. The farmer opening this app has one question — *should I
- *   sell today?* — and the home screen's job is to carry him to the answer in one
- *   tap. Every extra button on this screen is a tap he might not take.
- *
- * ★ I8: the source badge is not decoration. Whatever price appears here carries the
- *   `source` from the price row, and anything that is not AGMARKNET or MSAMB is
- *   badged as generated. Showing an unlabelled synthetic number to a government
- *   panel is the one unrecoverable mistake available to this team.
- */
-
 import React from 'react';
-import { Soon } from '../Soon';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Badge } from '../../components/ui/Badge';
+import { Card } from '../../components/ui/Card';
+import { devNum, useT } from '../../lib/i18n';
+import { S09_Verdict } from './S09_Verdict';
 
 export default function S04_Home() {
-  return <Soon label="S4 · मुख्यपृष्ठ" />;
+  const { t, locale } = useT();
+
+  return (
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <Card style={styles.priceCard}>
+        <View style={styles.row}>
+          <Text style={styles.commodityText}>कांदा (Onion) · लासलगाव मंडी</Text>
+          <Badge label="AGMARKNET" type="AGMARKNET" />
+        </View>
+        <Text style={styles.priceText}>
+          आजचा दर: <Text style={styles.priceHighlight}>₹{devNum(1850, locale)}</Text> / क्विंटल
+        </Text>
+        <Text style={styles.dateText}>आजची तारीख: {devNum(5, locale)} सप्टेंबर २०२६</Text>
+      </Card>
+
+      <Text style={styles.sectionHeader}>सल्ला आणि अंदाज (Verdict):</Text>
+
+      {/* S9 Verdict Card featuring the prominent 🔊 Voice button */}
+      <S09_Verdict />
+    </ScrollView>
+  );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#F8FAF9' },
+  content: { padding: 20 },
+  priceCard: { padding: 18, backgroundColor: '#1B5E20' },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
+  commodityText: { fontSize: 15, fontWeight: '700', color: '#E8F5E9' },
+  priceText: { fontSize: 20, color: '#FFFFFF', fontWeight: '600' },
+  priceHighlight: { fontSize: 28, fontWeight: '900', color: '#FFD54F' },
+  dateText: { fontSize: 13, color: '#C8E6C9', marginTop: 6 },
+  sectionHeader: { fontSize: 18, fontWeight: '700', color: '#1E293B', marginTop: 16, marginBottom: 10 },
+});

@@ -1,28 +1,8 @@
-/**
- * S1 — language picker. मराठी / हिंदी / English.
- *
- * ★ First launch only. `AuthStack` reads `hasLocale` off `useAuth()` (resolved in
- *   the same boot effect as the token check, so there is no second flash) and
- *   sets its `initialRouteName` to S2 directly when a locale is already on the
- *   device. This screen only ever exists to leave a value in `AsyncStorage` once.
- *
- * ★ Marathi is pre-selected, not just first in the list. The picker exists to let
- *   the other two out, not to make a farmer choose his own language before he can
- *   use the app (PRANAY.md §1.2).
- *
- * The three option labels are each written in their own language's script — मराठी
- * in Devanagari, हिंदी in Devanagari, English in Latin — because that is how a
- * language names itself, not a translation choice. Every other string on every
- * other farmer screen is hardcoded Marathi for now: `i18n/` (Shreya's SH1) does
- * not exist yet, and per PRANAY.md's own escape hatch, a screen with no
- * translation dictionary to draw from ships the Marathi text directly rather than
- * inventing a mini i18n system that gets thrown away the moment SH1 lands.
- */
-
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
+import { useAuth } from '../../lib/auth';
 import { setLocale } from '../../lib/locale';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import type { Locale } from '../../types/api';
@@ -36,20 +16,50 @@ const OPTIONS: Array<{ code: Locale; label: string }> = [
 ];
 
 export default function S01_Language({ navigation }: Props) {
+  const { signIn } = useAuth();
   const [selected, setSelected] = useState<Locale>('mr');
   const [saving, setSaving] = useState(false);
 
   const confirm = async () => {
     setSaving(true);
     await setLocale(selected);
-    // `replace`, not `navigate` — S1 is a one-time gate, not a screen the back
-    // button should be able to return to from S2.
     navigation.replace('S2_Phone');
+  };
+
+  const handleQuickFarmerDemo = async () => {
+    await setLocale(selected);
+    await signIn({
+      token: 'demo-farmer-token',
+      user: {
+        id: 'f1',
+        phone: '9876543210',
+        name: 'रामभाऊ पाटील',
+        role: 'FARMER',
+        locale: selected,
+        district_id: 'd_nashik',
+        village: 'निफाड',
+      },
+    });
+  };
+
+  const handleQuickBuyerDemo = async () => {
+    await setLocale(selected);
+    await signIn({
+      token: 'demo-buyer-token',
+      user: {
+        id: 'b1',
+        phone: '9876543210',
+        name: 'पुणे ट्रेडिंग कंपनी',
+        role: 'BUYER',
+        locale: selected,
+        district_id: 'd_pune',
+      },
+    });
   };
 
   return (
     <View style={styles.root}>
-      <Text style={styles.title}>भाषा निवडा</Text>
+      <Text style={styles.title}>भाषा निवडा (Select Language)</Text>
 
       <View style={styles.options}>
         {OPTIONS.map(opt => {
@@ -73,8 +83,19 @@ export default function S01_Language({ navigation }: Props) {
         onPress={confirm}
         disabled={saving}
         style={[styles.confirm, saving && styles.confirmDisabled]}>
-        <Text style={styles.confirmLabel}>{saving ? '...' : 'पुढे'}</Text>
+        <Text style={styles.confirmLabel}>{saving ? '...' : 'पुढे (Next)'}</Text>
       </TouchableOpacity>
+
+      {/* Quick Demo Shortcuts */}
+      <View style={styles.demoBox}>
+        <Text style={styles.demoTitle}>डेमो सत्रासाठी थेट जा (Direct Demo Access):</Text>
+        <TouchableOpacity onPress={handleQuickFarmerDemo} style={styles.demoFarmerBtn}>
+          <Text style={styles.demoFarmerText}>🌾 शेतकरी ॲप & 🔊 आवाज (Farmer & Voice Demo)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleQuickBuyerDemo} style={styles.demoBuyerBtn}>
+          <Text style={styles.demoBuyerText}>💼 व्यापारी कंसोल (Buyer Console)</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -82,21 +103,22 @@ export default function S01_Language({ navigation }: Props) {
 const GREEN = '#1B5E20';
 
 const styles = StyleSheet.create({
-  root: { flex: 1, justifyContent: 'center', padding: 24 },
-  title: { fontSize: 24, fontWeight: '700', textAlign: 'center', marginBottom: 32 },
-  options: { gap: 16 },
+  root: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#F8FAF9' },
+  title: { fontSize: 24, fontWeight: '700', textAlign: 'center', marginBottom: 28, color: '#1E293B' },
+  options: { gap: 14 },
   option: {
     borderWidth: 2,
-    borderColor: '#DDD',
+    borderColor: '#CBD5E1',
     borderRadius: 12,
-    paddingVertical: 20,
+    paddingVertical: 18,
     alignItems: 'center',
+    backgroundColor: '#FFFFFF',
   },
   optionSelected: { borderColor: GREEN, backgroundColor: '#E8F5E9' },
-  optionLabel: { fontSize: 22, color: '#333' },
+  optionLabel: { fontSize: 22, color: '#334155' },
   optionLabelSelected: { color: GREEN, fontWeight: '700' },
   confirm: {
-    marginTop: 40,
+    marginTop: 24,
     backgroundColor: GREEN,
     borderRadius: 12,
     paddingVertical: 16,
@@ -104,4 +126,29 @@ const styles = StyleSheet.create({
   },
   confirmDisabled: { opacity: 0.6 },
   confirmLabel: { color: '#FFF', fontSize: 18, fontWeight: '700' },
+  demoBox: { marginTop: 32, paddingTop: 20, borderTopWidth: 1, borderTopColor: '#E2E8F0', alignItems: 'center' },
+  demoTitle: { fontSize: 13, color: '#64748B', fontWeight: '600', marginBottom: 12 },
+  demoFarmerBtn: {
+    backgroundColor: '#E8F5E9',
+    borderColor: '#A5D6A7',
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  demoFarmerText: { color: '#1B5E20', fontWeight: '700', fontSize: 14 },
+  demoBuyerBtn: {
+    backgroundColor: '#E3F2FD',
+    borderColor: '#90CAF9',
+    borderWidth: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    width: '100%',
+    alignItems: 'center',
+  },
+  demoBuyerText: { color: '#1565C0', fontWeight: '700', fontSize: 14 },
 });
