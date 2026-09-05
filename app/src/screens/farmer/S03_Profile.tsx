@@ -42,6 +42,20 @@ export default function S03_Profile({ navigation }: Props) {
   const [locale, setLocaleState] = useState<Locale>('mr');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [districtsLoading, setDistrictsLoading] = useState(true);
+  const [districtsError, setDistrictsError] = useState(false);
+
+  const loadDistricts = () => {
+    setDistrictsLoading(true);
+    setDistrictsError(false);
+    (USE_FIXTURES ? Promise.resolve(fxDistricts) : getDistricts())
+      .then(list => {
+        setDistricts(list);
+        setDistrictId(prev => prev ?? list[0]?.id ?? null);
+      })
+      .catch(() => setDistrictsError(true))
+      .finally(() => setDistrictsLoading(false));
+  };
 
   useEffect(() => {
     if (!getPendingAuth()) {
@@ -49,10 +63,8 @@ export default function S03_Profile({ navigation }: Props) {
       return;
     }
     getLocale().then(l => l && setLocaleState(l));
-    (USE_FIXTURES ? Promise.resolve(fxDistricts) : getDistricts()).then(list => {
-      setDistricts(list);
-      setDistrictId(prev => prev ?? list[0]?.id ?? null);
-    });
+    loadDistricts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigation]);
 
   const submit = async () => {
@@ -115,21 +127,34 @@ export default function S03_Profile({ navigation }: Props) {
       />
 
       <Text style={styles.label}>जिल्हा</Text>
-      <View style={styles.districtRow}>
-        {districts.map(d => {
-          const isSelected = d.id === districtId;
-          return (
-            <TouchableOpacity
-              key={d.id}
-              onPress={() => setDistrictId(d.id)}
-              style={[styles.districtChip, isSelected && styles.districtChipSelected]}>
-              <Text style={[styles.districtLabel, isSelected && styles.districtLabelSelected]}>
-                {d.name_mr}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      {districtsLoading ? (
+        <Text style={styles.districtStatus}>जिल्हे आणत आहोत...</Text>
+      ) : districtsError ? (
+        <View style={styles.districtStatusRow}>
+          <Text style={styles.districtStatusError}>जिल्हे आणता आले नाहीत.</Text>
+          <TouchableOpacity onPress={loadDistricts}>
+            <Text style={styles.restart}>पुन्हा प्रयत्न करा</Text>
+          </TouchableOpacity>
+        </View>
+      ) : districts.length === 0 ? (
+        <Text style={styles.districtStatus}>जिल्हे सापडले नाहीत.</Text>
+      ) : (
+        <View style={styles.districtRow}>
+          {districts.map(d => {
+            const isSelected = d.id === districtId;
+            return (
+              <TouchableOpacity
+                key={d.id}
+                onPress={() => setDistrictId(d.id)}
+                style={[styles.districtChip, isSelected && styles.districtChipSelected]}>
+                <Text style={[styles.districtLabel, isSelected && styles.districtLabelSelected]}>
+                  {d.name_mr}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      )}
 
       <Text style={styles.label}>गाव (ऐच्छिक)</Text>
       <TextInput
@@ -174,6 +199,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   districtRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 },
+  districtStatus: { fontSize: 14, color: '#888', marginBottom: 16 },
+  districtStatusRow: { marginBottom: 16, gap: 6 },
+  districtStatusError: { fontSize: 14, color: '#C62828' },
   districtChip: {
     borderWidth: 2,
     borderColor: '#DDD',
