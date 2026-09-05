@@ -10,42 +10,50 @@
  * and we are on React Native CLI. This file is the mechanism.
  */
 
-import { Platform } from 'react-native';
+/**
+ * ★ How the app reaches the API in development. Three transports; we default to the
+ *   first, and the choice is not cosmetic — one of them dies at the venue.
+ *
+ *   'adb-reverse'  localhost:8000, tunnelled over the **USB cable** by
+ *                    adb reverse tcp:8000 tcp:8000
+ *                  Works on a physical phone and on an emulator. Involves no wifi
+ *                  at all, which is exactly why it is also the demo-day transport.
+ *                  ★ Re-run the command every time you replug the phone. If you
+ *                    forget, requests hang in a way indistinguishable from the
+ *                    server being down.
+ *
+ *   'emulator'     10.0.2.2:8000 — the Android emulator's built-in alias for the
+ *                  host machine. Zero setup, emulator only. Note `localhost`
+ *                  inside an emulator IS the emulator; that confusion is the most
+ *                  common first-day React Native mistake.
+ *
+ *   'lan'          LAN_IP:8000, phone and laptop on the same wifi. Last resort.
+ *                  Venue wifi fails. It always fails.
+ */
+const DEV_TRANSPORT: 'adb-reverse' | 'emulator' | 'lan' = 'adb-reverse';
 
 /**
- * ★ CHANGE THIS to your laptop's address on the wifi before testing on a real phone.
+ * Only read when DEV_TRANSPORT is 'lan'. Find it with:
  *
  *     ipconfig getifaddr en0
  *
- * The emulator does not need it. A physical device does, and the failure when it is
- * wrong is a silent timeout that looks exactly like the API being down.
- *
- * If you change this, also add it to `android/app/src/main/res/xml/network_security_config.xml`
- * or Android will refuse the cleartext connection and you will debug the wrong layer.
+ * If you change this you must also add it to
+ * `android/app/src/main/res/xml/network_security_config.xml`, or Android refuses the
+ * cleartext connection and you spend the next hour debugging the wrong layer.
  */
 const LAN_IP = '192.168.1.7';
 
 const PROD_HOST = 'http://<ec2-host>'; // TODO(kartik): real host at K9, the H28 deploy rehearsal
 
-/**
- * Which host the app talks to.
- *
- *   Android emulator   ->  10.0.2.2      ★ the emulator's alias for the host machine.
- *                                          `localhost` inside the emulator IS the
- *                                          emulator. This is the single most common
- *                                          first-day React Native mistake.
- *   iOS simulator      ->  localhost     (shares the host's network stack)
- *   Real Android phone ->  LAN_IP        (same wifi as the laptop)
- *   Deployed           ->  PROD_HOST
- */
-export const API_BASE_URL = __DEV__
-  ? Platform.OS === 'android'
-    ? `http://10.0.2.2:8000/api/v1`
-    : `http://localhost:8000/api/v1`
-  : `${PROD_HOST}/api/v1`;
+const DEV_HOST: Record<typeof DEV_TRANSPORT, string> = {
+  'adb-reverse': 'http://localhost:8000',
+  emulator: 'http://10.0.2.2:8000',
+  lan: `http://${LAN_IP}:8000`,
+};
 
-/** Swap to this in `api.ts` when running on a physical device over wifi. */
-export const DEVICE_API_BASE_URL = `http://${LAN_IP}:8000/api/v1`;
+export const API_BASE_URL = __DEV__
+  ? `${DEV_HOST[DEV_TRANSPORT]}/api/v1`
+  : `${PROD_HOST}/api/v1`;
 
 /**
  * Fallback rung 3 of the demo-day ladder: flip to `true`, rebuild, and every screen
