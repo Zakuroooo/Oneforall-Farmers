@@ -1,0 +1,192 @@
+/**
+ * The only place in the app that calls `fetch`. Everything else goes through
+ * TanStack Query, which calls the helpers at the bottom of this file.
+ *
+ * One place, because:
+ *  - the Authorization header is attached in exactly one spot, so it cannot be
+ *    forgotten on the one screen that matters;
+ *  - the error envelope is unwrapped once, so no screen ever reads `err.message`
+ *    off a raw `Response`;
+ *  - I14 (never log a phone, an OTP, or a full payload) is enforceable by reading
+ *    a single function instead of auditing forty call sites.
+ *
+ * There is no axios. `fetch` is built in and this is 90 lines.
+ * There is no camelCase mapping layer. The wire is `snake_case` and we read it.
+ */
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { API_BASE_URL } from '../config';
+import type {
+  ApiErrorBody,
+  AuthRes,
+  District,
+  ForecastRes,
+  Locale,
+  ModelCard,
+  NearbyRes,
+  OtpRequestRes,
+  PriceSeriesRes,
+  User,
+  WindowRecommendReq,
+  WindowRes,
+} from '../types/api';
+
+const TOKEN_KEY = 'auth.token';
+
+/**
+ * Phase 1 stores the JWT in AsyncStorage, and we say so out loud rather than
+ * implying a keystore we did not build.
+ *
+ * The honest version, if a judge asks: *"Phase 2 uses react-native-keychain. In
+ * Phase 1 it's a 72-hour JWT on a device the farmer owns, and we wrote that down."*
+ * A document claiming an encrypted store that the code does not have is the kind of
+ * claim that fails the only follow-up question that matters — "show me".
+ */
+export async function getToken(): Promise<string | null> {
+  return AsyncStorage.getItem(TOKEN_KEY);
+}
+
+export async function setToken(token: string): Promise<void> {
+  await AsyncStorage.setItem(TOKEN_KEY, token);
+}
+
+export async function clearToken(): Promise<void> {
+  await AsyncStorage.removeItem(TOKEN_KEY);
+}
+
+/**
+ * Carries the server's error `code`, not just a message.
+ *
+ * Screens branch on `code`, never on the message string — the message is Marathi
+ * or English depending on the server's mood and is for humans only.
+ */
+export class ApiError extends Error {
+  constructor(
+    readonly code: string,
+    message: string,
+    readonly status: number,
+    readonly field: string | null = null,
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = await getToken();
+
+  const res = await fetch(`${API_BASE_URL}${path}`, {
+    ...init,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...init?.headers,
+    },
+  });
+
+  if (!res.ok) {
+    // The API always returns {error:{code,message,field}} — but a 502 comes from
+    // nginx, not from us, and its body is HTML. Never assume the envelope.
+    const body = (await res.json().catch(() => null)) as ApiErrorBody | null;
+    throw new ApiError(
+      body?.error?.code ?? 'NETWORK',
+      body?.error?.message ?? `HTTP ${res.status}`,
+      res.status,
+      body?.error?.field ?? null,
+    );
+  }
+
+  // 204 has no body. Auth logout is the only one today, but the next one will not
+  // announce itself.
+  if (res.status === 204) return undefined as T;
+
+  return (await res.json()) as T;
+}
+
+const post = <T,>(path: string, body: unknown): Promise<T> =>
+  request<T>(path, { method: 'POST', body: JSON.stringify(body) });
+
+const get = <T,>(path: string): Promise<T> => request<T>(path);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Auth — §7.1
+//
+// ★ I14. Nothing in this section logs. Not the phone, not the code, not the body.
+//   If you add a console.log while debugging OTP, delete it in the same commit —
+//   a phone number in a log that ships is a real disclosure, not a style nit.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const requestOtp = (phone: string) =>
+  post<OtpRequestRes>('/auth/otp/request', { phone });
+
+export const verifyOtp = (phone: string, code: string) =>
+  post<AuthRes>('/auth/otp/verify', { phone, code });
+
+/**
+ * ★ CONTRACT GAP, blocker filed: CANON §7.1 documents this body as `{phone, code,
+ *   name, role, locale, district_id}` — no `village` — but CANON §6.2's `farmers`
+ *   table has a nullable `village` column, and PRANAY.md's S3 spec ("Name,
+ *   district, village") requires collecting it. `village` is sent as an optional
+ *   extra field: harmless if Akash's A1 ignores it today, and the field the DB
+ *   already has room for once he doesn't.
+ */
+export const register = (body: {
+  phone: string;
+  code: string;
+  name: string;
+  role: 'FARMER' | 'BUYER';
+  locale: Locale;
+  district_id: string;
+  village?: string;
+}) => post<AuthRes>('/auth/register', body);
+
+export const getMe = () => get<{ user: User }>('/auth/me');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Reference — §7.2. Kartik's K5 does not exist yet — S3 reads `fixtures/auth.ts`
+// (`fxDistricts`) until it does.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getDistricts = () => get<District[]>('/ref/districts');
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Prices — §7.3
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getPriceSeries = (commodityId: string, marketId: string, days = 180) =>
+  get<PriceSeriesRes>(
+    `/prices/series?commodity_id=${commodityId}&market_id=${marketId}&days=${days}`,
+  );
+
+/** Sorted by NET, descending. The ordering is the product; do not re-sort it here. */
+export const getNearbyMarkets = (commodityId: string, districtId: string) =>
+  get<NearbyRes>(
+    `/prices/nearby?commodity_id=${commodityId}&district_id=${districtId}`,
+  );
+
+// ─────────────────────────────────────────────────────────────────────────────
+// AI — §7.4
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getForecast = (commodityId: string, marketId: string, horizon = 14) =>
+  get<ForecastRes>(
+    `/ai/forecast?commodity_id=${commodityId}&market_id=${marketId}&horizon=${horizon}`,
+  );
+
+export const getModelCard = (commodityId: string) =>
+  get<ModelCard>(`/ai/model-card?commodity_id=${commodityId}`);
+
+/**
+ * ★ THE HERO.
+ *
+ * Note the path is `/ai/window/recommend`, per CANON §7.4. `CLAUDE.md` §1 writes it
+ * as `/window/recommend` without the `/ai` — CANON wins, blocker filed.
+ *
+ * `NO_ADVICE` arrives as a **200 with a body**, not an error. It must not be thrown,
+ * must not route through `ErrorState`, and must not offer a retry button. A refusal
+ * that looks like a crash reads as a bug; a refusal that looks deliberate reads as
+ * integrity, and that is the whole point of I6.
+ */
+export const recommendWindow = (body: WindowRecommendReq) =>
+  post<WindowRes>('/ai/window/recommend', body);

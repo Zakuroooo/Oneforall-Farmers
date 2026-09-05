@@ -61,7 +61,76 @@ Names are the six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**.
 
 ## Open
 
-*(nothing yet — H0)*
+### [Pranay → Nilesh] ★ CONTRACT: `alt_market` has no defined populated shape
+- **What I need:** the keys `alt_market` carries when `action === 'SELL_ELSEWHERE'`.
+- **Why:** `00_CANON.md` §7.4 shows the field **only as `null`**. The DB has `alt_market_id text references markets(id)` (CANON §6), and `NILESH.md` line 35 says `# AltMarket | null (set on SELL_ELSEWHERE)` — but `AltMarket` is defined nowhere. SELL_ELSEWHERE is one of five actions the hero endpoint can return; if a judge taps the Pune row and the card renders `undefined`, that is the hero endpoint failing live.
+- **Blocking:** P5 (the S9 verdict card), and any demo beat that shows SELL_ELSEWHERE.
+- **Workaround in place:** `app/src/types/api.ts` defines a minimal `AltMarket` — `{market_id, name_mr, net_paise_per_qtl, distance_km}` — carrying a `TODO(nilesh):`, and `fixtures/window.ts` has `fxSellElsewhere` populating it from CANON §7.3's `/prices/nearby` example (mkt_pune / पुणे / 195730 / 168 km) so the gap is visible to the type checker rather than discovered on stage. **If your shape differs, mine is the one that changes** — tell me and I will change it.
+- **Raised:** H0
+
+### [Pranay → Nilesh] ★ BUG: CANON §7.4's pledge `interest_paise` is 10× its own formula
+- **What I need:** confirmation of which is right, and a correction to whichever is wrong.
+- **Why:** CANON §7.4's example response prints `interest_paise: 92200` (₹922). CANON §8's formula, on the same numbers, gives:
+  ```
+  interest = loan_paise * rate_bps_annual * days // (10000 * 365)
+           = 3400000 * 900 * 11 // 3650000
+           = 9221                                        # ₹92, not ₹922
+  ```
+  This is the same class of error as the ₹62,900 → ₹6,290 bug caught before H0, in the same document, one section apart. ₹92 of interest to unlock ₹6,290 of gain is a sentence a judge will hear and check.
+- **Blocking:** nothing hard — `is_worthwhile` is `true` either way (629000 > 9221 > and > 92200), so beat 9 survives on either number. It is the **narrated figure** that is at risk.
+- **Workaround in place:** the fixture uses **9221**, the formula's answer, on the grounds that the formula is what ships and the example is prose. Documented inline in `fixtures/window.ts`.
+- **Raised:** H0
+
+### [Pranay → Shreya] CONTRACT: I need `Skeleton`, `ErrorState`, `EmptyState` from SH2
+- **What I need:** `app/src/components/ui/{Skeleton,ErrorState,EmptyState}.tsx`, and their prop signatures whenever you have them — I will import against the signature before the file exists.
+- **Why:** CLAUDE.md §5 requires four states per screen and `components/ui/**` is your lane, so I cannot create them. Building fifteen happy-path screens now and retrofitting three states each at H26 is how the states end up missing.
+- **Blocking:** nothing yet — soft-blocks the polish pass on P4–P16.
+- **Workaround in place:** `app/src/components/farmer/States.tsx`, deliberately un-styled and marked `TODO(shreya):`. Delete it when SH2 lands; it is one import line per screen. **One constraint from my side:** `NO_ADVICE` is a 200 with a body and must never route through `ErrorState` — a refusal that renders as a crash with a retry button is the opposite of I6.
+- **Raised:** H0
+
+### [Pranay → everyone] BUG: `CLAUDE.md` §1 gives the hero endpoint path without `/ai`
+- **What I need:** nothing from anyone — recording it so nobody builds against the wrong path.
+- **Why:** `CLAUDE.md` §1 writes the hero as `POST /api/v1/window/recommend`. `00_CANON.md` §7.4 has it at **`POST /api/v1/ai/window/recommend`**. CANON wins by its own precedence rule. A 404 on the hero endpoint at beat 8 would take the demo apart, and it would look like the server was down rather than like a path typo.
+- **Blocking:** nothing — caught before either side was written.
+- **Workaround in place:** `app/src/lib/api.ts` calls `/ai/window/recommend` and says why in a comment. **Nilesh: mount the router at `/ai`.** `NILESH.md` already lists `routers/ai.py`, so this is a doc bug, not a design disagreement.
+- **Raised:** H0
+
+### [Pranay → Shreya] DECISION: auth state landed in `lib/auth.tsx`, not `context/AuthContext`
+- **What I need:** nothing — recording a lane decision I made unilaterally so you can reverse it cheaply.
+- **Why:** `07_FRONTEND_ARCHITECTURE.md` §1 lists `src/context/{AuthContext, LocaleContext}` under your name. The **same section** gives me `RootNavigator.tsx`, whose entire body is `const { user } = useAuth()` — so P0 could not compile without an auth context, and I am not creating files in `src/context/`.
+- **Blocking:** was blocking P0. Not any more.
+- **Workaround in place:** `app/src/lib/auth.tsx` — `AuthProvider` + `useAuth`, in my lane. The reasoning beyond "P0 needed it": token storage (`getToken`/`setToken`/`clearToken`) and `getMe()` all live in `lib/api.ts`, which is mine, so splitting the state that wraps them into your lane makes every auth change a two-person edit. **`LocaleContext` is untouched and still yours.** If you'd rather own it, build `context/AuthContext.tsx`, keep the `useAuth` signature, and I change one import line.
+- **One thing to preserve if you do rewrite it:** it does **not** decode the JWT. The role comes from `AuthRes.user` at sign-in and `GET /auth/me` on a cold start. A client-side `role` claim read would work and would quietly imply that routing is an authorization boundary — it isn't, the server is (I4).
+- **Raised:** H0
+
+### [Pranay → Shreya] CONTRACT: two different paths for i18n across the docs
+- **What I need:** you to pick one, and to say which in the group chat before SH1.
+- **Why:** `07_FRONTEND_ARCHITECTURE.md` §1 puts it at **`src/i18n/{index.tsx, mr.json, hi.json, en.json}`**. `CLAUDE.md` §4 and the ownership table at the top of this file both say **`src/lib/i18n.tsx`** with `app/messages/**` for the dictionaries. Those are three different locations for the JSON.
+- **Blocking:** nothing of mine — I import `t` from wherever you put it, and until SH1 lands my Marathi is hardcoded with `TODO(shreya):` next to it.
+- **Workaround in place:** none needed. Flagging it because you will otherwise pick one, and then find the other path cited in a doc at H20 and wonder which is stale. Neither is: they were written at different times.
+- **My preference, weakly held:** `src/lib/i18n.tsx` + `src/i18n/*.json`. `lib/` is where the other cross-cutting modules already are, and it keeps the dictionaries out of `lib/`.
+- **Raised:** H0
+
+### [Pranay → Akash] CONTRACT: `users.locale` CHECK constraint excludes `hi`
+- **What I need:** `00_CANON.md` §6.2's `users` table has `locale text not null default 'mr' check (locale in ('mr','en'))` — no `hi`. Widen the constraint to `('mr','hi','en')`.
+- **Why:** Hindi is a committed Phase-1 feature (`PLAN.md` §8, task **SH9** — "Hindi as a third locale"), and the client's own `Locale` type (`types/api.ts`) already includes it. S1 (my language picker) offers मराठी/हिंदी/English today; the moment a farmer picks हिंदी and registers, `/auth/register`'s `locale: 'hi'` will violate this constraint and 500 or 400 — the exact "confident feature, broken contract" bug this repo's own discipline exists to catch before H30, not after.
+- **Blocking:** nothing today — S3's fixture doesn't touch a real DB — but it will block SH9 + any real farmer registration in Hindi the moment A1 is live.
+- **Workaround in place:** none needed on my side; the client sends whatever the user actually picked, which is correct. The constraint is the thing that's out of date.
+- **Raised:** H0 (P1)
+
+### [Pranay → Akash] CONTRACT: `village` missing from `/auth/register`'s documented body
+- **What I need:** add `village` (optional) to `00_CANON.md` §7.1's `/auth/register` row: `{phone, code, name, role, locale, district_id, village?}`.
+- **Why:** `00_CANON.md` §6.2's `farmers` table already has a nullable `village` column, and `PRANAY.md` §1.4's own S3 spec says "Name, district, village." The endpoint table is the one place that's missing it.
+- **Blocking:** nothing today — S3 sends `village` as an extra optional field already (harmless if A1 ignores it); it just isn't formally in the contract yet, which means A1 could reasonably drop it on the floor without anyone noticing until a demo lot's village shows up blank.
+- **Workaround in place:** `lib/api.ts`'s `register()` types `village?: string` and sends it when non-empty. Once this is in CANON, that's already correct — nothing to change on my side.
+- **Raised:** H0 (P1)
+
+### [Pranay → Akash] DECISION: how S2/S3 resolve `/auth/otp/verify`'s deliberately identical error
+- **What I need:** confirm this matches what A1 will actually do, or tell me before it lands.
+- **Why:** CANON §7.1 says wrong-code and unknown-phone return the *identical* error on `verify` — correctly, to prevent phone enumeration — but that means the client can never know in advance which case a failure is. I resolved it as: **always try `verify` first; on any server-returned failure (not a network failure), fall through to S3 and let `/auth/register` — which re-validates `{phone, code}` independently — be the final arbiter.** A genuinely wrong code fails there too, with an unambiguous error that sends the farmer back to S2. This matches CANON's own "Post-OTP for new users" phrasing (`PRANAY.md` §1.4), but it's an inference, not something CANON states outright — worth you confirming `register` really does independently re-check the OTP rather than trusting a prior `verify` call, since the client-side flow only works if it does.
+- **Blocking:** nothing today — S2/S3 route through `fixtures/auth.ts` (verify always fails there, by design, exercising this exact path) — but it needs your sign-off before L5/A1 integration.
+- **Workaround in place:** see `fixtures/auth.ts`'s file-level comment for the full reasoning.
+- **Raised:** H0 (P1)
 
 ---
 

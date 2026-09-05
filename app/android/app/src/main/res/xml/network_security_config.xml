@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 9 (API 28) and up block cleartext HTTP by default. Our dev API is
+  http://localhost:8000 reached over `adb reverse`, so without this file every
+  request fails — and the failure looks exactly like the server being down. You will
+  restart uvicorn four times before you suspect the manifest.
+
+  ★ The tempting fix is android:usesCleartextTraffic="true" on <application>.
+    Do not. That permits cleartext to EVERY host on the internet, and it is exactly
+    the kind of thing a security-minded judge greps for. This file permits it to
+    four named hosts and nothing else.
+
+  Everything not listed here still requires HTTPS, including in debug builds.
+
+  The list must agree with DEV_TRANSPORT in src/config.ts. If you switch that to
+  'lan', put your laptop's LAN IP in both places or Android refuses the connection
+  and you debug the wrong layer.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- ★ The default. `adb reverse tcp:8000 tcp:8000` tunnels the phone's
+             localhost to the laptop over USB. Also covers the iOS simulator. -->
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+
+        <!-- The Android emulator's alias for the host machine. Not localhost:
+             localhost inside the emulator IS the emulator. -->
+        <domain includeSubdomains="false">10.0.2.2</domain>
+
+        <!-- A physical phone over wifi — DEV_TRANSPORT = 'lan'. Keep in sync with
+             LAN_IP in src/config.ts (`ipconfig getifaddr en0` on the laptop). -->
+        <domain includeSubdomains="false">192.168.1.7</domain>
+    </domain-config>
+
+    <!--
+      TODO(kartik): once the EC2 host exists (K9, the H28 deploy rehearsal), the
+      release build talks to it over https and needs no entry here. If it ends up
+      on plain http, say so in BLOCKERS rather than adding a domain quietly — a
+      production host in a cleartext allowlist is a finding, not a config line.
+    -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

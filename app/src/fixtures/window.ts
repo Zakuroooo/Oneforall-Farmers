@@ -1,0 +1,157 @@
+/**
+ * CANON-shaped fixtures for the hero endpoint.
+ *
+ * These exist so the app can be built, run and demoed before `POST /ai/window/recommend`
+ * exists. Nobody waits for a person; you wait for a contract, and the contract is
+ * `docs/architecture/00_CANON.md` §7.4.
+ *
+ * ★ Every value here is transcribed from CANON. **If a key is not in CANON §7.4, it
+ *   does not go in this file.** Six invented fields were caught before H0 — a screen
+ *   built on an invented fixture renders perfectly in every rehearsal and breaks the
+ *   first time it touches the real endpoint.
+ *
+ * The arithmetic identities are asserted in `__tests__/window.test.ts`, because a
+ * 100× unit error is the likeliest bug in the entire project and a comment does not
+ * catch it.
+ */
+
+import type { WindowRes } from '../types/api';
+
+/** The canonical demo lot: 4000 kg of onion at Lasalgaon = 40 quintals. */
+export const DEMO_QTY_KG = 4000;
+export const DEMO_QTY_QTL = 40;
+
+/**
+ * Beat 8. HOLD, eleven days.
+ *
+ *   expected_gain_paise = (209650 − 193925) × 40 =  629000  = ₹6,290
+ *   worst_case_paise    = (181925 − 193925) × 40 = −480000  = −₹4,800
+ *
+ * ₹6,290 on four tonnes is an 8.1% move. ₹62,900 — which several documents carried
+ * before H0 — would be an 81% onion move in eleven days, in front of a panel that
+ * knows onion prices from memory.
+ */
+export const fxHold: WindowRes = {
+  action: 'HOLD',
+  hold_days: 11,
+  confidence: 'MEDIUM',
+  band_width_bps: 2140,
+
+  sell_now_net_paise_per_qtl: 193925,
+  hold_p50_net_paise_per_qtl: 209650,
+  hold_p10_net_paise_per_qtl: 181925,
+
+  expected_gain_paise: 629000,
+  worst_case_paise: -480000,
+
+  costs: {
+    transport_paise_per_qtl: 8000,
+    commission_paise_per_qtl: 3075,
+    storage_paise_per_qtl: 1650,
+    spoilage_paise_per_qtl: 2310,
+    loading_paise_per_qtl: 500,
+    total_paise_per_qtl: 15535,
+  },
+
+  alt_market: null,
+
+  pledge_quote: {
+    loan_paise: 3400000, // ₹34,000
+    ltv_bps: 7000,
+    rate_bps_annual: 900,
+    days: 11,
+    // TODO(nilesh): CANON §7.4's example prints 92200 here. CANON §8's own formula
+    //   interest = loan * rate_bps * days // (10000 * 365)
+    //            = 3400000 * 900 * 11 // 3650000
+    //            = 9221
+    // gives ₹92, not ₹922 — a 10× slip in the example, same class as the ₹62,900 bug.
+    // Using the formula's answer, since the formula is the thing that ships. Blocker filed.
+    interest_paise: 9221,
+    warehouse_id: 'wh_niphad',
+    is_worthwhile: true, // 629000 > 9221 — comfortably, so beat 9 survives either way
+    disclaimer: 'Indicative simulation — not a lender quote',
+  },
+
+  refusal_reason: null,
+  model_card: { mase: 0.71, coverage_80_bps: 7840 },
+  explain_mr: '११ दिवस थांबल्यास सरासरी ₹६,२९० जास्त मिळू शकतात.',
+  explain_en: 'Holding 11 days could earn ₹6,290 more on average.',
+  data_source: 'AGMARKNET',
+};
+
+/**
+ * ★ I6. The refusal, and it is written at the same time as `fxHold`, not later.
+ *
+ * This is one of the two invariants a judge will actually test — they will ask what
+ * happens when the model is wrong. The answer has to be demonstrable on a device, not
+ * describable on a slide.
+ *
+ * Note the shape: same keys, nulls where the forecast would be, **and `costs` still
+ * populated** — we know what transport costs even when we do not know the price.
+ * `hold_days` is null; `sell_now_net_paise_per_qtl` is not, because today's price is
+ * an observation and refusing to forecast is not refusing to inform.
+ *
+ * This is a 200. It is not an error. It must not route through `ErrorState`, must not
+ * show a retry button, and TanStack Query must not treat it as a failure.
+ */
+export const fxNoAdvice: WindowRes = {
+  action: 'NO_ADVICE',
+  hold_days: null,
+  confidence: 'LOW',
+  band_width_bps: 5820, // 58% against a 35% threshold — that is why it refuses
+
+  sell_now_net_paise_per_qtl: 193925,
+  hold_p50_net_paise_per_qtl: null,
+  hold_p10_net_paise_per_qtl: null,
+
+  expected_gain_paise: null,
+  worst_case_paise: null,
+
+  costs: {
+    transport_paise_per_qtl: 8000,
+    commission_paise_per_qtl: 3075,
+    storage_paise_per_qtl: 1650,
+    spoilage_paise_per_qtl: 2310,
+    loading_paise_per_qtl: 500,
+    total_paise_per_qtl: 15535,
+  },
+
+  alt_market: null,
+  pledge_quote: null,
+
+  refusal_reason: 'BAND_TOO_WIDE',
+  model_card: { mase: 0.71, coverage_80_bps: 7840 },
+  explain_mr: 'पुढील १४ दिवसांचा अंदाज खूप अनिश्चित आहे. आम्ही सल्ला देणार नाही.',
+  explain_en: 'The 14-day range is too uncertain here. We will not advise.',
+  data_source: 'AGMARKNET',
+};
+
+/**
+ * The only fixture that populates `alt_market`, which is the field CANON never
+ * defines in its populated form. It exists so the gap is visible in the type checker
+ * rather than discovered on stage. See the TODO(nilesh) in `types/api.ts`.
+ *
+ * Pune pays more gross but costs more to reach; the net still wins by ₹1,805/qtl.
+ * The numbers come from CANON §7.3's `/prices/nearby` example, so the two screens
+ * agree with each other.
+ */
+export const fxSellElsewhere: WindowRes = {
+  ...fxHold,
+  action: 'SELL_ELSEWHERE',
+  hold_days: 0,
+  confidence: 'HIGH',
+  band_width_bps: 1180,
+  hold_p50_net_paise_per_qtl: null,
+  hold_p10_net_paise_per_qtl: null,
+  expected_gain_paise: (195730 - 193925) * DEMO_QTY_QTL, // 72200 = ₹722
+  worst_case_paise: 0,
+  alt_market: {
+    market_id: 'mkt_pune',
+    name_mr: 'पुणे',
+    net_paise_per_qtl: 195730,
+    distance_km: 168,
+  },
+  pledge_quote: null,
+  explain_mr: 'पुण्यात नेल्यास खर्च वजा जाता ₹७२२ जास्त मिळतील.',
+  explain_en: 'Taking it to Pune nets ₹722 more after costs.',
+};
