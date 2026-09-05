@@ -19,6 +19,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import S04_Home from '../screens/farmer/S04_Home';
 import { Soon } from '../screens/Soon';
+import { useT } from '../lib/i18n';
 
 export type FarmerTabParamList = {
   Home: undefined;
@@ -29,12 +30,13 @@ export type FarmerTabParamList = {
 
 const Tab = createBottomTabNavigator<FarmerTabParamList>();
 
-// TODO(pranay): P3 → S5/S6 prices · P6 → S15 my lots · P16 → S28 assistant.
 const PricesSoon = () => <Soon label="S5 · भाव" />;
 const MyLotsSoon = () => <Soon label="S15 · माझे लॉट" />;
 const AssistantSoon = () => <Soon label="S28 · मदत" />;
 
 export function FarmerTabs() {
+  const { t } = useT();
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -42,18 +44,16 @@ export function FarmerTabs() {
         headerShown: false,
         tabBarActiveTintColor: '#1B5E20',
         tabBarInactiveTintColor: '#666',
-        // Bigger than the RN default. A 44 px target is the iOS minimum for a
-        // thumb; this is a farmer's thumb on a cheap screen, so we take the space.
         tabBarLabelStyle: { fontSize: 13 },
         tabBarStyle: { height: 64, paddingBottom: 8, paddingTop: 8 },
       }}>
-      <Tab.Screen name="Home" component={S04_Home} options={{ title: 'मुख्यपृष्ठ' }} />
-      <Tab.Screen name="Prices" component={PricesSoon} options={{ title: 'भाव' }} />
-      <Tab.Screen name="MyLots" component={MyLotsSoon} options={{ title: 'माझे लॉट' }} />
+      <Tab.Screen name="Home" component={S04_Home} options={{ title: t('tab.home') }} />
+      <Tab.Screen name="Prices" component={PricesSoon} options={{ title: t('tab.prices') }} />
+      <Tab.Screen name="MyLots" component={MyLotsSoon} options={{ title: t('tab.lots') }} />
       <Tab.Screen
         name="Assistant"
         component={AssistantSoon}
-        options={{ title: 'मदत' }}
+        options={{ title: t('tab.assistant') }}
       />
     </Tab.Navigator>
   );

@@ -1,17 +1,9 @@
 /**
- * The role branch. One place, no route guards. Pranay.
- *
- * ★ A buyer cannot reach a farmer screen because `FarmerTabs` was never mounted.
- *   That is stronger than a guard on every screen, because there is no per-screen
- *   check that anyone can forget to add to screen seventeen at H29.
- *
- *   It is *not* the authorization boundary — the server is, and it scopes every
- *   read by the JWT actor and returns 404 for someone else's row (I4). This is the
- *   UX layer of the same idea. Both exist; only one of them is load-bearing.
+ * The role branch. One place, no route guards. Pranay + Shreya.
  */
 
 import React from 'react';
-import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { useAuth } from '../lib/auth';
 import { AuthStack } from './AuthStack';
@@ -27,17 +19,58 @@ function Splash() {
 }
 
 export function RootNavigator() {
-  const { status, user } = useAuth();
+  const { status, user, signOut } = useAuth();
 
-  // The `/auth/me` round trip. Rendering AuthStack here would flash the language
-  // picker at a returning farmer every cold start.
   if (status === 'loading') return <Splash />;
 
   if (!user) return <AuthStack />;
 
-  return user.role === 'FARMER' ? <FarmerTabs /> : <BuyerTabs />;
+  const isFarmer = user.role === 'FARMER';
+
+  return (
+    <View style={styles.container}>
+      {/* Active Role Header with Sign Out (Requires OTP on re-login) */}
+      <View style={[styles.topBar, isFarmer ? styles.farmerTopBar : styles.buyerTopBar]}>
+        <Text style={styles.roleBadge}>
+          {isFarmer ? '🌾 शेतकरी ॲप (Farmer App)' : '💼 व्यापारी कंसोल (Buyer Console)'}
+          <Text style={styles.userName}> ({user.name})</Text>
+        </Text>
+        <TouchableOpacity onPress={signOut} style={styles.logoutBtn} activeOpacity={0.7}>
+          <Text style={styles.logoutBtnText}>🚪 बाहेर पडा (Sign Out)</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.navContainer}>
+        {isFarmer ? <FarmerTabs /> : <BuyerTabs />}
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   splash: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  container: { flex: 1, width: '100%', height: '100%' },
+  topBar: {
+    flexDirection: 'row',
+    justify: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8F0',
+  },
+  farmerTopBar: { backgroundColor: '#E8F5E9' },
+  buyerTopBar: { backgroundColor: '#E3F2FD' },
+  roleBadge: { fontSize: 13, fontWeight: '800', color: '#1E293B' },
+  userName: { fontSize: 12, fontWeight: '500', color: '#475569' },
+  logoutBtn: {
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#CBD5E1',
+  },
+  logoutBtnText: { fontSize: 12, fontWeight: '700', color: '#B91C1C' },
+  navContainer: { flex: 1 },
 });

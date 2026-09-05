@@ -35,7 +35,7 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'S3_Profile'>;
 
 export default function S03_Profile({ navigation }: Props) {
   const { signIn } = useAuth();
-  const [name, setName] = useState('');
+  const [name, setName] = useState('रामभाऊ पाटील');
   const [village, setVillage] = useState('');
   const [districts, setDistricts] = useState<District[]>([]);
   const [districtId, setDistrictId] = useState<string | null>(null);

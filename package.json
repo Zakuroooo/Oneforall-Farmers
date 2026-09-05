@@ -1,0 +1,9 @@
+{
+  "name": "mandi-setu-root",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "web": "npm --prefix app run web",
+    "app": "npm --prefix app start"
+  }
+}
