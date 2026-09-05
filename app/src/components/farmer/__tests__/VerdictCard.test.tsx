@@ -7,7 +7,7 @@
 
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import renderer from 'react-test-renderer';
+import renderer, { act } from 'react-test-renderer';
 
 import { VerdictCard } from '../VerdictCard';
 import { fxHold, fxNoAdvice, fxSellElsewhere, fxSellNow, fxSplit } from '../../../fixtures/window';
@@ -87,5 +87,28 @@ describe('★ I16 — worst case renders at the same font size as expected gain'
     // Pinned to the actual value, not just equal-to-each-other — a future edit
     // that shrinks both together to "fix a layout" is still a regression here.
     expect(gainStyle.fontSize).toBe(28);
+  });
+});
+
+describe('P5/S10 — the expandable cost breakdown', () => {
+  it('is collapsed by default and expands on tap to show all five lines + total', () => {
+    const tree = renderCard(fxHold);
+
+    // Collapsed: none of the five line labels are present yet.
+    for (const label of ['वाहतूक', 'कमिशन', 'साठवण', 'नासाडी', 'भरणी', 'एकूण']) {
+      expect(
+        tree.root.findAll(n => n.props.children === label),
+      ).toHaveLength(0);
+    }
+
+    const toggleButton = tree.root.findByProps({ testID: 'verdict-costs-toggle' });
+    act(() => {
+      toggleButton.props.onPress();
+    });
+
+    // Expanded: all five lines plus the total are now present.
+    for (const label of ['वाहतूक', 'कमिशन', 'साठवण', 'नासाडी', 'भरणी', 'एकूण']) {
+      expect(tree.root.findAll(n => n.props.children === label).length).toBeGreaterThan(0);
+    }
   });
 });

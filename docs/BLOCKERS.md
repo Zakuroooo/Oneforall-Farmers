@@ -132,6 +132,21 @@ Names are the six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**.
 - **Workaround in place:** see `fixtures/auth.ts`'s file-level comment for the full reasoning.
 - **Raised:** H0 (P1)
 
+### [Pranay → Kartik] CONTRACT: K4 and K6 do not exist yet — S5 and S6 are on fixtures
+- **What I need:** `GET /prices/series?days=180` (K4) and `GET /prices/nearby` (K6).
+- **Why:** S5 (180-day history chart) and S6 (nearby mandis, net-sorted) are both built and working against `fixtures/prices.ts`'s `fxPriceHistory` and `fixtures/nearby.ts`'s `fxNearby` — the exact CANON §7.3 shapes, nothing invented. `USE_FIXTURES` is the one line each screen needs flipped once your endpoints answer.
+- **Blocking:** P6 (S5), P7 (S6, S6's district_id comes from `useAuth().user.district_id`).
+- **Workaround in place:** `TODO(kartik):` in both screen files' headers.
+- **One thing worth checking when K6 lands:** CANON's own two-row `/prices/nearby` example (Lasalgaon/Pune) doesn't actually demonstrate a net-order-≠-gross-order case — Pune wins on both gross and net, so two rows sorted either way land in the same order. `fxNearby.ts` added a third row (Nagpur — high gross, high transport) specifically to exercise that reordering. Worth confirming your seed data for K6 also produces at least one real case of it, or S6's whole reason for existing never shows on stage.
+- **Raised:** H0 (P6/P7)
+
+### [Pranay → Nikhil] CONTRACT: N2 does not exist yet, and ForecastRes has no `source` field
+- **What I need:** `GET /ai/forecast` (N2). Separately: confirm CANON §7.4's `ForecastRes` shape (`{as_of_date, points, model_card}`, no `source`) is final, or that I8's "source badge is part of the chart" rule genuinely does not apply to a forecast — a model output, not an observed price row.
+- **Why:** S7 (14-day p10/p50/p90 fan) is built and working against `fixtures/forecast.ts`'s `fxForecast`. `ForecastFan` deliberately does not render a source badge, because there is nothing in CANON's actual response to badge — but `PRANAY.md` §2.7 rule 2 reads as if every chart needs one, and I don't want that read to silently drift into someone adding an invented `source` field to `ForecastRes` later to satisfy it.
+- **Blocking:** P6 (S7).
+- **Workaround in place:** `TODO(nikhil):` in `S07_Forecast.tsx`'s header; the contract gap itself is documented in `fixtures/forecast.ts`'s file-level comment.
+- **Raised:** H0 (P6)
+
 ---
 
 ## Resolved before H0 — decisions and doc corrections

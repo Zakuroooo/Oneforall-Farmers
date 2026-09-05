@@ -18,12 +18,23 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import type { DataSource } from '../../types/api';
 
-const TRUSTED: ReadonlySet<DataSource> = new Set(['AGMARKNET', 'MSAMB']);
+// Exported — `components/charts/PriceHistory.tsx` shares this exact mapping for
+// its per-segment coloring and legend, so the two never quietly disagree about
+// which sources count as trusted or what color/label represents which one.
+export const TRUSTED: ReadonlySet<DataSource> = new Set(['AGMARKNET', 'MSAMB']);
 
-const UNTRUSTED_LABEL_MR: Record<Exclude<DataSource, 'AGMARKNET' | 'MSAMB'>, string> = {
+export const UNTRUSTED_LABEL_MR: Record<Exclude<DataSource, 'AGMARKNET' | 'MSAMB'>, string> = {
   ARCHIVE: 'संग्रहित माहिती',
   SYNTHETIC: 'कृत्रिम माहिती',
   IMPUTED: 'अंदाजित माहिती',
+};
+
+export const SOURCE_COLOR: Record<DataSource, string> = {
+  AGMARKNET: '#1B5E20',
+  MSAMB: '#1B5E20',
+  ARCHIVE: '#E65100',
+  SYNTHETIC: '#E65100',
+  IMPUTED: '#E65100',
 };
 
 export function SourceBadge({ source }: { source: DataSource }) {

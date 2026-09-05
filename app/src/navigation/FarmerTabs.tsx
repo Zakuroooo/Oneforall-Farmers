@@ -19,7 +19,11 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import S04_Home from '../screens/farmer/S04_Home';
+import S05_History from '../screens/farmer/S05_History';
+import S06_Nearby from '../screens/farmer/S06_Nearby';
+import S07_Forecast from '../screens/farmer/S07_Forecast';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
+import PricesIndex from '../screens/farmer/PricesIndex';
 import { Soon } from '../screens/Soon';
 
 export type FarmerTabParamList = {
@@ -53,10 +57,34 @@ function HomeStackNavigator() {
   );
 }
 
+/**
+ * The Prices tab is also a stack — S5/S6/S7 are three separate P0 screens
+ * (one decision per screen), reached from a small landing screen rather than
+ * crowded onto one. Same shape as `HomeStackNavigator`.
+ */
+export type PricesStackParamList = {
+  PricesIndex: undefined;
+  S5_History: undefined;
+  S6_Nearby: undefined;
+  S7_Forecast: undefined;
+};
+
+const PricesStack = createNativeStackNavigator<PricesStackParamList>();
+
+function PricesStackNavigator() {
+  return (
+    <PricesStack.Navigator screenOptions={{ headerShown: false }}>
+      <PricesStack.Screen name="PricesIndex" component={PricesIndex} />
+      <PricesStack.Screen name="S5_History" component={S05_History} />
+      <PricesStack.Screen name="S6_Nearby" component={S06_Nearby} />
+      <PricesStack.Screen name="S7_Forecast" component={S07_Forecast} />
+    </PricesStack.Navigator>
+  );
+}
+
 const Tab = createBottomTabNavigator<FarmerTabParamList>();
 
-// TODO(pranay): P6 → S5/S6 prices tab · P6 → S15 my lots · P16 → S28 assistant.
-const PricesSoon = () => <Soon label="S5 · भाव" />;
+// TODO(pranay): P9 → S15 my lots · P16 → S28 assistant.
 const MyLotsSoon = () => <Soon label="S15 · माझे लॉट" />;
 const AssistantSoon = () => <Soon label="S28 · मदत" />;
 
@@ -74,7 +102,7 @@ export function FarmerTabs() {
         tabBarStyle: { height: 64, paddingBottom: 8, paddingTop: 8 },
       }}>
       <Tab.Screen name="Home" component={HomeStackNavigator} options={{ title: 'मुख्यपृष्ठ' }} />
-      <Tab.Screen name="Prices" component={PricesSoon} options={{ title: 'भाव' }} />
+      <Tab.Screen name="Prices" component={PricesStackNavigator} options={{ title: 'भाव' }} />
       <Tab.Screen name="MyLots" component={MyLotsSoon} options={{ title: 'माझे लॉट' }} />
       <Tab.Screen
         name="Assistant"
