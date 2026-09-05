@@ -154,6 +154,41 @@ Names are the six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**.
 - **Workaround in place:** `TODO(nikhil):` in `S07_Forecast.tsx`'s header; the contract gap itself is documented in `fixtures/forecast.ts`'s file-level comment.
 - **Raised:** H0 (P6)
 
+### [Pranay → Shreya] CONTRACT: `tab.home` / `tab.prices` / `tab.lots` / `tab.assistant` missing from all three locale files
+- **What I need:** those four keys added to `src/i18n/mr.json`, `hi.json`, and `en.json`.
+- **Why:** `main`'s `FarmerTabs.tsx` calls `t('tab.home')` etc., but none of the four keys exist in any of the three dictionaries — `useT()`'s fallback renders the literal `⟨tab.home⟩` on the tab bar for a farmer who cannot read English, let alone a raw i18n key. Verified: `grep -c '"tab\.' src/i18n/{mr,hi,en}.json` is `0` in all three.
+- **Blocking:** nothing today.
+- **Workaround in place:** rebased `FarmerTabs.tsx` keeps the hardcoded Marathi titles it already had rather than adopting `t('tab.*')` — the tab bar renders correctly, just not through your i18n system yet. Swap it once the keys exist.
+- **Raised:** H0 (post-merge rebase)
+
+### [Pranay → Shreya] BUG: `justify:` should be `justifyContent:` in two of your files
+- **What I need:** `components/ui/Button.tsx:76` and `screens/buyer/S22_EscrowTimeline.tsx:82` both have `justify: 'space-between'` (or similar) inside a `StyleSheet.create` object — React Native's style types have no `justify` property, only `justifyContent`.
+- **Why:** these are hard `tsc` errors, not warnings — RN's `StyleSheet.d.ts` intersects with `NamedStyles<any>` specifically to catch this. They currently block a clean `npx tsc --noEmit` for the *entire app*, not just the buyer screens, which means CI (or anyone) running a full typecheck sees red regardless of which lane they're working in. (A third instance was in my own `navigation/RootNavigator.tsx:55` — fixed on my side already.)
+- **Blocking:** a clean whole-app `tsc` run.
+- **Workaround in place:** none — not editing your files per CLAUDE.md §4. Reporting only.
+- **Raised:** H0 (post-merge rebase)
+
+### [Pranay → Shreya] STANDARDS: `catch (err: any)` in S17_BuyerLogin.tsx
+- **What I need:** typed catches (e.g. `catch (err) { if (err instanceof ApiError) ... }`, the pattern the rest of the app uses) at `screens/buyer/S17_BuyerLogin.tsx:31` and `:52`.
+- **Why:** `CLAUDE.md` §5 says TypeScript is strict mode, no `any`, no exceptions listed for catch blocks.
+- **Blocking:** nothing functionally — this is a standards note, not a broken build.
+- **Workaround in place:** none — not editing your files.
+- **Raised:** H0 (post-merge rebase)
+
+### [Pranay → Shreya] SCOPE: `app/package.json` on `main` adds a web build and 14 unrequested dependencies
+- **What I need:** a team decision on whether this scope is wanted at all before more work builds on it.
+- **Why:** `CLAUDE.md` §1 says there is no web build and no separate web project; §3 says no new dependency without asking the team. `main` now has `react-dom`, `react-native-web`, `vite@^5.4.21` *and* `webpack@^5.110.3`, `webpack-cli`, `webpack-dev-server`, `html-webpack-plugin`, `babel-loader`, `babel-plugin-react-native-web`, `@vitejs/plugin-react`, plus a `"web": "webpack serve"` script and +5,088 lockfile lines. Two competing bundlers for one unrequested target is itself a sign this wasn't a small addition.
+- **Blocking:** nothing of mine directly, but every future `npm install` on this repo now pulls a meaningfully larger dependency tree for a target CLAUDE.md says doesn't exist.
+- **Workaround in place:** none — reporting only, not touching `package.json` or deleting anything. This is a team call, not mine to make unilaterally.
+- **Raised:** H0 (post-merge rebase)
+
+### [Pranay → Nilesh] CONTRACT: does CANON §9's grading formula floor or round, and how do weakest-dimension ties break?
+- **What I need:** confirmation that `250 * (1 - damage_pct/100)` floors (matching every other money/score computation in this codebase's own discipline — `//` not `/`), and a tie-break rule for `weakest_dimension` when two of the six dimensions score equally low.
+- **Why:** building S13 (self-assay, P9) against this exact formula client-side (CANON §9, lines 810-826) so the six answers actually move the grade. The score column is documented as `int`, which implies floor/round happens somewhere, but CANON doesn't say which, and grading.py doesn't exist yet to check. A silent choice here means my client-computed grade could disagree with Akash's A5 the day it ships.
+- **Blocking:** P9 (S13), specifically the boundary tests at 750/500.
+- **Workaround in place:** flooring every intermediate term (`Math.floor`, matching this codebase's I1/I2 discipline elsewhere) until told otherwise; picking the first dimension encountered on a tie, in the fixed order size_uniform → colour_uniform → sprouting → moisture_feel → foreign_matter → damage_pct.
+- **Raised:** H0 (P9)
+
 ---
 
 ## Resolved before H0 — decisions and doc corrections

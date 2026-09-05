@@ -84,7 +84,7 @@ function PricesStackNavigator() {
 
 const Tab = createBottomTabNavigator<FarmerTabParamList>();
 
-// TODO(pranay): P9 → S15 my lots · P16 → S28 assistant.
+// TODO(pranay): P9 → S12 create lot + S13 self-assay · P12 → S15 lots + timeline · P16 → S28 assistant.
 const MyLotsSoon = () => <Soon label="S15 · माझे लॉट" />;
 const AssistantSoon = () => <Soon label="S28 · मदत" />;
 

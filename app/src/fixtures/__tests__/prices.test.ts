@@ -33,11 +33,11 @@ describe('fxPriceHistory', () => {
   });
 
   it('the last 14 days are byte-identical to fxPriceSeries — S4/S9 and S5 agree', () => {
-    const last14 = fxPriceHistory.points.slice(-14);
-    expect(last14.map(p => p.modal_paise_per_qtl)).toEqual(
-      fxPriceSeries.points.map(p => p.modal_paise_per_qtl),
-    );
-    expect(last14.every(p => p.source === 'AGMARKNET' || p.source === 'SYNTHETIC')).toBe(true);
+    // Actually byte-identical — every field, not just modal_paise_per_qtl. The
+    // earlier version of this test compared only the modal price, so drift in
+    // obs_date, min/max, or arrivals_qtl between the two fixtures would have
+    // stayed green; this doesn't let that happen.
+    expect(fxPriceHistory.points.slice(-14)).toEqual(fxPriceSeries.points);
   });
 
   it('the seam between the seasonal stretch and the recent 14 days has no visible jump', () => {

@@ -25,19 +25,36 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       staleTime: CACHE_STALE_MS,
+
+      /**
+       * ★ Never retry a 4xx.
+       *
+       *   The default retries three times with backoff. On a 404 — which is what I4
+       *   returns for another actor's row, and what an empty result looks like —
+       *   that is roughly seven seconds of spinner before the farmer sees the empty
+       *   state he was always going to see. On a 400 it is seven seconds before he
+       *   sees the validation message. Retry the network, not the answer.
+       */
       retry: (failureCount, error) => {
         if (error instanceof ApiError && error.status >= 400 && error.status < 500) {
           return false;
         }
         return failureCount < 2;
       },
+
+      // TODO(pranay): P8 wires `lib/offline.ts` in here so a cold start with no
+      //   network renders the last known values with the stale banner, rather than
+      //   an error. Venue wifi fails; the app should degrade, not stop.
     },
   },
 });
 
 export default function App() {
+  // TODO(pranay): P9 calls Sound.setCategory('Playback') once, here, at mount —
+  //   without it the Marathi clips are silent when the phone is on vibrate, which
+  //   is how a demo phone is always configured.
   return (
-    <SafeAreaProvider style={{ flex: 1, width: '100%', height: '100%' }}>
+    <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
           <AuthProvider>
