@@ -82,5 +82,16 @@
   "pledge_compare_vs": "बनाम",
   "pledge_warehouse_label": "गोदाम",
 
-  "stale_banner_text": "पुरानी जानकारी — आखिरी बार अपडेट {time} बजे"
+  "stale_banner_text": "पुरानी जानकारी — आखिरी बार अपडेट {time} बजे",
+
+  "tx_status_created": "सौदा तय",
+  "tx_status_escrow_held": "राशि एस्क्रो में जमा",
+  "tx_status_dispatched": "माल रवाना",
+  "tx_status_delivered": "माल पहुंचा",
+  "tx_status_released": "राशि जारी",
+  "tx_status_disputed": "शिकायत दर्ज",
+  "tx_status_refunded": "राशि वापस",
+  "tx_status_cancelled": "लेनदेन रद्द",
+  "tx_id_label": "लेनदेन क्र",
+  "tx_net_amount_label": "शुद्ध राशि"
 }

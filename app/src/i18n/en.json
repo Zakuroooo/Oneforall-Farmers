@@ -82,5 +82,16 @@
   "pledge_compare_vs": "vs",
   "pledge_warehouse_label": "Warehouse",
 
-  "stale_banner_text": "Old data — last updated at {time}"
+  "stale_banner_text": "Old data — last updated at {time}",
+
+  "tx_status_created": "Deal created",
+  "tx_status_escrow_held": "Escrow held",
+  "tx_status_dispatched": "Dispatched",
+  "tx_status_delivered": "Delivered",
+  "tx_status_released": "Released",
+  "tx_status_disputed": "Disputed",
+  "tx_status_refunded": "Refunded",
+  "tx_status_cancelled": "Cancelled",
+  "tx_id_label": "Transaction #",
+  "tx_net_amount_label": "Net amount"
 }

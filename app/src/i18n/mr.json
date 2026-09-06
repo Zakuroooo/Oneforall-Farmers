@@ -82,5 +82,16 @@
   "pledge_compare_vs": "विरुद्ध",
   "pledge_warehouse_label": "गोदाम",
 
-  "stale_banner_text": "जुनी माहिती — शेवटचे अद्ययावत {time} वाजता"
+  "stale_banner_text": "जुनी माहिती — शेवटचे अद्ययावत {time} वाजता",
+
+  "tx_status_created": "सौदा निश्चित",
+  "tx_status_escrow_held": "रक्कम एस्क्रॉ जमा",
+  "tx_status_dispatched": "माल रवाना",
+  "tx_status_delivered": "माल पोहोचला",
+  "tx_status_released": "रक्कम मुक्त",
+  "tx_status_disputed": "तक्रार दाखल",
+  "tx_status_refunded": "रक्कम परत",
+  "tx_status_cancelled": "व्यवहार रद्द",
+  "tx_id_label": "व्यवहार क्र",
+  "tx_net_amount_label": "निव्वळ रक्कम"
 }

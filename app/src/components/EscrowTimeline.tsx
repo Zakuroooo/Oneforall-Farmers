@@ -35,7 +35,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { formatPaise } from '../lib/money';
-import { devNum } from '../lib/i18n';
+import { devNum, translate } from '../lib/i18n';
 import type { EscrowEvent, Locale, TxDto, TxStatus } from '../types/api';
 
 export interface EscrowTimelineProps {
@@ -48,19 +48,24 @@ export interface EscrowTimelineProps {
  * REFUNDED) is rendered as a trailing step instead, per the header comment. */
 const RAIL: TxStatus[] = ['CREATED', 'ESCROW_HELD', 'DISPATCHED', 'DELIVERED', 'RELEASED'];
 
-/** Exported so a collapsed row (S15's transaction list, say) can show the
- * same Marathi status word this component uses internally, without a
- * second copy of the translation table drifting from this one. */
-export const STATUS_LABEL_MR: Record<TxStatus, string> = {
-  CREATED: 'सौदा निश्चित',
-  ESCROW_HELD: 'रक्कम एस्क्रॉ जमा',
-  DISPATCHED: 'माल रवाना',
-  DELIVERED: 'माल पोहोचला',
-  RELEASED: 'रक्कम मुक्त',
-  DISPUTED: 'तक्रार दाखल',
-  REFUNDED: 'रक्कम परत',
-  CANCELLED: 'व्यवहार रद्द',
+/** Dictionary keys, not text — `translate()` resolves the actual label.
+ * Exported so a collapsed row (S15's transaction list, say) can show the
+ * same status word this component uses internally, without a second copy
+ * of the translation table drifting from this one. */
+export const STATUS_LABEL_KEY: Record<TxStatus, string> = {
+  CREATED: 'tx_status_created',
+  ESCROW_HELD: 'tx_status_escrow_held',
+  DISPATCHED: 'tx_status_dispatched',
+  DELIVERED: 'tx_status_delivered',
+  RELEASED: 'tx_status_released',
+  DISPUTED: 'tx_status_disputed',
+  REFUNDED: 'tx_status_refunded',
+  CANCELLED: 'tx_status_cancelled',
 };
+
+export function txStatusLabel(status: TxStatus, locale: Locale): string {
+  return translate(STATUS_LABEL_KEY[status], locale);
+}
 
 function eventTimeLabel(iso: string, locale: Locale): string {
   const d = new Date(iso);
@@ -92,10 +97,14 @@ export function EscrowTimeline({ tx, events, locale = 'mr' }: EscrowTimelineProp
     <View>
       <View style={styles.txCard}>
         <View style={styles.row}>
-          <Text style={styles.txId}>व्यवहार क्र: #{tx.id}</Text>
-          <Text style={styles.statusBadgeText}>{STATUS_LABEL_MR[currentStatus]}</Text>
+          <Text style={styles.txId}>
+            {translate('tx_id_label', locale)}: #{tx.id}
+          </Text>
+          <Text style={styles.statusBadgeText}>{txStatusLabel(currentStatus, locale)}</Text>
         </View>
-        <Text style={styles.txAmount}>निव्वळ रक्कम: {formatPaise(tx.net_paise, locale)}</Text>
+        <Text style={styles.txAmount}>
+          {translate('tx_net_amount_label', locale)}: {formatPaise(tx.net_paise, locale)}
+        </Text>
       </View>
 
       <View style={styles.timeline}>
@@ -116,7 +125,7 @@ export function EscrowTimeline({ tx, events, locale = 'mr' }: EscrowTimelineProp
               </View>
               <View style={styles.contentCol}>
                 <Text style={[styles.stepLabel, active && styles.activeText]}>
-                  {STATUS_LABEL_MR[state]}
+                  {txStatusLabel(state, locale)}
                 </Text>
                 {event?.note ? <Text style={styles.stepDesc}>{event.note}</Text> : null}
                 {event ? (
@@ -137,7 +146,7 @@ export function EscrowTimeline({ tx, events, locale = 'mr' }: EscrowTimelineProp
             </View>
             <View style={styles.contentCol}>
               <Text style={[styles.stepLabel, styles.offRailText]}>
-                {STATUS_LABEL_MR[event.to_status]}
+                {txStatusLabel(event.to_status, locale)}
               </Text>
               {event.note ? <Text style={styles.stepDesc}>{event.note}</Text> : null}
               <Text style={styles.timeText}>{eventTimeLabel(event.created_at, locale)}</Text>

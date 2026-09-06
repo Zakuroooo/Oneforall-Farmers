@@ -35,7 +35,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import type { BadgeType } from '../../components/ui/Badge';
-import { EscrowTimeline, STATUS_LABEL_MR as TX_STATUS_LABEL_MR } from '../../components/EscrowTimeline';
+import { EscrowTimeline, txStatusLabel } from '../../components/EscrowTimeline';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
 import type { EscrowEvent, LotDto, LotGrade, LotStatus, Locale, OfferDto, TxDto } from '../../types/api';
@@ -296,7 +296,7 @@ export default function S15_MyLots({ navigation }: Props) {
                   accessibilityRole="button">
                   <View style={styles.lotHeaderRow}>
                     <Text style={styles.lotTitle}>व्यवहार #{tx.id}</Text>
-                    <Text style={styles.txStatusText}>{TX_STATUS_LABEL_MR[tx.status]}</Text>
+                    <Text style={styles.txStatusText}>{txStatusLabel(tx.status, locale)}</Text>
                   </View>
                   <Text style={styles.lotLine}>निव्वळ रक्कम: {formatPaise(tx.net_paise, locale)}</Text>
                   <Text style={styles.txToggleHint}>{expanded ? '▾ टाइमलाइन लपवा' : '▸ टाइमलाइन पहा'}</Text>
