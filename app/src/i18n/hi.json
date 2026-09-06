@@ -137,5 +137,11 @@
   "km_suffix": "किमी",
   "gross_label": "सकल",
   "transport_commission_label": "परिवहन + कमीशन",
-  "net_label": "शुद्ध"
+  "net_label": "शुद्ध",
+
+  "forecast_error": "अनुमान नहीं लाया जा सका। कृपया पुनः प्रयास करें।",
+  "forecast_empty": "इस मंडी के लिए अनुमान उपलब्ध नहीं है।",
+  "forecast_title": "{market} — {days} दिनों का अनुमान",
+  "model_reliability_line": "मॉडल विश्वसनीयता (MASE): {mase} · सीमा: {coverage}",
+  "model_note_cta": "यह कैसे मापा? →"
 }

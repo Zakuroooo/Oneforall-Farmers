@@ -137,5 +137,11 @@
   "km_suffix": "km",
   "gross_label": "Gross",
   "transport_commission_label": "Transport + commission",
-  "net_label": "Net"
+  "net_label": "Net",
+
+  "forecast_error": "Could not fetch the forecast. Please try again.",
+  "forecast_empty": "No forecast available for this market.",
+  "forecast_title": "{market} — {days}-day forecast",
+  "model_reliability_line": "Model reliability (MASE): {mase} · coverage: {coverage}",
+  "model_note_cta": "How is this measured? →"
 }

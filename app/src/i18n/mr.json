@@ -137,5 +137,11 @@
   "km_suffix": "किमी",
   "gross_label": "सकल",
   "transport_commission_label": "वाहतूक + कमिशन",
-  "net_label": "निव्वळ"
+  "net_label": "निव्वळ",
+
+  "forecast_error": "अंदाज आणता आला नाही. पुन्हा प्रयत्न करा.",
+  "forecast_empty": "या मार्केटसाठी अंदाज उपलब्ध नाही.",
+  "forecast_title": "{market} — {days} दिवसांचा अंदाज",
+  "model_reliability_line": "मॉडेल विश्वासार्हता (MASE): {mase} · व्याप्ती: {coverage}",
+  "model_note_cta": "हे कसे मोजले? →"
 }

@@ -13,7 +13,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { getForecast } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
-import { formatBps } from '../../lib/money';
+import { translate } from '../../lib/i18n';
+import { formatBps, formatNumber } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_HORIZON_DAYS, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxForecast } from '../../fixtures/forecast';
 import { ForecastFan } from '../../components/charts/ForecastFan';
@@ -59,18 +60,23 @@ export default function S07_Forecast({ navigation }: Props) {
   // territory. Only "nothing to show at all" is the error state now.
   if (error && !hasData) {
     return (
-      <ErrorState message="अंदाज आणता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+      <ErrorState message={translate('forecast_error', locale)} onRetry={() => refetch()} />
     );
   }
 
   if (!data || !hasData) {
-    return <EmptyState title="या मार्केटसाठी अंदाज उपलब्ध नाही." />;
+    return <EmptyState title={translate('forecast_empty', locale)} />;
   }
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
       <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
-      <Text style={styles.title}>कांदा · लासलगाव — १४ दिवसांचा अंदाज</Text>
+      <Text style={styles.title}>
+        {translate('forecast_title', locale, {
+          market: translate('demo_commodity_market', locale),
+          days: formatNumber(DEFAULT_HORIZON_DAYS, locale),
+        })}
+      </Text>
       <ForecastFan
         p10={data.points.map(p => p.p10_paise_per_qtl)}
         p50={data.points.map(p => p.p50_paise_per_qtl)}
@@ -90,10 +96,12 @@ export default function S07_Forecast({ navigation }: Props) {
         accessibilityRole="button"
         onPress={() => navigation.navigate('S8_ModelCard')}>
         <Text style={styles.modelNote}>
-          मॉडेल विश्वासार्हता (MASE): {data.model_card.mase} · व्याप्ती:{' '}
-          {formatBps(data.model_card.coverage_80_bps, locale)}
+          {translate('model_reliability_line', locale, {
+            mase: data.model_card.mase,
+            coverage: formatBps(data.model_card.coverage_80_bps, locale),
+          })}
         </Text>
-        <Text style={styles.modelNoteCta}>हे कसे मोजले? →</Text>
+        <Text style={styles.modelNoteCta}>{translate('model_note_cta', locale)}</Text>
       </TouchableOpacity>
     </ScrollView>
   );
