@@ -179,5 +179,15 @@
   "limitation_refusal": "When the forecast is too uncertain, this model refuses to advise — that refusal is deliberate, not a flaw.",
 
   "verdict_error": "Could not fetch the verdict. Please try again.",
-  "verdict_empty": "No advice available yet for this lot."
+  "verdict_empty": "No advice available yet for this lot.",
+
+  "cost_breakdown_error": "Could not fetch the cost breakdown. Please try again.",
+  "cost_breakdown_empty": "No cost breakdown available for this lot.",
+  "cost_breakdown_title": "Cost breakdown",
+  "cost_breakdown_subtitle": "{market} · {perQtl}",
+  "per_quintal_label": "per quintal",
+  "only_when_holding_note": "Only if you hold",
+  "lot_total_cost_label": "Total cost on your {qty} quintals",
+  "lot_cost_multiply_note": "{total} × {qty} quintals",
+  "cost_breakdown_footnote": "The expected gain is shown only after all these costs are deducted. Costs are already netted out before the gain is calculated."
 }

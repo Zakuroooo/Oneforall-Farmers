@@ -179,5 +179,15 @@
   "limitation_refusal": "अंदाज खूप अनिश्चित असल्यास हे मॉडेल सल्ला देण्यास नकार देते — तो नकार हा दोष नाही, तो मुद्दाम आहे.",
 
   "verdict_error": "निर्णय आणता आला नाही. पुन्हा प्रयत्न करा.",
-  "verdict_empty": "या लॉटसाठी अजून सल्ला उपलब्ध नाही."
+  "verdict_empty": "या लॉटसाठी अजून सल्ला उपलब्ध नाही.",
+
+  "cost_breakdown_error": "खर्चाचा तपशील आणता आला नाही. पुन्हा प्रयत्न करा.",
+  "cost_breakdown_empty": "या लॉटसाठी खर्चाचा तपशील उपलब्ध नाही.",
+  "cost_breakdown_title": "खर्चाचा तपशील",
+  "cost_breakdown_subtitle": "{market} · {perQtl}",
+  "per_quintal_label": "प्रति क्विंटल",
+  "only_when_holding_note": "थांबल्यासच लागतो",
+  "lot_total_cost_label": "तुमच्या {qty} क्विंटलवर एकूण खर्च",
+  "lot_cost_multiply_note": "{total} × {qty} क्विंटल",
+  "cost_breakdown_footnote": "हे सर्व खर्च वजा केल्यावरच अपेक्षित फायदा दाखवला जातो. फायदा गणतीच्या आधीच खर्च वजा झालेला असतो."
 }

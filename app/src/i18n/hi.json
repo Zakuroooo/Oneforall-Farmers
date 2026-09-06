@@ -179,5 +179,15 @@
   "limitation_refusal": "अनुमान बहुत अनिश्चित होने पर यह मॉडल सलाह देने से इनकार करता है — यह इनकार दोष नहीं, जानबूझकर है।",
 
   "verdict_error": "निर्णय नहीं लाया जा सका। कृपया पुनः प्रयास करें।",
-  "verdict_empty": "इस लॉट के लिए अभी सलाह उपलब्ध नहीं है।"
+  "verdict_empty": "इस लॉट के लिए अभी सलाह उपलब्ध नहीं है।",
+
+  "cost_breakdown_error": "लागत का विवरण नहीं लाया जा सका। कृपया पुनः प्रयास करें।",
+  "cost_breakdown_empty": "इस लॉट के लिए लागत का विवरण उपलब्ध नहीं है।",
+  "cost_breakdown_title": "लागत का विवरण",
+  "cost_breakdown_subtitle": "{market} · {perQtl}",
+  "per_quintal_label": "प्रति क्विंटल",
+  "only_when_holding_note": "केवल रुकने पर लगता है",
+  "lot_total_cost_label": "आपके {qty} क्विंटल पर कुल लागत",
+  "lot_cost_multiply_note": "{total} × {qty} क्विंटल",
+  "cost_breakdown_footnote": "यह सभी लागत घटाने के बाद ही अपेक्षित लाभ दिखाया जाता है। लाभ की गणना से पहले ही लागत घटाई जा चुकी होती है।"
 }

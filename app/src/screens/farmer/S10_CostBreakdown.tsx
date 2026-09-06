@@ -35,6 +35,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { recommendWindow } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import {
   DEFAULT_COMMODITY_ID,
@@ -66,14 +67,14 @@ import type { Locale, WindowCosts } from '../../types/api';
  */
 const COST_LINES: Array<{
   key: keyof Omit<WindowCosts, 'total_paise_per_qtl'>;
-  label_mr: string;
+  labelKey: string;
   whenHolding: boolean;
 }> = [
-  { key: 'transport_paise_per_qtl', label_mr: 'वाहतूक', whenHolding: false },
-  { key: 'commission_paise_per_qtl', label_mr: 'कमिशन', whenHolding: false },
-  { key: 'storage_paise_per_qtl', label_mr: 'साठवण', whenHolding: true },
-  { key: 'spoilage_paise_per_qtl', label_mr: 'नासाडी', whenHolding: true },
-  { key: 'loading_paise_per_qtl', label_mr: 'भरणी', whenHolding: false },
+  { key: 'transport_paise_per_qtl', labelKey: 'cost_transport', whenHolding: false },
+  { key: 'commission_paise_per_qtl', labelKey: 'cost_commission', whenHolding: false },
+  { key: 'storage_paise_per_qtl', labelKey: 'cost_storage', whenHolding: true },
+  { key: 'spoilage_paise_per_qtl', labelKey: 'cost_spoilage', whenHolding: true },
+  { key: 'loading_paise_per_qtl', labelKey: 'cost_loading', whenHolding: false },
 ];
 
 async function fetchVerdict() {
@@ -114,12 +115,12 @@ export default function S10_CostBreakdown() {
   // genuinely nothing.
   if (error && !data) {
     return (
-      <ErrorState message="खर्चाचा तपशील आणता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+      <ErrorState message={translate('cost_breakdown_error', locale)} onRetry={() => refetch()} />
     );
   }
 
   if (!data) {
-    return <EmptyState title="या लॉटसाठी खर्चाचा तपशील उपलब्ध नाही." />;
+    return <EmptyState title={translate('cost_breakdown_empty', locale)} />;
   }
 
   const { costs } = data;
@@ -129,16 +130,21 @@ export default function S10_CostBreakdown() {
     <ScrollView contentContainerStyle={styles.root}>
       <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
 
-      <Text style={styles.title}>खर्चाचा तपशील</Text>
-      <Text style={styles.subtitle}>कांदा · लासलगाव · प्रति क्विंटल</Text>
+      <Text style={styles.title}>{translate('cost_breakdown_title', locale)}</Text>
+      <Text style={styles.subtitle}>
+        {translate('cost_breakdown_subtitle', locale, {
+          market: translate('demo_commodity_market', locale),
+          perQtl: translate('per_quintal_label', locale),
+        })}
+      </Text>
 
       <View style={styles.card}>
         {COST_LINES.map(line => (
           <View key={line.key} style={styles.row} testID={`cost-row-${line.key}`}>
             <View style={styles.labelCol}>
-              <Text style={styles.label}>{line.label_mr}</Text>
+              <Text style={styles.label}>{translate(line.labelKey, locale)}</Text>
               {line.whenHolding ? (
-                <Text style={styles.labelNote}>थांबल्यासच लागतो</Text>
+                <Text style={styles.labelNote}>{translate('only_when_holding_note', locale)}</Text>
               ) : null}
             </View>
             <Text style={styles.value}>{formatPaise(costs[line.key], locale)}</Text>
@@ -146,7 +152,7 @@ export default function S10_CostBreakdown() {
         ))}
 
         <View style={[styles.row, styles.totalRow]}>
-          <Text style={styles.totalLabel}>एकूण</Text>
+          <Text style={styles.totalLabel}>{translate('cost_total', locale)}</Text>
           <Text testID="cost-total" style={styles.totalValue}>
             {formatPaise(costs.total_paise_per_qtl, locale)}
           </Text>
@@ -160,20 +166,20 @@ export default function S10_CostBreakdown() {
       */}
       <View style={styles.lotCard}>
         <Text style={styles.lotLabel}>
-          तुमच्या {formatNumber(qtyQtl, locale)} क्विंटलवर एकूण खर्च
+          {translate('lot_total_cost_label', locale, { qty: formatNumber(qtyQtl, locale) })}
         </Text>
         <Text testID="cost-whole-lot" style={styles.lotValue}>
           {formatPaise(costs.total_paise_per_qtl * qtyQtl, locale)}
         </Text>
         <Text style={styles.lotNote}>
-          {formatPaise(costs.total_paise_per_qtl, locale)} × {formatNumber(qtyQtl, locale)} क्विंटल
+          {translate('lot_cost_multiply_note', locale, {
+            total: formatPaise(costs.total_paise_per_qtl, locale),
+            qty: formatNumber(qtyQtl, locale),
+          })}
         </Text>
       </View>
 
-      <Text style={styles.footnote}>
-        हे सर्व खर्च वजा केल्यावरच अपेक्षित फायदा दाखवला जातो. फायदा गणतीच्या आधीच खर्च वजा
-        झालेला असतो.
-      </Text>
+      <Text style={styles.footnote}>{translate('cost_breakdown_footnote', locale)}</Text>
     </ScrollView>
   );
 }
