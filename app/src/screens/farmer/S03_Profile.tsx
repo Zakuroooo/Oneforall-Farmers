@@ -26,6 +26,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ApiError, getDistricts, register } from '../../lib/api';
 import { clearPendingAuth, getPendingAuth, useAuth } from '../../lib/auth';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import { USE_FIXTURES } from '../../config';
 import { fxAuthRegistered, fxDistricts } from '../../fixtures/auth';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
@@ -97,9 +98,7 @@ export default function S03_Profile({ navigation }: Props) {
       // failure, this one is unambiguous, so it gets a real message and sends
       // the farmer back to request a fresh code.
       setError(
-        err instanceof ApiError
-          ? 'OTP चुकीचा किंवा कालबाह्य आहे. पुन्हा सुरू करा.'
-          : 'सर्व्हरशी संपर्क होऊ शकला नाही. पुन्हा प्रयत्न करा.',
+        translate(err instanceof ApiError ? 'otp_invalid_expired' : 'server_contact_error', locale),
       );
     } finally {
       setLoading(false);
@@ -115,29 +114,29 @@ export default function S03_Profile({ navigation }: Props) {
 
   return (
     <View style={styles.root}>
-      <Text style={styles.title}>तुमची माहिती</Text>
+      <Text style={styles.title}>{translate('profile_title', locale)}</Text>
 
-      <Text style={styles.label}>नाव</Text>
+      <Text style={styles.label}>{translate('name', locale)}</Text>
       <TextInput
         style={styles.input}
         value={name}
         onChangeText={setName}
-        placeholder="तुमचे नाव"
-        accessibilityLabel="नाव"
+        placeholder={translate('name_placeholder', locale)}
+        accessibilityLabel={translate('name', locale)}
       />
 
-      <Text style={styles.label}>जिल्हा</Text>
+      <Text style={styles.label}>{translate('district', locale)}</Text>
       {districtsLoading ? (
-        <Text style={styles.districtStatus}>जिल्हे आणत आहोत...</Text>
+        <Text style={styles.districtStatus}>{translate('district_loading', locale)}</Text>
       ) : districtsError ? (
         <View style={styles.districtStatusRow}>
-          <Text style={styles.districtStatusError}>जिल्हे आणता आले नाहीत.</Text>
+          <Text style={styles.districtStatusError}>{translate('district_error', locale)}</Text>
           <TouchableOpacity onPress={loadDistricts}>
-            <Text style={styles.restart}>पुन्हा प्रयत्न करा</Text>
+            <Text style={styles.restart}>{translate('retry_button', locale)}</Text>
           </TouchableOpacity>
         </View>
       ) : districts.length === 0 ? (
-        <Text style={styles.districtStatus}>जिल्हे सापडले नाहीत.</Text>
+        <Text style={styles.districtStatus}>{translate('district_empty', locale)}</Text>
       ) : (
         <View style={styles.districtRow}>
           {districts.map(d => {
@@ -156,20 +155,20 @@ export default function S03_Profile({ navigation }: Props) {
         </View>
       )}
 
-      <Text style={styles.label}>गाव (ऐच्छिक)</Text>
+      <Text style={styles.label}>{translate('village_label_optional', locale)}</Text>
       <TextInput
         style={styles.input}
         value={village}
         onChangeText={setVillage}
-        placeholder="गावाचे नाव"
-        accessibilityLabel="गाव"
+        placeholder={translate('village_placeholder', locale)}
+        accessibilityLabel={translate('village', locale)}
       />
 
       {error ? (
         <View style={styles.errorBox}>
           <Text style={styles.error}>{error}</Text>
           <TouchableOpacity onPress={restart}>
-            <Text style={styles.restart}>पुन्हा OTP साठी परत जा</Text>
+            <Text style={styles.restart}>{translate('restart_otp_link', locale)}</Text>
           </TouchableOpacity>
         </View>
       ) : null}
@@ -178,7 +177,7 @@ export default function S03_Profile({ navigation }: Props) {
         onPress={submit}
         disabled={!canSubmit}
         style={[styles.button, !canSubmit && styles.buttonDisabled]}>
-        <Text style={styles.buttonLabel}>{loading ? '...' : 'पुढे'}</Text>
+        <Text style={styles.buttonLabel}>{loading ? '...' : translate('next', locale)}</Text>
       </TouchableOpacity>
     </View>
   );

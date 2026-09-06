@@ -110,5 +110,15 @@
   "resend_in_seconds": "{seconds} सेकंदात पुन्हा पाठवा",
   "resend_otp_button": "पुन्हा OTP पाठवा",
   "network_error_generic": "नेटवर्क समस्या. पुन्हा प्रयत्न करा.",
-  "server_contact_error": "सर्व्हरशी संपर्क होऊ शकला नाही. पुन्हा प्रयत्न करा."
+  "server_contact_error": "सर्व्हरशी संपर्क होऊ शकला नाही. पुन्हा प्रयत्न करा.",
+
+  "profile_title": "तुमची माहिती",
+  "name_placeholder": "तुमचे नाव",
+  "district_loading": "जिल्हे आणत आहोत...",
+  "district_error": "जिल्हे आणता आले नाहीत.",
+  "district_empty": "जिल्हे सापडले नाहीत.",
+  "village_label_optional": "गाव (ऐच्छिक)",
+  "village_placeholder": "गावाचे नाव",
+  "otp_invalid_expired": "OTP चुकीचा किंवा कालबाह्य आहे. पुन्हा सुरू करा.",
+  "restart_otp_link": "पुन्हा OTP साठी परत जा"
 }

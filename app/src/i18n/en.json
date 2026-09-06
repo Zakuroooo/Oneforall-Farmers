@@ -110,5 +110,15 @@
   "resend_in_seconds": "Resend in {seconds}s",
   "resend_otp_button": "Resend OTP",
   "network_error_generic": "Network problem. Please try again.",
-  "server_contact_error": "Could not reach the server. Please try again."
+  "server_contact_error": "Could not reach the server. Please try again.",
+
+  "profile_title": "Your details",
+  "name_placeholder": "Your name",
+  "district_loading": "Loading districts...",
+  "district_error": "Could not load districts.",
+  "district_empty": "No districts found.",
+  "village_label_optional": "Village (optional)",
+  "village_placeholder": "Village name",
+  "otp_invalid_expired": "The OTP is wrong or expired. Start again.",
+  "restart_otp_link": "Go back for a new OTP"
 }

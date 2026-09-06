@@ -110,5 +110,15 @@
   "resend_in_seconds": "{seconds} सेकंड में फिर से भेजें",
   "resend_otp_button": "फिर से OTP भेजें",
   "network_error_generic": "नेटवर्क समस्या। कृपया पुनः प्रयास करें।",
-  "server_contact_error": "सर्वर से संपर्क नहीं हो सका। कृपया पुनः प्रयास करें।"
+  "server_contact_error": "सर्वर से संपर्क नहीं हो सका। कृपया पुनः प्रयास करें।",
+
+  "profile_title": "आपकी जानकारी",
+  "name_placeholder": "आपका नाम",
+  "district_loading": "जिले लाए जा रहे हैं...",
+  "district_error": "जिले नहीं लाए जा सके।",
+  "district_empty": "कोई जिला नहीं मिला।",
+  "village_label_optional": "गांव (वैकल्पिक)",
+  "village_placeholder": "गांव का नाम",
+  "otp_invalid_expired": "OTP गलत या समय-सीमा समाप्त है। फिर से शुरू करें।",
+  "restart_otp_link": "फिर से OTP के लिए वापस जाएं"
 }
