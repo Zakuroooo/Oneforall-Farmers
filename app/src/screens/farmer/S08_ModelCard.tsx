@@ -47,7 +47,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getModelCard } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
-import { devNum } from '../../lib/i18n';
+import { devNum, translate } from '../../lib/i18n';
 import { formatBps, formatNumber } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, USE_FIXTURES } from '../../config';
 import { fxModelCard } from '../../fixtures/modelCard';
@@ -68,11 +68,24 @@ async function fetchModelCard() {
   return USE_FIXTURES ? fxModelCard : getModelCard(DEFAULT_COMMODITY_ID);
 }
 
-/** `2026-09-05` -> `५ सप्टेंबर २०२५`-style. Marathi month names, Devanagari digits. */
+/** `2026-09-05` -> `५ सप्टेंबर २०२५`-style. One name table per locale, since
+ * Hindi and Marathi share Devanagari digits but NOT the same month words
+ * ("सप्टेंबर" is Marathi; Hindi's word for September is "सितंबर") — a single
+ * shared table would have quietly given every Hindi reader Marathi month
+ * names, the exact "mixing" bug this pass exists to remove. */
 const MONTHS_MR = [
   'जानेवारी', 'फेब्रुवारी', 'मार्च', 'एप्रिल', 'मे', 'जून',
   'जुलै', 'ऑगस्ट', 'सप्टेंबर', 'ऑक्टोबर', 'नोव्हेंबर', 'डिसेंबर',
 ];
+const MONTHS_HI = [
+  'जनवरी', 'फरवरी', 'मार्च', 'अप्रैल', 'मई', 'जून',
+  'जुलाई', 'अगस्त', 'सितंबर', 'अक्तूबर', 'नवंबर', 'दिसंबर',
+];
+const MONTHS_EN = [
+  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+];
+const MONTHS_BY_LOCALE: Record<Locale, string[]> = { mr: MONTHS_MR, hi: MONTHS_HI, en: MONTHS_EN };
 
 /**
  * ISO date -> a readable date. Parses the `YYYY-MM-DD` prefix by string rather
@@ -84,14 +97,11 @@ const MONTHS_MR = [
 function formatIsoDate(iso: string, locale: Locale): string {
   const [y, m, d] = iso.slice(0, 10).split('-').map(Number);
   if (!y || !m || !d) return iso;
-  if (locale === 'en') return `${d} ${MONTHS_EN[m - 1]} ${y}`;
-  return `${devNum(d, locale)} ${MONTHS_MR[m - 1]} ${devNum(y, locale)}`;
+  const months = MONTHS_BY_LOCALE[locale];
+  const monthName = months[m - 1] ?? '';
+  if (locale === 'en') return `${d} ${monthName} ${y}`;
+  return `${devNum(d, locale)} ${monthName} ${devNum(y, locale)}`;
 }
-
-const MONTHS_EN = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-];
 
 /** A labelled row. Value is always the server's string, never a derived one. */
 function Row({ label, value, testID }: { label: string; value: string; testID?: string }) {
@@ -137,14 +147,14 @@ export default function S08_ModelCard() {
   if (error && !data) {
     return (
       <ErrorState
-        message="मॉडेलची माहिती आणता आली नाही. पुन्हा प्रयत्न करा."
+        message={translate('model_card_error', locale)}
         onRetry={() => refetch()}
       />
     );
   }
 
   if (!data) {
-    return <EmptyState title="या पिकासाठी मॉडेलची माहिती उपलब्ध नाही." />;
+    return <EmptyState title={translate('model_card_empty', locale)} />;
   }
 
   const card: ModelCard = data;
@@ -155,9 +165,12 @@ export default function S08_ModelCard() {
     <ScrollView contentContainerStyle={styles.root}>
       <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
 
-      <Text style={styles.title}>मॉडेल किती विश्वासार्ह आहे?</Text>
+      <Text style={styles.title}>{translate('model_card_title', locale)}</Text>
       <Text style={styles.subtitle}>
-        कांदा · {formatNumber(card.horizon_days, locale)} दिवसांचा अंदाज
+        {translate('model_card_subtitle', locale, {
+          commodity: translate('demo_commodity_name', locale),
+          days: formatNumber(card.horizon_days, locale),
+        })}
       </Text>
 
       {/*
@@ -167,7 +180,7 @@ export default function S08_ModelCard() {
         one — the I16 instinct, applied to a claim about ourselves.
       */}
       <View style={styles.heroCard}>
-        <Text style={styles.heroLabel}>अचूकता (MASE)</Text>
+        <Text style={styles.heroLabel}>{translate('mase_hero_label', locale)}</Text>
         <Text
           testID="mase-value"
           style={[styles.heroValue, { color: beatsBaseline ? GREEN : RED }]}>
@@ -176,14 +189,10 @@ export default function S08_ModelCard() {
         <Text
           testID="mase-verdict"
           style={[styles.heroVerdict, { color: beatsBaseline ? GREEN : RED }]}>
-          {beatsBaseline
-            ? 'साध्या अंदाजापेक्षा चांगले'
-            : 'साध्या अंदाजापेक्षा वाईट — तरीही आम्ही ते लपवत नाही'}
+          {translate(beatsBaseline ? 'mase_verdict_better' : 'mase_verdict_worse', locale)}
         </Text>
         <Text style={styles.heroNote}>
-          {beatsBaseline
-            ? '१ पेक्षा कमी म्हणजे "गेल्या वर्षी याच वेळी जो भाव होता तोच आज असेल" या साध्या अंदाजापेक्षा आमचा अंदाज चांगला आहे.'
-            : '१ पेक्षा जास्त म्हणजे साधा हंगामी अंदाजच जास्त बरोबर ठरतो. हे इथे मुद्दाम दाखवले आहे.'}
+          {translate(beatsBaseline ? 'mase_note_better' : 'mase_note_worse', locale)}
         </Text>
       </View>
 
@@ -193,47 +202,54 @@ export default function S08_ModelCard() {
         saying so beside the number is cheaper than being caught.
       */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>पट्ट्याची विश्वासार्हता</Text>
+        <Text style={styles.cardTitle}>{translate('coverage_card_title', locale)}</Text>
         <Row
-          label="प्रत्यक्ष भाव पट्ट्यात आला"
-          value={`${formatBps(card.coverage_80_bps, locale)} (लक्ष्य ${formatBps(NOMINAL_COVERAGE_BPS, locale)})`}
+          label={translate('coverage_row_label', locale)}
+          value={translate('coverage_value_with_target', locale, {
+            coverage: formatBps(card.coverage_80_bps, locale),
+            target: formatBps(NOMINAL_COVERAGE_BPS, locale),
+          })}
           testID="coverage-value"
         />
         <Text testID="coverage-note" style={styles.cardNote}>
-          {coverageShortfall > 0
-            ? `म्हणजे १० पैकी सुमारे ${formatNumber(Math.round(card.coverage_80_bps / 1000), locale)} वेळा खरा भाव p१०–p९० पट्ट्यात होता. लक्ष्यापेक्षा थोडा कमी — म्हणजे पट्टा प्रत्यक्षात असायला हवा त्यापेक्षा थोडा अरुंद आहे.`
-            : `म्हणजे १० पैकी सुमारे ${formatNumber(Math.round(card.coverage_80_bps / 1000), locale)} वेळा खरा भाव p१०–p९० पट्ट्यात होता — लक्ष्याइतका किंवा त्याहून चांगला.`}
+          {translate(coverageShortfall > 0 ? 'coverage_note_under' : 'coverage_note_ok', locale, {
+            n: formatNumber(Math.round(card.coverage_80_bps / 1000), locale),
+          })}
         </Text>
       </View>
 
       {/* Provenance. Same corpus S24 describes; the row count must agree. */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>हे मॉडेल कशावर शिकले</Text>
-        <Row label="पद्धत" value={card.algo} testID="algo-value" />
+        <Text style={styles.cardTitle}>{translate('corpus_card_title', locale)}</Text>
+        <Row label={translate('method_label', locale)} value={card.algo} testID="algo-value" />
         <Row
-          label="तुलनेसाठी साधा अंदाज"
-          value={card.baseline === 'seasonal_naive' ? 'हंगामी (गेल्या वर्षीचाच भाव)' : card.baseline}
+          label={translate('baseline_label', locale)}
+          value={
+            card.baseline === 'seasonal_naive'
+              ? translate('baseline_seasonal_naive', locale)
+              : card.baseline
+          }
           testID="baseline-value"
         />
         <Row
-          label="किती नोंदी"
-          value={`${formatNumber(card.train_rows, locale)} नोंदी`}
+          label={translate('train_rows_label', locale)}
+          value={translate('train_rows_value', locale, { n: formatNumber(card.train_rows, locale) })}
           testID="train-rows-value"
         />
         <Row
-          label="कोणत्या काळातील"
+          label={translate('train_window_label', locale)}
           value={`${formatIsoDate(card.train_from, locale)} — ${formatIsoDate(card.train_to, locale)}`}
           testID="train-window-value"
         />
         <Row
-          label="शेवटचे प्रशिक्षण"
+          label={translate('trained_at_label', locale)}
           value={
             trainedDaysAgo === null
               ? formatIsoDate(card.trained_at, locale)
               : `${formatIsoDate(card.trained_at, locale)} (${
                   trainedDaysAgo === 0
-                    ? 'आज'
-                    : `${formatNumber(trainedDaysAgo, locale)} दिवसांपूर्वी`
+                    ? translate('trained_today', locale)
+                    : translate('trained_days_ago', locale, { n: formatNumber(trainedDaysAgo, locale) })
                 })`
           }
           testID="trained-at-value"
@@ -247,15 +263,17 @@ export default function S08_ModelCard() {
         support, which is the only kind worth putting on the honesty screen.
       */}
       <View style={styles.card}>
-        <Text style={styles.cardTitle}>हे मॉडेल काय करू शकत नाही</Text>
+        <Text style={styles.cardTitle}>{translate('limitations_card_title', locale)}</Text>
         {[
-          `${formatNumber(card.horizon_days, locale)} दिवसांपुढचा अंदाज हे मॉडेल देत नाही.`,
-          'फक्त लासलगाव आणि कांद्याच्या नोंदींवर शिकले आहे — दुसऱ्या पिकाला किंवा दूरच्या मंडईला हेच लागू होईल असे नाही.',
-          'निर्यातबंदी, अचानक पाऊस किंवा धोरणबदल यांचा अंदाज हे मॉडेल घेत नाही.',
+          translate('limitation_horizon', locale, { days: formatNumber(card.horizon_days, locale) }),
+          translate('limitation_corpus_scope', locale),
+          translate('limitation_shocks', locale),
           coverageShortfall > 0
-            ? `पट्टा लक्ष्यापेक्षा ${formatBps(coverageShortfall, locale)} अरुंद पडतो — म्हणजे खरा भाव पट्ट्याबाहेर जाण्याची शक्यता दाखवल्यापेक्षा थोडी जास्त आहे.`
-            : 'पट्टा लक्ष्याइतका किंवा त्याहून रुंद आहे.',
-          'अंदाज खूप अनिश्चित असल्यास हे मॉडेल सल्ला देण्यास नकार देते — तो नकार हा दोष नाही, तो मुद्दाम आहे.',
+            ? translate('limitation_coverage_narrow', locale, {
+                gap: formatBps(coverageShortfall, locale),
+              })
+            : translate('limitation_coverage_ok', locale),
+          translate('limitation_refusal', locale),
         ].map((line, i) => (
           <View key={i} style={styles.bulletRow}>
             <Text style={styles.bullet}>·</Text>
