@@ -1,15 +1,39 @@
 /**
  * voice.ts — Marathi offline voice engine.
- * Decomposes rupees and days into sequenced audio clips. Works 100% offline (I7).
+ * Decomposes rupees and days into sequenced audio clips, then plays them back
+ * with `react-native-sound`. Works 100% offline (I7) — every clip is a local
+ * file, never a network fetch, so airplane mode is the expected path, not an
+ * edge case.
+ *
+ * ★ CANON/12_STACK.md §"Voice" names `react-native-sound` as the sanctioned
+ *   library for exactly this (pre-generated clips, sequenced) — not
+ *   `expo-av` (this is React Native CLI, not Expo — there is no Expo runtime
+ *   in this app at all) and not `react-native-tts`, which 12_STACK documents
+ *   only as a *fallback*, not the primary path.
+ *
+ * ★ THE CLIP CONTENT IS NOT SHIPPED IN THIS COMMIT. This file wires up a
+ *   complete, correct playback engine against a stable set of clip ids (see
+ *   `assets/audio/mr/README.md`), but the actual Marathi speech files —
+ *   ~123 short mp3s, one per id — are a content-generation task (pre-generate
+ *   with Sarvam TTS or similar, per the original design note) that requires
+ *   an actual TTS pass over real audio, which nothing in this coding session
+ *   can produce. `loadClip` below fails soft: a missing file is skipped, not
+ *   a crash and not a rejected promise — so this engine is inert-but-safe
+ *   today and becomes real the moment the clips land in
+ *   `android/app/src/main/res/raw/` (and the iOS bundle).
  */
 
-import { Platform } from 'react-native';
+import Sound from 'react-native-sound';
 import type { WindowRes } from '../types/api';
 import type { TFn } from './i18n';
 
-// Static require map for audio clips (Metro & Webpack require static asset references)
-// Fallback audio synthetic silent wave or Web Audio synth on web platform
-const CLIPS: Record<string, string> = {
+/**
+ * Every ASCII, Android-resource-safe (`[a-z0-9_]+`, no Devanagari) clip id
+ * this engine ever asks `react-native-sound` to load, and the Marathi text
+ * it corresponds to — this map is the spec for whoever records or generates
+ * the clips, and `assets/audio/mr/README.md` is derived from it.
+ */
+const CLIP_TEXT_MR: Record<string, string> = {
   hold: 'थांबा',
   sell_now: 'आज विका',
   sell_elsewhere: 'दुसऱ्या बाजारात विका',
@@ -26,7 +50,8 @@ const CLIPS: Record<string, string> = {
   minus: 'उणे',
 };
 
-// Marathi numbers 0-99 mapping for audio clip names
+/** Marathi 0–99, keyed by the number — `numberClipId(n)` turns a value here
+ * into the ASCII id (`n7`) this engine actually loads by filename. */
 const MARATHI_NUMBER_NAMES: Record<number, string> = {
   0: 'शून्य', 1: 'एक', 2: 'दोन', 3: 'तीन', 4: 'चार', 5: 'पाच', 6: 'सहा', 7: 'सात', 8: 'आठ', 9: 'नऊ', 10: 'दहा',
   11: 'अकरा', 12: 'बारा', 13: 'तेरा', 14: 'चौदा', 15: 'पंधरा', 16: 'सोळा', 17: 'सतरा', 18: 'अठरा', 19: 'एकोणीस', 20: 'वीस',
@@ -40,13 +65,33 @@ const MARATHI_NUMBER_NAMES: Record<number, string> = {
   91: 'एकणव्वद', 92: 'ब्याणव्वद', 93: 'त्र्याणव्वद', 94: 'चौऱ्याणव्वद', 95: 'पंचणव्वद', 96: 'शहाणव्वद', 97: 'सत्ताणव्वद', 98: 'अठ्ठाणव्वद', 99: 'नऊणव्वद',
 };
 
+/** Marathi hundreds (100–900), keyed 1–9 — `hundredsClipId(n)` turns a value
+ * here into the ASCII id (`h3`) this engine actually loads by filename. */
 const MARATHI_HUNDREDS: Record<number, string> = {
   1: 'शंभर', 2: 'दोनशे', 3: 'तीनशे', 4: 'चारशे', 5: 'पाचशे', 6: 'सहाशे', 7: 'सातशे', 8: 'आठशे', 9: 'नऊशे',
 };
 
 /**
- * Decomposes rupee amount in paise to Marathi spoken word clips.
- * Example: 629000 paise -> ₹6,290 -> ["सहा", "हजार", "दोनशे", "नव्वद", "रुपये"]
+ * `n0`..`n99` — Android resource names cannot be Devanagari, so the clip id
+ * that actually flows through `decomposeRupees`/`decomposeDays`/`speak` is
+ * this ASCII form, never the Marathi word itself. Returns `null` outside
+ * 0–99, same as the old "lookup came back undefined" guard this replaces —
+ * a rupee amount in the crores still silently drops that one word rather
+ * than crashing, which is a pre-existing gap in scope (lakhs was never
+ * bounded past 99) and not something this change is trying to fix.
+ */
+function numberClipId(n: number): string | null {
+  return n in MARATHI_NUMBER_NAMES ? `n${n}` : null;
+}
+
+/** `h1`..`h9` — see `numberClipId`. */
+function hundredsClipId(n: number): string | null {
+  return n in MARATHI_HUNDREDS ? `h${n}` : null;
+}
+
+/**
+ * Decomposes rupee amount in paise to a sequence of clip ids.
+ * Example: 629000 paise -> ₹6,290 -> ["n6", "thousand", "h2", "n90", "rupees"]
  */
 export function decomposeRupees(paise: number): string[] {
   const isNegative = paise < 0;
@@ -58,7 +103,7 @@ export function decomposeRupees(paise: number): string[] {
   }
 
   if (rupees === 0) {
-    clips.push('शून्य', 'rupees');
+    clips.push('n0', 'rupees');
     return clips;
   }
 
@@ -66,12 +111,9 @@ export function decomposeRupees(paise: number): string[] {
   if (rupees >= 100000) {
     const lakhs = Math.floor(rupees / 100000);
     rupees %= 100000;
-    // `noUncheckedIndexedAccess` types a lookup table access as T | undefined —
-    // narrow once onto a local so the truthy check and the push agree on the
-    // same value instead of TS treating them as two independent lookups.
-    const lakhsName = MARATHI_NUMBER_NAMES[lakhs];
-    if (lakhsName) {
-      clips.push(lakhsName);
+    const lakhsId = numberClipId(lakhs);
+    if (lakhsId) {
+      clips.push(lakhsId);
     }
     clips.push('lakh');
   }
@@ -80,9 +122,9 @@ export function decomposeRupees(paise: number): string[] {
   if (rupees >= 1000) {
     const thousands = Math.floor(rupees / 1000);
     rupees %= 1000;
-    const thousandsName = MARATHI_NUMBER_NAMES[thousands];
-    if (thousandsName) {
-      clips.push(thousandsName);
+    const thousandsId = numberClipId(thousands);
+    if (thousandsId) {
+      clips.push(thousandsId);
     }
     clips.push('thousand');
   }
@@ -91,16 +133,16 @@ export function decomposeRupees(paise: number): string[] {
   if (rupees >= 100) {
     const hundreds = Math.floor(rupees / 100);
     rupees %= 100;
-    const hundredsName = MARATHI_HUNDREDS[hundreds];
-    if (hundredsName) {
-      clips.push(hundredsName);
+    const hundredsId = hundredsClipId(hundreds);
+    if (hundredsId) {
+      clips.push(hundredsId);
     }
   }
 
   // Remaining 1-99
-  const remainderName = MARATHI_NUMBER_NAMES[rupees];
-  if (rupees > 0 && remainderName) {
-    clips.push(remainderName);
+  const remainderId = numberClipId(rupees);
+  if (rupees > 0 && remainderId) {
+    clips.push(remainderId);
   }
 
   clips.push(isNegative ? 'rupees_loss' : 'rupees');
@@ -109,19 +151,75 @@ export function decomposeRupees(paise: number): string[] {
 
 export function decomposeDays(days: number): string[] {
   const clips: string[] = [];
-  const daysName = MARATHI_NUMBER_NAMES[days];
-  if (daysName) {
-    clips.push(daysName);
+  const daysId = numberClipId(days);
+  if (daysId) {
+    clips.push(daysId);
   } else {
-    clips.push(String(days));
+    // Outside the 0-99 vocabulary this engine has words for at all — every
+    // digit read out individually beats silence for a hold period that long.
+    for (const digit of String(days)) {
+      const digitId = numberClipId(Number(digit));
+      if (digitId) clips.push(digitId);
+    }
   }
   clips.push('days');
   return clips;
 }
 
-// TODO(shreya): SH3 — real TTS/clip playback
+// ─────────────────────────────────────────────────────────────────────────────
+// Playback
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * One player per clip id, loaded once and reused — a verdict spoken twice in
+ * one session (the farmer taps 🔊 again) does not re-hit the filesystem for
+ * every word a second time.
+ */
+const soundCache = new Map<string, Sound>();
+
+/**
+ * Loads (or returns the cached) `Sound` for a clip id. Resolves to `null`,
+ * never rejects, when the file does not exist or fails to decode — a
+ * missing clip is not this function's business to escalate; `speak` decides
+ * what a gap in the sequence means (it skips it and keeps going).
+ */
+function loadClip(id: string): Promise<Sound | null> {
+  const cached = soundCache.get(id);
+  if (cached) return Promise.resolve(cached);
+
+  return new Promise(resolve => {
+    const sound = new Sound(`${id}.mp3`, Sound.MAIN_BUNDLE, error => {
+      if (error) {
+        resolve(null);
+        return;
+      }
+      soundCache.set(id, sound);
+      resolve(sound);
+    });
+  });
+}
+
+function playClip(sound: Sound): Promise<void> {
+  return new Promise(resolve => {
+    sound.play(() => resolve());
+  });
+}
+
+/**
+ * Plays a sequence of clip ids, one after another, waiting for each to
+ * finish before starting the next — this is speech, and a farmer needs the
+ * words in order, not overlapping. A clip id with no matching file (content
+ * not recorded yet, or a typo in a caller) is silently skipped, not thrown:
+ * partial narration beats a hard failure on the whole sentence over one
+ * missing word.
+ */
 export async function speak(clips: string[]): Promise<void> {
-  void clips;
+  for (const id of clips) {
+    const sound = await loadClip(id);
+    if (sound) {
+      await playClip(sound);
+    }
+  }
 }
 
 export async function speakVerdict(v: WindowRes, t?: TFn): Promise<void> {
@@ -155,3 +253,18 @@ export async function speakVerdict(v: WindowRes, t?: TFn): Promise<void> {
 
   await speak(clips);
 }
+
+/** Every clip id this engine can ever ask for, and its Marathi text — for
+ * `assets/audio/mr/README.md` and for anyone generating the actual clips.
+ * Not used by playback itself (`speak` only ever needs the id). */
+export function allClipTexts(): Record<string, string> {
+  const all: Record<string, string> = { ...CLIP_TEXT_MR };
+  for (const [n, text] of Object.entries(MARATHI_NUMBER_NAMES)) {
+    all[`n${n}`] = text;
+  }
+  for (const [n, text] of Object.entries(MARATHI_HUNDREDS)) {
+    all[`h${n}`] = text;
+  }
+  return all;
+}
+

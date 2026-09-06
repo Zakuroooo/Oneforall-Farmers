@@ -14,6 +14,7 @@ import { StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Sound from 'react-native-sound';
 
 import { ApiError } from './src/lib/api';
 import { AuthProvider } from './src/lib/auth';
@@ -74,11 +75,13 @@ const queryClient = new QueryClient({
 //      matching what that test already assumes.
 hydrateQueryClient(queryClient).then(() => persistQueryClient(queryClient));
 
-export default function App() {
-  // TODO(pranay): P9 calls Sound.setCategory('Playback') once, here, at mount —
-  //   without it the Marathi clips are silent when the phone is on vibrate, which
-  //   is how a demo phone is always configured.
+// Without this, `lib/voice.ts`'s clips are silent when the phone is on
+// vibrate — which is how a demo phone is always configured. Set once, at
+// module scope, for the same reason hydration is: a value that never
+// changes per-render has no business living inside the component function.
+Sound.setCategory('Playback');
 
+export default function App() {
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
