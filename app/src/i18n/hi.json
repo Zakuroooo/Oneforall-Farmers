@@ -310,5 +310,9 @@
   "vs_solo_gain_suffix": " ज्यादा",
   "consent_agreed": "सहमति दी",
   "consent_refused": "मना किया",
-  "consent_not_asked": "अभी पूछा नहीं गया"
+  "consent_not_asked": "अभी पूछा नहीं गया",
+
+  "prices_link_history": "कीमत इतिहास",
+  "prices_link_forecast": "अनुमान",
+  "prices_link_nearby": "आसपास की मंडी"
 }

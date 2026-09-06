@@ -310,5 +310,9 @@
   "vs_solo_gain_suffix": " more",
   "consent_agreed": "Agreed",
   "consent_refused": "Refused",
-  "consent_not_asked": "Not asked yet"
+  "consent_not_asked": "Not asked yet",
+
+  "prices_link_history": "Price history",
+  "prices_link_forecast": "Forecast",
+  "prices_link_nearby": "Nearby markets"
 }

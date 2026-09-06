@@ -310,5 +310,9 @@
   "vs_solo_gain_suffix": " जास्त",
   "consent_agreed": "संमती दिली",
   "consent_refused": "नकार दिला",
-  "consent_not_asked": "अजून विचारले नाही"
+  "consent_not_asked": "अजून विचारले नाही",
+
+  "prices_link_history": "भाव इतिहास",
+  "prices_link_forecast": "अंदाज",
+  "prices_link_nearby": "जवळपासची मंडई"
 }
