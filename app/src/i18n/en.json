@@ -443,5 +443,17 @@
   "voice_manual_placeholder": "Type here…",
   "voice_manual_send": "Send",
   "voice_confirm_yes": "Yes",
-  "voice_confirm_no": "No"
+  "voice_confirm_no": "No",
+
+  "date_unknown": "No date",
+  "provenance_fetch_error": "Could not load the source list.",
+  "provenance_empty": "No price records yet.",
+  "provenance_i8_rule": "Every record from a source other than Agmarknet or MSAMB is explicitly flagged. Every figure below is counted from the records themselves.",
+  "provenance_official_split": "Official: {official} records · Flagged: {flagged} records",
+  "provenance_generated_at": "Report generated: {date}",
+  "provenance_market_rows_title": "Records by market and crop:",
+  "provenance_row_title": "{commodity} · {market}",
+  "provenance_date_range_span": "{from} to {to}",
+  "provenance_no_source_url": "No verifiable link — this record is synthetic, not official data.",
+  "provenance_unofficial_note": "Not an official government source. This data is deliberately flagged."
 }

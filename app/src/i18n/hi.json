@@ -443,5 +443,17 @@
   "voice_manual_placeholder": "यहां टाइप करें…",
   "voice_manual_send": "भेजें",
   "voice_confirm_yes": "हां",
-  "voice_confirm_no": "नहीं"
+  "voice_confirm_no": "नहीं",
+
+  "date_unknown": "तारीख नहीं",
+  "provenance_fetch_error": "स्रोतों की सूची नहीं मिल सकी।",
+  "provenance_empty": "अभी एक भी कीमत रिकॉर्ड नहीं है।",
+  "provenance_i8_rule": "Agmarknet और MSAMB — इन सरकारी स्रोतों के अलावा हर रिकॉर्ड पर साफ़ निशान लगाया गया है। नीचे का हर आंकड़ा इन्हीं रिकॉर्ड्स से गिना गया है।",
+  "provenance_official_split": "सरकारी: {official} रिकॉर्ड · निशान लगे: {flagged} रिकॉर्ड",
+  "provenance_generated_at": "रिपोर्ट बनी: {date}",
+  "provenance_market_rows_title": "मंडी और फसल के अनुसार रिकॉर्ड:",
+  "provenance_row_title": "{commodity} · {market}",
+  "provenance_date_range_span": "{from} से {to}",
+  "provenance_no_source_url": "जाँचने योग्य लिंक नहीं — यह रिकॉर्ड सिंथेटिक है, सरकारी जानकारी नहीं।",
+  "provenance_unofficial_note": "यह सरकारी स्रोत नहीं है। इस जानकारी पर जान-बूझकर निशान लगाया गया है।"
 }

@@ -443,5 +443,17 @@
   "voice_manual_placeholder": "इथे टाइप करा…",
   "voice_manual_send": "पाठवा",
   "voice_confirm_yes": "हो",
-  "voice_confirm_no": "नाही"
+  "voice_confirm_no": "नाही",
+
+  "date_unknown": "तारीख नाही",
+  "provenance_fetch_error": "माहिती स्रोतांची यादी आणता आली नाही.",
+  "provenance_empty": "अजून एकही किंमत नोंद नाही.",
+  "provenance_i8_rule": "Agmarknet आणि MSAMB या अधिकृत सरकारी स्रोतांव्यतिरिक्त प्रत्येक नोंदीवर स्पष्ट खूण केलेली आहे. खालील प्रत्येक आकडा नोंदींमधूनच मोजलेला आहे.",
+  "provenance_official_split": "अधिकृत: {official} नोंदी · खूण केलेल्या: {flagged} नोंदी",
+  "provenance_generated_at": "अहवाल तयार: {date}",
+  "provenance_market_rows_title": "मंडी व पिकानुसार नोंदी:",
+  "provenance_row_title": "{commodity} · {market}",
+  "provenance_date_range_span": "{from} ते {to}",
+  "provenance_no_source_url": "पडताळणीयोग्य दुवा नाही — ही नोंद कृत्रिम आहे, अधिकृत सरकारी माहिती नाही.",
+  "provenance_unofficial_note": "हा अधिकृत सरकारी स्रोत नाही. ही माहिती जाणीवपूर्वक खूण केलेली आहे."
 }
