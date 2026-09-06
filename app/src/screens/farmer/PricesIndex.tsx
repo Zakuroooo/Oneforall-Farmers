@@ -12,10 +12,17 @@ import type { PricesStackParamList } from '../../navigation/FarmerTabs';
 
 type Props = NativeStackScreenProps<PricesStackParamList, 'PricesIndex'>;
 
+/**
+ * S8 is last and reads as a footnote, because that is its rank for a farmer — but
+ * it is here at all, rather than only behind S7, because the other reader of the
+ * model card is a judge who asks "how good is your forecast?" and should get there
+ * in one tap without being walked through a fan first.
+ */
 const LINKS: Array<{ route: keyof PricesStackParamList; label: string }> = [
   { route: 'S5_History', label: 'भाव इतिहास' },
   { route: 'S7_Forecast', label: 'अंदाज' },
   { route: 'S6_Nearby', label: 'जवळपासची मंडई' },
+  { route: 'S8_ModelCard', label: 'मॉडेल किती विश्वासार्ह आहे?' },
 ];
 
 export default function PricesIndex({ navigation }: Props) {
