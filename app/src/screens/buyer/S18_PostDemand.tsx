@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
+import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
+import { formatNumber } from '../../lib/money';
+import type { Locale } from '../../types/api';
 
 export function S18_PostDemand({ onDemandCreated }: { onDemandCreated?: () => void }) {
+  const [locale, setLocale] = useState<Locale>('mr');
+  useEffect(() => {
+    getLocale().then(l => l && setLocale(l));
+  }, []);
+
   const [commodity, setCommodity] = useState<'ONION' | 'SOYBEAN'>('ONION');
   const [quantity, setQuantity] = useState('100');
   const [grade, setGrade] = useState<'A' | 'B' | 'C'>('A');
   const [priceCeiling, setPriceCeiling] = useState('2000');
-  const [date, setDate] = useState('18 सप्टेंबर 2026');
+  const [date, setDate] = useState(translate('post_demand_default_date', locale));
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
@@ -23,37 +32,43 @@ export function S18_PostDemand({ onDemandCreated }: { onDemandCreated?: () => vo
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>नवीन खरेदी मागणी नोंदवा</Text>
+      <Text style={styles.title}>{translate('post_demand_title', locale)}</Text>
 
       {success ? (
         <Card style={styles.successCard}>
-          <Text style={styles.successTitle}>✓ मागणी नोंदवली गेली!</Text>
+          <Text style={styles.successTitle}>{translate('post_demand_success_title', locale)}</Text>
           <Text style={styles.successText}>
-            तुमच्या १०० क्विंटल मागणीसाठी जुळणारे शेतकरी लिलाव शोधले गेले आहेत.
+            {translate('post_demand_success_text', locale, {
+              qty: formatNumber(Number(quantity) || 0, locale),
+            })}
           </Text>
-          <Button title="जुळणी पहा" onPress={() => setSuccess(false)} style={styles.btn} />
+          <Button
+            title={translate('post_demand_view_matches', locale)}
+            onPress={() => setSuccess(false)}
+            style={styles.btn}
+          />
         </Card>
       ) : (
         <Card style={styles.formCard}>
-          <Text style={styles.label}>शेतमाल</Text>
+          <Text style={styles.label}>{translate('post_demand_commodity_label', locale)}</Text>
           <View style={styles.row}>
             <TouchableOpacity
               onPress={() => setCommodity('ONION')}
               style={[styles.chip, commodity === 'ONION' && styles.chipActive]}>
               <Text style={[styles.chipText, commodity === 'ONION' && styles.chipTextActive]}>
-                कांदा (Onion)
+                {translate('commodity_onion', locale)}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setCommodity('SOYBEAN')}
               style={[styles.chip, commodity === 'SOYBEAN' && styles.chipActive]}>
               <Text style={[styles.chipText, commodity === 'SOYBEAN' && styles.chipTextActive]}>
-                सोयाबीन (Soybean)
+                {translate('commodity_soybean', locale)}
               </Text>
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.label}>प्रमाण (क्विंटल)</Text>
+          <Text style={styles.label}>{translate('post_demand_qty_label', locale)}</Text>
           <TextInput
             style={styles.input}
             value={quantity}
@@ -61,7 +76,7 @@ export function S18_PostDemand({ onDemandCreated }: { onDemandCreated?: () => vo
             keyboardType="number-pad"
           />
 
-          <Text style={styles.label}>आवश्यक गुणवत्ता (ग्रेड)</Text>
+          <Text style={styles.label}>{translate('post_demand_grade_label', locale)}</Text>
           <View style={styles.row}>
             {(['A', 'B', 'C'] as const).map(g => (
               <TouchableOpacity
@@ -69,13 +84,13 @@ export function S18_PostDemand({ onDemandCreated }: { onDemandCreated?: () => vo
                 onPress={() => setGrade(g)}
                 style={[styles.gradeChip, grade === g && styles.gradeChipActive]}>
                 <Text style={[styles.gradeText, grade === g && styles.gradeTextActive]}>
-                  ग्रेड {g}
+                  {translate('post_demand_grade_chip', locale, { grade: g })}
                 </Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          <Text style={styles.label}>कमाल खरेदी दर (₹/क्विंटल)</Text>
+          <Text style={styles.label}>{translate('post_demand_price_ceiling_label', locale)}</Text>
           <TextInput
             style={styles.input}
             value={priceCeiling}
@@ -83,11 +98,11 @@ export function S18_PostDemand({ onDemandCreated }: { onDemandCreated?: () => vo
             keyboardType="number-pad"
           />
 
-          <Text style={styles.label}>स्वीकृतीची अंतिम तारीख</Text>
+          <Text style={styles.label}>{translate('post_demand_deadline_label', locale)}</Text>
           <TextInput style={styles.input} value={date} onChangeText={setDate} />
 
           <Button
-            title="मागणी प्रकाशित करा"
+            title={translate('post_demand_submit', locale)}
             onPress={handleSubmit}
             loading={submitting}
             style={styles.submitBtn}

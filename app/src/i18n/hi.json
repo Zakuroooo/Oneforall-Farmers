@@ -355,5 +355,20 @@
   "buyer_farmer_login_link": "🌾 किसान ऐप पर जाएं",
   "buyer_verify_button": "ओटीपी सत्यापित करें और साइन इन करें",
   "back_button": "वापस जाएं",
-  "demo_buyer_company_name": "पुणे ट्रेडिंग कंपनी"
+  "demo_buyer_company_name": "पुणे ट्रेडिंग कंपनी",
+
+  "post_demand_title": "नई खरीद मांग दर्ज करें",
+  "post_demand_success_title": "✓ मांग दर्ज हो गई!",
+  "post_demand_success_text": "आपकी {qty} क्विंटल मांग के लिए मिलते-जुलते किसान लॉट खोजे गए हैं।",
+  "post_demand_view_matches": "मिलान देखें",
+  "post_demand_commodity_label": "फसल",
+  "commodity_onion": "प्याज",
+  "commodity_soybean": "सोयाबीन",
+  "post_demand_qty_label": "मात्रा (क्विंटल)",
+  "post_demand_grade_label": "आवश्यक गुणवत्ता (ग्रेड)",
+  "post_demand_grade_chip": "ग्रेड {grade}",
+  "post_demand_price_ceiling_label": "अधिकतम खरीद दर (₹/क्विंटल)",
+  "post_demand_deadline_label": "स्वीकृति की अंतिम तारीख",
+  "post_demand_submit": "मांग प्रकाशित करें",
+  "post_demand_default_date": "18 सितंबर 2026"
 }

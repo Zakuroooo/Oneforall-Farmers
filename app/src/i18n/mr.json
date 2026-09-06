@@ -355,5 +355,20 @@
   "buyer_farmer_login_link": "🌾 शेतकरी ॲपवर जा",
   "buyer_verify_button": "ओटीपी पडताळणी व साइन इन",
   "back_button": "मागे जा",
-  "demo_buyer_company_name": "पुणे ट्रेडिंग कंपनी"
+  "demo_buyer_company_name": "पुणे ट्रेडिंग कंपनी",
+
+  "post_demand_title": "नवीन खरेदी मागणी नोंदवा",
+  "post_demand_success_title": "✓ मागणी नोंदवली गेली!",
+  "post_demand_success_text": "तुमच्या {qty} क्विंटल मागणीसाठी जुळणारे शेतकरी लिलाव शोधले गेले आहेत.",
+  "post_demand_view_matches": "जुळणी पहा",
+  "post_demand_commodity_label": "शेतमाल",
+  "commodity_onion": "कांदा",
+  "commodity_soybean": "सोयाबीन",
+  "post_demand_qty_label": "प्रमाण (क्विंटल)",
+  "post_demand_grade_label": "आवश्यक गुणवत्ता (ग्रेड)",
+  "post_demand_grade_chip": "ग्रेड {grade}",
+  "post_demand_price_ceiling_label": "कमाल खरेदी दर (₹/क्विंटल)",
+  "post_demand_deadline_label": "स्वीकृतीची अंतिम तारीख",
+  "post_demand_submit": "मागणी प्रकाशित करा",
+  "post_demand_default_date": "१८ सप्टेंबर २०२६"
 }

@@ -355,5 +355,20 @@
   "buyer_farmer_login_link": "🌾 Go to Farmer Login",
   "buyer_verify_button": "Verify OTP and sign in",
   "back_button": "Back",
-  "demo_buyer_company_name": "Pune Trading Company"
+  "demo_buyer_company_name": "Pune Trading Company",
+
+  "post_demand_title": "Post a new purchase demand",
+  "post_demand_success_title": "✓ Demand posted!",
+  "post_demand_success_text": "Matching farmer lots have been found for your {qty}-quintal demand.",
+  "post_demand_view_matches": "View matches",
+  "post_demand_commodity_label": "Commodity",
+  "commodity_onion": "Onion",
+  "commodity_soybean": "Soybean",
+  "post_demand_qty_label": "Quantity (quintals)",
+  "post_demand_grade_label": "Required quality (grade)",
+  "post_demand_grade_chip": "Grade {grade}",
+  "post_demand_price_ceiling_label": "Maximum purchase rate (₹/quintal)",
+  "post_demand_deadline_label": "Acceptance deadline",
+  "post_demand_submit": "Publish demand",
+  "post_demand_default_date": "18 September 2026"
 }
