@@ -419,6 +419,41 @@ export interface DemandDto {
   created_at: string;
 }
 
+export type MatchKind = 'SINGLE' | 'COMBINATION';
+
+/**
+ * One ranked entry from `GET /demands/{id}/matches` — CANON §7.6, transcribed
+ * from its own example response.
+ *
+ * Note what is **not** here: no price, and no farmer name or village on the
+ * lots. A match answers "which lots fill this order"; the price is still the
+ * buyer's own `bid_paise_per_qtl` until an offer is made, and the lot rows carry
+ * ids only. Neither absence is a gap to paper over on screen — see the header of
+ * `screens/buyer/S19_Matches.tsx`.
+ */
+export interface MatchDto {
+  kind: MatchKind;
+  lots: Array<{ lot_id: string; qty_allocated_kg: number }>;
+  total_qty_kg: number;
+  /** I3: how much of the demand this bundle fills. 10000 bps = the whole order. */
+  fill_bps: number;
+  avg_score: number;
+  grade: Grade;
+  distance_km: number;
+  /**
+   * Ranking score, 0..1. CANON §7.6: "`score` must decompose. The UI shows the
+   * `why_*` sentence. 'Because the algorithm said so' is not an answer a judge
+   * accepts." So this number is for ordering; `why_mr` is what renders.
+   */
+  score: number;
+  why_mr: string;
+  why_en: string;
+}
+
+export interface MatchesRes {
+  matches: MatchDto[];
+}
+
 export type OfferStatus =
   | 'OPEN'
   | 'ACCEPTED'

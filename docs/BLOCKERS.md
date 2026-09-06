@@ -288,3 +288,17 @@ These are logged because **the baseline documents changed after they were writte
 - **Workaround in place:** none needed; corrected before the build started.
 - **Raised:** H0
 - **RESOLVED:** H0 — **`00_CANON.md` §3 is the single authoritative table and its numbering wins**, per CANON's own precedence rule. `CLAUDE.md` §2 and all six role docs were renumbered to match; the eleven architecture docs already used CANON numbering and were left untouched. CANON gained **I16 — both numbers, always**, which `CLAUDE.md` had as I11 and CANON had been missing entirely. The two `SHREYA.md` citations that pointed at no real invariant (farmer illiteracy, 56 px touch target) were dropped, keeping the reasoning without the false authority. **Cite invariants by number only after checking CANON §3.**
+
+### [Pranay → Akash] CONTRACT: `/demands/{id}/matches` gives the buyer bare `lot_id`s
+- **What I need:** a buyer-readable label on each row of `matches[].lots[]` — a `farmer_label` and `village`, or a small `lot_summary` object. Two or three fields, not a full `LotDto`.
+- **Why:** CANON §7.6's match rows carry `lot_id` and `qty_allocated_kg` and nothing else, and `GET /lots/{id}` is actor-scoped (I4) so a buyer cannot resolve an id he does not own. S19 is demo beat 9 — the moment a buyer sees that three smallholders together fill the order he would have given a middleman. "`pool_3`, `lot_7`, `lot_9`" does not land that; "रामभाऊ पाटील, निफाड" does. The old screen solved this by inventing farmer names in a module constant, which is the I8 class of mistake, so it is now rendering ids honestly instead.
+- **Blocking:** P-side S19 polish, and beat 9's punchline.
+- **Workaround in place:** `fixtures/matches.ts` is CANON-shaped, and the screen renders `लॉट १ · lot_7` with the allocated quantity. No invented names anywhere. `TODO(akash):` in `app/src/screens/buyer/S19_Matches.tsx`.
+- **Raised:** H-current (2026-09-06)
+
+### [Pranay → Akash] CONTRACT: no price anywhere on a match response
+- **What I need:** nothing changed, only confirmation this is intended.
+- **Why:** §7.6's match entries have no price field, so S19 now shows the buyer's own `bid_paise_per_qtl` once at the top rather than a per-bundle rupee figure. The previous screen carried `avgPrice: 1950` — rupees, in a field not ending `_paise`, rendered with a hand-composed `₹` — breaking I1 twice in one line. If matching is meant to surface a per-bundle asking price, it needs a `_paise` field and I will move it onto the card.
+- **Blocking:** nothing.
+- **Workaround in place:** the bid renders through `formatPaise` in the demand summary card.
+- **Raised:** H-current (2026-09-06)

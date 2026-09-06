@@ -29,6 +29,7 @@ import type {
   ForecastRes,
   Locale,
   LotDto,
+  MatchesRes,
   ModelCard,
   NearbyRes,
   OfferDto,
@@ -240,6 +241,10 @@ export const getPool = (id: string) => get<PoolDto>(`/pools/${id}`);
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getDemands = () => get<DemandDto[]>('/demands');
+
+/** ★ CANON §7.6 — ranked, and includes multi-lot combinations. S19 reads this. */
+export const getMatches = (demandId: string) =>
+  get<MatchesRes>(`/demands/${demandId}/matches`);
 
 export const getOffers = () => get<OfferDto[]>('/offers');
 

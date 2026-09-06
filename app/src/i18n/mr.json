@@ -455,5 +455,14 @@
   "provenance_row_title": "{commodity} · {market}",
   "provenance_date_range_span": "{from} ते {to}",
   "provenance_no_source_url": "पडताळणीयोग्य दुवा नाही — ही नोंद कृत्रिम आहे, अधिकृत सरकारी माहिती नाही.",
-  "provenance_unofficial_note": "हा अधिकृत सरकारी स्रोत नाही. ही माहिती जाणीवपूर्वक खूण केलेली आहे."
+  "provenance_unofficial_note": "हा अधिकृत सरकारी स्रोत नाही. ही माहिती जाणीवपूर्वक खूण केलेली आहे.",
+
+  "matches_fetch_error": "जुळणी यादी आणता आली नाही.",
+  "matches_empty": "तुमच्या मागणीशी जुळणारा एकही लॉट अजून नाही.",
+  "matches_demand_line": "तुमची मागणी: {qty} क्विंटल · किमान ग्रेड {grade}",
+  "matches_your_bid_label": "तुमची बोली:",
+  "matches_fill_label": "मागणी भरते",
+  "matches_partial_fill_note": "हे बंडल तुमची पूर्ण मागणी भरत नाही — {qty} क्विंटल कमी.",
+  "matches_lot_index": "लॉट {n}",
+  "distance_km_line": "अंतर: {distance} किमी"
 }

@@ -455,5 +455,14 @@
   "provenance_row_title": "{commodity} · {market}",
   "provenance_date_range_span": "{from} से {to}",
   "provenance_no_source_url": "जाँचने योग्य लिंक नहीं — यह रिकॉर्ड सिंथेटिक है, सरकारी जानकारी नहीं।",
-  "provenance_unofficial_note": "यह सरकारी स्रोत नहीं है। इस जानकारी पर जान-बूझकर निशान लगाया गया है।"
+  "provenance_unofficial_note": "यह सरकारी स्रोत नहीं है। इस जानकारी पर जान-बूझकर निशान लगाया गया है।",
+
+  "matches_fetch_error": "मिलान सूची नहीं मिल सकी।",
+  "matches_empty": "आपकी मांग से मिलता एक भी लॉट अभी नहीं है।",
+  "matches_demand_line": "आपकी मांग: {qty} क्विंटल · न्यूनतम ग्रेड {grade}",
+  "matches_your_bid_label": "आपकी बोली:",
+  "matches_fill_label": "मांग पूरी होती है",
+  "matches_partial_fill_note": "यह बंडल आपकी पूरी मांग नहीं भरता — {qty} क्विंटल कम।",
+  "matches_lot_index": "लॉट {n}",
+  "distance_km_line": "दूरी: {distance} किमी"
 }
