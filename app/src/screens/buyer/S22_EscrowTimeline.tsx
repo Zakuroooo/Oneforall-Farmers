@@ -56,7 +56,13 @@ export function S22_EscrowTimeline() {
     );
   }
 
-  if (error) {
+  // P11: `error && !data`, not a bare `error` — the rule the farmer screens
+  // (S4/S7/S9/S14/S15/S16/S26) already follow, applied here for consistency.
+  // The escrow timeline is beat 10, read off a second device on the same venue
+  // wifi; a failed refetch must not replace a timeline the cache is holding.
+  // ★ Touched under Pranay's hand (app-lane lead, CLAUDE.md §1) as part of one
+  //   sweep, so the two navigators do not diverge on this. Shreya owns the file.
+  if (error && !data) {
     return (
       <ErrorState message={translate('escrow_fetch_error', locale)} onRetry={() => refetch()} />
     );

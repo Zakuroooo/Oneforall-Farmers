@@ -192,7 +192,10 @@ export default function S13_SelfAssay({ route }: Props) {
     );
   }
 
-  if (error) {
+  // P11: `error && !lot`, not a bare `error` — same rule as S4/S7/S9. The
+  // answers already tapped live in component state, so shadowing the loaded
+  // lot on a failed refetch would also throw away a part-finished assay.
+  if (error && !lot) {
     return (
       <ErrorState message={translate('self_assay_error', locale)} onRetry={() => refetch()} />
     );

@@ -118,7 +118,13 @@ export default function S14_CounterOffer({ route }: Props) {
     );
   }
 
-  if (error) {
+  // P11: `error && !data`, not a bare `error` — same rule as S4/S7/S9. A
+  // hydrated cache can hold this offer from an earlier session while a
+  // background refetch on a dead network fails, and beat 9 is a farmer typing
+  // a counter-price against a forecast. Shadowing a loaded offer with a retry
+  // screen because a refetch failed would take the negotiation off the table
+  // over a network blip. Only "nothing to negotiate against at all" is an error.
+  if (error && !data) {
     return (
       <ErrorState message={translate('offer_fetch_error', locale)} onRetry={() => refetch()} />
     );
@@ -246,6 +252,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 18,
+    // Beat 9 is a farmer typing a counter-price. Without this the digits
+    // he types are the platform default colour — white on a dark-mode phone.
+    color: '#1E293B',
     marginBottom: 8,
     backgroundColor: '#FFFFFF',
   },

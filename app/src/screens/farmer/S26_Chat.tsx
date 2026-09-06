@@ -94,7 +94,12 @@ export default function S26_Chat() {
     );
   }
 
-  if (error) {
+  // P11, and this screen is the sharpest case of it: the query above polls
+  // every 4 s, so on a dead network a bare `if (error)` blanks a thread the
+  // farmer is reading roughly four seconds after airplane mode goes on — beat
+  // 7's exact territory. Messages already fetched stay on screen; only an
+  // empty cache plus a failure is an error state.
+  if (error && !messages) {
     return (
       <ErrorState message={translate('chat_fetch_error', locale)} onRetry={() => refetch()} />
     );
@@ -166,6 +171,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingVertical: 10,
     fontSize: 15,
+    color: '#1E293B',
     maxHeight: 100,
     backgroundColor: '#FFFFFF',
   },

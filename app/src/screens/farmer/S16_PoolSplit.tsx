@@ -81,7 +81,10 @@ export default function S16_PoolSplit({ route }: Props) {
     );
   }
 
-  if (error) {
+  // P11: `error && !pool`, not a bare `error` — same rule as S4/S7/S9. A pool
+  // split is the same rows every time it is read; a failed refetch is no
+  // reason to hide a split the cache is still holding.
+  if (error && !pool) {
     return <ErrorState message={translate('pool_fetch_error', locale)} onRetry={() => refetch()} />;
   }
 
