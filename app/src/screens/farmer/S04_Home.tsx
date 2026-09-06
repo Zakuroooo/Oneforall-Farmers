@@ -96,7 +96,7 @@ export default function S04_Home({ navigation }: Props) {
       <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
       <View style={styles.headerRow}>
         <Text style={styles.commodity}>कांदा · लासलगाव</Text>
-        <SourceBadge source={today.source} />
+        <SourceBadge source={today.source} locale={locale} />
       </View>
 
       <View style={styles.priceCard}>

@@ -29,6 +29,7 @@
   "source_msamb": "MSAMB Data",
   "source_synthetic": "Synthetic Data",
   "source_archive": "Archived Data",
+  "source_imputed": "Estimated Data",
   "buyer_login": "Buyer Login",
   "post_demand": "Post Demand",
   "commodity": "Commodity",

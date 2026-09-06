@@ -85,7 +85,7 @@ export function VerdictCard({
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <Text style={styles.commodity}>{t('demo_commodity_market')}</Text>
-        <SourceBadge source={data.data_source} />
+        <SourceBadge source={data.data_source} locale={locale} />
       </View>
 
       {data.action === 'NO_ADVICE' ? (

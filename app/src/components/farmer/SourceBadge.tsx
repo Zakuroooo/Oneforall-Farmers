@@ -16,17 +16,20 @@
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import type { DataSource } from '../../types/api';
+import { translate } from '../../lib/i18n';
+import type { DataSource, Locale } from '../../types/api';
 
 // Exported — `components/charts/PriceHistory.tsx` shares this exact mapping for
 // its per-segment coloring and legend, so the two never quietly disagree about
 // which sources count as trusted or what color/label represents which one.
 export const TRUSTED: ReadonlySet<DataSource> = new Set(['AGMARKNET', 'MSAMB']);
 
-export const UNTRUSTED_LABEL_MR: Record<Exclude<DataSource, 'AGMARKNET' | 'MSAMB'>, string> = {
-  ARCHIVE: 'संग्रहित माहिती',
-  SYNTHETIC: 'कृत्रिम माहिती',
-  IMPUTED: 'अंदाजित माहिती',
+/** Dictionary keys, not text — `translate()` resolves the actual label in the
+ * caller's locale. Exported so `PriceHistory`'s legend uses the same keys. */
+export const UNTRUSTED_LABEL_KEY: Record<Exclude<DataSource, 'AGMARKNET' | 'MSAMB'>, string> = {
+  ARCHIVE: 'source_archive',
+  SYNTHETIC: 'source_synthetic',
+  IMPUTED: 'source_imputed',
 };
 
 export const SOURCE_COLOR: Record<DataSource, string> = {
@@ -37,11 +40,15 @@ export const SOURCE_COLOR: Record<DataSource, string> = {
   IMPUTED: '#E65100',
 };
 
-export function SourceBadge({ source }: { source: DataSource }) {
+export function untrustedSourceLabel(source: Exclude<DataSource, 'AGMARKNET' | 'MSAMB'>, locale: Locale): string {
+  return translate(UNTRUSTED_LABEL_KEY[source], locale);
+}
+
+export function SourceBadge({ source, locale }: { source: DataSource; locale: Locale }) {
   const isTrusted = TRUSTED.has(source);
   const label = isTrusted
     ? source
-    : UNTRUSTED_LABEL_MR[source as Exclude<DataSource, 'AGMARKNET' | 'MSAMB'>];
+    : untrustedSourceLabel(source as Exclude<DataSource, 'AGMARKNET' | 'MSAMB'>, locale);
 
   return (
     <View style={[styles.badge, isTrusted ? styles.trusted : styles.untrusted]}>

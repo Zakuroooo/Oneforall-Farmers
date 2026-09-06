@@ -20,6 +20,18 @@ export function devNum(n: number | string, locale: Locale = 'mr'): string {
   return str.replace(/\d/g, d => DEV_DIGITS[+d] ?? d);
 }
 
+/**
+ * Plain-function lookup, for the handful of places that need a translated
+ * string outside a component's render (a module-level map keyed by
+ * `DataSource`, say) and so cannot call the `useT()` hook. Same dictionary,
+ * same fallback rules as `t()` itself — this is not a second translation
+ * system, just the same one usable without a component.
+ */
+export function translate(key: string, locale: Locale = 'mr'): string {
+  const dict = DICTS[locale] ?? DICTS.mr;
+  return dict[key] ?? `⟨${key}⟩`;
+}
+
 export type TFn = (key: string, vars?: Record<string, string | number>) => string;
 
 interface I18nContextValue {

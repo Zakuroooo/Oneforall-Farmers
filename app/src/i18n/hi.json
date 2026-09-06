@@ -29,6 +29,7 @@
   "source_msamb": "एमएसएएमबी डेटा",
   "source_synthetic": "सिंथेटिक डेटा",
   "source_archive": "संग्रहीत डेटा",
+  "source_imputed": "अनुमानित डेटा",
   "buyer_login": "व्यापारी लॉगिन",
   "post_demand": "मांग पोस्ट करें",
   "commodity": "फसल",

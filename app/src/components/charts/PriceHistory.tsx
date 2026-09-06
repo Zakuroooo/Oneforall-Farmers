@@ -21,7 +21,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 
 import { formatPaise } from '../../lib/money';
-import { SOURCE_COLOR, TRUSTED, UNTRUSTED_LABEL_MR } from '../farmer/SourceBadge';
+import { SOURCE_COLOR, TRUSTED, untrustedSourceLabel } from '../farmer/SourceBadge';
 import type { DataSource, Locale, PricePoint } from '../../types/api';
 
 type Props = {
@@ -33,10 +33,10 @@ const WIDTH = 320;
 const HEIGHT = 160;
 const PAD = 12;
 
-function legendLabel(source: DataSource): string {
+function legendLabel(source: DataSource, locale: Locale): string {
   return TRUSTED.has(source)
     ? source
-    : UNTRUSTED_LABEL_MR[source as Exclude<DataSource, 'AGMARKNET' | 'MSAMB'>];
+    : untrustedSourceLabel(source as Exclude<DataSource, 'AGMARKNET' | 'MSAMB'>, locale);
 }
 
 export function PriceHistory({ points, locale }: Props) {
@@ -81,7 +81,7 @@ export function PriceHistory({ points, locale }: Props) {
         {sourcesPresent.map(source => (
           <View key={source} style={styles.legendItem}>
             <View style={[styles.legendDot, { backgroundColor: SOURCE_COLOR[source] }]} />
-            <Text style={styles.legendLabel}>{legendLabel(source)}</Text>
+            <Text style={styles.legendLabel}>{legendLabel(source, locale)}</Text>
           </View>
         ))}
       </View>
