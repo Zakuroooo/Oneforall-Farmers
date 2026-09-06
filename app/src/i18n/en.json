@@ -49,7 +49,6 @@
   "error_generic": "Something went wrong. Please try again.",
   "no_lots_yet": "No lots available yet",
   "create_first_lot": "Create your first lot",
-
   "action_sell_now": "Sell now",
   "action_sell_elsewhere": "Sell elsewhere",
   "action_hold": "Hold",
@@ -71,7 +70,6 @@
   "see_full_details": "See full details →",
   "listen_button": "🔊 Listen",
   "listening_button": "🔊 ...",
-
   "pledge_eyebrow": "Need money to wait?",
   "pledge_loan_heading": "Loan against your lot",
   "pledge_loan_label": "Amount available",
@@ -81,9 +79,7 @@
   "pledge_compare_gain_label": "Gain from waiting",
   "pledge_compare_vs": "vs",
   "pledge_warehouse_label": "Warehouse",
-
   "stale_banner_text": "Old data — last updated at {time}",
-
   "tx_status_created": "Deal created",
   "tx_status_escrow_held": "Escrow held",
   "tx_status_dispatched": "Dispatched",
@@ -95,11 +91,9 @@
   "tx_id_label": "Transaction #",
   "tx_net_amount_label": "Net amount",
   "retry_button": "Retry",
-
   "quick_demo_label": "Go straight to a demo session",
   "farmer_demo_button": "🌾 Farmer app & voice",
   "buyer_demo_button": "💼 Buyer console",
-
   "phone_title": "Enter mobile number",
   "send_otp_button": "Send OTP",
   "buyer_login_prompt_phone": "💼 Are you a buyer? Sign in here",
@@ -111,7 +105,6 @@
   "resend_otp_button": "Resend OTP",
   "network_error_generic": "Network problem. Please try again.",
   "server_contact_error": "Could not reach the server. Please try again.",
-
   "profile_title": "Your details",
   "name_placeholder": "Your name",
   "district_loading": "Loading districts...",
@@ -121,16 +114,13 @@
   "village_placeholder": "Village name",
   "otp_invalid_expired": "The OTP is wrong or expired. Start again.",
   "restart_otp_link": "Go back for a new OTP",
-
   "price_fetch_error": "Could not fetch the price. Please try again.",
   "home_price_empty": "No price available yet for this market.",
   "today_price_per_qtl_label": "Today's price (per quintal)",
   "home_cta": "Should I sell?",
-
   "history_error": "Could not fetch history. Please try again.",
   "history_empty": "No history available for this market.",
   "history_title": "{market} — {days}-day history",
-
   "nearby_error": "Could not fetch nearby markets. Please try again.",
   "nearby_empty": "No nearby markets found.",
   "nearby_title": "Nearby markets — sorted by net price",
@@ -138,13 +128,11 @@
   "gross_label": "Gross",
   "transport_commission_label": "Transport + commission",
   "net_label": "Net",
-
   "forecast_error": "Could not fetch the forecast. Please try again.",
   "forecast_empty": "No forecast available for this market.",
   "forecast_title": "{market} — {days}-day forecast",
   "model_reliability_line": "Model reliability (MASE): {mase} · coverage: {coverage}",
   "model_note_cta": "How is this measured? →",
-
   "demo_commodity_name": "Onion",
   "model_card_error": "Could not fetch the model card. Please try again.",
   "model_card_empty": "No model information available for this crop.",
@@ -177,10 +165,8 @@
   "limitation_coverage_narrow": "The band is {gap} narrower than target — the real price is slightly more likely to fall outside it than stated.",
   "limitation_coverage_ok": "The band is at or wider than target.",
   "limitation_refusal": "When the forecast is too uncertain, this model refuses to advise — that refusal is deliberate, not a flaw.",
-
   "verdict_error": "Could not fetch the verdict. Please try again.",
   "verdict_empty": "No advice available yet for this lot.",
-
   "cost_breakdown_error": "Could not fetch the cost breakdown. Please try again.",
   "cost_breakdown_empty": "No cost breakdown available for this lot.",
   "cost_breakdown_title": "Cost breakdown",
@@ -190,7 +176,6 @@
   "lot_total_cost_label": "Total cost on your {qty} quintals",
   "lot_cost_multiply_note": "{total} × {qty} quintals",
   "cost_breakdown_footnote": "The expected gain is shown only after all these costs are deducted. Costs are already netted out before the gain is calculated.",
-
   "lot_create_error": "Could not create the lot. Please try again.",
   "lot_creating": "Creating the lot…",
   "lot_created_title": "Lot created ✓",
@@ -206,7 +191,6 @@
   "take_photo_button": "Take photo",
   "camera_permission_denied": "Camera permission denied. You can continue without a photo — it can be added later too.",
   "create_lot_button": "Create lot",
-
   "self_assay_error": "Could not fetch lot information. Please try again.",
   "self_assay_lot_not_found": "No lot found to assess.",
   "self_assay_save_error": "Could not save the grade. Please try again.",
@@ -243,7 +227,6 @@
   "tip_colour_uniform": "Sorting by colour could improve the grade.",
   "tip_moisture_feel": "Drying the produce further could improve the grade.",
   "tip_foreign_matter": "Cleaning out soil and debris could improve the grade.",
-
   "offer_fetch_error": "Could not fetch the offer. Please try again.",
   "offer_not_found": "This offer was not found — it may already have a response.",
   "offer_action_error": "The action could not be completed. Please try again.",
@@ -258,7 +241,6 @@
   "accept_button": "Accept",
   "counter_button": "Counter",
   "reject_button": "Reject",
-
   "lot_grade_a": "Grade A",
   "lot_grade_b": "Grade B",
   "lot_grade_c": "Grade C",
@@ -295,7 +277,6 @@
   "timeline_hide_link": "▾ Hide timeline",
   "timeline_show_link": "▸ View timeline",
   "chat_with_buyer_link": "💬 Message the buyer",
-
   "pool_fetch_error": "Could not fetch the pool information. Please try again.",
   "pool_empty": "This pool has not formed yet.",
   "total_qty_line": "Total quantity: {qty} quintals",
@@ -311,11 +292,9 @@
   "consent_agreed": "Agreed",
   "consent_refused": "Refused",
   "consent_not_asked": "Not asked yet",
-
   "prices_link_history": "Price history",
   "prices_link_forecast": "Forecast",
   "prices_link_nearby": "Nearby markets",
-
   "chat_fetch_error": "Could not fetch messages. Please try again.",
   "chat_header": "Conversation with buyer",
   "call_button": "📞 Call",
@@ -323,14 +302,11 @@
   "chat_empty_description": "Start by writing a message below.",
   "message_placeholder": "Write a message…",
   "send_message_button": "Send",
-
   "assistant_header": "Help",
   "assistant_subheader": "Frequently asked questions",
-
   "tab_home": "Home",
   "tab_prices": "Prices",
   "tab_my_lots": "My Lots",
-
   "buyer_tab_demands": "Demand",
   "buyer_tab_matches": "Matches",
   "buyer_tab_offers": "Offers",
@@ -339,11 +315,9 @@
   "buyer_tab_provenance": "Transparency",
   "buyer_tab_dispute": "Dispute",
   "buyer_tab_chat": "Chat",
-
   "root_farmer_app_title": "Farmer",
   "root_buyer_console_title": "Buyer",
   "root_sign_out": "Sign out",
-
   "buyer_login_badge": "Buyer Portal",
   "buyer_login_title": "Buyer sign in",
   "buyer_phone_invalid": "Please enter a valid 10-digit phone number",
@@ -356,7 +330,6 @@
   "buyer_verify_button": "Verify OTP and sign in",
   "back_button": "Back",
   "demo_buyer_company_name": "Pune Trading Company",
-
   "post_demand_title": "Post a new purchase demand",
   "post_demand_success_title": "✓ Demand posted!",
   "post_demand_success_text": "Matching farmer lots have been found for your {qty}-quintal demand.",
@@ -371,7 +344,6 @@
   "post_demand_deadline_label": "Acceptance deadline",
   "post_demand_submit": "Publish demand",
   "post_demand_default_date": "18 September 2026",
-
   "matches_header": "Matching farmer lots ({qty}-quintal demand)",
   "matches_combination_bundle": "Combined bundle ({n} lots)",
   "matches_single_lot": "Single lot",
@@ -380,7 +352,6 @@
   "matches_view_lot_detail": "View lot detail",
   "matches_make_offer": "Make offer",
   "qtl_abbrev": "{qty} qtl",
-
   "lot_detail_header": "Lot detail",
   "lot_id_label": "Lot no: #{id}",
   "farmer_label": "Farmer: {name}",
@@ -395,7 +366,6 @@
   "assay_moisture_dryness_a": "Fully dried ({pct}% moisture) - score: {score}/{max}",
   "warehouse_storage_title": "Warehouse storage:",
   "lot_detail_make_offer": "Make an offer for this lot",
-
   "offer_thread_header": "Offer negotiation (session rounds)",
   "offer_summary_title": "{commodity} - {qty}-quintal bundle",
   "offer_summary_sub": "{location} · Grade {grade}",
@@ -407,11 +377,9 @@
   "counter_offer_send": "Send counter-offer (round {round}/{max})",
   "max_rounds_reached": "⚠️ {max} rounds are complete. Wait for the final decision.",
   "time_just_now": "Just now",
-
   "escrow_fetch_error": "Could not fetch the transaction. Please try again.",
   "escrow_no_timeline": "No timeline is available for this transaction yet.",
   "escrow_timeline_header": "Escrow transaction timeline",
-
   "ledger_status_created": "Deal confirmed",
   "ledger_status_escrow_held": "Escrow amount held",
   "ledger_status_dispatched": "Goods dispatched",
@@ -424,11 +392,35 @@
   "block_label": "Block #{index}",
   "prev_hash_label": "Prev hash:",
   "curr_hash_label": "Curr hash:",
-
   "provenance_total_label": "Total price records collected",
   "provenance_coverage_note": "{markets} major markets & {crops} crops across Maharashtra",
   "provenance_source_breakdown_title": "Source breakdown:",
   "provenance_count_label": "Record count:",
   "provenance_date_range_label": "Period: {range}",
-  "provenance_synthetic_date_range": "Synthetic test records"
+  "provenance_synthetic_date_range": "Synthetic test records",
+  "dispute_header": "Disputes and arbitration",
+  "dispute_status_none": "Normal",
+  "dispute_status_resolved": "Resolved",
+  "amount_escrow_protected": "Amount: {amount} (escrow protected)",
+  "dispute_reason_label": "State the reason for the dispute",
+  "dispute_reason_placeholder": "e.g. the lot graded B, not A, or the weight is 5 quintal short...",
+  "dispute_raise_button": "Raise a dispute",
+  "dispute_in_progress_title": "⚠️ Dispute in progress",
+  "dispute_reason_display": "Dispute: \"{reason}\"",
+  "dispute_default_reason": "Quality mismatch",
+  "dispute_resolve_button": "Accept arbitration and settle",
+  "dispute_resolved_title": "✓ Dispute resolved",
+  "dispute_resolved_desc": "With both parties consenting, the escrow transaction has resumed.",
+  "month_1": "January",
+  "month_2": "February",
+  "month_3": "March",
+  "month_4": "April",
+  "month_5": "May",
+  "month_6": "June",
+  "month_7": "July",
+  "month_8": "August",
+  "month_9": "September",
+  "month_10": "October",
+  "month_11": "November",
+  "month_12": "December"
 }

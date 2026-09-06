@@ -49,7 +49,6 @@
   "error_generic": "काहीतरी चूक झाली. पुन्हा प्रयत्न करा.",
   "no_lots_yet": "अजून कोणतेही लिलाव उपलब्ध नाहीत",
   "create_first_lot": "पहिला माल नोंदवा",
-
   "action_sell_now": "आता विका",
   "action_sell_elsewhere": "दुसरीकडे विका",
   "action_hold": "थांबा",
@@ -71,7 +70,6 @@
   "see_full_details": "पूर्ण तपशील पहा →",
   "listen_button": "🔊 ऐका",
   "listening_button": "🔊 ...",
-
   "pledge_eyebrow": "थांबण्यासाठी पैसे हवे आहेत?",
   "pledge_loan_heading": "तुमच्या मालावर कर्ज",
   "pledge_loan_label": "मिळू शकणारी रक्कम",
@@ -81,9 +79,7 @@
   "pledge_compare_gain_label": "थांबून फायदा",
   "pledge_compare_vs": "विरुद्ध",
   "pledge_warehouse_label": "गोदाम",
-
   "stale_banner_text": "जुनी माहिती — शेवटचे अद्ययावत {time} वाजता",
-
   "tx_status_created": "सौदा निश्चित",
   "tx_status_escrow_held": "रक्कम एस्क्रॉ जमा",
   "tx_status_dispatched": "माल रवाना",
@@ -95,11 +91,9 @@
   "tx_id_label": "व्यवहार क्र",
   "tx_net_amount_label": "निव्वळ रक्कम",
   "retry_button": "पुन्हा प्रयत्न करा",
-
   "quick_demo_label": "डेमो सत्रासाठी थेट जा",
   "farmer_demo_button": "🌾 शेतकरी ॲप व आवाज",
   "buyer_demo_button": "💼 व्यापारी कंसोल",
-
   "phone_title": "मोबाइल नंबर टाका",
   "send_otp_button": "OTP पाठवा",
   "buyer_login_prompt_phone": "💼 व्यापारी आहात? येथे साइन इन करा",
@@ -111,7 +105,6 @@
   "resend_otp_button": "पुन्हा OTP पाठवा",
   "network_error_generic": "नेटवर्क समस्या. पुन्हा प्रयत्न करा.",
   "server_contact_error": "सर्व्हरशी संपर्क होऊ शकला नाही. पुन्हा प्रयत्न करा.",
-
   "profile_title": "तुमची माहिती",
   "name_placeholder": "तुमचे नाव",
   "district_loading": "जिल्हे आणत आहोत...",
@@ -121,16 +114,13 @@
   "village_placeholder": "गावाचे नाव",
   "otp_invalid_expired": "OTP चुकीचा किंवा कालबाह्य आहे. पुन्हा सुरू करा.",
   "restart_otp_link": "पुन्हा OTP साठी परत जा",
-
   "price_fetch_error": "किंमत आणता आली नाही. पुन्हा प्रयत्न करा.",
   "home_price_empty": "या मार्केटसाठी अजून किंमत उपलब्ध नाही.",
   "today_price_per_qtl_label": "आजची किंमत (प्रति क्विंटल)",
   "home_cta": "मी विकावे का?",
-
   "history_error": "इतिहास आणता आला नाही. पुन्हा प्रयत्न करा.",
   "history_empty": "या मार्केटसाठी इतिहास उपलब्ध नाही.",
   "history_title": "{market} — {days} दिवसांचा इतिहास",
-
   "nearby_error": "जवळपासची मंडई आणता आली नाही. पुन्हा प्रयत्न करा.",
   "nearby_empty": "जवळपास मंडई सापडली नाही.",
   "nearby_title": "जवळपासची मंडई — निव्वळ किमतीनुसार क्रमवारी",
@@ -138,13 +128,11 @@
   "gross_label": "सकल",
   "transport_commission_label": "वाहतूक + कमिशन",
   "net_label": "निव्वळ",
-
   "forecast_error": "अंदाज आणता आला नाही. पुन्हा प्रयत्न करा.",
   "forecast_empty": "या मार्केटसाठी अंदाज उपलब्ध नाही.",
   "forecast_title": "{market} — {days} दिवसांचा अंदाज",
   "model_reliability_line": "मॉडेल विश्वासार्हता (MASE): {mase} · व्याप्ती: {coverage}",
   "model_note_cta": "हे कसे मोजले? →",
-
   "demo_commodity_name": "कांदा",
   "model_card_error": "मॉडेलची माहिती आणता आली नाही. पुन्हा प्रयत्न करा.",
   "model_card_empty": "या पिकासाठी मॉडेलची माहिती उपलब्ध नाही.",
@@ -177,10 +165,8 @@
   "limitation_coverage_narrow": "पट्टा लक्ष्यापेक्षा {gap} अरुंद पडतो — म्हणजे खरा भाव पट्ट्याबाहेर जाण्याची शक्यता दाखवल्यापेक्षा थोडी जास्त आहे.",
   "limitation_coverage_ok": "पट्टा लक्ष्याइतका किंवा त्याहून रुंद आहे.",
   "limitation_refusal": "अंदाज खूप अनिश्चित असल्यास हे मॉडेल सल्ला देण्यास नकार देते — तो नकार हा दोष नाही, तो मुद्दाम आहे.",
-
   "verdict_error": "निर्णय आणता आला नाही. पुन्हा प्रयत्न करा.",
   "verdict_empty": "या लॉटसाठी अजून सल्ला उपलब्ध नाही.",
-
   "cost_breakdown_error": "खर्चाचा तपशील आणता आला नाही. पुन्हा प्रयत्न करा.",
   "cost_breakdown_empty": "या लॉटसाठी खर्चाचा तपशील उपलब्ध नाही.",
   "cost_breakdown_title": "खर्चाचा तपशील",
@@ -190,7 +176,6 @@
   "lot_total_cost_label": "तुमच्या {qty} क्विंटलवर एकूण खर्च",
   "lot_cost_multiply_note": "{total} × {qty} क्विंटल",
   "cost_breakdown_footnote": "हे सर्व खर्च वजा केल्यावरच अपेक्षित फायदा दाखवला जातो. फायदा गणतीच्या आधीच खर्च वजा झालेला असतो.",
-
   "lot_create_error": "लॉट तयार करता आला नाही. पुन्हा प्रयत्न करा.",
   "lot_creating": "लॉट तयार होत आहे…",
   "lot_created_title": "लॉट तयार झाला ✓",
@@ -206,7 +191,6 @@
   "take_photo_button": "फोटो काढा",
   "camera_permission_denied": "कॅमेरा परवानगी नाकारली. फोटोशिवाय पुढे जाऊ शकता — फोटो नंतरही जोडता येईल.",
   "create_lot_button": "लॉट तयार करा",
-
   "self_assay_error": "लॉट माहिती आणता आली नाही. पुन्हा प्रयत्न करा.",
   "self_assay_lot_not_found": "तपासणीसाठी लॉट सापडला नाही.",
   "self_assay_save_error": "ग्रेड जतन करता आला नाही. पुन्हा प्रयत्न करा.",
@@ -243,7 +227,6 @@
   "tip_colour_uniform": "रंगानुसार दाणे वेगळे केल्यास ग्रेड सुधारू शकतो.",
   "tip_moisture_feel": "माल चांगला वाळवल्यास ग्रेड सुधारू शकतो.",
   "tip_foreign_matter": "माती व काडीकचरा साफ केल्यास ग्रेड सुधारू शकतो.",
-
   "offer_fetch_error": "ऑफर आणता आली नाही. पुन्हा प्रयत्न करा.",
   "offer_not_found": "ही ऑफर सापडली नाही — कदाचित आधीच उत्तर दिले गेले आहे.",
   "offer_action_error": "कारवाई करता आली नाही. पुन्हा प्रयत्न करा.",
@@ -258,7 +241,6 @@
   "accept_button": "स्वीकारा",
   "counter_button": "काउंटर करा",
   "reject_button": "नकार द्या",
-
   "lot_grade_a": "ग्रेड A",
   "lot_grade_b": "ग्रेड B",
   "lot_grade_c": "ग्रेड C",
@@ -295,7 +277,6 @@
   "timeline_hide_link": "▾ टाइमलाइन लपवा",
   "timeline_show_link": "▸ टाइमलाइन पहा",
   "chat_with_buyer_link": "💬 व्यापाऱ्याशी बोला",
-
   "pool_fetch_error": "गट माहिती आणता आली नाही. पुन्हा प्रयत्न करा.",
   "pool_empty": "हा गट अजून तयार झालेला नाही.",
   "total_qty_line": "एकूण प्रमाण: {qty} क्विंटल",
@@ -311,11 +292,9 @@
   "consent_agreed": "संमती दिली",
   "consent_refused": "नकार दिला",
   "consent_not_asked": "अजून विचारले नाही",
-
   "prices_link_history": "भाव इतिहास",
   "prices_link_forecast": "अंदाज",
   "prices_link_nearby": "जवळपासची मंडई",
-
   "chat_fetch_error": "संदेश आणता आले नाहीत. पुन्हा प्रयत्न करा.",
   "chat_header": "व्यापाऱ्याशी संवाद",
   "call_button": "📞 कॉल करा",
@@ -323,14 +302,11 @@
   "chat_empty_description": "खाली संदेश लिहून सुरुवात करा.",
   "message_placeholder": "संदेश लिहा…",
   "send_message_button": "पाठवा",
-
   "assistant_header": "मदत",
   "assistant_subheader": "वारंवार विचारले जाणारे प्रश्न",
-
   "tab_home": "मुख्यपृष्ठ",
   "tab_prices": "भाव",
   "tab_my_lots": "माझे लॉट",
-
   "buyer_tab_demands": "मागणी",
   "buyer_tab_matches": "जुळणी",
   "buyer_tab_offers": "ऑफर",
@@ -339,11 +315,9 @@
   "buyer_tab_provenance": "पारदर्शकता",
   "buyer_tab_dispute": "तक्रार",
   "buyer_tab_chat": "चॅट",
-
   "root_farmer_app_title": "शेतकरी",
   "root_buyer_console_title": "व्यापारी",
   "root_sign_out": "बाहेर पडा",
-
   "buyer_login_badge": "व्यापारी पोर्टल",
   "buyer_login_title": "व्यापारी साइन इन",
   "buyer_phone_invalid": "कृपया वैध १० अंकी फोन नंबर टाका",
@@ -356,7 +330,6 @@
   "buyer_verify_button": "ओटीपी पडताळणी व साइन इन",
   "back_button": "मागे जा",
   "demo_buyer_company_name": "पुणे ट्रेडिंग कंपनी",
-
   "post_demand_title": "नवीन खरेदी मागणी नोंदवा",
   "post_demand_success_title": "✓ मागणी नोंदवली गेली!",
   "post_demand_success_text": "तुमच्या {qty} क्विंटल मागणीसाठी जुळणारे शेतकरी लिलाव शोधले गेले आहेत.",
@@ -371,7 +344,6 @@
   "post_demand_deadline_label": "स्वीकृतीची अंतिम तारीख",
   "post_demand_submit": "मागणी प्रकाशित करा",
   "post_demand_default_date": "१८ सप्टेंबर २०२६",
-
   "matches_header": "जुळणारे शेतकरी लिलाव ({qty} क्विंटल मागणी)",
   "matches_combination_bundle": "एकत्रित बंडल ({n} लॉट)",
   "matches_single_lot": "सिंगल लॉट",
@@ -380,7 +352,6 @@
   "matches_view_lot_detail": "लॉट तपशील पहा",
   "matches_make_offer": "ऑफर पाठवा",
   "qtl_abbrev": "{qty} क्विं.",
-
   "lot_detail_header": "लॉट तपशील",
   "lot_id_label": "लॉट क्र: #{id}",
   "farmer_label": "शेतकरी: {name}",
@@ -395,7 +366,6 @@
   "assay_moisture_dryness_a": "पूर्ण सुकलेला ({pct}% ओलावा) - गुण: {score}/{max}",
   "warehouse_storage_title": "गोदाम साठा:",
   "lot_detail_make_offer": "या लॉटसाठी ऑफर द्या",
-
   "offer_thread_header": "ऑफर वाटाघाटी (सत्रातील फेरी)",
   "offer_summary_title": "{commodity} - {qty} क्विंटल बंडल",
   "offer_summary_sub": "{location} · ग्रेड {grade}",
@@ -407,11 +377,9 @@
   "counter_offer_send": "प्रति-ऑफर पाठवा (फेरी {round}/{max})",
   "max_rounds_reached": "⚠️ {max} फेऱ्या पूर्ण झाल्या आहेत. अंतिम निर्णयाची वाट पहा.",
   "time_just_now": "आत्ताच",
-
   "escrow_fetch_error": "व्यवहार आणता आला नाही. पुन्हा प्रयत्न करा.",
   "escrow_no_timeline": "या व्यवहारासाठी अजून टाइमलाइन उपलब्ध नाही.",
   "escrow_timeline_header": "एस्क्रॉ व्यवहार टाइमलाइन",
-
   "ledger_status_created": "सौदा निश्चित",
   "ledger_status_escrow_held": "एस्क्रॉ रक्कम जमा",
   "ledger_status_dispatched": "माल रवाना",
@@ -424,11 +392,35 @@
   "block_label": "ब्लॉक #{index}",
   "prev_hash_label": "मागील हॅश:",
   "curr_hash_label": "सध्याचा हॅश:",
-
   "provenance_total_label": "एकूण गोळा केलेल्या किंमत नोंदी",
   "provenance_coverage_note": "महाराष्ट्रातील {markets} प्रमुख मंडया व {crops} पिके",
   "provenance_source_breakdown_title": "स्रोत विश्लेषण:",
   "provenance_count_label": "नोंदी संख्या:",
   "provenance_date_range_label": "कालावधी: {range}",
-  "provenance_synthetic_date_range": "कृत्रिम चाचणी नोंदी"
+  "provenance_synthetic_date_range": "कृत्रिम चाचणी नोंदी",
+  "dispute_header": "तक्रार व लवाद निवारण",
+  "dispute_status_none": "सामान्य",
+  "dispute_status_resolved": "निकाली",
+  "amount_escrow_protected": "रक्कम: {amount} (एस्क्रॉ संरक्षित)",
+  "dispute_reason_label": "तक्रारीचे कारण सांगा",
+  "dispute_reason_placeholder": "उदा. मालाची गुणवत्ता ग्रेड A ऐवजी B आहे, किंवा ५ क्विंटल घट आहे...",
+  "dispute_raise_button": "तक्रार नोंदवा",
+  "dispute_in_progress_title": "⚠️ तक्रार प्रक्रिया सुरू आहे",
+  "dispute_reason_display": "तक्रार: \"{reason}\"",
+  "dispute_default_reason": "गुणवत्ता तफावत",
+  "dispute_resolve_button": "लवाद मध्यस्थी स्वीकारून तोडगा काढा",
+  "dispute_resolved_title": "✓ तक्रार यशस्वीरीत्या सुटली!",
+  "dispute_resolved_desc": "दोन्ही पक्षांच्या संमतीने एस्क्रॉ व्यवहार पूर्ववत सुरु करण्यात आला आहे.",
+  "month_1": "जानेवारी",
+  "month_2": "फेब्रुवारी",
+  "month_3": "मार्च",
+  "month_4": "एप्रिल",
+  "month_5": "मे",
+  "month_6": "जून",
+  "month_7": "जुलै",
+  "month_8": "ऑगस्ट",
+  "month_9": "सप्टेंबर",
+  "month_10": "ऑक्टोबर",
+  "month_11": "नोव्हेंबर",
+  "month_12": "डिसेंबर"
 }

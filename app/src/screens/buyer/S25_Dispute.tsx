@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
+import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
+import { formatPaise } from '../../lib/money';
+import type { Locale } from '../../types/api';
 
 export function S25_Dispute() {
+  const [locale, setLocale] = useState<Locale>('mr');
+  useEffect(() => {
+    getLocale().then(l => l && setLocale(l));
+  }, []);
+
   const [reason, setReason] = useState('');
   const [status, setStatus] = useState<'NONE' | 'DISPUTED' | 'RESOLVED'>('NONE');
   const [submitting, setSubmitting] = useState(false);
@@ -28,32 +37,40 @@ export function S25_Dispute() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.header}>तक्रार व लवाद निवारण (S25 Disputes)</Text>
+      <Text style={styles.header}>{translate('dispute_header', locale)}</Text>
 
       <Card style={styles.infoCard}>
         <View style={styles.row}>
-          <Text style={styles.txId}>व्यवहार क्र: #TX-9842</Text>
+          <Text style={styles.txId}>{translate('tx_id_label', locale)}: #TX-9842</Text>
           <Badge
-            label={status === 'NONE' ? 'सामान्य' : status === 'DISPUTED' ? 'DISPUTED' : 'RESOLVED'}
+            label={
+              status === 'NONE'
+                ? translate('dispute_status_none', locale)
+                : status === 'DISPUTED'
+                ? translate('tx_status_disputed', locale)
+                : translate('dispute_status_resolved', locale)
+            }
             type={status === 'NONE' ? 'INFO' : status === 'DISPUTED' ? 'WARNING' : 'SUCCESS'}
           />
         </View>
-        <Text style={styles.amount}>रक्कम: ₹१,९६,००० (एस्क्रॉ संरक्षित)</Text>
+        <Text style={styles.amount}>
+          {translate('amount_escrow_protected', locale, { amount: formatPaise(19600000, locale) })}
+        </Text>
       </Card>
 
       {status === 'NONE' ? (
         <Card style={styles.formCard}>
-          <Text style={styles.label}>तक्रारीचे कारण सांगा</Text>
+          <Text style={styles.label}>{translate('dispute_reason_label', locale)}</Text>
           <TextInput
             style={styles.input}
             multiline
             numberOfLines={4}
             value={reason}
             onChangeText={setReason}
-            placeholder="उदा. मालाची गुणवत्ता ग्रेड A ऐवजी B आहे, किंवा ५ क्विंटल घट आहे..."
+            placeholder={translate('dispute_reason_placeholder', locale)}
           />
           <Button
-            title="तक्रार नोंदवा (Raise Dispute)"
+            title={translate('dispute_raise_button', locale)}
             onPress={handleRaiseDispute}
             loading={submitting}
             variant="outline"
@@ -62,13 +79,15 @@ export function S25_Dispute() {
         </Card>
       ) : status === 'DISPUTED' ? (
         <Card style={styles.disputedCard}>
-          <Text style={styles.disputedTitle}>⚠️ तक्रार प्रक्रिया सुरू आहे (FSM: DISPUTED)</Text>
+          <Text style={styles.disputedTitle}>{translate('dispute_in_progress_title', locale)}</Text>
           <Text style={styles.disputedDesc}>
-            तक्रार: "{reason || 'गुणवत्ता तफावत'}"
+            {translate('dispute_reason_display', locale, {
+              reason: reason || translate('dispute_default_reason', locale),
+            })}
           </Text>
 
           <Button
-            title="लवाद मध्यस्थी स्वीकारून तोडगा काढा (Resolve Dispute)"
+            title={translate('dispute_resolve_button', locale)}
             onPress={handleResolveDispute}
             loading={submitting}
             variant="primary"
@@ -77,10 +96,8 @@ export function S25_Dispute() {
         </Card>
       ) : (
         <Card style={styles.resolvedCard}>
-          <Text style={styles.resolvedTitle}>✓ तक्रार यशस्वीरीत्या सुटली! (FSM: RESOLVED)</Text>
-          <Text style={styles.resolvedDesc}>
-            दोन्ही पक्षांच्या संमतीने एस्क्रॉ FSM व्यवहार पूर्ववत सुरु करण्यात आला आहे.
-          </Text>
+          <Text style={styles.resolvedTitle}>{translate('dispute_resolved_title', locale)}</Text>
+          <Text style={styles.resolvedDesc}>{translate('dispute_resolved_desc', locale)}</Text>
         </Card>
       )}
     </ScrollView>
