@@ -45,10 +45,16 @@ export type BuyerTabParamList = {
  * S20_LotDetail existed in this repo, fully built, and nothing ever
  * navigated to it — a dead file. The Matches tab is now a stack, S19
  * initial, so "लॉट तपशील पहा" on a match card has somewhere to go.
+ *
+ * ★ `lot_id` is a required param, not optional. The first version of this
+ *   route took `undefined` and threw the tapped lot's id away, so S20
+ *   rendered the same lot whichever match you came from — which was
+ *   survivable only because S20 itself had every value hardcoded. Now that
+ *   it reads a real `LotDto`, the id is the whole point of the navigation.
  */
 export type MatchesStackParamList = {
   S19_Matches: undefined;
-  S20_LotDetail: undefined;
+  S20_LotDetail: { lot_id: string };
 };
 
 const MatchesStack = createNativeStackNavigator<MatchesStackParamList>();
@@ -60,10 +66,14 @@ function MatchesStackNavigator() {
       screenOptions={{ headerShown: false, contentStyle: { backgroundColor: SCREEN_BG } }}>
       <MatchesStack.Screen name="S19_Matches">
         {({ navigation }: NativeStackScreenProps<MatchesStackParamList, 'S19_Matches'>) => (
-          <S19_Matches onViewLot={() => navigation.navigate('S20_LotDetail')} />
+          <S19_Matches onViewLot={lotId => navigation.navigate('S20_LotDetail', { lot_id: lotId })} />
         )}
       </MatchesStack.Screen>
-      <MatchesStack.Screen name="S20_LotDetail" component={S20_LotDetail} />
+      <MatchesStack.Screen name="S20_LotDetail">
+        {({ route }: NativeStackScreenProps<MatchesStackParamList, 'S20_LotDetail'>) => (
+          <S20_LotDetail lotId={route.params.lot_id} />
+        )}
+      </MatchesStack.Screen>
     </MatchesStack.Navigator>
   );
 }

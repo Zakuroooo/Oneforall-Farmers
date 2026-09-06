@@ -431,9 +431,7 @@
   "chart_axis_days_ahead": "{days} दिन बाद",
   "chart_band_legend": "छायांकित पट्टी = p१०–p९० (१०० में ८० बार कीमत इसी पट्टी में रहती है)",
   "chart_median_legend": "बीच की रेखा = p५० (सबसे संभावित कीमत)",
-
   "coming_soon": "जल्द आ रहा है",
-
   "voice_mic_idle": "🎤 बोलने के लिए दबाएं",
   "voice_mic_recording": "🔴 सुन रहे हैं... रोकने के लिए दबाएं",
   "voice_mic_transcribing": "🎤 पहचान रहे हैं...",
@@ -444,7 +442,6 @@
   "voice_manual_send": "भेजें",
   "voice_confirm_yes": "हां",
   "voice_confirm_no": "नहीं",
-
   "date_unknown": "तारीख नहीं",
   "provenance_fetch_error": "स्रोतों की सूची नहीं मिल सकी।",
   "provenance_empty": "अभी एक भी कीमत रिकॉर्ड नहीं है।",
@@ -456,7 +453,6 @@
   "provenance_date_range_span": "{from} से {to}",
   "provenance_no_source_url": "जाँचने योग्य लिंक नहीं — यह रिकॉर्ड सिंथेटिक है, सरकारी जानकारी नहीं।",
   "provenance_unofficial_note": "यह सरकारी स्रोत नहीं है। इस जानकारी पर जान-बूझकर निशान लगाया गया है।",
-
   "matches_fetch_error": "मिलान सूची नहीं मिल सकी।",
   "matches_empty": "आपकी मांग से मिलता एक भी लॉट अभी नहीं है।",
   "matches_demand_line": "आपकी मांग: {qty} क्विंटल · न्यूनतम ग्रेड {grade}",
@@ -464,5 +460,17 @@
   "matches_fill_label": "मांग पूरी होती है",
   "matches_partial_fill_note": "यह बंडल आपकी पूरी मांग नहीं भरता — {qty} क्विंटल कम।",
   "matches_lot_index": "लॉट {n}",
-  "distance_km_line": "दूरी: {distance} किमी"
+  "distance_km_line": "दूरी: {distance} किमी",
+  "lot_detail_fetch_error": "लॉट विवरण नहीं मिल सका।",
+  "lot_detail_not_visible": "यह लॉट आपके खाते को उपलब्ध नहीं है।",
+  "lot_detail_not_visible_desc": "किसान का लॉट केवल उसी किसान को, और सौदा होने के बाद खरीदार को दिखता है।",
+  "lot_detail_market_line": "मंडी: {market}",
+  "lot_detail_status_line": "स्थिति: {status}",
+  "lot_detail_farmer_ref": "किसान संदर्भ: {id}",
+  "lot_detail_photo_attached": "फोटो जुड़ा है",
+  "lot_detail_photo_none": "फोटो नहीं जुड़ा",
+  "lot_detail_assay_pending": "इस लॉट की छह-प्रश्न जाँच अभी नहीं हुई है।",
+  "lot_detail_assay_unavailable": "जाँच के विस्तृत उत्तर उपलब्ध नहीं हैं — केवल ग्रेड मिला।",
+  "lot_detail_weakest_label": "सबसे कमज़ोर पहलू:",
+  "assay_damage_answer": "{pct}% नुकसान"
 }

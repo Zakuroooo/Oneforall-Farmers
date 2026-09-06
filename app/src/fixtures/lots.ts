@@ -8,7 +8,7 @@
  * because neither DTO carries money; `qty_kg` is the only quantity field.
  */
 
-import type { AssayReq, AssayRes, LotDto } from '../types/api';
+import type { AssayRecord, AssayReq, AssayRes, LotDto } from '../types/api';
 
 /** S15's ungraded state — a lot before S13 has run. Four-value LotGrade, not the
  * three-value Grade — collapsing them is the exact bug the handover doc flags. */
@@ -92,4 +92,52 @@ export const fxAssayRes: AssayRes = {
   weakest_dimension: 'damage_pct',
   tip_mr: 'नुकसान झालेले दाणे वेगळे केल्यास ग्रेड सुधारू शकतो.',
   tip_en: 'Sorting out damaged grains could improve the grade.',
+};
+
+/**
+ * The stored `grade_assays` rows behind the graded lots above — what S20 shows a
+ * buyer so a grade is auditable rather than asserted.
+ *
+ * ★ Every `score`, `grade` and `weakest_dimension` here was computed from the
+ *   six answers on the same row by CANON §9's formula, not chosen to look good,
+ *   and each agrees with its lot's own `grade` field. A fixture whose grade
+ *   disagreed with its own answers would teach the screen to render an
+ *   impossible state — and would be exactly the kind of number that survives
+ *   into a slide.
+ *
+ *   lot_listed_1: 3/3/3, 5% damage, 3/2 → 938 → A, weakest `foreign_matter`
+ *   lot_c_1:      1/2/2, 35% damage, 2/1 → 388 → C, weakest `size_uniform`
+ *
+ * `lot_ungraded_1` is deliberately absent: S13 has not run on it, so no row
+ * exists, and S20's "grade not checked yet" branch has to be reachable.
+ */
+export const fxAssayRecords: Record<string, AssayRecord> = {
+  lot_listed_1: {
+    lot_id: 'lot_listed_1',
+    size_uniform: 3,
+    colour_uniform: 3,
+    sprouting: 3,
+    damage_pct: 5,
+    moisture_feel: 3,
+    foreign_matter: 2,
+    score: 938,
+    grade: 'A',
+    weakest_dimension: 'foreign_matter',
+    photo_path: null,
+    created_at: '2026-09-01T06:30:00+05:30',
+  },
+  lot_c_1: {
+    lot_id: 'lot_c_1',
+    size_uniform: 1,
+    colour_uniform: 2,
+    sprouting: 2,
+    damage_pct: 35,
+    moisture_feel: 2,
+    foreign_matter: 1,
+    score: 388,
+    grade: 'C',
+    weakest_dimension: 'size_uniform',
+    photo_path: null,
+    created_at: '2026-08-20T07:30:00+05:30',
+  },
 };

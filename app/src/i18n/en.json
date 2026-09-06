@@ -431,9 +431,7 @@
   "chart_axis_days_ahead": "in {days} days",
   "chart_band_legend": "Shaded band = p10–p90 (80 times in 100 the price lands inside it)",
   "chart_median_legend": "Middle line = p50 (the most likely price)",
-
   "coming_soon": "Coming soon",
-
   "voice_mic_idle": "🎤 Tap to speak",
   "voice_mic_recording": "🔴 Listening... tap to stop",
   "voice_mic_transcribing": "🎤 Recognizing...",
@@ -444,7 +442,6 @@
   "voice_manual_send": "Send",
   "voice_confirm_yes": "Yes",
   "voice_confirm_no": "No",
-
   "date_unknown": "No date",
   "provenance_fetch_error": "Could not load the source list.",
   "provenance_empty": "No price records yet.",
@@ -456,7 +453,6 @@
   "provenance_date_range_span": "{from} to {to}",
   "provenance_no_source_url": "No verifiable link — this record is synthetic, not official data.",
   "provenance_unofficial_note": "Not an official government source. This data is deliberately flagged.",
-
   "matches_fetch_error": "Could not load the match list.",
   "matches_empty": "No lot matches your demand yet.",
   "matches_demand_line": "Your demand: {qty} qtl · minimum grade {grade}",
@@ -464,5 +460,17 @@
   "matches_fill_label": "of your order filled",
   "matches_partial_fill_note": "This bundle does not fill your whole order — {qty} qtl short.",
   "matches_lot_index": "Lot {n}",
-  "distance_km_line": "Distance: {distance} km"
+  "distance_km_line": "Distance: {distance} km",
+  "lot_detail_fetch_error": "Could not load the lot detail.",
+  "lot_detail_not_visible": "This lot is not visible to your account.",
+  "lot_detail_not_visible_desc": "A farmer's lot is visible to that farmer, and to a buyer only once a deal is struck.",
+  "lot_detail_market_line": "Market: {market}",
+  "lot_detail_status_line": "Status: {status}",
+  "lot_detail_farmer_ref": "Farmer reference: {id}",
+  "lot_detail_photo_attached": "Photo attached",
+  "lot_detail_photo_none": "No photo attached",
+  "lot_detail_assay_pending": "The six-question check has not been run on this lot yet.",
+  "lot_detail_assay_unavailable": "The detailed check answers are not available — only the grade came through.",
+  "lot_detail_weakest_label": "Weakest dimension:",
+  "assay_damage_answer": "{pct}% damage"
 }

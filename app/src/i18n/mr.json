@@ -431,9 +431,7 @@
   "chart_axis_days_ahead": "{days} दिवसांनंतर",
   "chart_band_legend": "छायांकित पट्टा = p१०–p९० (१०० पैकी ८० वेळा भाव या पट्ट्यात राहतो)",
   "chart_median_legend": "मधली रेषा = p५० (सर्वात संभाव्य भाव)",
-
   "coming_soon": "लवकरच",
-
   "voice_mic_idle": "🎤 बोलण्यासाठी दाबा",
   "voice_mic_recording": "🔴 ऐकत आहोत... थांबवण्यासाठी दाबा",
   "voice_mic_transcribing": "🎤 ओळखत आहोत...",
@@ -444,7 +442,6 @@
   "voice_manual_send": "पाठवा",
   "voice_confirm_yes": "हो",
   "voice_confirm_no": "नाही",
-
   "date_unknown": "तारीख नाही",
   "provenance_fetch_error": "माहिती स्रोतांची यादी आणता आली नाही.",
   "provenance_empty": "अजून एकही किंमत नोंद नाही.",
@@ -456,7 +453,6 @@
   "provenance_date_range_span": "{from} ते {to}",
   "provenance_no_source_url": "पडताळणीयोग्य दुवा नाही — ही नोंद कृत्रिम आहे, अधिकृत सरकारी माहिती नाही.",
   "provenance_unofficial_note": "हा अधिकृत सरकारी स्रोत नाही. ही माहिती जाणीवपूर्वक खूण केलेली आहे.",
-
   "matches_fetch_error": "जुळणी यादी आणता आली नाही.",
   "matches_empty": "तुमच्या मागणीशी जुळणारा एकही लॉट अजून नाही.",
   "matches_demand_line": "तुमची मागणी: {qty} क्विंटल · किमान ग्रेड {grade}",
@@ -464,5 +460,17 @@
   "matches_fill_label": "मागणी भरते",
   "matches_partial_fill_note": "हे बंडल तुमची पूर्ण मागणी भरत नाही — {qty} क्विंटल कमी.",
   "matches_lot_index": "लॉट {n}",
-  "distance_km_line": "अंतर: {distance} किमी"
+  "distance_km_line": "अंतर: {distance} किमी",
+  "lot_detail_fetch_error": "लॉट तपशील आणता आला नाही.",
+  "lot_detail_not_visible": "हा लॉट तुमच्या खात्याला उपलब्ध नाही.",
+  "lot_detail_not_visible_desc": "शेतकऱ्याचा लॉट फक्त त्याच शेतकऱ्याला आणि सौदा झाल्यावर खरेदीदाराला दिसतो.",
+  "lot_detail_market_line": "बाजार: {market}",
+  "lot_detail_status_line": "स्थिती: {status}",
+  "lot_detail_farmer_ref": "शेतकरी संदर्भ: {id}",
+  "lot_detail_photo_attached": "फोटो जोडलेला आहे",
+  "lot_detail_photo_none": "फोटो जोडलेला नाही",
+  "lot_detail_assay_pending": "या लॉटची सहा-प्रश्न तपासणी अजून झालेली नाही.",
+  "lot_detail_assay_unavailable": "तपासणीची सविस्तर उत्तरे उपलब्ध नाहीत — फक्त ग्रेड मिळाला.",
+  "lot_detail_weakest_label": "सर्वात कमकुवत बाब:",
+  "assay_damage_answer": "{pct}% नुकसान"
 }

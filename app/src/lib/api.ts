@@ -20,6 +20,7 @@ import { API_BASE_URL } from '../config';
 import type {
   ApiErrorBody,
   AssayReq,
+  AssayRecord,
   AssayRes,
   AuthRes,
   ChatMessage,
@@ -233,6 +234,18 @@ export const getLot = (id: string) => get<LotDto>(`/lots/${id}`);
 
 export const submitAssay = (lotId: string, body: AssayReq) =>
   post<AssayRes>(`/lots/${lotId}/assay`, body);
+
+/**
+ * The six stored answers behind a grade, for S20.
+ *
+ * TODO(akash): this route does **not** exist in CANON §7.5 — `POST .../assay`
+ *   returns only the score/grade/tip and discards the answers, and no endpoint
+ *   reads the `grade_assays` row back. The columns are already in the DDL
+ *   (CANON §6.4), so this is an exposure, not a new feature. Fold it into
+ *   `GET /lots/{id}` instead and I will delete this. Raised in docs/BLOCKERS.md.
+ */
+export const getLotAssay = (lotId: string) =>
+  get<AssayRecord>(`/lots/${lotId}/assay`);
 
 export const getPool = (id: string) => get<PoolDto>(`/pools/${id}`);
 

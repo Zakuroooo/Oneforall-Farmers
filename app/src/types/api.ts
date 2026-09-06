@@ -369,6 +369,41 @@ export interface AssayRes {
   tip_en: string;
 }
 
+/**
+ * The stored assay row, transcribed column-for-column from the `grade_assays`
+ * DDL in CANON §6.4 — six answers, the derived score/grade, the weakest
+ * dimension, and the evidence photo. `unique (lot_id)`, so a lot has at most
+ * one.
+ *
+ * ★ Note what this is **not**: `AssayRes` (above) is the *response* to
+ *   `POST /lots/{id}/assay` and carries only `{score, grade, weakest_dimension,
+ *   tip_*}` — it throws the six answers away. Nothing in CANON §7.5 reads them
+ *   back. S20 needs them: a buyer deciding whether to trust a grade wants to see
+ *   the answers behind it, and "ग्रेड A, because our formula said so" is the
+ *   same non-answer CANON rejects for match scores.
+ *
+ * TODO(akash): expose this row — either fold it into `GET /lots/{id}` or add
+ *   `GET /lots/{id}/assay`. The columns already exist; nothing reads them.
+ *   Raised in docs/BLOCKERS.md.
+ */
+export interface AssayRecord {
+  lot_id: string;
+  size_uniform: 1 | 2 | 3;
+  colour_uniform: 1 | 2 | 3;
+  sprouting: 1 | 2 | 3;
+  /** 0..100 integer. */
+  damage_pct: number;
+  moisture_feel: 1 | 2 | 3;
+  foreign_matter: 1 | 2 | 3;
+  /** 0..1000, integer. Deterministic from the six above — see `lib/grading.ts`. */
+  score: number;
+  grade: Grade;
+  weakest_dimension: AssayDimension;
+  /** Evidence, never classifier input (CANON §6.4's own comment). */
+  photo_path: string | null;
+  created_at: string;
+}
+
 /** One row of `PoolDto.members` — from CANON §6.4 `pool_members` + §7.5. */
 export interface SplitRow {
   lot_id: string;
