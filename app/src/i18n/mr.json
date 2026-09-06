@@ -314,5 +314,13 @@
 
   "prices_link_history": "भाव इतिहास",
   "prices_link_forecast": "अंदाज",
-  "prices_link_nearby": "जवळपासची मंडई"
+  "prices_link_nearby": "जवळपासची मंडई",
+
+  "chat_fetch_error": "संदेश आणता आले नाहीत. पुन्हा प्रयत्न करा.",
+  "chat_header": "व्यापाऱ्याशी संवाद",
+  "call_button": "📞 कॉल करा",
+  "chat_empty_title": "अजून एकही संदेश नाही.",
+  "chat_empty_description": "खाली संदेश लिहून सुरुवात करा.",
+  "message_placeholder": "संदेश लिहा…",
+  "send_message_button": "पाठवा"
 }

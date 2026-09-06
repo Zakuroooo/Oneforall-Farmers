@@ -314,5 +314,13 @@
 
   "prices_link_history": "Price history",
   "prices_link_forecast": "Forecast",
-  "prices_link_nearby": "Nearby markets"
+  "prices_link_nearby": "Nearby markets",
+
+  "chat_fetch_error": "Could not fetch messages. Please try again.",
+  "chat_header": "Conversation with buyer",
+  "call_button": "📞 Call",
+  "chat_empty_title": "No messages yet.",
+  "chat_empty_description": "Start by writing a message below.",
+  "message_placeholder": "Write a message…",
+  "send_message_button": "Send"
 }

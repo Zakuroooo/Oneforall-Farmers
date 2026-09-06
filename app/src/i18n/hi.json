@@ -314,5 +314,13 @@
 
   "prices_link_history": "कीमत इतिहास",
   "prices_link_forecast": "अनुमान",
-  "prices_link_nearby": "आसपास की मंडी"
+  "prices_link_nearby": "आसपास की मंडी",
+
+  "chat_fetch_error": "संदेश नहीं लाए जा सके। कृपया पुनः प्रयास करें।",
+  "chat_header": "व्यापारी से संवाद",
+  "call_button": "📞 कॉल करें",
+  "chat_empty_title": "अभी तक कोई संदेश नहीं है।",
+  "chat_empty_description": "नीचे संदेश लिखकर शुरुआत करें।",
+  "message_placeholder": "संदेश लिखें…",
+  "send_message_button": "भेजें"
 }
