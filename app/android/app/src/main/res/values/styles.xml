@@ -1,9 +1,28 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
-        <!-- Customize your theme here. -->
+    <!--
+      ★ Light, not DayNight. The scaffold shipped `Theme.AppCompat.DayNight`,
+      which hands React Native the *system* text colour: on a phone in dark
+      mode `textColorPrimary` resolves to near-white, so every `<Text>` without
+      an explicit `color` rendered white — while React Navigation kept painting
+      its own light background underneath. White on white. Six headings and
+      four text inputs disappeared on a dark-mode device and were fine on a
+      light-mode one, which is why it looked intermittent.
+
+      Every colour in `app/src/` is a light-theme colour (#FFF cards, #212121
+      text, #F5F5F5 panels). There is no dark palette to switch to, so the
+      honest fix is to stop claiming we support one. A demo phone's display
+      setting must not be able to change what a judge sees.
+
+      `textColorPrimary`/`Secondary` are pinned as well: a `<Text>` with no
+      `color` is a bug we fix at the call site, but it should degrade to
+      readable, never to invisible.
+    -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:textColorPrimary">#212121</item>
+        <item name="android:textColorSecondary">#666666</item>
     </style>
 
 </resources>

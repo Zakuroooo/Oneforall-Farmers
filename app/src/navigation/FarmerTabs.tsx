@@ -8,9 +8,16 @@
  * ★ Labels go through `useT()` so a language switch relabels the tab bar without
  *   a remount — no separate SH1 handoff needed.
  *
- * Icons come later. TODO(shreya): the tab bar reads as text-only until then, which
- * is legible but plain; icons matter more here than on any other surface because
- * they are the one part of the app that works without reading at all.
+ * ★ Icons are wired (`./TabIcon`). They are not decoration: with `tabBarIcon`
+ *   omitted, React Navigation substitutes its own `MissingIcon`, which renders
+ *   U+23F7 — a codepoint the stock Android font has no glyph for, so every tab
+ *   showed a tofu box ▯. See the header of `TabIcon.tsx`.
+ *
+ * ★ `SCREEN_BG` is set here, on the navigator, rather than on sixteen screen
+ *   roots. Every colour in `app/src/` is a light-theme colour, and a `root`
+ *   style is usually a ScrollView's `contentContainerStyle` — a background
+ *   there paints the content, not the empty region below short content. The
+ *   navigator's scene container paints the whole scene, once, in one place.
  */
 
 import React from 'react';
@@ -18,6 +25,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useT } from '../lib/i18n';
+import { tabIcon } from './TabIcon';
+
+/** The one background colour for every farmer scene. */
+const SCREEN_BG = '#FFFFFF';
+
+/** Applied to all three nested stacks, for the same reason as `sceneStyle` below. */
+const STACK_SCREEN_OPTIONS = {
+  headerShown: false,
+  contentStyle: { backgroundColor: SCREEN_BG },
+} as const;
 
 import S04_Home from '../screens/farmer/S04_Home';
 import S05_History from '../screens/farmer/S05_History';
@@ -66,7 +83,7 @@ const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 
 function HomeStackNavigator() {
   return (
-    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+    <HomeStack.Navigator screenOptions={STACK_SCREEN_OPTIONS}>
       <HomeStack.Screen name="S4_Home" component={S04_Home} />
       <HomeStack.Screen name="S9_Verdict" component={S09_Verdict} />
       <HomeStack.Screen name="S10_CostBreakdown" component={S10_CostBreakdown} />
@@ -97,7 +114,7 @@ const PricesStack = createNativeStackNavigator<PricesStackParamList>();
 
 function PricesStackNavigator() {
   return (
-    <PricesStack.Navigator screenOptions={{ headerShown: false }}>
+    <PricesStack.Navigator screenOptions={STACK_SCREEN_OPTIONS}>
       <PricesStack.Screen name="PricesIndex" component={PricesIndex} />
       <PricesStack.Screen name="S5_History" component={S05_History} />
       <PricesStack.Screen name="S6_Nearby" component={S06_Nearby} />
@@ -139,7 +156,7 @@ const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
 
 function MyLotsStackNavigator() {
   return (
-    <MyLotsStack.Navigator initialRouteName="S15_MyLots" screenOptions={{ headerShown: false }}>
+    <MyLotsStack.Navigator initialRouteName="S15_MyLots" screenOptions={STACK_SCREEN_OPTIONS}>
       <MyLotsStack.Screen name="S15_MyLots" component={S15_MyLots} />
       <MyLotsStack.Screen name="S12_CreateLot" component={S12_CreateLot} />
       <MyLotsStack.Screen name="S13_SelfAssay" component={S13_SelfAssay} />
@@ -159,6 +176,9 @@ export function FarmerTabs() {
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
+        // `sceneStyle`, not the v6 `sceneContainerStyle` prop — bottom-tabs v7
+        // moved it into `screenOptions` and dropped the old name entirely.
+        sceneStyle: { backgroundColor: SCREEN_BG },
         tabBarActiveTintColor: '#1B5E20',
         tabBarInactiveTintColor: '#666',
         // Bigger than the RN default. A 44 px target is the iOS minimum for a
@@ -166,10 +186,26 @@ export function FarmerTabs() {
         tabBarLabelStyle: { fontSize: 13 },
         tabBarStyle: { height: 64, paddingBottom: 8, paddingTop: 8 },
       }}>
-      <Tab.Screen name="Home" component={HomeStackNavigator} options={{ title: t('tab_home') }} />
-      <Tab.Screen name="Prices" component={PricesStackNavigator} options={{ title: t('tab_prices') }} />
-      <Tab.Screen name="MyLots" component={MyLotsStackNavigator} options={{ title: t('tab_my_lots') }} />
-      <Tab.Screen name="Assistant" component={S28_Assistant} options={{ title: t('assistant_header') }} />
+      <Tab.Screen
+        name="Home"
+        component={HomeStackNavigator}
+        options={{ title: t('tab_home'), tabBarIcon: tabIcon('home') }}
+      />
+      <Tab.Screen
+        name="Prices"
+        component={PricesStackNavigator}
+        options={{ title: t('tab_prices'), tabBarIcon: tabIcon('prices') }}
+      />
+      <Tab.Screen
+        name="MyLots"
+        component={MyLotsStackNavigator}
+        options={{ title: t('tab_my_lots'), tabBarIcon: tabIcon('lots') }}
+      />
+      <Tab.Screen
+        name="Assistant"
+        component={S28_Assistant}
+        options={{ title: t('assistant_header'), tabBarIcon: tabIcon('assistant') }}
+      />
     </Tab.Navigator>
   );
 }
