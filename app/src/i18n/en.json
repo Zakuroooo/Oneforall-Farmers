@@ -410,5 +410,18 @@
 
   "escrow_fetch_error": "Could not fetch the transaction. Please try again.",
   "escrow_no_timeline": "No timeline is available for this transaction yet.",
-  "escrow_timeline_header": "Escrow transaction timeline"
+  "escrow_timeline_header": "Escrow transaction timeline",
+
+  "ledger_status_created": "Deal confirmed",
+  "ledger_status_escrow_held": "Escrow amount held",
+  "ledger_status_dispatched": "Goods dispatched",
+  "reliability_header": "Buyer reliability and ledger",
+  "credit_score_title": "Buyer credit score",
+  "chain_valid_badge": "{pct}% valid",
+  "credit_score_out_of": "{score} / {max}",
+  "escrow_ontime_line": "On-time escrow deposit: {pct}% ({success}/{total} transactions successful)",
+  "hash_chain_title": "Immutable hash chain:",
+  "block_label": "Block #{index}",
+  "prev_hash_label": "Prev hash:",
+  "curr_hash_label": "Curr hash:"
 }

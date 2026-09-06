@@ -410,5 +410,18 @@
 
   "escrow_fetch_error": "लेनदेन नहीं लाया जा सका। कृपया पुनः प्रयास करें।",
   "escrow_no_timeline": "इस लेनदेन के लिए अभी कोई टाइमलाइन उपलब्ध नहीं है।",
-  "escrow_timeline_header": "एस्क्रो लेनदेन टाइमलाइन"
+  "escrow_timeline_header": "एस्क्रो लेनदेन टाइमलाइन",
+
+  "ledger_status_created": "सौदा तय हुआ",
+  "ledger_status_escrow_held": "एस्क्रो राशि जमा",
+  "ledger_status_dispatched": "माल रवाना",
+  "reliability_header": "व्यापारी विश्वसनीयता और खाता-बही",
+  "credit_score_title": "व्यापारी क्रेडिट स्कोर",
+  "chain_valid_badge": "{pct}% मान्य",
+  "credit_score_out_of": "{score} / {max}",
+  "escrow_ontime_line": "समय पर एस्क्रो जमा: {pct}% ({success}/{total} लेनदेन सफल)",
+  "hash_chain_title": "अपरिवर्तनीय हैश श्रृंखला:",
+  "block_label": "ब्लॉक #{index}",
+  "prev_hash_label": "पिछला हैश:",
+  "curr_hash_label": "मौजूदा हैश:"
 }
