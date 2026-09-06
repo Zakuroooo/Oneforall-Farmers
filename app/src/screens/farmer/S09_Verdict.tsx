@@ -32,6 +32,7 @@ import {
 } from '../../config';
 import { fxHold } from '../../fixtures/window';
 import { VerdictCard } from '../../components/farmer/VerdictCard';
+import { StaleBanner } from '../../components/farmer/StaleBanner';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
 import type { Locale } from '../../types/api';
 
@@ -53,7 +54,7 @@ export default function S09_Verdict() {
     getLocale().then(l => l && setLocale(l));
   }, []);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
     queryKey: ['ai', 'window', 'recommend', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, DEFAULT_QTY_KG],
     queryFn: fetchVerdict,
   });
@@ -66,7 +67,14 @@ export default function S09_Verdict() {
     );
   }
 
-  if (error) {
+  // P11: `error` alone is not the error state — a hydrated cache can hold a
+  // successful verdict from an earlier session while a background refetch on
+  // a dead network fails. Only show ErrorState when there is no verdict at
+  // all to fall back on; otherwise fall through to the data branch below,
+  // which renders it with a stale banner instead of hiding it behind a retry
+  // screen. This is the whole point of the offline cache — data survives an
+  // errored refetch, it does not get shadowed by it.
+  if (error && !data) {
     return (
       <ErrorState message="निर्णय आणता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
     );
@@ -78,6 +86,7 @@ export default function S09_Verdict() {
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
+      <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
       <VerdictCard data={data} qtyKg={DEFAULT_QTY_KG} locale={locale} />
     </ScrollView>
   );
