@@ -24,7 +24,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { getLots } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
-import { devNum } from '../../lib/i18n';
+import { devNum, translate } from '../../lib/i18n';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { FIXTURE_LOTS_EMPTY, USE_FIXTURES } from '../../config';
 import { fxMyLots, fxMyLotsEmpty } from '../../fixtures/lots';
@@ -57,41 +57,43 @@ const GRADE_BADGE: Record<LotGrade, BadgeType> = {
   UNGRADED: 'INFO',
 };
 
-const GRADE_LABEL_MR: Record<LotGrade, string> = {
-  A: 'ग्रेड A',
-  B: 'ग्रेड B',
-  C: 'ग्रेड C',
-  UNGRADED: 'तपासलेला नाही',
+const GRADE_LABEL_KEY: Record<LotGrade, string> = {
+  A: 'lot_grade_a',
+  B: 'lot_grade_b',
+  C: 'lot_grade_c',
+  UNGRADED: 'lot_grade_ungraded',
 };
 
-/** Every `LotStatus` value, in Marathi — S15 is a farmer-facing screen and
- * none of these nine values may reach the screen untranslated. */
-const STATUS_LABEL_MR: Record<LotStatus, string> = {
-  DRAFT: 'मसुदा',
-  LISTED: 'यादीत',
-  POOLED: 'गटात',
-  OFFERED: 'ऑफर आली',
-  COMMITTED: 'निश्चित',
-  IN_TRANSIT: 'वाहतुकीत',
-  DELIVERED: 'पोहोचले',
-  SETTLED: 'पूर्ण झाले',
-  CANCELLED: 'रद्द',
+/** Every `LotStatus` value — dictionary keys, not text. S15 is a
+ * farmer-facing screen and none of these nine values may reach the screen
+ * untranslated in whatever locale is selected. */
+const STATUS_LABEL_KEY: Record<LotStatus, string> = {
+  DRAFT: 'lot_status_draft',
+  LISTED: 'lot_status_listed',
+  POOLED: 'lot_status_pooled',
+  OFFERED: 'lot_status_offered',
+  COMMITTED: 'lot_status_committed',
+  IN_TRANSIT: 'lot_status_in_transit',
+  DELIVERED: 'lot_status_delivered',
+  SETTLED: 'lot_status_settled',
+  CANCELLED: 'lot_status_cancelled',
 };
 
 /**
  * No commodity/market picker or reference-data screen exists yet (same gap
- * `S04_Home` notes for its own hardcoded "कांदा · लासलगाव"). This repo's
- * fixtures use both `'onion'`/`'cmd_onion'` for the same commodity across
- * different commits — both map here rather than one of them rendering blank.
+ * `S04_Home` notes for its own hardcoded commodity/market label). This
+ * repo's fixtures use both `'onion'`/`'cmd_onion'` for the same commodity
+ * across different commits — both map here rather than one of them
+ * rendering blank. Dictionary keys, not text, so this respects locale too.
  */
-const COMMODITY_NAME_MR: Record<string, string> = {
-  onion: 'कांदा',
-  cmd_onion: 'कांदा',
+const COMMODITY_NAME_KEY: Record<string, string> = {
+  onion: 'demo_commodity_name',
+  cmd_onion: 'demo_commodity_name',
 };
-const MARKET_NAME_MR: Record<string, string> = {
-  mkt_lasalgaon: 'लासलगाव',
-  mkt_pune: 'पुणे',
-  mkt_nagpur: 'नागपूर',
+const MARKET_NAME_KEY: Record<string, string> = {
+  mkt_lasalgaon: 'market_lasalgaon',
+  mkt_pune: 'market_pune',
+  mkt_nagpur: 'market_nagpur',
 };
 
 async function fetchLots(): Promise<LotDto[]> {
@@ -143,9 +145,11 @@ async function fetchMyPools() {
   return [];
 }
 
-function commodityMarketLabel(lot: LotDto): string {
-  const commodity = COMMODITY_NAME_MR[lot.commodity_id] ?? lot.commodity_id;
-  const market = MARKET_NAME_MR[lot.market_id] ?? lot.market_id;
+function commodityMarketLabel(lot: LotDto, locale: Locale): string {
+  const commodityKey = COMMODITY_NAME_KEY[lot.commodity_id];
+  const marketKey = MARKET_NAME_KEY[lot.market_id];
+  const commodity = commodityKey ? translate(commodityKey, locale) : lot.commodity_id;
+  const market = marketKey ? translate(marketKey, locale) : lot.market_id;
   return `${commodity} · ${market}`;
 }
 
@@ -153,7 +157,7 @@ function harvestDateLabel(lot: LotDto, locale: Locale): string {
   // There is no date-formatting helper in `lib/` beyond digit translation
   // (`devNum`) — every other farmer screen with a date renders a hardcoded
   // literal rather than deriving one. This at least keeps the digits Marathi.
-  return lot.harvest_date ? devNum(lot.harvest_date, locale) : 'कापणी तारीख नाही';
+  return lot.harvest_date ? devNum(lot.harvest_date, locale) : translate('harvest_date_missing', locale);
 }
 
 export default function S15_MyLots({ navigation }: Props) {
@@ -202,7 +206,7 @@ export default function S15_MyLots({ navigation }: Props) {
 
   if (error) {
     return (
-      <ErrorState message="लॉट यादी आणता आली नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+      <ErrorState message={translate('lots_fetch_error', locale)} onRetry={() => refetch()} />
     );
   }
 
@@ -210,9 +214,9 @@ export default function S15_MyLots({ navigation }: Props) {
     return (
       <View style={styles.root}>
         <EmptyState
-          title="अजून एकही लॉट नोंदवलेला नाही."
-          description="तुमचा पहिला लॉट नोंदवा — फोटोची गरज नाही."
-          ctaText="नवीन लॉट नोंदवा"
+          title={translate('lots_empty_title', locale)}
+          description={translate('lots_empty_description', locale)}
+          ctaText={translate('lots_empty_cta', locale)}
           onCtaPress={goCreateLot}
         />
       </View>
@@ -222,8 +226,13 @@ export default function S15_MyLots({ navigation }: Props) {
   return (
     <ScrollView style={styles.root} contentContainerStyle={styles.scrollContent}>
       <View style={styles.headerRow}>
-        <Text style={styles.header}>माझे लॉट</Text>
-        <Button title="+ नवीन लॉट" variant="outline" onPress={goCreateLot} style={styles.headerButton} />
+        <Text style={styles.header}>{translate('my_lots_header', locale)}</Text>
+        <Button
+          title={translate('new_lot_header_button', locale)}
+          variant="outline"
+          onPress={goCreateLot}
+          style={styles.headerButton}
+        />
       </View>
 
       {lots.map(item => (
@@ -232,31 +241,39 @@ export default function S15_MyLots({ navigation }: Props) {
           onPress={() => navigation.navigate('S13_SelfAssay', { lot_id: item.id })}>
           <Card style={styles.lotCard}>
             <View style={styles.lotHeaderRow}>
-              <Text style={styles.lotTitle}>{commodityMarketLabel(item)}</Text>
-              <Badge label={GRADE_LABEL_MR[item.grade]} type={GRADE_BADGE[item.grade]} />
+              <Text style={styles.lotTitle}>{commodityMarketLabel(item, locale)}</Text>
+              <Badge label={translate(GRADE_LABEL_KEY[item.grade], locale)} type={GRADE_BADGE[item.grade]} />
             </View>
             <Text style={styles.lotLine}>
-              प्रमाण: {formatNumber(toQuintal(item.qty_kg), locale)} क्विंटल
+              {translate('qty_label_value', locale, { qty: formatNumber(toQuintal(item.qty_kg), locale) })}
             </Text>
-            <Text style={styles.lotLine}>कापणी: {harvestDateLabel(item, locale)}</Text>
-            <Text style={styles.lotStatus}>{STATUS_LABEL_MR[item.status]}</Text>
+            <Text style={styles.lotLine}>
+              {translate('harvest_label_value', locale, { date: harvestDateLabel(item, locale) })}
+            </Text>
+            <Text style={styles.lotStatus}>{translate(STATUS_LABEL_KEY[item.status], locale)}</Text>
           </Card>
         </TouchableOpacity>
       ))}
 
       {pendingOffers && pendingOffers.length > 0 ? (
         <>
-          <Text style={[styles.header, styles.txSectionHeader]}>ऑफर्स — उत्तराची वाट पाहत आहेत</Text>
+          <Text style={[styles.header, styles.txSectionHeader]}>
+            {translate('pending_offers_section_header', locale)}
+          </Text>
           {pendingOffers.map(offer => (
             <TouchableOpacity
               key={offer.id}
               onPress={() => navigation.navigate('S14_CounterOffer', { offer_id: offer.id })}>
               <Card style={styles.lotCard}>
                 <View style={styles.lotHeaderRow}>
-                  <Text style={styles.lotTitle}>फेरी {offer.round}</Text>
-                  <Text style={styles.txStatusText}>प्रतिसाद द्या →</Text>
+                  <Text style={styles.lotTitle}>
+                    {translate('offer_round_short', locale, { round: formatNumber(offer.round, locale) })}
+                  </Text>
+                  <Text style={styles.txStatusText}>{translate('respond_to_offer_link', locale)}</Text>
                 </View>
-                <Text style={styles.lotLine}>{formatPaise(offer.price_paise_per_qtl, locale)} प्रति क्विंटल</Text>
+                <Text style={styles.lotLine}>
+                  {formatPaise(offer.price_paise_per_qtl, locale)} {translate('per_quintal_label', locale)}
+                </Text>
               </Card>
             </TouchableOpacity>
           ))}
@@ -265,7 +282,9 @@ export default function S15_MyLots({ navigation }: Props) {
 
       {myPools && myPools.length > 0 ? (
         <>
-          <Text style={[styles.header, styles.txSectionHeader]}>माझे गट</Text>
+          <Text style={[styles.header, styles.txSectionHeader]}>
+            {translate('my_pools_section_header', locale)}
+          </Text>
           {myPools.map(pool => (
             <TouchableOpacity
               key={pool.fpo.id}
@@ -273,10 +292,13 @@ export default function S15_MyLots({ navigation }: Props) {
               <Card style={styles.lotCard}>
                 <View style={styles.lotHeaderRow}>
                   <Text style={styles.lotTitle}>{pool.fpo.name_mr}</Text>
-                  <Text style={styles.txStatusText}>वाटा पहा →</Text>
+                  <Text style={styles.txStatusText}>{translate('view_share_link', locale)}</Text>
                 </View>
                 <Text style={styles.lotLine}>
-                  {formatNumber(toQuintal(pool.total_qty_kg), locale)} क्विंटल · {pool.members.length} शेतकरी
+                  {translate('pool_summary_line', locale, {
+                    qty: formatNumber(toQuintal(pool.total_qty_kg), locale),
+                    members: formatNumber(pool.members.length, locale),
+                  })}
                 </Text>
               </Card>
             </TouchableOpacity>
@@ -286,7 +308,9 @@ export default function S15_MyLots({ navigation }: Props) {
 
       {transactions && transactions.length > 0 ? (
         <>
-          <Text style={[styles.header, styles.txSectionHeader]}>माझे व्यवहार</Text>
+          <Text style={[styles.header, styles.txSectionHeader]}>
+            {translate('my_transactions_section_header', locale)}
+          </Text>
           {transactions.map(({ tx, events }) => {
             const expanded = expandedTxId === tx.id;
             return (
@@ -295,11 +319,15 @@ export default function S15_MyLots({ navigation }: Props) {
                   onPress={() => setExpandedTxId(expanded ? null : tx.id)}
                   accessibilityRole="button">
                   <View style={styles.lotHeaderRow}>
-                    <Text style={styles.lotTitle}>व्यवहार #{tx.id}</Text>
+                    <Text style={styles.lotTitle}>{translate('transaction_id_line', locale, { id: tx.id })}</Text>
                     <Text style={styles.txStatusText}>{txStatusLabel(tx.status, locale)}</Text>
                   </View>
-                  <Text style={styles.lotLine}>निव्वळ रक्कम: {formatPaise(tx.net_paise, locale)}</Text>
-                  <Text style={styles.txToggleHint}>{expanded ? '▾ टाइमलाइन लपवा' : '▸ टाइमलाइन पहा'}</Text>
+                  <Text style={styles.lotLine}>
+                    {translate('net_amount_value', locale, { value: formatPaise(tx.net_paise, locale) })}
+                  </Text>
+                  <Text style={styles.txToggleHint}>
+                    {translate(expanded ? 'timeline_hide_link' : 'timeline_show_link', locale)}
+                  </Text>
                 </TouchableOpacity>
                 {expanded ? (
                   <View style={styles.txExpanded}>
@@ -307,7 +335,7 @@ export default function S15_MyLots({ navigation }: Props) {
                   </View>
                 ) : null}
                 <TouchableOpacity onPress={() => navigation.navigate('S26_Chat')} accessibilityRole="button">
-                  <Text style={styles.chatLink}>💬 व्यापाऱ्याशी बोला</Text>
+                  <Text style={styles.chatLink}>{translate('chat_with_buyer_link', locale)}</Text>
                 </TouchableOpacity>
               </Card>
             );
