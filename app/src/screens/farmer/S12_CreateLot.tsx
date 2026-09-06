@@ -31,6 +31,7 @@ import type { Permission } from 'react-native';
 
 import { createLot } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import { formatNumber, toQuintal } from '../../lib/money';
 import {
   DEFAULT_COMMODITY_ID,
@@ -152,14 +153,14 @@ export default function S12_CreateLot({ navigation }: Props) {
 
   if (createFailed) {
     return (
-      <ErrorState message="लॉट तयार करता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => resetCreate()} />
+      <ErrorState message={translate('lot_create_error', locale)} onRetry={() => resetCreate()} />
     );
   }
 
   if (creating) {
     return (
       <View style={styles.root}>
-        <Text style={styles.header}>लॉट तयार होत आहे…</Text>
+        <Text style={styles.header}>{translate('lot_creating', locale)}</Text>
       </View>
     );
   }
@@ -168,22 +169,24 @@ export default function S12_CreateLot({ navigation }: Props) {
     return (
       <ScrollView contentContainerStyle={styles.root}>
         <Card variant="elevated" style={styles.successCard}>
-          <Text style={styles.successTitle}>लॉट तयार झाला ✓</Text>
+          <Text style={styles.successTitle}>{translate('lot_created_title', locale)}</Text>
           {/* I2 — the lot now exists, so this is a display of stored data and
               reads in quintals like S15's list does. The stepper above is
               deliberately still in kg: a farmer is adjusting it in 100 kg
               steps and its own label says किलो, so the number and the unit on
               screen agree. This line has no such reason. */}
           <Text style={styles.successLine}>
-            प्रमाण: {formatNumber(toQuintal(createdLot.qty_kg), locale)} क्विंटल
+            {translate('qty_label_value', locale, {
+              qty: formatNumber(toQuintal(createdLot.qty_kg), locale),
+            })}
           </Text>
           <Text style={styles.successLine}>
-            फोटो: {createdLot.photo_path ? 'जोडला' : 'नाही (नंतर जोडता येईल)'}
+            {translate(createdLot.photo_path ? 'photo_added_label' : 'photo_not_added_label', locale)}
           </Text>
-          <Text style={styles.successLine}>ग्रेड: अद्याप तपासलेला नाही</Text>
+          <Text style={styles.successLine}>{translate('grade_not_checked_label', locale)}</Text>
         </Card>
         <Button
-          title="आता ग्रेड तपासा"
+          title={translate('check_grade_now_button', locale)}
           onPress={() => navigation.navigate('S13_SelfAssay', { lot_id: createdLot.id })}
           style={styles.submitButton}
         />
@@ -193,18 +196,18 @@ export default function S12_CreateLot({ navigation }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
-      <Text style={styles.header}>नवीन लॉट नोंदवा</Text>
-      <Text style={styles.subheader}>कांदा · लासलगाव</Text>
+      <Text style={styles.header}>{translate('new_lot_title', locale)}</Text>
+      <Text style={styles.subheader}>{translate('demo_commodity_market', locale)}</Text>
 
       <Card style={styles.questionCard}>
-        <Text style={styles.questionLabel}>प्रमाण (किलो)</Text>
+        <Text style={styles.questionLabel}>{translate('qty_kg_label', locale)}</Text>
         <View style={styles.stepperRow}>
           <TouchableOpacity
             style={styles.stepperButton}
             onPress={() => adjustQty(-QTY_STEP_KG)}>
             <Text style={styles.stepperButtonText}>−</Text>
           </TouchableOpacity>
-          <Text style={styles.stepperValue}>{qtyKg}</Text>
+          <Text style={styles.stepperValue}>{formatNumber(qtyKg, locale)}</Text>
           <TouchableOpacity
             style={styles.stepperButton}
             onPress={() => adjustQty(QTY_STEP_KG)}>
@@ -214,24 +217,26 @@ export default function S12_CreateLot({ navigation }: Props) {
       </Card>
 
       <Card style={styles.questionCard}>
-        <Text style={styles.questionLabel}>फोटो (ऐच्छिक)</Text>
+        <Text style={styles.questionLabel}>{translate('photo_optional_label', locale)}</Text>
         {photoUri ? (
-          <Text style={styles.photoStatusOk}>फोटो जोडला ✓</Text>
+          <Text style={styles.photoStatusOk}>{translate('photo_added_check', locale)}</Text>
         ) : (
           <Button
-            title="फोटो काढा"
+            title={translate('take_photo_button', locale)}
             variant="outline"
             onPress={addPhoto}
           />
         )}
         {photoPermission === 'denied' ? (
-          <Text style={styles.photoDenied}>
-            कॅमेरा परवानगी नाकारली. फोटोशिवाय पुढे जाऊ शकता — फोटो नंतरही जोडता येईल.
-          </Text>
+          <Text style={styles.photoDenied}>{translate('camera_permission_denied', locale)}</Text>
         ) : null}
       </Card>
 
-      <Button title="लॉट तयार करा" onPress={() => create()} style={styles.submitButton} />
+      <Button
+        title={translate('create_lot_button', locale)}
+        onPress={() => create()}
+        style={styles.submitButton}
+      />
     </ScrollView>
   );
 }

@@ -189,5 +189,21 @@
   "only_when_holding_note": "Only if you hold",
   "lot_total_cost_label": "Total cost on your {qty} quintals",
   "lot_cost_multiply_note": "{total} × {qty} quintals",
-  "cost_breakdown_footnote": "The expected gain is shown only after all these costs are deducted. Costs are already netted out before the gain is calculated."
+  "cost_breakdown_footnote": "The expected gain is shown only after all these costs are deducted. Costs are already netted out before the gain is calculated.",
+
+  "lot_create_error": "Could not create the lot. Please try again.",
+  "lot_creating": "Creating the lot…",
+  "lot_created_title": "Lot created ✓",
+  "qty_label_value": "Quantity: {qty} quintals",
+  "photo_added_label": "Photo: added",
+  "photo_not_added_label": "Photo: none (can add later)",
+  "grade_not_checked_label": "Grade: not checked yet",
+  "check_grade_now_button": "Check grade now",
+  "new_lot_title": "Register a new lot",
+  "qty_kg_label": "Quantity (kg)",
+  "photo_optional_label": "Photo (optional)",
+  "photo_added_check": "Photo added ✓",
+  "take_photo_button": "Take photo",
+  "camera_permission_denied": "Camera permission denied. You can continue without a photo — it can be added later too.",
+  "create_lot_button": "Create lot"
 }

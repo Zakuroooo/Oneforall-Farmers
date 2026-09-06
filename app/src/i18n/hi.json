@@ -189,5 +189,21 @@
   "only_when_holding_note": "केवल रुकने पर लगता है",
   "lot_total_cost_label": "आपके {qty} क्विंटल पर कुल लागत",
   "lot_cost_multiply_note": "{total} × {qty} क्विंटल",
-  "cost_breakdown_footnote": "यह सभी लागत घटाने के बाद ही अपेक्षित लाभ दिखाया जाता है। लाभ की गणना से पहले ही लागत घटाई जा चुकी होती है।"
+  "cost_breakdown_footnote": "यह सभी लागत घटाने के बाद ही अपेक्षित लाभ दिखाया जाता है। लाभ की गणना से पहले ही लागत घटाई जा चुकी होती है।",
+
+  "lot_create_error": "लॉट नहीं बनाया जा सका। कृपया पुनः प्रयास करें।",
+  "lot_creating": "लॉट बनाया जा रहा है…",
+  "lot_created_title": "लॉट बन गया ✓",
+  "qty_label_value": "मात्रा: {qty} क्विंटल",
+  "photo_added_label": "फोटो: जोड़ी गई",
+  "photo_not_added_label": "फोटो: नहीं (बाद में जोड़ी जा सकती है)",
+  "grade_not_checked_label": "ग्रेड: अभी जांचा नहीं गया",
+  "check_grade_now_button": "अभी ग्रेड जांचें",
+  "new_lot_title": "नया लॉट दर्ज करें",
+  "qty_kg_label": "मात्रा (किलो)",
+  "photo_optional_label": "फोटो (वैकल्पिक)",
+  "photo_added_check": "फोटो जोड़ी गई ✓",
+  "take_photo_button": "फोटो लें",
+  "camera_permission_denied": "कैमरा अनुमति नकारी गई। फोटो के बिना आगे बढ़ सकते हैं — फोटो बाद में भी जोड़ी जा सकती है।",
+  "create_lot_button": "लॉट बनाएं"
 }

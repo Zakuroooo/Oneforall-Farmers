@@ -189,5 +189,21 @@
   "only_when_holding_note": "थांबल्यासच लागतो",
   "lot_total_cost_label": "तुमच्या {qty} क्विंटलवर एकूण खर्च",
   "lot_cost_multiply_note": "{total} × {qty} क्विंटल",
-  "cost_breakdown_footnote": "हे सर्व खर्च वजा केल्यावरच अपेक्षित फायदा दाखवला जातो. फायदा गणतीच्या आधीच खर्च वजा झालेला असतो."
+  "cost_breakdown_footnote": "हे सर्व खर्च वजा केल्यावरच अपेक्षित फायदा दाखवला जातो. फायदा गणतीच्या आधीच खर्च वजा झालेला असतो.",
+
+  "lot_create_error": "लॉट तयार करता आला नाही. पुन्हा प्रयत्न करा.",
+  "lot_creating": "लॉट तयार होत आहे…",
+  "lot_created_title": "लॉट तयार झाला ✓",
+  "qty_label_value": "प्रमाण: {qty} क्विंटल",
+  "photo_added_label": "फोटो: जोडला",
+  "photo_not_added_label": "फोटो: नाही (नंतर जोडता येईल)",
+  "grade_not_checked_label": "ग्रेड: अद्याप तपासलेला नाही",
+  "check_grade_now_button": "आता ग्रेड तपासा",
+  "new_lot_title": "नवीन लॉट नोंदवा",
+  "qty_kg_label": "प्रमाण (किलो)",
+  "photo_optional_label": "फोटो (ऐच्छिक)",
+  "photo_added_check": "फोटो जोडला ✓",
+  "take_photo_button": "फोटो काढा",
+  "camera_permission_denied": "कॅमेरा परवानगी नाकारली. फोटोशिवाय पुढे जाऊ शकता — फोटो नंतरही जोडता येईल.",
+  "create_lot_button": "लॉट तयार करा"
 }
