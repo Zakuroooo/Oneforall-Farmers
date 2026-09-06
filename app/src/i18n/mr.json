@@ -129,5 +129,13 @@
 
   "history_error": "इतिहास आणता आला नाही. पुन्हा प्रयत्न करा.",
   "history_empty": "या मार्केटसाठी इतिहास उपलब्ध नाही.",
-  "history_title": "{market} — {days} दिवसांचा इतिहास"
+  "history_title": "{market} — {days} दिवसांचा इतिहास",
+
+  "nearby_error": "जवळपासची मंडई आणता आली नाही. पुन्हा प्रयत्न करा.",
+  "nearby_empty": "जवळपास मंडई सापडली नाही.",
+  "nearby_title": "जवळपासची मंडई — निव्वळ किमतीनुसार क्रमवारी",
+  "km_suffix": "किमी",
+  "gross_label": "सकल",
+  "transport_commission_label": "वाहतूक + कमिशन",
+  "net_label": "निव्वळ"
 }

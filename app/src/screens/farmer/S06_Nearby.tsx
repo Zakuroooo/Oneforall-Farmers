@@ -17,7 +17,8 @@ import { useQuery } from '@tanstack/react-query';
 import { getNearbyMarkets } from '../../lib/api';
 import { useAuth } from '../../lib/auth';
 import { getLocale } from '../../lib/locale';
-import { formatPaise } from '../../lib/money';
+import { translate } from '../../lib/i18n';
+import { formatNumber, formatPaise } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, USE_FIXTURES } from '../../config';
 import { fxNearby } from '../../fixtures/nearby';
 import { StaleBanner } from '../../components/farmer/StaleBanner';
@@ -57,18 +58,18 @@ export default function S06_Nearby() {
   // failed offline refetch instead of being shadowed by the retry screen.
   if (error && !hasData) {
     return (
-      <ErrorState message="जवळपासची मंडई आणता आली नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+      <ErrorState message={translate('nearby_error', locale)} onRetry={() => refetch()} />
     );
   }
 
   if (!data || !hasData) {
-    return <EmptyState title="जवळपास मंडई सापडली नाही." />;
+    return <EmptyState title={translate('nearby_empty', locale)} />;
   }
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
       <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
-      <Text style={styles.title}>जवळपासची मंडई — निव्वळ किमतीनुसार क्रमवारी</Text>
+      <Text style={styles.title}>{translate('nearby_title', locale)}</Text>
       {/* Sorted by net server-side (data.sorted_by) — rendered in that order, not re-sorted. */}
       {data.rows.map(row => (
         <NearbyRow key={row.market_id} row={row} locale={locale} />
@@ -82,20 +83,22 @@ function NearbyRow({ row, locale }: { row: NearbyMarketRow; locale: Locale }) {
     <View style={styles.card}>
       <View style={styles.headerRow}>
         <Text style={styles.marketName}>{row.name_mr}</Text>
-        <Text style={styles.distance}>{row.distance_km} किमी</Text>
+        <Text style={styles.distance}>
+          {formatNumber(row.distance_km, locale)} {translate('km_suffix', locale)}
+        </Text>
       </View>
       <View style={styles.lineRow}>
-        <Text style={styles.lineLabel}>सकल</Text>
+        <Text style={styles.lineLabel}>{translate('gross_label', locale)}</Text>
         <Text style={styles.lineValue}>{formatPaise(row.gross_paise_per_qtl, locale)}</Text>
       </View>
       <View style={styles.lineRow}>
-        <Text style={styles.lineLabel}>वाहतूक + कमिशन</Text>
+        <Text style={styles.lineLabel}>{translate('transport_commission_label', locale)}</Text>
         <Text style={styles.lineValue}>
           −{formatPaise(row.transport_paise_per_qtl + row.commission_paise_per_qtl, locale)}
         </Text>
       </View>
       <View style={[styles.lineRow, styles.netRow]}>
-        <Text style={styles.netLabel}>निव्वळ</Text>
+        <Text style={styles.netLabel}>{translate('net_label', locale)}</Text>
         <Text style={styles.netValue}>{formatPaise(row.net_paise_per_qtl, locale)}</Text>
       </View>
     </View>

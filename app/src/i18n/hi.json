@@ -129,5 +129,13 @@
 
   "history_error": "इतिहास नहीं लाया जा सका। कृपया पुनः प्रयास करें।",
   "history_empty": "इस मंडी के लिए इतिहास उपलब्ध नहीं है।",
-  "history_title": "{market} — {days} दिनों का इतिहास"
+  "history_title": "{market} — {days} दिनों का इतिहास",
+
+  "nearby_error": "आसपास की मंडी नहीं लाई जा सकी। कृपया पुनः प्रयास करें।",
+  "nearby_empty": "आसपास कोई मंडी नहीं मिली।",
+  "nearby_title": "आसपास की मंडी — शुद्ध कीमत के अनुसार क्रम",
+  "km_suffix": "किमी",
+  "gross_label": "सकल",
+  "transport_commission_label": "परिवहन + कमीशन",
+  "net_label": "शुद्ध"
 }

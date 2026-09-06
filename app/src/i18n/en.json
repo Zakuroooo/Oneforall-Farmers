@@ -129,5 +129,13 @@
 
   "history_error": "Could not fetch history. Please try again.",
   "history_empty": "No history available for this market.",
-  "history_title": "{market} — {days}-day history"
+  "history_title": "{market} — {days}-day history",
+
+  "nearby_error": "Could not fetch nearby markets. Please try again.",
+  "nearby_empty": "No nearby markets found.",
+  "nearby_title": "Nearby markets — sorted by net price",
+  "km_suffix": "km",
+  "gross_label": "Gross",
+  "transport_commission_label": "Transport + commission",
+  "net_label": "Net"
 }
