@@ -322,5 +322,8 @@
   "chat_empty_title": "अजून एकही संदेश नाही.",
   "chat_empty_description": "खाली संदेश लिहून सुरुवात करा.",
   "message_placeholder": "संदेश लिहा…",
-  "send_message_button": "पाठवा"
+  "send_message_button": "पाठवा",
+
+  "assistant_header": "मदत",
+  "assistant_subheader": "वारंवार विचारले जाणारे प्रश्न"
 }

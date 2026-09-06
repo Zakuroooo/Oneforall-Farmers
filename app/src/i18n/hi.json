@@ -322,5 +322,8 @@
   "chat_empty_title": "अभी तक कोई संदेश नहीं है।",
   "chat_empty_description": "नीचे संदेश लिखकर शुरुआत करें।",
   "message_placeholder": "संदेश लिखें…",
-  "send_message_button": "भेजें"
+  "send_message_button": "भेजें",
+
+  "assistant_header": "सहायता",
+  "assistant_subheader": "अक्सर पूछे जाने वाले प्रश्न"
 }

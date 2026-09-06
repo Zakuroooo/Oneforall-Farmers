@@ -19,6 +19,7 @@ import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import type { Locale } from '../../types/api';
 
 interface QA {
@@ -144,8 +145,8 @@ export default function S28_Assistant() {
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
-      <Text style={styles.header}>मदत</Text>
-      <Text style={styles.subheader}>वारंवार विचारले जाणारे प्रश्न</Text>
+      <Text style={styles.header}>{translate('assistant_header', locale)}</Text>
+      <Text style={styles.subheader}>{translate('assistant_subheader', locale)}</Text>
       {QUESTIONS.map(qa => {
         const open = openId === qa.id;
         return (

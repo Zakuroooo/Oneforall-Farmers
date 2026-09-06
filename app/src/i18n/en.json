@@ -322,5 +322,8 @@
   "chat_empty_title": "No messages yet.",
   "chat_empty_description": "Start by writing a message below.",
   "message_placeholder": "Write a message…",
-  "send_message_button": "Send"
+  "send_message_button": "Send",
+
+  "assistant_header": "Help",
+  "assistant_subheader": "Frequently asked questions"
 }
