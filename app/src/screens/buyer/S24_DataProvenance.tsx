@@ -4,6 +4,10 @@ import { Badge } from '../../components/ui/Badge';
 import { Card } from '../../components/ui/Card';
 import { Skeleton } from '../../components/ui/Skeleton';
 import { api } from '../../lib/api';
+import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
+import { formatNumber } from '../../lib/money';
+import type { Locale } from '../../types/api';
 
 interface ProvenanceData {
   total_observations: number;
@@ -24,26 +28,31 @@ const MOCK_PROVENANCE: ProvenanceData = {
       count: 11200,
       percentage: 75.4,
       source_url: 'https://agmarknet.gov.in',
-      date_range: '२०२४-०१-०१ ते २०२६-०९-०५',
+      date_range: '2024-01-01 – 2026-09-05',
     },
     {
       source_name: 'MSAMB',
       count: 3150,
       percentage: 21.2,
       source_url: 'https://msamb.com',
-      date_range: '२०२४-०१-०१ ते २०२६-०९-०५',
+      date_range: '2024-01-01 – 2026-09-05',
     },
     {
       source_name: 'SYNTHETIC',
       count: 500,
       percentage: 3.4,
       source_url: 'https://mandisetu.internal/synthetic-log',
-      date_range: 'कृत्रिम चाचणी नोंदी (Synthetic)',
+      date_range: '',
     },
   ],
 };
 
 export function S24_DataProvenance() {
+  const [locale, setLocale] = useState<Locale>('mr');
+  useEffect(() => {
+    getLocale().then(l => l && setLocale(l));
+  }, []);
+
   const [data, setData] = useState<ProvenanceData | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -78,15 +87,20 @@ export function S24_DataProvenance() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.header}>माहिती स्रोत व पारदर्शकता (Data Provenance)</Text>
+      <Text style={styles.header}>{translate('data_provenance', locale)}</Text>
 
       <Card style={styles.summaryCard}>
-        <Text style={styles.summaryLabel}>एकूण गोळा केलेल्या किंमत नोंदी</Text>
+        <Text style={styles.summaryLabel}>{translate('provenance_total_label', locale)}</Text>
         <Text style={styles.totalNum}>{prov.total_observations.toLocaleString()}</Text>
-        <Text style={styles.subNote}>महाराष्ट्रातील ६ प्रमुख मड्या व २ पिके</Text>
+        <Text style={styles.subNote}>
+          {translate('provenance_coverage_note', locale, {
+            markets: formatNumber(6, locale),
+            crops: formatNumber(2, locale),
+          })}
+        </Text>
       </Card>
 
-      <Text style={styles.sectionTitle}>स्रोत विश्लेषण (Source Breakdown):</Text>
+      <Text style={styles.sectionTitle}>{translate('provenance_source_breakdown_title', locale)}</Text>
 
       {prov.sources.map((s, i) => (
         <Card key={i} style={styles.sourceCard}>
@@ -105,9 +119,14 @@ export function S24_DataProvenance() {
           </View>
 
           <Text style={styles.countText}>
-            नोंदी संख्या: <Text style={styles.bold}>{s.count.toLocaleString()}</Text>
+            {translate('provenance_count_label', locale)}{' '}
+            <Text style={styles.bold}>{s.count.toLocaleString()}</Text>
           </Text>
-          <Text style={styles.dateText}>कालावधी: {s.date_range}</Text>
+          <Text style={styles.dateText}>
+            {translate('provenance_date_range_label', locale, {
+              range: s.source_name === 'SYNTHETIC' ? translate('provenance_synthetic_date_range', locale) : s.date_range,
+            })}
+          </Text>
 
           <TouchableOpacity onPress={() => openUrl(s.source_url)} style={styles.urlBtn}>
             <Text style={styles.urlText}>🔗 {s.source_url}</Text>

@@ -340,9 +340,9 @@
   "buyer_tab_dispute": "तक्रार",
   "buyer_tab_chat": "चॅट",
 
-  "root_farmer_app_title": "🌾 शेतकरी ॲप",
-  "root_buyer_console_title": "💼 व्यापारी कंसोल",
-  "root_sign_out": "🚪 बाहेर पडा",
+  "root_farmer_app_title": "शेतकरी",
+  "root_buyer_console_title": "व्यापारी",
+  "root_sign_out": "बाहेर पडा",
 
   "buyer_login_badge": "व्यापारी पोर्टल",
   "buyer_login_title": "व्यापारी साइन इन",
@@ -423,5 +423,12 @@
   "hash_chain_title": "अपरिवर्तनीय हॅश साखळी:",
   "block_label": "ब्लॉक #{index}",
   "prev_hash_label": "मागील हॅश:",
-  "curr_hash_label": "सध्याचा हॅश:"
+  "curr_hash_label": "सध्याचा हॅश:",
+
+  "provenance_total_label": "एकूण गोळा केलेल्या किंमत नोंदी",
+  "provenance_coverage_note": "महाराष्ट्रातील {markets} प्रमुख मंडया व {crops} पिके",
+  "provenance_source_breakdown_title": "स्रोत विश्लेषण:",
+  "provenance_count_label": "नोंदी संख्या:",
+  "provenance_date_range_label": "कालावधी: {range}",
+  "provenance_synthetic_date_range": "कृत्रिम चाचणी नोंदी"
 }

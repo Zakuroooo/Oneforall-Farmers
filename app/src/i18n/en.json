@@ -340,9 +340,9 @@
   "buyer_tab_dispute": "Dispute",
   "buyer_tab_chat": "Chat",
 
-  "root_farmer_app_title": "🌾 Farmer App",
-  "root_buyer_console_title": "💼 Buyer Console",
-  "root_sign_out": "🚪 Sign out",
+  "root_farmer_app_title": "Farmer",
+  "root_buyer_console_title": "Buyer",
+  "root_sign_out": "Sign out",
 
   "buyer_login_badge": "Buyer Portal",
   "buyer_login_title": "Buyer sign in",
@@ -423,5 +423,12 @@
   "hash_chain_title": "Immutable hash chain:",
   "block_label": "Block #{index}",
   "prev_hash_label": "Prev hash:",
-  "curr_hash_label": "Curr hash:"
+  "curr_hash_label": "Curr hash:",
+
+  "provenance_total_label": "Total price records collected",
+  "provenance_coverage_note": "{markets} major markets & {crops} crops across Maharashtra",
+  "provenance_source_breakdown_title": "Source breakdown:",
+  "provenance_count_label": "Record count:",
+  "provenance_date_range_label": "Period: {range}",
+  "provenance_synthetic_date_range": "Synthetic test records"
 }

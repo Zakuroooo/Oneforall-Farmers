@@ -340,9 +340,9 @@
   "buyer_tab_dispute": "शिकायत",
   "buyer_tab_chat": "चैट",
 
-  "root_farmer_app_title": "🌾 किसान ऐप",
-  "root_buyer_console_title": "💼 व्यापारी कंसोल",
-  "root_sign_out": "🚪 साइन आउट करें",
+  "root_farmer_app_title": "किसान",
+  "root_buyer_console_title": "व्यापारी",
+  "root_sign_out": "साइन आउट",
 
   "buyer_login_badge": "व्यापारी पोर्टल",
   "buyer_login_title": "व्यापारी साइन इन",
@@ -423,5 +423,12 @@
   "hash_chain_title": "अपरिवर्तनीय हैश श्रृंखला:",
   "block_label": "ब्लॉक #{index}",
   "prev_hash_label": "पिछला हैश:",
-  "curr_hash_label": "मौजूदा हैश:"
+  "curr_hash_label": "मौजूदा हैश:",
+
+  "provenance_total_label": "कुल एकत्र की गई कीमत रिकॉर्ड्स",
+  "provenance_coverage_note": "महाराष्ट्र की {markets} प्रमुख मंडियां व {crops} फसलें",
+  "provenance_source_breakdown_title": "स्रोत विश्लेषण:",
+  "provenance_count_label": "रिकॉर्ड संख्या:",
+  "provenance_date_range_label": "अवधि: {range}",
+  "provenance_synthetic_date_range": "सिंथेटिक परीक्षण रिकॉर्ड्स"
 }
