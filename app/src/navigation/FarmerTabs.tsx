@@ -23,6 +23,7 @@ import S05_History from '../screens/farmer/S05_History';
 import S06_Nearby from '../screens/farmer/S06_Nearby';
 import S07_Forecast from '../screens/farmer/S07_Forecast';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
+import S12_CreateLot from '../screens/farmer/S12_CreateLot';
 import S13_SelfAssay from '../screens/farmer/S13_SelfAssay';
 import PricesIndex from '../screens/farmer/PricesIndex';
 import { Soon } from '../screens/Soon';
@@ -84,11 +85,12 @@ function PricesStackNavigator() {
 }
 
 /**
- * The MyLots tab is a stack, same shape as HomeStack/PricesStack. S13 is the
- * only real screen as of task C (P9a) — S12 (task D, P9b) inserts ahead of it
- * as the initial route once it exists, and S15 (P12) after it.
+ * The MyLots tab is a stack, same shape as HomeStack/PricesStack. S12 is the
+ * initial route (P9b, task D) — create the lot first — then S13 (P9a, task C)
+ * scores it. S15 (P12) inserts after S13 once it exists.
  */
 export type MyLotsStackParamList = {
+  S12_CreateLot: undefined;
   S13_SelfAssay: undefined;
 };
 
@@ -96,7 +98,8 @@ const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
 
 function MyLotsStackNavigator() {
   return (
-    <MyLotsStack.Navigator screenOptions={{ headerShown: false }}>
+    <MyLotsStack.Navigator initialRouteName="S12_CreateLot" screenOptions={{ headerShown: false }}>
+      <MyLotsStack.Screen name="S12_CreateLot" component={S12_CreateLot} />
       <MyLotsStack.Screen name="S13_SelfAssay" component={S13_SelfAssay} />
     </MyLotsStack.Navigator>
   );
