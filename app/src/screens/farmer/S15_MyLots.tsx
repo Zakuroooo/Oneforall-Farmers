@@ -306,6 +306,9 @@ export default function S15_MyLots({ navigation }: Props) {
                     <EscrowTimeline tx={tx} events={events} locale={locale} />
                   </View>
                 ) : null}
+                <TouchableOpacity onPress={() => navigation.navigate('S26_Chat')} accessibilityRole="button">
+                  <Text style={styles.chatLink}>💬 व्यापाऱ्याशी बोला</Text>
+                </TouchableOpacity>
               </Card>
             );
           })}
@@ -331,6 +334,7 @@ const styles = StyleSheet.create({
   txStatusText: { fontSize: 12, fontWeight: '700', color: '#E65100' },
   txToggleHint: { fontSize: 13, color: '#1B5E20', fontWeight: '600', marginTop: 8 },
   txExpanded: { marginTop: 12, borderTopWidth: 1, borderTopColor: '#E2E8F0', paddingTop: 12 },
+  chatLink: { fontSize: 13, color: '#1B5E20', fontWeight: '600', marginTop: 10 },
   lotHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
