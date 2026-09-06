@@ -26,8 +26,8 @@ import { getLots } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
 import { devNum } from '../../lib/i18n';
 import { formatNumber, toQuintal } from '../../lib/money';
-import { USE_FIXTURES } from '../../config';
-import { fxMyLots } from '../../fixtures/lots';
+import { FIXTURE_LOTS_EMPTY, USE_FIXTURES } from '../../config';
+import { fxMyLots, fxMyLotsEmpty } from '../../fixtures/lots';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -91,7 +91,7 @@ const MARKET_NAME_MR: Record<string, string> = {
 };
 
 async function fetchLots(): Promise<LotDto[]> {
-  if (USE_FIXTURES) return fxMyLots;
+  if (USE_FIXTURES) return FIXTURE_LOTS_EMPTY ? fxMyLotsEmpty : fxMyLots;
   return getLots();
 }
 

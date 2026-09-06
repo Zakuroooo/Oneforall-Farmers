@@ -79,6 +79,21 @@ export const API_BASE_URL = __DEV__
  */
 export const USE_FIXTURES = true;
 
+/**
+ * S15's empty-lots state (`fxMyLotsEmpty`) is otherwise unreachable in any
+ * runnable mode — `USE_FIXTURES` always resolves to the populated `fxMyLots`,
+ * and there is no real `/lots` endpoint yet to return zero rows from. Flip
+ * this to `true`, rebuild, and S15 fetches `fxMyLotsEmpty` instead, so the
+ * empty branch can actually be looked at on a device rather than trusted by
+ * reading the code.
+ *
+ * ★ Only meaningful while `USE_FIXTURES` is `true`. **Must be `false` before
+ *   any rehearsal or demo** — a judge who taps माझे लॉट and sees an empty
+ *   list on a seeded farmer account reads as a bug, not as a state we chose
+ *   to show. Check it in the same pass as `USE_FIXTURES` itself.
+ */
+export const FIXTURE_LOTS_EMPTY = false;
+
 /** How long a cached response stays fresh before the stale banner appears. */
 export const CACHE_STALE_MS = 5 * 60 * 1000;
 
