@@ -18,6 +18,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { ApiError } from './src/lib/api';
 import { AuthProvider } from './src/lib/auth';
 import { I18nProvider } from './src/lib/i18n';
+import { hydrateQueryClient, persistQueryClient } from './src/lib/offline';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { CACHE_STALE_MS } from './src/config';
 
@@ -42,17 +43,42 @@ const queryClient = new QueryClient({
         return failureCount < 2;
       },
 
-      // TODO(pranay): P8 wires `lib/offline.ts` in here so a cold start with no
-      //   network renders the last known values with the stale banner, rather than
-      //   an error. Venue wifi fails; the app should degrade, not stop.
+      // P11: `lib/offline.ts` hydrates this client from the last dehydrated
+      //   snapshot (below, at module scope — before this file's default export
+      //   is ever rendered), and re-dehydrates on every cache change after. A
+      //   cold start with no network renders the last known values with a
+      //   stale banner instead of an error screen — venue wifi fails, and the
+      //   app should degrade, not stop.
     },
   },
 });
+
+// P11: kicked off here, at module scope, rather than gating `App`'s first
+// render on a React state flip. Two reasons, not one:
+//
+//   1. `hydrate()` writes directly into `queryClient`'s cache and notifies
+//      any `useQuery` observer already subscribed to an affected key — a
+//      screen that mounts a few milliseconds before this promise resolves
+//      still gets the hydrated data the moment it lands, via the same
+//      subscription mechanism TanStack Query already uses for every other
+//      cache update. A render-blocking gate buys, at most, avoiding one
+//      loading frame; it is not required for the data to arrive.
+//   2. A gate implemented with `useState`+`useEffect` inside `App` fires a
+//      second render after an async boundary. `__tests__/App.test.tsx` calls
+//      `renderer.create(<App />)` synchronously with nothing awaited — by
+//      the time this promise resolves, Jest has already torn the test's
+//      module environment down, and the resulting state update crashes with
+//      modules that no longer exist (`Dimensions.get` inside
+//      `SafeAreaProvider`, concretely). Hydrating at module scope keeps
+//      `App` itself a plain, synchronous, always-fully-mounts component,
+//      matching what that test already assumes.
+hydrateQueryClient(queryClient).then(() => persistQueryClient(queryClient));
 
 export default function App() {
   // TODO(pranay): P9 calls Sound.setCategory('Playback') once, here, at mount —
   //   without it the Marathi clips are silent when the phone is on vibrate, which
   //   is how a demo phone is always configured.
+
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>

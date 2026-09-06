@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     backgroundColor: '#CBD5E1',
     alignItems: 'center',
-    justify: 'center',
+    justifyContent: 'center',
   },
   dotCompleted: { backgroundColor: '#2E7D32' },
   dotActive: { backgroundColor: '#E65100', borderWidth: 2, borderColor: '#FFF8E1' },

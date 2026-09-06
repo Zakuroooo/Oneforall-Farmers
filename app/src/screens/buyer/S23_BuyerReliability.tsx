@@ -59,9 +59,9 @@ export function S23_BuyerReliability() {
           </View>
           <Text style={styles.blockAction}>{b.action}</Text>
           <Text style={styles.hashLabel}>Prev Hash:</Text>
-          <Text style={styles.hashText} numberOfLines={1} ellipsisMode="middle">{b.prevHash}</Text>
+          <Text style={styles.hashText} numberOfLines={1} ellipsizeMode="middle">{b.prevHash}</Text>
           <Text style={styles.hashLabel}>Curr Hash:</Text>
-          <Text style={styles.hashText} numberOfLines={1} ellipsisMode="middle">{b.currHash}</Text>
+          <Text style={styles.hashText} numberOfLines={1} ellipsizeMode="middle">{b.currHash}</Text>
         </Card>
       ))}
     </ScrollView>

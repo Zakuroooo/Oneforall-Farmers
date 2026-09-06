@@ -79,6 +79,21 @@ export const API_BASE_URL = __DEV__
  */
 export const USE_FIXTURES = true;
 
+/**
+ * S15's empty-lots state (`fxMyLotsEmpty`) is otherwise unreachable in any
+ * runnable mode — `USE_FIXTURES` always resolves to the populated `fxMyLots`,
+ * and there is no real `/lots` endpoint yet to return zero rows from. Flip
+ * this to `true`, rebuild, and S15 fetches `fxMyLotsEmpty` instead, so the
+ * empty branch can actually be looked at on a device rather than trusted by
+ * reading the code.
+ *
+ * ★ Only meaningful while `USE_FIXTURES` is `true`. **Must be `false` before
+ *   any rehearsal or demo** — a judge who taps माझे लॉट and sees an empty
+ *   list on a seeded farmer account reads as a bug, not as a state we chose
+ *   to show. Check it in the same pass as `USE_FIXTURES` itself.
+ */
+export const FIXTURE_LOTS_EMPTY = false;
+
 /** How long a cached response stays fresh before the stale banner appears. */
 export const CACHE_STALE_MS = 5 * 60 * 1000;
 
@@ -107,6 +122,11 @@ export const DEFAULT_MARKET_ID = 'mkt_lasalgaon';
  */
 export const DEFAULT_QTY_KG = 4000;
 export const DEFAULT_GRADE: Grade = 'B';
+
+/** S13's demo lot, matching `fxLotListed` in `fixtures/lots.ts` — the same
+ * fixture-first pattern as `DEFAULT_COMMODITY_ID`/`DEFAULT_MARKET_ID` above,
+ * until S12 (P9b, task D) exists to create a real one. */
+export const DEFAULT_LOT_ID = 'lot_listed_1';
 
 /**
  * ★ Not in CANON's wire contract — `05_AI_ARCHITECTURE.md` §6 and `NILESH.md` §2

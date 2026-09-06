@@ -23,6 +23,9 @@ import S05_History from '../screens/farmer/S05_History';
 import S06_Nearby from '../screens/farmer/S06_Nearby';
 import S07_Forecast from '../screens/farmer/S07_Forecast';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
+import S12_CreateLot from '../screens/farmer/S12_CreateLot';
+import S13_SelfAssay from '../screens/farmer/S13_SelfAssay';
+import S15_MyLots from '../screens/farmer/S15_MyLots';
 import PricesIndex from '../screens/farmer/PricesIndex';
 import { Soon } from '../screens/Soon';
 
@@ -82,10 +85,39 @@ function PricesStackNavigator() {
   );
 }
 
+/**
+ * The MyLots tab is a stack, same shape as HomeStack/PricesStack. S15 (P12)
+ * is the initial route — the list a farmer with existing lots actually lands
+ * on — with S12 (P9b) reached from its header button to create a new one,
+ * and S13 (P9a) reached from tapping a row to score one.
+ */
+export type MyLotsStackParamList = {
+  S15_MyLots: undefined;
+  S12_CreateLot: undefined;
+  /**
+   * `lot_id` is optional so S13 stays reachable directly (e.g. from a deep
+   * link) without a lot already created in this session — it falls back to
+   * `DEFAULT_LOT_ID` from config. Both S12 (just created) and S15 (tapped
+   * from the list) navigate here with the real id of the lot in question.
+   */
+  S13_SelfAssay: { lot_id?: string } | undefined;
+};
+
+const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
+
+function MyLotsStackNavigator() {
+  return (
+    <MyLotsStack.Navigator initialRouteName="S15_MyLots" screenOptions={{ headerShown: false }}>
+      <MyLotsStack.Screen name="S15_MyLots" component={S15_MyLots} />
+      <MyLotsStack.Screen name="S12_CreateLot" component={S12_CreateLot} />
+      <MyLotsStack.Screen name="S13_SelfAssay" component={S13_SelfAssay} />
+    </MyLotsStack.Navigator>
+  );
+}
+
 const Tab = createBottomTabNavigator<FarmerTabParamList>();
 
-// TODO(pranay): P9 → S12 create lot + S13 self-assay · P12 → S15 lots + timeline · P16 → S28 assistant.
-const MyLotsSoon = () => <Soon label="S15 · माझे लॉट" />;
+// TODO(pranay): P12 → S15 lots + timeline · P16 → S28 assistant.
 const AssistantSoon = () => <Soon label="S28 · मदत" />;
 
 export function FarmerTabs() {
@@ -103,7 +135,7 @@ export function FarmerTabs() {
       }}>
       <Tab.Screen name="Home" component={HomeStackNavigator} options={{ title: 'मुख्यपृष्ठ' }} />
       <Tab.Screen name="Prices" component={PricesStackNavigator} options={{ title: 'भाव' }} />
-      <Tab.Screen name="MyLots" component={MyLotsSoon} options={{ title: 'माझे लॉट' }} />
+      <Tab.Screen name="MyLots" component={MyLotsStackNavigator} options={{ title: 'माझे लॉट' }} />
       <Tab.Screen
         name="Assistant"
         component={AssistantSoon}

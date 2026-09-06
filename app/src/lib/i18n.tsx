@@ -14,7 +14,10 @@ const DEV_DIGITS = ['०', '१', '२', '३', '४', '५', '६', '७', '८
 export function devNum(n: number | string, locale: Locale = 'mr'): string {
   const str = String(n);
   if (locale === 'en') return str;
-  return str.replace(/\d/g, d => DEV_DIGITS[+d]);
+  // `noUncheckedIndexedAccess` types DEV_DIGITS[i] as string | undefined; the
+  // regex only ever matches 0-9 so this can't actually miss, but the honest way
+  // to satisfy the type is a fallback, not a `!`.
+  return str.replace(/\d/g, d => DEV_DIGITS[+d] ?? d);
 }
 
 export type TFn = (key: string, vars?: Record<string, string | number>) => string;

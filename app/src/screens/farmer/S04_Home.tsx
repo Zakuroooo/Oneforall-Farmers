@@ -33,6 +33,7 @@ import { formatPaise } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxPriceSeries } from '../../fixtures/prices';
 import { SourceBadge } from '../../components/farmer/SourceBadge';
+import { StaleBanner } from '../../components/farmer/StaleBanner';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
 import type { HomeStackParamList } from '../../navigation/FarmerTabs';
 import type { Locale, PricePoint } from '../../types/api';
@@ -51,7 +52,7 @@ export default function S04_Home({ navigation }: Props) {
     getLocale().then(l => l && setLocale(l));
   }, []);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
     queryKey: ['prices', 'series', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID],
     queryFn: fetchTodaysPrices,
   });
@@ -66,7 +67,14 @@ export default function S04_Home({ navigation }: Props) {
     );
   }
 
-  if (error) {
+  const hasData = data && data.points.length > 0;
+
+  // P11: same reasoning as S9 — a hydrated cache can hold yesterday's prices
+  // while today's background refetch fails on a dead network. Only the
+  // "nothing to show at all" case is an error; a farmer who already has a
+  // number on screen gets that number back with a stale banner, not a retry
+  // screen replacing a price he could still act on.
+  if (error && !hasData) {
     return (
       <ErrorState
         message="किंमत आणता आली नाही. पुन्हा प्रयत्न करा."
@@ -75,7 +83,7 @@ export default function S04_Home({ navigation }: Props) {
     );
   }
 
-  if (!data || data.points.length === 0) {
+  if (!data || !hasData) {
     return <EmptyState title="या मार्केटसाठी अजून किंमत उपलब्ध नाही." />;
   }
 
@@ -85,6 +93,7 @@ export default function S04_Home({ navigation }: Props) {
 
   return (
     <View style={styles.root}>
+      <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
       <View style={styles.headerRow}>
         <Text style={styles.commodity}>कांदा · लासलगाव</Text>
         <SourceBadge source={today.source} />

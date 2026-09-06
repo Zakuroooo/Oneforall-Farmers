@@ -370,7 +370,7 @@ interface SplitRow {
   vs_solo_paise: number;      // ★ gain vs selling alone. Can be negative → Pareto guard.
   consented: boolean | null;  // null = not asked yet. Three states, not two.
 }
-interface PoolRes {
+interface PoolDto {
   fpo: { id: string; name: string; name_mr: string };   // ← ASK: exact shape of `fpo`
   total_qty_kg: number;
   avg_score: number;
@@ -378,6 +378,11 @@ interface PoolRes {
   all_consented: boolean;
 }
 ```
+
+★ Named `PoolDto` here, not `PoolRes` as an earlier draft of this doc had it — this
+is what shipped in `app/src/types/api.ts`, matching the naming CANON itself uses
+for every other §7.5 shape (`LotDto`, and the request/response pattern elsewhere
+in this document).
 
 Requirements and asks specific to this section:
 
