@@ -370,5 +370,14 @@
   "post_demand_price_ceiling_label": "Maximum purchase rate (₹/quintal)",
   "post_demand_deadline_label": "Acceptance deadline",
   "post_demand_submit": "Publish demand",
-  "post_demand_default_date": "18 September 2026"
+  "post_demand_default_date": "18 September 2026",
+
+  "matches_header": "Matching farmer lots ({qty}-quintal demand)",
+  "matches_combination_bundle": "Combined bundle ({n} lots)",
+  "matches_single_lot": "Single lot",
+  "matches_total_qty_at_location": "Total quantity: {qty} quintals ({location})",
+  "matches_lots_included": "Lots included:",
+  "matches_view_lot_detail": "View lot detail",
+  "matches_make_offer": "Make offer",
+  "qtl_abbrev": "{qty} qtl"
 }

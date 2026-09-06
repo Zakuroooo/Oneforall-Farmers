@@ -1,8 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
+import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
+import { formatNumber } from '../../lib/money';
+import type { Locale } from '../../types/api';
 
 interface MatchBundle {
   id: string;
@@ -52,45 +56,61 @@ export function S19_Matches({
    * navigation yet still renders exactly as before. */
   onViewLot?: (id: string) => void;
 }) {
+  const [locale, setLocale] = useState<Locale>('mr');
+  useEffect(() => {
+    getLocale().then(l => l && setLocale(l));
+  }, []);
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.header}>जुळणारे शेतकरी लिलाव (१०० क्विंटल मागणी)</Text>
+      <Text style={styles.header}>
+        {translate('matches_header', locale, { qty: formatNumber(100, locale) })}
+      </Text>
 
       {MATCHES.map(m => (
         <Card key={m.id} style={styles.matchCard}>
           <View style={styles.cardHeader}>
             <Badge
-              label={m.type === 'COMBINATION' ? 'एकत्रित बंडल (3 लॉट)' : 'सिंगल लॉट'}
+              label={
+                m.type === 'COMBINATION'
+                  ? translate('matches_combination_bundle', locale, { n: formatNumber(m.lots.length, locale) })
+                  : translate('matches_single_lot', locale)
+              }
               type={m.type === 'COMBINATION' ? 'WARNING' : 'SUCCESS'}
             />
-            <Badge label={`ग्रेड ${m.grade}`} type="GRADE_A" />
+            <Badge label={translate('post_demand_grade_chip', locale, { grade: m.grade })} type="GRADE_A" />
           </View>
 
           <Text style={styles.priceText}>
-            ₹{m.avgPrice} <Text style={styles.unitText}>/ क्विंटल</Text>
+            ₹{formatNumber(m.avgPrice, locale)} <Text style={styles.unitText}>{translate('per_quintal_suffix', locale)}</Text>
           </Text>
-          <Text style={styles.qtyText}>एकूण प्रमाण: {m.totalQty} क्विंटल ({m.location})</Text>
+          <Text style={styles.qtyText}>
+            {translate('matches_total_qty_at_location', locale, {
+              qty: formatNumber(m.totalQty, locale),
+              location: m.location,
+            })}
+          </Text>
 
           <View style={styles.divider} />
 
-          <Text style={styles.sectionLabel}>लॉट समाविष्ट:</Text>
+          <Text style={styles.sectionLabel}>{translate('matches_lots_included', locale)}</Text>
           {m.lots.map((l, i) => (
             <View key={i} style={styles.lotRow}>
               <Text style={styles.farmerName}>• {l.farmer} ({l.district})</Text>
-              <Text style={styles.lotQty}>{l.qty} qtl</Text>
+              <Text style={styles.lotQty}>{translate('qtl_abbrev', locale, { qty: formatNumber(l.qty, locale) })}</Text>
             </View>
           ))}
 
           <Text style={styles.reasonText}>💡 {m.matchReason}</Text>
 
           <Button
-            title="लॉट तपशील पहा"
+            title={translate('matches_view_lot_detail', locale)}
             onPress={() => onViewLot && onViewLot(m.id)}
             variant="outline"
             style={styles.actionBtn}
           />
           <Button
-            title="ऑफर पाठवा (Make Offer)"
+            title={translate('matches_make_offer', locale)}
             onPress={() => onSelectOffer && onSelectOffer(m.id)}
             variant="primary"
             style={styles.actionBtn}

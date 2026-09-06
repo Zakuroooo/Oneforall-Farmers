@@ -370,5 +370,14 @@
   "post_demand_price_ceiling_label": "अधिकतम खरीद दर (₹/क्विंटल)",
   "post_demand_deadline_label": "स्वीकृति की अंतिम तारीख",
   "post_demand_submit": "मांग प्रकाशित करें",
-  "post_demand_default_date": "18 सितंबर 2026"
+  "post_demand_default_date": "18 सितंबर 2026",
+
+  "matches_header": "मिलते-जुलते किसान लॉट ({qty} क्विंटल मांग)",
+  "matches_combination_bundle": "संयुक्त बंडल ({n} लॉट)",
+  "matches_single_lot": "सिंगल लॉट",
+  "matches_total_qty_at_location": "कुल मात्रा: {qty} क्विंटल ({location})",
+  "matches_lots_included": "शामिल लॉट:",
+  "matches_view_lot_detail": "लॉट विवरण देखें",
+  "matches_make_offer": "प्रस्ताव भेजें",
+  "qtl_abbrev": "{qty} क्वि."
 }

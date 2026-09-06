@@ -370,5 +370,14 @@
   "post_demand_price_ceiling_label": "कमाल खरेदी दर (₹/क्विंटल)",
   "post_demand_deadline_label": "स्वीकृतीची अंतिम तारीख",
   "post_demand_submit": "मागणी प्रकाशित करा",
-  "post_demand_default_date": "१८ सप्टेंबर २०२६"
+  "post_demand_default_date": "१८ सप्टेंबर २०२६",
+
+  "matches_header": "जुळणारे शेतकरी लिलाव ({qty} क्विंटल मागणी)",
+  "matches_combination_bundle": "एकत्रित बंडल ({n} लॉट)",
+  "matches_single_lot": "सिंगल लॉट",
+  "matches_total_qty_at_location": "एकूण प्रमाण: {qty} क्विंटल ({location})",
+  "matches_lots_included": "लॉट समाविष्ट:",
+  "matches_view_lot_detail": "लॉट तपशील पहा",
+  "matches_make_offer": "ऑफर पाठवा",
+  "qtl_abbrev": "{qty} क्विं."
 }
