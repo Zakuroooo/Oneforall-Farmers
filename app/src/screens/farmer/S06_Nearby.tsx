@@ -109,7 +109,7 @@ const GREEN = '#1B5E20';
 
 const styles = StyleSheet.create({
   root: { padding: 24 },
-  title: { fontSize: 18, fontWeight: '700', marginBottom: 16 },
+  title: { fontSize: 18, fontWeight: '700', color: '#212121', marginBottom: 16 },
   card: {
     backgroundColor: '#F5F5F5',
     borderRadius: 12,
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   headerRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  marketName: { fontSize: 17, fontWeight: '700' },
+  marketName: { fontSize: 17, fontWeight: '700', color: '#212121' },
   distance: { fontSize: 13, color: '#888' },
   lineRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 2 },
   lineLabel: { fontSize: 14, color: '#666' },

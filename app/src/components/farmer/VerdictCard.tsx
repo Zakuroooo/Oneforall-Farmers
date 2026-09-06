@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  commodity: { fontSize: 18, fontWeight: '700' },
+  commodity: { fontSize: 18, fontWeight: '700', color: '#212121' },
 
   action: { fontSize: 32, fontWeight: '800', textAlign: 'center', color: '#212121' },
   holdDays: { fontSize: 20, textAlign: 'center', color: '#555', marginTop: 4 },

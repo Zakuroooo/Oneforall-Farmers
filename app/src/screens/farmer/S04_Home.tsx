@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 24,
   },
-  commodity: { fontSize: 22, fontWeight: '700' },
+  commodity: { fontSize: 22, fontWeight: '700', color: '#212121' },
   priceCard: {
     backgroundColor: '#F5F5F5',
     borderRadius: 16,

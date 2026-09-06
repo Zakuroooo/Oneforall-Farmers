@@ -24,7 +24,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { getLots } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
-import { devNum, translate } from '../../lib/i18n';
+import { translate } from '../../lib/i18n';
+import { formatDate } from '../../lib/dates';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { FIXTURE_LOTS_EMPTY, USE_FIXTURES } from '../../config';
 import { fxMyLots, fxMyLotsEmpty } from '../../fixtures/lots';
@@ -154,10 +155,10 @@ function commodityMarketLabel(lot: LotDto, locale: Locale): string {
 }
 
 function harvestDateLabel(lot: LotDto, locale: Locale): string {
-  // There is no date-formatting helper in `lib/` beyond digit translation
-  // (`devNum`) — every other farmer screen with a date renders a hardcoded
-  // literal rather than deriving one. This at least keeps the digits Marathi.
-  return lot.harvest_date ? devNum(lot.harvest_date, locale) : translate('harvest_date_missing', locale);
+  // `formatDate` (lib/dates.ts), not `devNum` — `devNum` only translates the
+  // digits, so `2026-08-28` came out as `२०२६-०८-२८`: ISO order in Devanagari
+  // numerals, which is a wire format in costume and not a date anyone reads.
+  return formatDate(lot.harvest_date, locale, translate('harvest_date_missing', locale));
 }
 
 export default function S15_MyLots({ navigation }: Props) {
@@ -204,7 +205,11 @@ export default function S15_MyLots({ navigation }: Props) {
     );
   }
 
-  if (error) {
+  // P11: `error && !lots`, not a bare `error` — same rule as S4/S7/S9. A
+  // farmer's own lot list is the screen he lands on; a failed background
+  // refetch must not replace lots the cache is still holding with a retry
+  // button. The empty state below still handles a genuinely empty list.
+  if (error && !lots) {
     return (
       <ErrorState message={translate('lots_fetch_error', locale)} onRetry={() => refetch()} />
     );

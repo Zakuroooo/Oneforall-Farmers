@@ -74,5 +74,5 @@ export default function S05_History() {
 
 const styles = StyleSheet.create({
   root: { padding: 24 },
-  title: { fontSize: 18, fontWeight: '700', marginBottom: 16 },
+  title: { fontSize: 18, fontWeight: '700', color: '#212121', marginBottom: 16 },
 });

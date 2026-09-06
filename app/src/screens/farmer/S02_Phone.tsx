@@ -177,6 +177,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     fontSize: 20,
+    // The OTP a farmer types must be visible whatever the device theme.
+    color: '#212121',
     marginBottom: 16,
     backgroundColor: '#FFFFFF',
     letterSpacing: 2,

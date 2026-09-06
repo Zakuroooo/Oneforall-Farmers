@@ -187,7 +187,7 @@ const GREEN = '#1B5E20';
 
 const styles = StyleSheet.create({
   root: { flex: 1, padding: 24, justifyContent: 'center' },
-  title: { fontSize: 24, fontWeight: '700', marginBottom: 24 },
+  title: { fontSize: 24, fontWeight: '700', color: '#212121', marginBottom: 24 },
   label: { fontSize: 15, color: '#555', marginBottom: 6, marginTop: 4 },
   input: {
     borderWidth: 2,
@@ -195,6 +195,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 14,
     fontSize: 18,
+    // A TextInput with no `color` renders what the farmer types in the
+    // platform default — invisible on a dark-mode device.
+    color: '#212121',
     marginBottom: 16,
   },
   districtRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 },

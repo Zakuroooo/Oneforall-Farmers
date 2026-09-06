@@ -109,7 +109,7 @@ export default function S07_Forecast({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   root: { padding: 24 },
-  title: { fontSize: 18, fontWeight: '700', marginBottom: 16 },
+  title: { fontSize: 18, fontWeight: '700', color: '#212121', marginBottom: 16 },
   modelNote: { fontSize: 13, color: '#888', marginTop: 16 },
   modelNoteCta: { fontSize: 13, color: '#1B5E20', fontWeight: '700', marginTop: 6 },
 });
