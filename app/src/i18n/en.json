@@ -394,5 +394,17 @@
   "assay_moisture_dryness_q": "Moisture / dryness:",
   "assay_moisture_dryness_a": "Fully dried ({pct}% moisture) - score: {score}/{max}",
   "warehouse_storage_title": "Warehouse storage:",
-  "lot_detail_make_offer": "Make an offer for this lot"
+  "lot_detail_make_offer": "Make an offer for this lot",
+
+  "offer_thread_header": "Offer negotiation (session rounds)",
+  "offer_summary_title": "{commodity} - {qty}-quintal bundle",
+  "offer_summary_sub": "{location} · Grade {grade}",
+  "offer_history_title": "Offer history (round 1 of {max}):",
+  "sender_buyer_you": "Buyer (you)",
+  "sender_farmer_name": "Farmer ({name})",
+  "round_badge": "Round {round}/{max}",
+  "counter_offer_label": "Your counter-offer rate (₹/quintal)",
+  "counter_offer_send": "Send counter-offer (round {round}/{max})",
+  "max_rounds_reached": "⚠️ {max} rounds are complete. Wait for the final decision.",
+  "time_just_now": "Just now"
 }

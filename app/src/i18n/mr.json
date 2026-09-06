@@ -394,5 +394,17 @@
   "assay_moisture_dryness_q": "ओलावा / सुकावा:",
   "assay_moisture_dryness_a": "पूर्ण सुकलेला ({pct}% ओलावा) - गुण: {score}/{max}",
   "warehouse_storage_title": "गोदाम साठा:",
-  "lot_detail_make_offer": "या लॉटसाठी ऑफर द्या"
+  "lot_detail_make_offer": "या लॉटसाठी ऑफर द्या",
+
+  "offer_thread_header": "ऑफर वाटाघाटी (सत्रातील फेरी)",
+  "offer_summary_title": "{commodity} - {qty} क्विंटल बंडल",
+  "offer_summary_sub": "{location} · ग्रेड {grade}",
+  "offer_history_title": "ऑफर इतिहास (फेरी १ ते {max}):",
+  "sender_buyer_you": "व्यापारी (तुम्ही)",
+  "sender_farmer_name": "शेतकरी ({name})",
+  "round_badge": "फेरी {round}/{max}",
+  "counter_offer_label": "तुमची प्रति-ऑफर दर (₹/क्विंटल)",
+  "counter_offer_send": "प्रति-ऑफर पाठवा (फेरी {round}/{max})",
+  "max_rounds_reached": "⚠️ {max} फेऱ्या पूर्ण झाल्या आहेत. अंतिम निर्णयाची वाट पहा.",
+  "time_just_now": "आत्ताच"
 }

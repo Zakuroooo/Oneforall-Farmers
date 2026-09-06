@@ -394,5 +394,17 @@
   "assay_moisture_dryness_q": "नमी / सूखापन:",
   "assay_moisture_dryness_a": "पूरी तरह सूखा ({pct}% नमी) - अंक: {score}/{max}",
   "warehouse_storage_title": "गोदाम भंडारण:",
-  "lot_detail_make_offer": "इस लॉट के लिए प्रस्ताव दें"
+  "lot_detail_make_offer": "इस लॉट के लिए प्रस्ताव दें",
+
+  "offer_thread_header": "प्रस्ताव वार्ता (सत्र के दौर)",
+  "offer_summary_title": "{commodity} - {qty} क्विंटल बंडल",
+  "offer_summary_sub": "{location} · ग्रेड {grade}",
+  "offer_history_title": "प्रस्ताव इतिहास (दौर 1 से {max}):",
+  "sender_buyer_you": "व्यापारी (आप)",
+  "sender_farmer_name": "किसान ({name})",
+  "round_badge": "दौर {round}/{max}",
+  "counter_offer_label": "आपकी काउंटर-ऑफर दर (₹/क्विंटल)",
+  "counter_offer_send": "काउंटर-ऑफर भेजें (दौर {round}/{max})",
+  "max_rounds_reached": "⚠️ {max} दौर पूरे हो गए हैं। अंतिम निर्णय की प्रतीक्षा करें।",
+  "time_just_now": "अभी अभी"
 }
