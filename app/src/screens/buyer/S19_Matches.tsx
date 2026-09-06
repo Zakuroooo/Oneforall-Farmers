@@ -42,7 +42,16 @@ const MATCHES: MatchBundle[] = [
   },
 ];
 
-export function S19_Matches({ onSelectOffer }: { onSelectOffer?: (id: string) => void }) {
+export function S19_Matches({
+  onSelectOffer,
+  onViewLot,
+}: {
+  onSelectOffer?: (id: string) => void;
+  /** Was unwired entirely — S20_LotDetail existed in this repo but nothing
+   * ever navigated to it. Optional, so a caller that has not wired
+   * navigation yet still renders exactly as before. */
+  onViewLot?: (id: string) => void;
+}) {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.header}>जुळणारे शेतकरी लिलाव (१०० क्विंटल मागणी)</Text>
@@ -74,6 +83,12 @@ export function S19_Matches({ onSelectOffer }: { onSelectOffer?: (id: string) =>
 
           <Text style={styles.reasonText}>💡 {m.matchReason}</Text>
 
+          <Button
+            title="लॉट तपशील पहा"
+            onPress={() => onViewLot && onViewLot(m.id)}
+            variant="outline"
+            style={styles.actionBtn}
+          />
           <Button
             title="ऑफर पाठवा (Make Offer)"
             onPress={() => onSelectOffer && onSelectOffer(m.id)}

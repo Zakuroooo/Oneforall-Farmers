@@ -5,9 +5,12 @@
 
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { S18_PostDemand } from '../screens/buyer/S18_PostDemand';
 import { S19_Matches } from '../screens/buyer/S19_Matches';
+import { S20_LotDetail } from '../screens/buyer/S20_LotDetail';
 import { S21_OfferThread } from '../screens/buyer/S21_OfferThread';
 import { S22_EscrowTimeline } from '../screens/buyer/S22_EscrowTimeline';
 import { S23_BuyerReliability } from '../screens/buyer/S23_BuyerReliability';
@@ -25,6 +28,31 @@ export type BuyerTabParamList = {
   Dispute: undefined;
   Chat: undefined;
 };
+
+/**
+ * S20_LotDetail existed in this repo, fully built, and nothing ever
+ * navigated to it — a dead file. The Matches tab is now a stack, S19
+ * initial, so "लॉट तपशील पहा" on a match card has somewhere to go.
+ */
+export type MatchesStackParamList = {
+  S19_Matches: undefined;
+  S20_LotDetail: undefined;
+};
+
+const MatchesStack = createNativeStackNavigator<MatchesStackParamList>();
+
+function MatchesStackNavigator() {
+  return (
+    <MatchesStack.Navigator initialRouteName="S19_Matches" screenOptions={{ headerShown: false }}>
+      <MatchesStack.Screen name="S19_Matches">
+        {({ navigation }: NativeStackScreenProps<MatchesStackParamList, 'S19_Matches'>) => (
+          <S19_Matches onViewLot={() => navigation.navigate('S20_LotDetail')} />
+        )}
+      </MatchesStack.Screen>
+      <MatchesStack.Screen name="S20_LotDetail" component={S20_LotDetail} />
+    </MatchesStack.Navigator>
+  );
+}
 
 const Tab = createBottomTabNavigator<BuyerTabParamList>();
 
@@ -45,7 +73,7 @@ export function BuyerTabs() {
       />
       <Tab.Screen
         name="Matches"
-        component={S19_Matches}
+        component={MatchesStackNavigator}
         options={{ title: 'जुळणी' }}
       />
       <Tab.Screen
