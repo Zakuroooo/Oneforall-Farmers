@@ -47,5 +47,27 @@
   "live_source_url": "लाइव्ह स्रोत लिंक",
   "error_generic": "काहीतरी चूक झाली. पुन्हा प्रयत्न करा.",
   "no_lots_yet": "अजून कोणतेही लिलाव उपलब्ध नाहीत",
-  "create_first_lot": "पहिला माल नोंदवा"
+  "create_first_lot": "पहिला माल नोंदवा",
+
+  "action_sell_now": "आता विका",
+  "action_sell_elsewhere": "दुसरीकडे विका",
+  "action_hold": "थांबा",
+  "action_split": "अर्धे विका, अर्धे थांबवा",
+  "days_suffix": "दिवस",
+  "demo_commodity_market": "कांदा · लासलगाव",
+  "no_advice_label": "⚠ सल्ला नाही",
+  "band_width_label": "अंदाजाची रुंदी",
+  "band_limit_label": "मर्यादा",
+  "today_price_label": "आजची किंमत",
+  "per_quintal_suffix": "/क्विंटल",
+  "on_quintals_suffix": "क्विंटलवर",
+  "cost_transport": "वाहतूक",
+  "cost_commission": "कमिशन",
+  "cost_storage": "साठवण",
+  "cost_spoilage": "नासाडी",
+  "cost_loading": "भरणी",
+  "cost_total": "एकूण",
+  "see_full_details": "पूर्ण तपशील पहा →",
+  "listen_button": "🔊 ऐका",
+  "listening_button": "🔊 ..."
 }

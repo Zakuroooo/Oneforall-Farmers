@@ -24,11 +24,11 @@ import { NO_ADVICE_BAND_THRESHOLD_BPS } from '../../config';
 import { SourceBadge } from './SourceBadge';
 import type { Confidence, Locale, WindowAction, WindowRes } from '../../types/api';
 
-const ACTION_LABEL_MR: Record<Exclude<WindowAction, 'NO_ADVICE'>, string> = {
-  SELL_NOW: 'आता विका',
-  SELL_ELSEWHERE: 'दुसरीकडे विका',
-  HOLD: 'थांबा',
-  SPLIT: 'अर्धे विका, अर्धे थांबवा',
+const ACTION_KEY: Record<Exclude<WindowAction, 'NO_ADVICE'>, string> = {
+  SELL_NOW: 'action_sell_now',
+  SELL_ELSEWHERE: 'action_sell_elsewhere',
+  HOLD: 'action_hold',
+  SPLIT: 'action_split',
 };
 
 // t('high'|'medium'|'low') replaces this now — kept only as the Confidence -> key
@@ -84,7 +84,7 @@ export function VerdictCard({
   return (
     <View style={styles.card}>
       <View style={styles.headerRow}>
-        <Text style={styles.commodity}>कांदा · लासलगाव</Text>
+        <Text style={styles.commodity}>{t('demo_commodity_market')}</Text>
         <SourceBadge source={data.data_source} />
       </View>
 
@@ -101,7 +101,7 @@ export function VerdictCard({
         accessibilityRole="button">
         <Text style={styles.costsToggleLabel}>
           {costsOpen ? '▾' : '▸'} {t('costs_deducted')} (
-          {formatPaise(data.costs.total_paise_per_qtl, locale)}/क्विंटल)
+          {formatPaise(data.costs.total_paise_per_qtl, locale)}{t('per_quintal_suffix')})
         </Text>
       </TouchableOpacity>
 
@@ -117,7 +117,7 @@ export function VerdictCard({
               style={styles.costsDetailLink}
               onPress={onSeeCosts}
               accessibilityRole="button">
-              <Text style={styles.costsDetailLabel}>पूर्ण तपशील पहा →</Text>
+              <Text style={styles.costsDetailLabel}>{t('see_full_details')}</Text>
             </TouchableOpacity>
           ) : null}
         </>
@@ -130,8 +130,8 @@ export function VerdictCard({
         onPress={handleSpeak}
         disabled={speaking}
         accessibilityRole="button"
-        accessibilityLabel="ऐका">
-        <Text style={styles.voiceLabel}>{speaking ? '🔊 ...' : '🔊 ऐका'}</Text>
+        accessibilityLabel={t('listen_button')}>
+        <Text style={styles.voiceLabel}>{speaking ? t('listening_button') : t('listen_button')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -142,9 +142,11 @@ function Verdict({ data, qtyKg, locale }: { data: WindowRes; qtyKg: number; loca
   const qtyQtl = toQuintal(qtyKg);
   return (
     <>
-      <Text style={styles.action}>{ACTION_LABEL_MR[data.action as Exclude<WindowAction, 'NO_ADVICE'>]}</Text>
+      <Text style={styles.action}>{t(ACTION_KEY[data.action as Exclude<WindowAction, 'NO_ADVICE'>])}</Text>
       {data.hold_days !== null && data.hold_days > 0 ? (
-        <Text style={styles.holdDays}>{formatNumber(data.hold_days, locale)} दिवस</Text>
+        <Text style={styles.holdDays}>
+          {formatNumber(data.hold_days, locale)} {t('days_suffix')}
+        </Text>
       ) : null}
 
       <Text style={styles.sectionLabel}>{t('expected_gain')}</Text>
@@ -158,7 +160,7 @@ function Verdict({ data, qtyKg, locale }: { data: WindowRes; qtyKg: number; loca
       </Text>
 
       <Text style={styles.meta}>
-        {formatNumber(qtyQtl, locale)} क्विंटलवर · {t('confidence')}: {t(CONFIDENCE_KEY[data.confidence])}
+        {formatNumber(qtyQtl, locale)} {t('on_quintals_suffix')} · {t('confidence')}: {t(CONFIDENCE_KEY[data.confidence])}
       </Text>
     </>
   );
@@ -170,28 +172,30 @@ function Verdict({ data, qtyKg, locale }: { data: WindowRes; qtyKg: number; loca
  * `explain_mr` is rendered verbatim, never composed client-side (PRANAY.md §1.7).
  */
 function Refusal({ data, locale }: { data: WindowRes; locale: Locale }) {
+  const { t } = useT();
   return (
     <>
-      <Text style={styles.action}>⚠ सल्ला नाही</Text>
+      <Text style={styles.action}>{t('no_advice_label')}</Text>
       <Text style={styles.explain}>{data.explain_mr}</Text>
       <Text style={styles.meta}>
-        अंदाजाची रुंदी: {formatBps(data.band_width_bps, locale)} (मर्यादा:{' '}
+        {t('band_width_label')}: {formatBps(data.band_width_bps, locale)} ({t('band_limit_label')}:{' '}
         {formatBps(NO_ADVICE_BAND_THRESHOLD_BPS, locale)})
       </Text>
       <Text style={styles.todayPrice}>
-        आजची किंमत: {formatPaise(data.sell_now_net_paise_per_qtl, locale)}/क्विंटल
+        {t('today_price_label')}: {formatPaise(data.sell_now_net_paise_per_qtl, locale)}{t('per_quintal_suffix')}
       </Text>
     </>
   );
 }
 
 function CostLines({ costs, locale }: { costs: WindowRes['costs']; locale: Locale }) {
+  const { t } = useT();
   const rows: Array<[string, number]> = [
-    ['वाहतूक', costs.transport_paise_per_qtl],
-    ['कमिशन', costs.commission_paise_per_qtl],
-    ['साठवण', costs.storage_paise_per_qtl],
-    ['नासाडी', costs.spoilage_paise_per_qtl],
-    ['भरणी', costs.loading_paise_per_qtl],
+    [t('cost_transport'), costs.transport_paise_per_qtl],
+    [t('cost_commission'), costs.commission_paise_per_qtl],
+    [t('cost_storage'), costs.storage_paise_per_qtl],
+    [t('cost_spoilage'), costs.spoilage_paise_per_qtl],
+    [t('cost_loading'), costs.loading_paise_per_qtl],
   ];
   return (
     <View style={styles.costLines}>
@@ -202,7 +206,7 @@ function CostLines({ costs, locale }: { costs: WindowRes['costs']; locale: Local
         </View>
       ))}
       <View style={[styles.costRow, styles.costTotalRow]}>
-        <Text style={styles.costTotalLabel}>एकूण</Text>
+        <Text style={styles.costTotalLabel}>{t('cost_total')}</Text>
         <Text style={styles.costTotalValue}>{formatPaise(costs.total_paise_per_qtl, locale)}</Text>
       </View>
     </View>

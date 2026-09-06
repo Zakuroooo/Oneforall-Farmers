@@ -47,5 +47,27 @@
   "live_source_url": "Live Source Link",
   "error_generic": "Something went wrong. Please try again.",
   "no_lots_yet": "No lots available yet",
-  "create_first_lot": "Create your first lot"
+  "create_first_lot": "Create your first lot",
+
+  "action_sell_now": "Sell now",
+  "action_sell_elsewhere": "Sell elsewhere",
+  "action_hold": "Hold",
+  "action_split": "Sell half, hold half",
+  "days_suffix": "days",
+  "demo_commodity_market": "Onion · Lasalgaon",
+  "no_advice_label": "⚠ No advice",
+  "band_width_label": "Forecast band width",
+  "band_limit_label": "limit",
+  "today_price_label": "Today's price",
+  "per_quintal_suffix": "/quintal",
+  "on_quintals_suffix": "on quintals",
+  "cost_transport": "Transport",
+  "cost_commission": "Commission",
+  "cost_storage": "Storage",
+  "cost_spoilage": "Spoilage",
+  "cost_loading": "Loading",
+  "cost_total": "Total",
+  "see_full_details": "See full details →",
+  "listen_button": "🔊 Listen",
+  "listening_button": "🔊 ..."
 }

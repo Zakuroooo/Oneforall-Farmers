@@ -47,5 +47,27 @@
   "live_source_url": "लाइव स्रोत लिंक",
   "error_generic": "कुछ गलत हो गया। कृपया पुनः प्रयास करें।",
   "no_lots_yet": "अभी कोई लॉट उपलब्ध नहीं है",
-  "create_first_lot": "पहला लॉट बनाएं"
+  "create_first_lot": "पहला लॉट बनाएं",
+
+  "action_sell_now": "अभी बेचें",
+  "action_sell_elsewhere": "कहीं और बेचें",
+  "action_hold": "रुकें",
+  "action_split": "आधा बेचें, आधा रोकें",
+  "days_suffix": "दिन",
+  "demo_commodity_market": "प्याज · लासलगांव",
+  "no_advice_label": "⚠ कोई सलाह नहीं",
+  "band_width_label": "अनुमान की सीमा",
+  "band_limit_label": "सीमा",
+  "today_price_label": "आज की कीमत",
+  "per_quintal_suffix": "/क्विंटल",
+  "on_quintals_suffix": "क्विंटल पर",
+  "cost_transport": "परिवहन",
+  "cost_commission": "कमीशन",
+  "cost_storage": "भंडारण",
+  "cost_spoilage": "खराबी",
+  "cost_loading": "लदाई",
+  "cost_total": "कुल",
+  "see_full_details": "पूरा विवरण देखें →",
+  "listen_button": "🔊 सुनें",
+  "listening_button": "🔊 ..."
 }
