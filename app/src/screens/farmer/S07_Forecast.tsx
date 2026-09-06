@@ -17,6 +17,7 @@ import { formatBps } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_HORIZON_DAYS, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxForecast } from '../../fixtures/forecast';
 import { ForecastFan } from '../../components/charts/ForecastFan';
+import { StaleBanner } from '../../components/farmer/StaleBanner';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
 import type { PricesStackParamList } from '../../navigation/FarmerTabs';
 import type { Locale } from '../../types/api';
@@ -35,7 +36,7 @@ export default function S07_Forecast({ navigation }: Props) {
     getLocale().then(l => l && setLocale(l));
   }, []);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
     queryKey: ['ai', 'forecast', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, DEFAULT_HORIZON_DAYS],
     queryFn: fetchForecast,
   });
@@ -48,18 +49,27 @@ export default function S07_Forecast({ navigation }: Props) {
     );
   }
 
-  if (error) {
+  const hasData = data && data.points.length > 0;
+
+  // P11: same reasoning as S4/S9 — a hydrated cache can hold a real forecast
+  // from an earlier session while a background refetch on a dead network
+  // fails. This screen had been left on the old `if (error)` rule, which
+  // meant a forecast the offline cache was still holding got shadowed by
+  // the retry screen the moment airplane mode kicked in — exactly beat 7's
+  // territory. Only "nothing to show at all" is the error state now.
+  if (error && !hasData) {
     return (
       <ErrorState message="अंदाज आणता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
     );
   }
 
-  if (!data || data.points.length === 0) {
+  if (!data || !hasData) {
     return <EmptyState title="या मार्केटसाठी अंदाज उपलब्ध नाही." />;
   }
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
+      <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
       <Text style={styles.title}>कांदा · लासलगाव — १४ दिवसांचा अंदाज</Text>
       <ForecastFan
         p10={data.points.map(p => p.p10_paise_per_qtl)}

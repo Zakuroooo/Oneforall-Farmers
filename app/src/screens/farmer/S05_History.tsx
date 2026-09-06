@@ -15,6 +15,7 @@ import { getLocale } from '../../lib/locale';
 import { DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxPriceHistory } from '../../fixtures/prices';
 import { PriceHistory } from '../../components/charts/PriceHistory';
+import { StaleBanner } from '../../components/farmer/StaleBanner';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
 import type { Locale } from '../../types/api';
 
@@ -28,7 +29,7 @@ export default function S05_History() {
     getLocale().then(l => l && setLocale(l));
   }, []);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
     queryKey: ['prices', 'series', '180', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID],
     queryFn: fetchHistory,
   });
@@ -41,18 +42,23 @@ export default function S05_History() {
     );
   }
 
-  if (error) {
+  const hasData = data && data.points.length > 0;
+
+  // P11: same rule as S4/S7/S9 — a hydrated cache can hold history from an
+  // earlier session while today's background refetch fails offline.
+  if (error && !hasData) {
     return (
       <ErrorState message="इतिहास आणता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
     );
   }
 
-  if (!data || data.points.length === 0) {
+  if (!data || !hasData) {
     return <EmptyState title="या मार्केटसाठी इतिहास उपलब्ध नाही." />;
   }
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
+      <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
       <Text style={styles.title}>कांदा · लासलगाव — १८० दिवसांचा इतिहास</Text>
       <PriceHistory points={data.points} locale={locale} />
     </ScrollView>

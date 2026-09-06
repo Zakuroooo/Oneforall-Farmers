@@ -20,6 +20,7 @@ import { getLocale } from '../../lib/locale';
 import { formatPaise } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, USE_FIXTURES } from '../../config';
 import { fxNearby } from '../../fixtures/nearby';
+import { StaleBanner } from '../../components/farmer/StaleBanner';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
 import type { Locale, NearbyMarketRow } from '../../types/api';
 
@@ -35,7 +36,7 @@ export default function S06_Nearby() {
     getLocale().then(l => l && setLocale(l));
   }, []);
 
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
     queryKey: ['prices', 'nearby', DEFAULT_COMMODITY_ID, districtId],
     queryFn: () => fetchNearby(districtId),
   });
@@ -50,18 +51,23 @@ export default function S06_Nearby() {
     );
   }
 
-  if (error) {
+  const hasData = data && data.rows.length > 0;
+
+  // P11: same rule as the other price screens — cached rows survive a
+  // failed offline refetch instead of being shadowed by the retry screen.
+  if (error && !hasData) {
     return (
       <ErrorState message="जवळपासची मंडई आणता आली नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
     );
   }
 
-  if (!data || data.rows.length === 0) {
+  if (!data || !hasData) {
     return <EmptyState title="जवळपास मंडई सापडली नाही." />;
   }
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
+      <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
       <Text style={styles.title}>जवळपासची मंडई — निव्वळ किमतीनुसार क्रमवारी</Text>
       {/* Sorted by net server-side (data.sorted_by) — rendered in that order, not re-sorted. */}
       {data.rows.map(row => (
