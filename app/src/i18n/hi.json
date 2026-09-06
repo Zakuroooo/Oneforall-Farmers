@@ -98,5 +98,17 @@
 
   "quick_demo_label": "डेमो सत्र के लिए सीधे जाएं",
   "farmer_demo_button": "🌾 किसान ऐप व आवाज",
-  "buyer_demo_button": "💼 व्यापारी कंसोल"
+  "buyer_demo_button": "💼 व्यापारी कंसोल",
+
+  "phone_title": "मोबाइल नंबर डालें",
+  "send_otp_button": "OTP भेजें",
+  "buyer_login_prompt_phone": "💼 व्यापारी हैं? यहां साइन इन करें",
+  "buyer_login_prompt_otp": "💼 व्यापारी साइन इन",
+  "otp_title": "OTP डालें",
+  "otp_sent_to": "{phone} पर भेजा गया है",
+  "verify_otp_button": "सत्यापित करें",
+  "resend_in_seconds": "{seconds} सेकंड में फिर से भेजें",
+  "resend_otp_button": "फिर से OTP भेजें",
+  "network_error_generic": "नेटवर्क समस्या। कृपया पुनः प्रयास करें।",
+  "server_contact_error": "सर्वर से संपर्क नहीं हो सका। कृपया पुनः प्रयास करें।"
 }

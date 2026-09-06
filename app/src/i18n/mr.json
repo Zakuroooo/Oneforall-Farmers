@@ -98,5 +98,17 @@
 
   "quick_demo_label": "डेमो सत्रासाठी थेट जा",
   "farmer_demo_button": "🌾 शेतकरी ॲप व आवाज",
-  "buyer_demo_button": "💼 व्यापारी कंसोल"
+  "buyer_demo_button": "💼 व्यापारी कंसोल",
+
+  "phone_title": "मोबाइल नंबर टाका",
+  "send_otp_button": "OTP पाठवा",
+  "buyer_login_prompt_phone": "💼 व्यापारी आहात? येथे साइन इन करा",
+  "buyer_login_prompt_otp": "💼 व्यापारी साइन इन",
+  "otp_title": "OTP टाका",
+  "otp_sent_to": "{phone} वर पाठवला आहे",
+  "verify_otp_button": "पडताळणी करा",
+  "resend_in_seconds": "{seconds} सेकंदात पुन्हा पाठवा",
+  "resend_otp_button": "पुन्हा OTP पाठवा",
+  "network_error_generic": "नेटवर्क समस्या. पुन्हा प्रयत्न करा.",
+  "server_contact_error": "सर्व्हरशी संपर्क होऊ शकला नाही. पुन्हा प्रयत्न करा."
 }

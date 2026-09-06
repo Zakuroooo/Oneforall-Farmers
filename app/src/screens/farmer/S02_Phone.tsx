@@ -9,6 +9,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { ApiError, requestOtp, verifyOtp } from '../../lib/api';
 import { setPendingAuth, useAuth } from '../../lib/auth';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import { formatNumber } from '../../lib/money';
 import { USE_FIXTURES } from '../../config';
 import { fxOtpRequest } from '../../fixtures/auth';
@@ -61,7 +62,7 @@ export default function S02_Phone({ navigation }: Props) {
       setStep('otp');
     } catch (err) {
       if (!mounted.current) return;
-      setError(err instanceof ApiError ? err.message : 'नेटवर्क समस्या. पुन्हा प्रयत्न करा.');
+      setError(err instanceof ApiError ? err.message : translate('network_error_generic', locale));
     } finally {
       if (mounted.current) setLoading(false);
     }
@@ -81,7 +82,7 @@ export default function S02_Phone({ navigation }: Props) {
         navigation.navigate('S3_Profile');
         return;
       }
-      setError('सर्व्हरशी संपर्क होऊ शकला नाही. पुन्हा प्रयत्न करा.');
+      setError(translate('server_contact_error', locale));
     } finally {
       if (mounted.current) setLoading(false);
     }
@@ -100,7 +101,7 @@ export default function S02_Phone({ navigation }: Props) {
   if (step === 'phone') {
     return (
       <View style={styles.root}>
-        <Text style={styles.title}>मोबाइल नंबर टाका</Text>
+        <Text style={styles.title}>{translate('phone_title', locale)}</Text>
         <TextInput
           style={styles.input}
           value={phone}
@@ -108,19 +109,19 @@ export default function S02_Phone({ navigation }: Props) {
           keyboardType="number-pad"
           maxLength={10}
           placeholder="9876543210"
-          accessibilityLabel="मोबाइल नंबर"
+          accessibilityLabel={translate('phone_number', locale)}
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <TouchableOpacity
           onPress={submitPhone}
           disabled={phone.length !== 10 || loading}
           style={[styles.button, (phone.length !== 10 || loading) && styles.buttonDisabled]}>
-          <Text style={styles.buttonLabel}>{loading ? '...' : 'OTP पाठवा'}</Text>
+          <Text style={styles.buttonLabel}>{loading ? '...' : translate('send_otp_button', locale)}</Text>
         </TouchableOpacity>
 
         {/* Buyer Option on Phone Screen - Routes to Buyer OTP Login */}
         <TouchableOpacity onPress={goToBuyerLogin} style={styles.buyerOptionBtn}>
-          <Text style={styles.buyerOptionText}>💼 व्यापारी आहात? येथे साइन इन करा (Buyer Login)</Text>
+          <Text style={styles.buyerOptionText}>{translate('buyer_login_prompt_phone', locale)}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -128,8 +129,8 @@ export default function S02_Phone({ navigation }: Props) {
 
   return (
     <View style={styles.root}>
-      <Text style={styles.title}>OTP टाका</Text>
-      <Text style={styles.subtitle}>{phone} वर पाठवला आहे</Text>
+      <Text style={styles.title}>{translate('otp_title', locale)}</Text>
+      <Text style={styles.subtitle}>{translate('otp_sent_to', locale, { phone })}</Text>
       <TextInput
         style={styles.input}
         value={code}
@@ -137,25 +138,27 @@ export default function S02_Phone({ navigation }: Props) {
         keyboardType="number-pad"
         maxLength={6}
         placeholder="123456"
-        accessibilityLabel="OTP"
+        accessibilityLabel={translate('otp_title', locale)}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <TouchableOpacity
         onPress={submitCode}
         disabled={code.length !== 6 || loading}
         style={[styles.button, (code.length !== 6 || loading) && styles.buttonDisabled]}>
-        <Text style={styles.buttonLabel}>{loading ? '...' : 'पडताळणी करा'}</Text>
+        <Text style={styles.buttonLabel}>{loading ? '...' : translate('verify_otp_button', locale)}</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={goToBuyerLogin} style={styles.buyerOptionBtn}>
-        <Text style={styles.buyerOptionText}>💼 व्यापारी साइन इन (Buyer OTP Login)</Text>
+        <Text style={styles.buyerOptionText}>{translate('buyer_login_prompt_otp', locale)}</Text>
       </TouchableOpacity>
 
       {remainingS > 0 ? (
-        <Text style={styles.timer}>{formatNumber(remainingS, locale)} सेकंदात पुन्हा पाठवा</Text>
+        <Text style={styles.timer}>
+          {translate('resend_in_seconds', locale, { seconds: formatNumber(remainingS, locale) })}
+        </Text>
       ) : (
         <TouchableOpacity onPress={resend} disabled={loading}>
-          <Text style={styles.resend}>पुन्हा OTP पाठवा</Text>
+          <Text style={styles.resend}>{translate('resend_otp_button', locale)}</Text>
         </TouchableOpacity>
       )}
     </View>

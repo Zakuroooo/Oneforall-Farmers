@@ -98,5 +98,17 @@
 
   "quick_demo_label": "Go straight to a demo session",
   "farmer_demo_button": "🌾 Farmer app & voice",
-  "buyer_demo_button": "💼 Buyer console"
+  "buyer_demo_button": "💼 Buyer console",
+
+  "phone_title": "Enter mobile number",
+  "send_otp_button": "Send OTP",
+  "buyer_login_prompt_phone": "💼 Are you a buyer? Sign in here",
+  "buyer_login_prompt_otp": "💼 Buyer sign in",
+  "otp_title": "Enter OTP",
+  "otp_sent_to": "Sent to {phone}",
+  "verify_otp_button": "Verify",
+  "resend_in_seconds": "Resend in {seconds}s",
+  "resend_otp_button": "Resend OTP",
+  "network_error_generic": "Network problem. Please try again.",
+  "server_contact_error": "Could not reach the server. Please try again."
 }
