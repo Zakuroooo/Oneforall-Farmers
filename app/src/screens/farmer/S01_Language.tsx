@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAuth } from '../../lib/auth';
-import { useT } from '../../lib/i18n';
+import { translate, useT } from '../../lib/i18n';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import type { Locale } from '../../types/api';
 
@@ -59,6 +59,16 @@ export default function S01_Language({ navigation }: Props) {
 
   return (
     <View style={styles.root}>
+      {/*
+        ★ The one deliberate exception to "no mixing" in this app: nobody has
+          picked a language yet when this screen renders, so there is no
+          single language to render the title *in*. Marathi + English,
+          together, is the choice every option on this screen can read.
+          Everything below this line, once a farmer has tapped an option,
+          previews in that option's language — via `selected`, not yet the
+          committed context locale — so the rest of the screen stops mixing
+          the moment a choice exists, even before "पुढे/Next" is tapped.
+      */}
       <Text style={styles.title}>भाषा निवडा (Select Language)</Text>
 
       <View style={styles.options}>
@@ -83,17 +93,17 @@ export default function S01_Language({ navigation }: Props) {
         onPress={confirm}
         disabled={saving}
         style={[styles.confirm, saving && styles.confirmDisabled]}>
-        <Text style={styles.confirmLabel}>{saving ? '...' : 'पुढे (Next)'}</Text>
+        <Text style={styles.confirmLabel}>{saving ? '...' : translate('next', selected)}</Text>
       </TouchableOpacity>
 
       {/* Quick Demo Shortcuts */}
       <View style={styles.demoBox}>
-        <Text style={styles.demoTitle}>डेमो सत्रासाठी थेट जा (Direct Demo Access):</Text>
+        <Text style={styles.demoTitle}>{translate('quick_demo_label', selected)}:</Text>
         <TouchableOpacity onPress={handleQuickFarmerDemo} style={styles.demoFarmerBtn}>
-          <Text style={styles.demoFarmerText}>🌾 शेतकरी ॲप & 🔊 आवाज (Farmer & Voice Demo)</Text>
+          <Text style={styles.demoFarmerText}>{translate('farmer_demo_button', selected)}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={handleQuickBuyerDemo} style={styles.demoBuyerBtn}>
-          <Text style={styles.demoBuyerText}>💼 व्यापारी कंसोल (Buyer Console)</Text>
+          <Text style={styles.demoBuyerText}>{translate('buyer_demo_button', selected)}</Text>
         </TouchableOpacity>
       </View>
     </View>

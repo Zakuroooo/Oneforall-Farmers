@@ -94,5 +94,9 @@
   "tx_status_cancelled": "Cancelled",
   "tx_id_label": "Transaction #",
   "tx_net_amount_label": "Net amount",
-  "retry_button": "Retry"
+  "retry_button": "Retry",
+
+  "quick_demo_label": "Go straight to a demo session",
+  "farmer_demo_button": "🌾 Farmer app & voice",
+  "buyer_demo_button": "💼 Buyer console"
 }

@@ -94,5 +94,9 @@
   "tx_status_cancelled": "लेनदेन रद्द",
   "tx_id_label": "लेनदेन क्र",
   "tx_net_amount_label": "शुद्ध राशि",
-  "retry_button": "पुनः प्रयास करें"
+  "retry_button": "पुनः प्रयास करें",
+
+  "quick_demo_label": "डेमो सत्र के लिए सीधे जाएं",
+  "farmer_demo_button": "🌾 किसान ऐप व आवाज",
+  "buyer_demo_button": "💼 व्यापारी कंसोल"
 }

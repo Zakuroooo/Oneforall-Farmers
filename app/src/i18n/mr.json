@@ -94,5 +94,9 @@
   "tx_status_cancelled": "व्यवहार रद्द",
   "tx_id_label": "व्यवहार क्र",
   "tx_net_amount_label": "निव्वळ रक्कम",
-  "retry_button": "पुन्हा प्रयत्न करा"
+  "retry_button": "पुन्हा प्रयत्न करा",
+
+  "quick_demo_label": "डेमो सत्रासाठी थेट जा",
+  "farmer_demo_button": "🌾 शेतकरी ॲप व आवाज",
+  "buyer_demo_button": "💼 व्यापारी कंसोल"
 }
