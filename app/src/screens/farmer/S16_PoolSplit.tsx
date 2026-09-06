@@ -1,0 +1,166 @@
+/**
+ * S16 — FPO grade-weighted split. Demo beat 10: "three farmers, split by
+ * quantity and grade, adding to exactly 100%, and no pool forms if any
+ * member would do worse alone."
+ *
+ * ★ CANON §10, read-only in Phase 1 — "Phase 1 ships this as seeded rows +
+ *   one read-only screen. The arithmetic must be genuinely correct in the
+ *   seed. The *forming* flow and live consent are Phase 2." This screen does
+ *   not let anyone form a pool, consent, or edit a split — it renders one.
+ *
+ * ★ The Pareto guard (CANON §10): "if any member's pooled share is worth
+ *   less than selling their lot alone (vs_solo_paise < 0), the pool does not
+ *   form and the UI says why." `!all_consented` plus a negative
+ *   `vs_solo_paise` on some member is rendered as a real, named state — not
+ *   hidden, not softened — because "a pooling mechanism that can quietly
+ *   harm a member is exactly what FPOs are distrusted for" (CANON's own
+ *   words).
+ *
+ * ★ `share_bps` sums to exactly 10000 by construction (CANON §10's rounding
+ *   remainder goes to the largest weight) — rendered as a percentage per
+ *   member, and the sum is shown too, so "adding to exactly 100%" is
+ *   something a judge can check by eye, not just trust.
+ */
+
+import React, { useState } from 'react';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { getPool } from '../../lib/api';
+import { getLocale } from '../../lib/locale';
+import { formatBps, formatNumber, formatPaise, toQuintal } from '../../lib/money';
+import { USE_FIXTURES } from '../../config';
+import { fxPool, fxPoolParetoViolation } from '../../fixtures/pools';
+import { Card } from '../../components/ui/Card';
+import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
+import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
+import type { Locale, PoolDto } from '../../types/api';
+
+type Props = NativeStackScreenProps<MyLotsStackParamList, 'S16_PoolSplit'>;
+
+const DEFAULT_POOL_ID = 'fpo_1';
+const PARETO_DEMO_POOL_ID = 'fpo_2';
+
+async function fetchPool(poolId: string): Promise<PoolDto> {
+  if (USE_FIXTURES) {
+    return poolId === PARETO_DEMO_POOL_ID ? fxPoolParetoViolation : fxPool;
+  }
+  return getPool(poolId);
+}
+
+const CONSENT_LABEL_MR: Record<'true' | 'false' | 'null', string> = {
+  true: 'संमती दिली',
+  false: 'नकार दिला',
+  null: 'अजून विचारले नाही',
+};
+
+function consentLabel(consented: boolean | null): string {
+  return CONSENT_LABEL_MR[String(consented) as 'true' | 'false' | 'null'];
+}
+
+export default function S16_PoolSplit({ route }: Props) {
+  const poolId = route.params?.pool_id ?? DEFAULT_POOL_ID;
+
+  const [locale, setLocale] = useState<Locale>('mr');
+  React.useEffect(() => {
+    getLocale().then(l => l && setLocale(l));
+  }, []);
+
+  const { data: pool, isLoading, error, refetch } = useQuery({
+    queryKey: ['pools', poolId],
+    queryFn: () => fetchPool(poolId),
+  });
+
+  if (isLoading) {
+    return (
+      <ScrollView contentContainerStyle={styles.root}>
+        <Skeleton height={300} />
+      </ScrollView>
+    );
+  }
+
+  if (error) {
+    return <ErrorState message="गट माहिती आणता आली नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />;
+  }
+
+  if (!pool || pool.members.length === 0) {
+    return <EmptyState title="हा गट अजून तयार झालेला नाही." />;
+  }
+
+  const shareSumBps = pool.members.reduce((sum, m) => sum + m.share_bps, 0);
+  const paretoViolators = pool.members.filter(m => m.vs_solo_paise < 0);
+  const poolForms = paretoViolators.length === 0;
+
+  return (
+    <ScrollView contentContainerStyle={styles.root}>
+      <Text style={styles.header}>{pool.fpo.name_mr}</Text>
+      <Card style={styles.summaryCard}>
+        <Text style={styles.summaryLine}>
+          एकूण प्रमाण: {formatNumber(toQuintal(pool.total_qty_kg), locale)} क्विंटल
+        </Text>
+        <Text style={styles.summaryLine}>सरासरी गुण: {formatNumber(pool.avg_score, locale)} / १०००</Text>
+        <Text style={styles.summaryLine}>
+          एकूण वाटा: {formatBps(shareSumBps, locale)} ({pool.members.length} शेतकरी)
+        </Text>
+      </Card>
+
+      {!poolForms ? (
+        <Card style={styles.paretoBanner}>
+          <Text style={styles.paretoTitle}>हा गट तयार होणार नाही.</Text>
+          <Text style={styles.paretoBody}>
+            खालील शेतकऱ्यांना एकट्याने विकल्यास जास्त फायदा झाला असता — गटामुळे कोणाचेही नुकसान होता कामा नये.
+          </Text>
+        </Card>
+      ) : null}
+
+      {pool.members.map(member => {
+        const violates = member.vs_solo_paise < 0;
+        return (
+          <Card
+            key={member.lot_id}
+            style={violates ? [styles.memberCard, styles.memberCardViolation] : styles.memberCard}>
+            <View style={styles.memberHeaderRow}>
+              <Text style={styles.memberName}>{member.farmer_name}</Text>
+              <Text style={styles.memberShare}>{formatBps(member.share_bps, locale)}</Text>
+            </View>
+            <Text style={styles.memberLine}>
+              प्रमाण: {formatNumber(toQuintal(member.qty_kg), locale)} क्विंटल · गुण: {formatNumber(member.score_at_pool, locale)}
+            </Text>
+            <Text style={styles.memberLine}>वजन (qty × ग्रेड गुणक): {formatNumber(member.weight, locale)}</Text>
+            <Text style={[styles.memberVsSolo, violates && styles.memberVsSoloNegative]}>
+              एकट्याच्या तुलनेत: {formatPaise(member.vs_solo_paise, locale)}
+              {violates ? ' — नुकसान' : ' जास्त'}
+            </Text>
+            <Text style={styles.memberConsent}>{consentLabel(member.consented)}</Text>
+          </Card>
+        );
+      })}
+    </ScrollView>
+  );
+}
+
+const styles = StyleSheet.create({
+  root: { padding: 20, paddingBottom: 32 },
+  header: { fontSize: 20, fontWeight: '700', color: '#1E293B', marginBottom: 12 },
+  summaryCard: { padding: 16, marginBottom: 16 },
+  summaryLine: { fontSize: 14, color: '#334155', marginTop: 2 },
+  paretoBanner: {
+    padding: 16,
+    marginBottom: 16,
+    backgroundColor: '#FFF5F5',
+    borderWidth: 1,
+    borderColor: '#FEB2B2',
+  },
+  paretoTitle: { fontSize: 16, fontWeight: '800', color: '#C53030' },
+  paretoBody: { fontSize: 13, color: '#742A2A', marginTop: 6, lineHeight: 19 },
+  memberCard: { padding: 16, marginBottom: 12 },
+  memberCardViolation: { borderWidth: 1.5, borderColor: '#FEB2B2' },
+  memberHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  memberName: { fontSize: 16, fontWeight: '700', color: '#1E293B' },
+  memberShare: { fontSize: 16, fontWeight: '800', color: '#1B5E20' },
+  memberLine: { fontSize: 13, color: '#64748B', marginTop: 2 },
+  memberVsSolo: { fontSize: 14, fontWeight: '700', color: '#1B5E20', marginTop: 8 },
+  memberVsSoloNegative: { color: '#C53030' },
+  memberConsent: { fontSize: 12, color: '#94A3B8', marginTop: 4, fontWeight: '600' },
+});

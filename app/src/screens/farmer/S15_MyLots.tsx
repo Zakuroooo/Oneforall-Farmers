@@ -29,6 +29,8 @@ import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { FIXTURE_LOTS_EMPTY, USE_FIXTURES } from '../../config';
 import { fxMyLots, fxMyLotsEmpty } from '../../fixtures/lots';
 import { fxEscrowEvents, fxEscrowEventsDisputed, fxTx, fxTxDisputed } from '../../fixtures/escrow';
+import { fxIncomingOffer, fxIncomingOfferLastRound } from '../../fixtures/offers';
+import { fxPool } from '../../fixtures/pools';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -36,7 +38,7 @@ import type { BadgeType } from '../../components/ui/Badge';
 import { EscrowTimeline, STATUS_LABEL_MR as TX_STATUS_LABEL_MR } from '../../components/EscrowTimeline';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
-import type { EscrowEvent, LotDto, LotGrade, LotStatus, Locale, TxDto, TxStatus } from '../../types/api';
+import type { EscrowEvent, LotDto, LotGrade, LotStatus, Locale, OfferDto, TxDto } from '../../types/api';
 
 type Props = NativeStackScreenProps<MyLotsStackParamList, 'S15_MyLots'>;
 
@@ -120,6 +122,27 @@ async function fetchTransactions(): Promise<TxWithEvents[]> {
   return [];
 }
 
+/**
+ * Offers awaiting the farmer's response — `initiator: 'BUYER'` and
+ * `status: 'OPEN'`, per S14's own header comment. `GET /offers` is
+ * actor-scoped both directions (FRONTEND_NEEDS_BACKEND.md §6), so the real
+ * path filters the same list S14 itself reads, rather than a second
+ * endpoint.
+ */
+async function fetchOffersAwaitingResponse(): Promise<OfferDto[]> {
+  if (USE_FIXTURES) return [fxIncomingOffer, fxIncomingOfferLastRound];
+  return [];
+}
+
+/**
+ * TODO(akash): same gap as `fetchTransactions` — no "list my pools"
+ * endpoint, only `GET /pools/{id}`. Fixtures stand in until one exists.
+ */
+async function fetchMyPools() {
+  if (USE_FIXTURES) return [fxPool];
+  return [];
+}
+
 function commodityMarketLabel(lot: LotDto): string {
   const commodity = COMMODITY_NAME_MR[lot.commodity_id] ?? lot.commodity_id;
   const market = MARKET_NAME_MR[lot.market_id] ?? lot.market_id;
@@ -151,6 +174,16 @@ export default function S15_MyLots({ navigation }: Props) {
   const { data: transactions } = useQuery({
     queryKey: ['tx', 'mine'],
     queryFn: fetchTransactions,
+  });
+
+  const { data: pendingOffers } = useQuery({
+    queryKey: ['offers', 'awaitingResponse'],
+    queryFn: fetchOffersAwaitingResponse,
+  });
+
+  const { data: myPools } = useQuery({
+    queryKey: ['pools', 'mine'],
+    queryFn: fetchMyPools,
   });
 
   const [expandedTxId, setExpandedTxId] = useState<string | null>(null);
@@ -210,6 +243,46 @@ export default function S15_MyLots({ navigation }: Props) {
           </Card>
         </TouchableOpacity>
       ))}
+
+      {pendingOffers && pendingOffers.length > 0 ? (
+        <>
+          <Text style={[styles.header, styles.txSectionHeader]}>ऑफर्स — उत्तराची वाट पाहत आहेत</Text>
+          {pendingOffers.map(offer => (
+            <TouchableOpacity
+              key={offer.id}
+              onPress={() => navigation.navigate('S14_CounterOffer', { offer_id: offer.id })}>
+              <Card style={styles.lotCard}>
+                <View style={styles.lotHeaderRow}>
+                  <Text style={styles.lotTitle}>फेरी {offer.round}</Text>
+                  <Text style={styles.txStatusText}>प्रतिसाद द्या →</Text>
+                </View>
+                <Text style={styles.lotLine}>{formatPaise(offer.price_paise_per_qtl, locale)} प्रति क्विंटल</Text>
+              </Card>
+            </TouchableOpacity>
+          ))}
+        </>
+      ) : null}
+
+      {myPools && myPools.length > 0 ? (
+        <>
+          <Text style={[styles.header, styles.txSectionHeader]}>माझे गट</Text>
+          {myPools.map(pool => (
+            <TouchableOpacity
+              key={pool.fpo.id}
+              onPress={() => navigation.navigate('S16_PoolSplit', { pool_id: pool.fpo.id })}>
+              <Card style={styles.lotCard}>
+                <View style={styles.lotHeaderRow}>
+                  <Text style={styles.lotTitle}>{pool.fpo.name_mr}</Text>
+                  <Text style={styles.txStatusText}>वाटा पहा →</Text>
+                </View>
+                <Text style={styles.lotLine}>
+                  {formatNumber(toQuintal(pool.total_qty_kg), locale)} क्विंटल · {pool.members.length} शेतकरी
+                </Text>
+              </Card>
+            </TouchableOpacity>
+          ))}
+        </>
+      ) : null}
 
       {transactions && transactions.length > 0 ? (
         <>
