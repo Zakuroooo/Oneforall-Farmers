@@ -66,8 +66,12 @@ export function decomposeRupees(paise: number): string[] {
   if (rupees >= 100000) {
     const lakhs = Math.floor(rupees / 100000);
     rupees %= 100000;
-    if (MARATHI_NUMBER_NAMES[lakhs]) {
-      clips.push(MARATHI_NUMBER_NAMES[lakhs]);
+    // `noUncheckedIndexedAccess` types a lookup table access as T | undefined —
+    // narrow once onto a local so the truthy check and the push agree on the
+    // same value instead of TS treating them as two independent lookups.
+    const lakhsName = MARATHI_NUMBER_NAMES[lakhs];
+    if (lakhsName) {
+      clips.push(lakhsName);
     }
     clips.push('lakh');
   }
@@ -76,8 +80,9 @@ export function decomposeRupees(paise: number): string[] {
   if (rupees >= 1000) {
     const thousands = Math.floor(rupees / 1000);
     rupees %= 1000;
-    if (MARATHI_NUMBER_NAMES[thousands]) {
-      clips.push(MARATHI_NUMBER_NAMES[thousands]);
+    const thousandsName = MARATHI_NUMBER_NAMES[thousands];
+    if (thousandsName) {
+      clips.push(thousandsName);
     }
     clips.push('thousand');
   }
@@ -86,14 +91,16 @@ export function decomposeRupees(paise: number): string[] {
   if (rupees >= 100) {
     const hundreds = Math.floor(rupees / 100);
     rupees %= 100;
-    if (MARATHI_HUNDREDS[hundreds]) {
-      clips.push(MARATHI_HUNDREDS[hundreds]);
+    const hundredsName = MARATHI_HUNDREDS[hundreds];
+    if (hundredsName) {
+      clips.push(hundredsName);
     }
   }
 
   // Remaining 1-99
-  if (rupees > 0 && MARATHI_NUMBER_NAMES[rupees]) {
-    clips.push(MARATHI_NUMBER_NAMES[rupees]);
+  const remainderName = MARATHI_NUMBER_NAMES[rupees];
+  if (rupees > 0 && remainderName) {
+    clips.push(remainderName);
   }
 
   clips.push(isNegative ? 'rupees_loss' : 'rupees');
@@ -102,8 +109,9 @@ export function decomposeRupees(paise: number): string[] {
 
 export function decomposeDays(days: number): string[] {
   const clips: string[] = [];
-  if (MARATHI_NUMBER_NAMES[days]) {
-    clips.push(MARATHI_NUMBER_NAMES[days]);
+  const daysName = MARATHI_NUMBER_NAMES[days];
+  if (daysName) {
+    clips.push(daysName);
   } else {
     clips.push(String(days));
   }
@@ -111,27 +119,9 @@ export function decomposeDays(days: number): string[] {
   return clips;
 }
 
-/**
- * Sequential clip playback engine. Works on Web & Native.
- */
+// TODO(shreya): SH3 — real TTS/clip playback
 export async function speak(clips: string[]): Promise<void> {
-  const phraseText = clips
-    .map(c => CLIPS[c] || MARATHI_NUMBER_NAMES[+c] || MARATHI_HUNDREDS[+c] || c)
-    .join(' ');
-
-  console.log('[VOICE SPEECH]:', phraseText);
-
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    return new Promise(resolve => {
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(phraseText);
-      utterance.lang = 'mr-IN';
-      utterance.rate = 0.9;
-      utterance.onend = () => resolve();
-      utterance.onerror = () => resolve();
-      window.speechSynthesis.speak(utterance);
-    });
-  }
+  void clips;
 }
 
 export async function speakVerdict(v: WindowRes, t?: TFn): Promise<void> {
