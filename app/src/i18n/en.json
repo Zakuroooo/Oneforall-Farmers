@@ -176,5 +176,8 @@
   "limitation_shocks": "It does not anticipate export bans, sudden rain, or policy changes.",
   "limitation_coverage_narrow": "The band is {gap} narrower than target — the real price is slightly more likely to fall outside it than stated.",
   "limitation_coverage_ok": "The band is at or wider than target.",
-  "limitation_refusal": "When the forecast is too uncertain, this model refuses to advise — that refusal is deliberate, not a flaw."
+  "limitation_refusal": "When the forecast is too uncertain, this model refuses to advise — that refusal is deliberate, not a flaw.",
+
+  "verdict_error": "Could not fetch the verdict. Please try again.",
+  "verdict_empty": "No advice available yet for this lot."
 }

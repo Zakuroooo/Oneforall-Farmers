@@ -23,6 +23,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { recommendWindow } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import {
   DEFAULT_COMMODITY_ID,
   DEFAULT_GRADE,
@@ -81,12 +82,12 @@ export default function S09_Verdict({ navigation }: Props) {
   // errored refetch, it does not get shadowed by it.
   if (error && !data) {
     return (
-      <ErrorState message="निर्णय आणता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+      <ErrorState message={translate('verdict_error', locale)} onRetry={() => refetch()} />
     );
   }
 
   if (!data) {
-    return <EmptyState title="या लॉटसाठी अजून सल्ला उपलब्ध नाही." />;
+    return <EmptyState title={translate('verdict_empty', locale)} />;
   }
 
   return (
