@@ -93,5 +93,6 @@
   "tx_status_refunded": "राशि वापस",
   "tx_status_cancelled": "लेनदेन रद्द",
   "tx_id_label": "लेनदेन क्र",
-  "tx_net_amount_label": "शुद्ध राशि"
+  "tx_net_amount_label": "शुद्ध राशि",
+  "retry_button": "पुनः प्रयास करें"
 }

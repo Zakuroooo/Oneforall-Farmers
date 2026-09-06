@@ -1,27 +1,37 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from './Button';
+import { translate } from '../../lib/i18n';
+import type { Locale } from '../../types/api';
 
 export interface ErrorStateProps {
   message?: string;
   onRetry?: () => void;
   retryText?: string;
+  /** Only used to resolve the two defaults below when a caller omits them —
+   * every current call site passes its own `message`/`retryText` explicitly,
+   * but the default must still respect the selected language rather than
+   * silently falling back to Marathi for whoever doesn't. */
+  locale?: Locale;
 }
 
 export function ErrorState({
-  message = 'काहीतरी चूक झाली. पुन्हा प्रयत्न करा.', // Marathi default error message (never raw English)
+  message,
   onRetry,
-  retryText = 'पुन्हा प्रयत्न करा',
+  retryText,
+  locale = 'mr',
 }: ErrorStateProps) {
+  const resolvedMessage = message ?? translate('error_generic', locale);
+  const resolvedRetryText = retryText ?? translate('retry_button', locale);
   return (
     <View style={styles.container}>
       <View style={styles.iconCircle}>
         <Text style={styles.iconText}>!</Text>
       </View>
-      <Text style={styles.message}>{message}</Text>
+      <Text style={styles.message}>{resolvedMessage}</Text>
       {onRetry ? (
         <Button
-          title={retryText}
+          title={resolvedRetryText}
           onPress={onRetry}
           variant="outline"
           style={styles.button}

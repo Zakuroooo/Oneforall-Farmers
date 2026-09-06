@@ -93,5 +93,6 @@
   "tx_status_refunded": "Refunded",
   "tx_status_cancelled": "Cancelled",
   "tx_id_label": "Transaction #",
-  "tx_net_amount_label": "Net amount"
+  "tx_net_amount_label": "Net amount",
+  "retry_button": "Retry"
 }
