@@ -342,5 +342,18 @@
 
   "root_farmer_app_title": "🌾 शेतकरी ॲप",
   "root_buyer_console_title": "💼 व्यापारी कंसोल",
-  "root_sign_out": "🚪 बाहेर पडा"
+  "root_sign_out": "🚪 बाहेर पडा",
+
+  "buyer_login_badge": "व्यापारी पोर्टल",
+  "buyer_login_title": "व्यापारी साइन इन",
+  "buyer_phone_invalid": "कृपया वैध १० अंकी फोन नंबर टाका",
+  "buyer_otp_invalid": "कृपया वैध ओटीपी कोड टाका",
+  "buyer_phone_label": "व्यापारी मोबाइल नंबर टाका",
+  "buyer_phone_placeholder": "९८७६५४३२१०",
+  "buyer_otp_label": "ओटीपी कोड टाका (६ अंक)",
+  "buyer_otp_placeholder": "१२३४५६",
+  "buyer_farmer_login_link": "🌾 शेतकरी ॲपवर जा",
+  "buyer_verify_button": "ओटीपी पडताळणी व साइन इन",
+  "back_button": "मागे जा",
+  "demo_buyer_company_name": "पुणे ट्रेडिंग कंपनी"
 }

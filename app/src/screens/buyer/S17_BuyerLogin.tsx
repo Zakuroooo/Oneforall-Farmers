@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
 import { useAuth } from '../../lib/auth';
 import { requestOtp, verifyOtp } from '../../lib/api';
+import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
+import type { Locale } from '../../types/api';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S17_BuyerLogin'>;
 
@@ -17,10 +20,14 @@ export function S17_BuyerLogin({ navigation }: Props) {
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [locale, setLocale] = useState<Locale>('mr');
+  useEffect(() => {
+    getLocale().then(l => l && setLocale(l));
+  }, []);
 
   const handleSendOtp = async () => {
     if (phone.length < 10) {
-      setError('कृपया वैध १० अंकी फोन नंबर टाका');
+      setError(translate('buyer_phone_invalid', locale));
       return;
     }
     setLoading(true);
@@ -38,7 +45,7 @@ export function S17_BuyerLogin({ navigation }: Props) {
 
   const handleVerify = async () => {
     if (code.length < 4) {
-      setError('कृपया वैध ओटीपी कोड टाका');
+      setError(translate('buyer_otp_invalid', locale));
       return;
     }
     setLoading(true);
@@ -56,9 +63,9 @@ export function S17_BuyerLogin({ navigation }: Props) {
         user: {
           id: 'b1',
           phone: phone,
-          name: 'पुणे ट्रेडिंग कंपनी',
+          name: translate('demo_buyer_company_name', locale),
           role: 'BUYER',
-          locale: 'mr',
+          locale,
           district_id: 'd_pune',
         },
       });
@@ -70,29 +77,29 @@ export function S17_BuyerLogin({ navigation }: Props) {
   return (
     <View style={styles.root}>
       <Card style={styles.card}>
-        <Text style={styles.badge}>व्यापारी पोर्टल (Buyer Console)</Text>
-        <Text style={styles.title}>व्यापारी साइन इन (Phone + OTP)</Text>
+        <Text style={styles.badge}>{translate('buyer_login_badge', locale)}</Text>
+        <Text style={styles.title}>{translate('buyer_login_title', locale)}</Text>
 
         {step === 'phone' ? (
           <>
-            <Text style={styles.label}>व्यापारी मोबाइल नंबर टाका</Text>
+            <Text style={styles.label}>{translate('buyer_phone_label', locale)}</Text>
             <TextInput
               style={styles.input}
               value={phone}
               onChangeText={setPhone}
               keyboardType="phone-pad"
               maxLength={10}
-              placeholder="९८७६५४३२१०"
+              placeholder={translate('buyer_phone_placeholder', locale)}
             />
             {error ? <Text style={styles.error}>{error}</Text> : null}
             <Button
-              title="ओटीपी पाठवा (Send OTP)"
+              title={translate('send_otp', locale)}
               onPress={handleSendOtp}
               loading={loading}
               style={styles.button}
             />
             <Button
-              title="🌾 शेतकरी ॲपवर जा (Farmer Login)"
+              title={translate('buyer_farmer_login_link', locale)}
               variant="secondary"
               onPress={() => navigation.navigate('S2_Phone')}
               style={styles.backButton}
@@ -100,24 +107,24 @@ export function S17_BuyerLogin({ navigation }: Props) {
           </>
         ) : (
           <>
-            <Text style={styles.label}>ओटीपी कोड टाका (६ अंक)</Text>
+            <Text style={styles.label}>{translate('buyer_otp_label', locale)}</Text>
             <TextInput
               style={styles.input}
               value={code}
               onChangeText={setCode}
               keyboardType="number-pad"
               maxLength={6}
-              placeholder="१२३४५६"
+              placeholder={translate('buyer_otp_placeholder', locale)}
             />
             {error ? <Text style={styles.error}>{error}</Text> : null}
             <Button
-              title="ओटीपी पडताळणी व साइन इन"
+              title={translate('buyer_verify_button', locale)}
               onPress={handleVerify}
               loading={loading}
               style={styles.button}
             />
             <Button
-              title="मागे जा (Back)"
+              title={translate('back_button', locale)}
               variant="secondary"
               onPress={() => setStep('phone')}
               style={styles.backButton}

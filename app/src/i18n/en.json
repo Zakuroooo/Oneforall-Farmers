@@ -342,5 +342,18 @@
 
   "root_farmer_app_title": "🌾 Farmer App",
   "root_buyer_console_title": "💼 Buyer Console",
-  "root_sign_out": "🚪 Sign out"
+  "root_sign_out": "🚪 Sign out",
+
+  "buyer_login_badge": "Buyer Portal",
+  "buyer_login_title": "Buyer sign in",
+  "buyer_phone_invalid": "Please enter a valid 10-digit phone number",
+  "buyer_otp_invalid": "Please enter a valid OTP code",
+  "buyer_phone_label": "Enter buyer mobile number",
+  "buyer_phone_placeholder": "9876543210",
+  "buyer_otp_label": "Enter OTP code (6 digits)",
+  "buyer_otp_placeholder": "123456",
+  "buyer_farmer_login_link": "🌾 Go to Farmer Login",
+  "buyer_verify_button": "Verify OTP and sign in",
+  "back_button": "Back",
+  "demo_buyer_company_name": "Pune Trading Company"
 }
