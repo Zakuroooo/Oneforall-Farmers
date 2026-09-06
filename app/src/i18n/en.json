@@ -125,5 +125,9 @@
   "price_fetch_error": "Could not fetch the price. Please try again.",
   "home_price_empty": "No price available yet for this market.",
   "today_price_per_qtl_label": "Today's price (per quintal)",
-  "home_cta": "Should I sell?"
+  "home_cta": "Should I sell?",
+
+  "history_error": "Could not fetch history. Please try again.",
+  "history_empty": "No history available for this market.",
+  "history_title": "{market} — {days}-day history"
 }

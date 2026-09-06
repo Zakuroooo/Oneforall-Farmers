@@ -12,6 +12,8 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getPriceSeries } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
+import { formatNumber } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxPriceHistory } from '../../fixtures/prices';
 import { PriceHistory } from '../../components/charts/PriceHistory';
@@ -48,18 +50,23 @@ export default function S05_History() {
   // earlier session while today's background refetch fails offline.
   if (error && !hasData) {
     return (
-      <ErrorState message="इतिहास आणता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+      <ErrorState message={translate('history_error', locale)} onRetry={() => refetch()} />
     );
   }
 
   if (!data || !hasData) {
-    return <EmptyState title="या मार्केटसाठी इतिहास उपलब्ध नाही." />;
+    return <EmptyState title={translate('history_empty', locale)} />;
   }
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
       <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
-      <Text style={styles.title}>कांदा · लासलगाव — १८० दिवसांचा इतिहास</Text>
+      <Text style={styles.title}>
+        {translate('history_title', locale, {
+          market: translate('demo_commodity_market', locale),
+          days: formatNumber(180, locale),
+        })}
+      </Text>
       <PriceHistory points={data.points} locale={locale} />
     </ScrollView>
   );
