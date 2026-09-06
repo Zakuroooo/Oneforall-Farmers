@@ -16,10 +16,15 @@
 
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import S04_Home from '../screens/farmer/S04_Home';
+import S05_History from '../screens/farmer/S05_History';
+import S06_Nearby from '../screens/farmer/S06_Nearby';
+import S07_Forecast from '../screens/farmer/S07_Forecast';
+import S09_Verdict from '../screens/farmer/S09_Verdict';
+import PricesIndex from '../screens/farmer/PricesIndex';
 import { Soon } from '../screens/Soon';
-import { useT } from '../lib/i18n';
 
 export type FarmerTabParamList = {
   Home: undefined;
@@ -28,15 +33,62 @@ export type FarmerTabParamList = {
   Assistant: undefined;
 };
 
+/**
+ * The Home tab is itself a stack, not a single screen — S4's CTA ("मी विकावे का?")
+ * pushes to S9, and a tab switch is the wrong transition for that (it would drop
+ * S4 off the back stack entirely; a farmer tapping back from the verdict should
+ * return to the price he just saw, not to whichever tab he was on before Home).
+ *
+ * `S9_Verdict` is the real screen as of P3.
+ */
+export type HomeStackParamList = {
+  S4_Home: undefined;
+  S9_Verdict: undefined;
+};
+
+const HomeStack = createNativeStackNavigator<HomeStackParamList>();
+
+function HomeStackNavigator() {
+  return (
+    <HomeStack.Navigator screenOptions={{ headerShown: false }}>
+      <HomeStack.Screen name="S4_Home" component={S04_Home} />
+      <HomeStack.Screen name="S9_Verdict" component={S09_Verdict} />
+    </HomeStack.Navigator>
+  );
+}
+
+/**
+ * The Prices tab is also a stack — S5/S6/S7 are three separate P0 screens
+ * (one decision per screen), reached from a small landing screen rather than
+ * crowded onto one. Same shape as `HomeStackNavigator`.
+ */
+export type PricesStackParamList = {
+  PricesIndex: undefined;
+  S5_History: undefined;
+  S6_Nearby: undefined;
+  S7_Forecast: undefined;
+};
+
+const PricesStack = createNativeStackNavigator<PricesStackParamList>();
+
+function PricesStackNavigator() {
+  return (
+    <PricesStack.Navigator screenOptions={{ headerShown: false }}>
+      <PricesStack.Screen name="PricesIndex" component={PricesIndex} />
+      <PricesStack.Screen name="S5_History" component={S05_History} />
+      <PricesStack.Screen name="S6_Nearby" component={S06_Nearby} />
+      <PricesStack.Screen name="S7_Forecast" component={S07_Forecast} />
+    </PricesStack.Navigator>
+  );
+}
+
 const Tab = createBottomTabNavigator<FarmerTabParamList>();
 
-const PricesSoon = () => <Soon label="S5 · भाव" />;
+// TODO(pranay): P9 → S12 create lot + S13 self-assay · P12 → S15 lots + timeline · P16 → S28 assistant.
 const MyLotsSoon = () => <Soon label="S15 · माझे लॉट" />;
 const AssistantSoon = () => <Soon label="S28 · मदत" />;
 
 export function FarmerTabs() {
-  const { t } = useT();
-
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -44,16 +96,18 @@ export function FarmerTabs() {
         headerShown: false,
         tabBarActiveTintColor: '#1B5E20',
         tabBarInactiveTintColor: '#666',
+        // Bigger than the RN default. A 44 px target is the iOS minimum for a
+        // thumb; this is a farmer's thumb on a cheap screen, so we take the space.
         tabBarLabelStyle: { fontSize: 13 },
         tabBarStyle: { height: 64, paddingBottom: 8, paddingTop: 8 },
       }}>
-      <Tab.Screen name="Home" component={S04_Home} options={{ title: t('tab.home') }} />
-      <Tab.Screen name="Prices" component={PricesSoon} options={{ title: t('tab.prices') }} />
-      <Tab.Screen name="MyLots" component={MyLotsSoon} options={{ title: t('tab.lots') }} />
+      <Tab.Screen name="Home" component={HomeStackNavigator} options={{ title: 'मुख्यपृष्ठ' }} />
+      <Tab.Screen name="Prices" component={PricesStackNavigator} options={{ title: 'भाव' }} />
+      <Tab.Screen name="MyLots" component={MyLotsSoon} options={{ title: 'माझे लॉट' }} />
       <Tab.Screen
         name="Assistant"
         component={AssistantSoon}
-        options={{ title: t('tab.assistant') }}
+        options={{ title: 'मदत' }}
       />
     </Tab.Navigator>
   );

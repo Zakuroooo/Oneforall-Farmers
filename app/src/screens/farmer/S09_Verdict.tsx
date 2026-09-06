@@ -1,189 +1,88 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Badge } from '../../components/ui/Badge';
-import { Card } from '../../components/ui/Card';
-import { fxHold } from '../../fixtures/window';
-import { devNum, useT } from '../../lib/i18n';
-import { formatPaise } from '../../lib/money';
-import { speakVerdict } from '../../lib/voice';
-import type { WindowRes } from '../../types/api';
+/**
+ * S9 — the verdict. The most important screen in the product. Everything
+ * upstream exists to make this credible.
+ *
+ * ★ I6: `NO_ADVICE` is a 200 with a body, not an error. It renders through
+ *   exactly the same success path as every other action — `VerdictCard` branches
+ *   on `data.action`, not this screen on a thrown error. TanStack Query never
+ *   sees a refusal as a failure, because it never is one.
+ *
+ * ★ Never 500, per CANON §7.4 — but the client side of "never 500" is: a real
+ *   network/server error still goes through `ErrorState` with a retry. Only a
+ *   real 200 response reaches `VerdictCard`, refusal included.
+ *
+ * Request params (`DEFAULT_QTY_KG`, `DEFAULT_GRADE`, `DEFAULT_COMMODITY_ID`,
+ * `DEFAULT_MARKET_ID`) are the same demo-lot constants S4 and every fixture
+ * already agree on — there is no lot-creation flow in scope yet.
+ */
 
-export interface S09_VerdictProps {
-  data?: WindowRes;
-  onViewCosts?: () => void;
+import React, { useEffect, useState } from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+
+import { recommendWindow } from '../../lib/api';
+import { getLocale } from '../../lib/locale';
+import {
+  DEFAULT_COMMODITY_ID,
+  DEFAULT_GRADE,
+  DEFAULT_HORIZON_DAYS,
+  DEFAULT_MARKET_ID,
+  DEFAULT_QTY_KG,
+  USE_FIXTURES,
+} from '../../config';
+import { fxHold } from '../../fixtures/window';
+import { VerdictCard } from '../../components/farmer/VerdictCard';
+import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
+import type { Locale } from '../../types/api';
+
+async function fetchVerdict() {
+  if (USE_FIXTURES) return fxHold;
+  return recommendWindow({
+    commodity_id: DEFAULT_COMMODITY_ID,
+    market_id: DEFAULT_MARKET_ID,
+    qty_kg: DEFAULT_QTY_KG,
+    grade: DEFAULT_GRADE,
+    lot_id: null,
+    horizon_days: DEFAULT_HORIZON_DAYS,
+  });
 }
 
-export function S09_Verdict({ data = fxHold, onViewCosts }: S09_VerdictProps) {
-  const { t, locale } = useT();
-  const [speaking, setSpeaking] = useState(false);
+export default function S09_Verdict() {
+  const [locale, setLocale] = useState<Locale>('mr');
+  useEffect(() => {
+    getLocale().then(l => l && setLocale(l));
+  }, []);
 
-  const handleSpeak = async () => {
-    setSpeaking(true);
-    try {
-      await speakVerdict(data, t);
-    } catch (err) {
-      console.error('[VOICE ERROR]:', err);
-    } finally {
-      setSpeaking(false);
-    }
-  };
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ['ai', 'window', 'recommend', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, DEFAULT_QTY_KG],
+    queryFn: fetchVerdict,
+  });
 
-  const isNoAdvice = data.action === 'NO_ADVICE';
-
-  if (isNoAdvice) {
+  if (isLoading) {
     return (
-      <Card style={styles.card}>
-        <View style={styles.headerRow}>
-          <Text style={styles.headerTitle}>कांदा · लासलगाव · ४० क्विंटल</Text>
-          <TouchableOpacity onPress={handleSpeak} style={styles.speakerBtn} activeOpacity={0.7}>
-            <Text style={styles.speakerIcon}>{speaking ? '🔊...' : '🔊'}</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.noAdviceContainer}>
-          <Text style={styles.warningIcon}>⚠️</Text>
-          <Text style={styles.noAdviceTitle}>आम्ही सल्ला देत नाही</Text>
-          <Text style={styles.noAdviceSub}>
-            {data.explain_mr || 'पुढील १४ दिवसांचा अंदाज खूप अनिश्चित आहे.'}
-          </Text>
-        </View>
-      </Card>
+      <ScrollView contentContainerStyle={styles.root}>
+        <Skeleton height={400} />
+      </ScrollView>
     );
   }
 
-  const holdDays = data.hold_days ? devNum(data.hold_days, locale) : '११';
-  const expectedGain = data.expected_gain_paise
-    ? formatPaise(data.expected_gain_paise, locale)
-    : '₹६,२९०';
-  const worstCase = data.worst_case_paise
-    ? formatPaise(data.worst_case_paise, locale)
-    : '−₹४,८००';
+  if (error) {
+    return (
+      <ErrorState message="निर्णय आणता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+    );
+  }
+
+  if (!data) {
+    return <EmptyState title="या लॉटसाठी अजून सल्ला उपलब्ध नाही." />;
+  }
 
   return (
-    <Card style={styles.card}>
-      {/* Top Header with 🔊 Voice Button */}
-      <View style={styles.headerRow}>
-        <Text style={styles.headerTitle}>कांदा · लासलगाव · ४० क्विंटल</Text>
-        <TouchableOpacity
-          onPress={handleSpeak}
-          style={[styles.speakerBtn, speaking && styles.speakerBtnActive]}
-          activeOpacity={0.7}
-          accessibilityLabel="ऐका (Speak)">
-          <Text style={styles.speakerIcon}>{speaking ? '🔊...' : '🔊 ऐका'}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Main Verdict Headline */}
-      <View style={styles.verdictBox}>
-        <Text style={styles.verdictHeadline}>{holdDays} दिवस थांबा</Text>
-        <Badge label="शिफारस: HOLD" type="SUCCESS" />
-      </View>
-
-      {/* I16 Constraint: Expected Gain & Worst Case at EQUAL 20px Font Size */}
-      <View style={styles.outcomesRow}>
-        <View style={[styles.outcomeBox, styles.expectedBox]}>
-          <Text style={styles.outcomeLabel}>अपेक्षित फायदा</Text>
-          <Text style={styles.equalFontSizeValue}>{expectedGain}</Text>
-        </View>
-
-        <View style={[styles.outcomeBox, styles.worstBox]}>
-          <Text style={styles.outcomeLabel}>सर्वात वाईट स्थिती</Text>
-          <Text style={[styles.equalFontSizeValue, styles.worstValue]}>{worstCase}</Text>
-        </View>
-      </View>
-
-      {/* Confidence */}
-      <View style={styles.confidenceRow}>
-        <Text style={styles.confidenceLabel}>विश्वास:</Text>
-        <Text style={styles.dots}>●●●○</Text>
-        <Text style={styles.confidenceValue}>मध्यम (Medium)</Text>
-      </View>
-
-      {/* Costs Teaser */}
-      {onViewCosts ? (
-        <TouchableOpacity onPress={onViewCosts} style={styles.costsRow}>
-          <Text style={styles.costsText}>▸ खर्च वजा केल्यावर (₹४,२५०)</Text>
-        </TouchableOpacity>
-      ) : null}
-
-      {/* Pledge Card (Shown only when worthwhile - I13) */}
-      {data.pledge_quote ? (
-        <View style={styles.pledgeCard}>
-          <Text style={styles.pledgeTitle}>💰 थांबण्यासाठी पैसे हवेत?</Text>
-          <Text style={styles.pledgeDetails}>
-            रक्कम: ₹८४,००० · व्याज: ₹२,७६० (११ दिवस)
-          </Text>
-          <Text style={styles.pledgeNote}>"सूचक अंदाज — थेट बँक कर्ज उपलब्धता"</Text>
-        </View>
-      ) : null}
-    </Card>
+    <ScrollView contentContainerStyle={styles.root}>
+      <VerdictCard data={data} qtyKg={DEFAULT_QTY_KG} locale={locale} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  card: { padding: 20, backgroundColor: '#FFFFFF', borderRadius: 16 },
-  headerRow: {
-    flexDirection: 'row',
-    justify: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-    paddingBottom: 12,
-  },
-  headerTitle: { fontSize: 16, fontWeight: '700', color: '#1E293B' },
-  speakerBtn: {
-    backgroundColor: '#E8F5E9',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#A5D6A7',
-  },
-  speakerBtnActive: { backgroundColor: '#C8E6C9' },
-  speakerIcon: { fontSize: 15, fontWeight: '700', color: '#1B5E20' },
-  verdictBox: { alignItems: 'center', marginVertical: 12 },
-  verdictHeadline: { fontSize: 32, fontWeight: '900', color: '#1B5E20', marginBottom: 8 },
-  outcomesRow: { flexDirection: 'row', gap: 12, marginVertical: 16 },
-  outcomeBox: {
-    flex: 1,
-    padding: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-  },
-  expectedBox: { backgroundColor: '#F0FDF4', borderWidth: 1, borderColor: '#BBF7D0' },
-  worstBox: { backgroundColor: '#FEF2F2', borderWidth: 1, borderColor: '#FECACA' },
-  outcomeLabel: { fontSize: 13, color: '#64748B', fontWeight: '600', marginBottom: 4 },
-
-  // ★ INVARIANT I16: BOTH expected gain AND worst case MUST be at EQUAL 20px font size
-  equalFontSizeValue: { fontSize: 20, fontWeight: '800', color: '#166534' },
-  worstValue: { color: '#991B1B' },
-
-  confidenceRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justify: 'center',
-    gap: 8,
-    marginVertical: 8,
-  },
-  confidenceLabel: { fontSize: 14, color: '#64748B' },
-  dots: { fontSize: 16, color: '#1B5E20', letterSpacing: 2 },
-  confidenceValue: { fontSize: 14, fontWeight: '700', color: '#1E293B' },
-  costsRow: { marginTop: 12, paddingVertical: 8 },
-  costsText: { fontSize: 14, color: '#1565C0', fontWeight: '600' },
-  pledgeCard: {
-    marginTop: 16,
-    padding: 14,
-    backgroundColor: '#FFFBEB',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#FDE68A',
-  },
-  pledgeTitle: { fontSize: 15, fontWeight: '700', color: '#92400E' },
-  pledgeDetails: { fontSize: 14, color: '#B45309', fontWeight: '600', marginTop: 4 },
-  pledgeNote: { fontSize: 12, color: '#D97706', fontStyle: 'italic', marginTop: 4 },
-  noAdviceContainer: { alignItems: 'center', paddingVertical: 24 },
-  warningIcon: { fontSize: 40, marginBottom: 12 },
-  noAdviceTitle: { fontSize: 24, fontWeight: '800', color: '#991B1B', marginBottom: 8 },
-  noAdviceSub: { fontSize: 15, color: '#475569', textAlign: 'center', lineHeight: 22 },
+  root: { padding: 24 },
 });

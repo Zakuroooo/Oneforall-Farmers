@@ -7,7 +7,7 @@
  * that catches it is multiplying it out, so we multiply it out here.
  */
 
-import { DEMO_QTY_QTL, fxHold, fxNoAdvice, fxSellElsewhere } from '../window';
+import { DEMO_QTY_QTL, fxHold, fxNoAdvice, fxSellElsewhere, fxSellNow, fxSplit } from '../window';
 import { formatPaise } from '../../lib/money';
 import type { WindowRes } from '../../types/api';
 
@@ -100,7 +100,23 @@ describe('every fixture', () => {
     ['fxHold', fxHold],
     ['fxNoAdvice', fxNoAdvice],
     ['fxSellElsewhere', fxSellElsewhere],
+    ['fxSellNow', fxSellNow],
+    ['fxSplit', fxSplit],
   ];
+
+  // P5/S10's own acceptance bar (PRANAY.md): the five per-qtl lines sum to
+  // total_paise_per_qtl. Checked for every action, not just fxHold — S10 is the
+  // same expandable section on every verdict, HOLD included.
+  it.each(all)('%s: the five cost lines sum to total_paise_per_qtl', (_name, fx) => {
+    const c = fx.costs;
+    expect(
+      c.transport_paise_per_qtl +
+        c.commission_paise_per_qtl +
+        c.storage_paise_per_qtl +
+        c.spoilage_paise_per_qtl +
+        c.loading_paise_per_qtl,
+    ).toBe(c.total_paise_per_qtl);
+  });
 
   it.each(all)('%s has every CANON key present, nulls and all', (_name, fx) => {
     // `pledge_quote: null` is a present key with a null value, not a missing key.
@@ -134,7 +150,7 @@ describe('every fixture', () => {
   });
 
   it.each(all)('%s labels its data source (I8)', (_name, fx) => {
-    expect(['AGMARKNET', 'MSAMB', 'GENERATED', 'MANUAL']).toContain(fx.data_source);
+    expect(['AGMARKNET', 'MSAMB', 'ARCHIVE', 'IMPUTED', 'SYNTHETIC']).toContain(fx.data_source);
   });
 
   it.each(all)('%s keeps every paise value an integer (I1)', (_name, fx) => {

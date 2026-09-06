@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, width: '100%', height: '100%' },
   topBar: {
     flexDirection: 'row',
-    justify: 'space-between',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 16,
     paddingVertical: 10,

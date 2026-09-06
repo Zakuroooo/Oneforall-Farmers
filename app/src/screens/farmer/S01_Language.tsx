@@ -37,7 +37,6 @@ export default function S01_Language({ navigation }: Props) {
         role: 'FARMER',
         locale: selected,
         district_id: 'd_nashik',
-        village: 'निफाड',
       },
     });
   };

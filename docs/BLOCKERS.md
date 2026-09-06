@@ -132,6 +132,63 @@ Names are the six: **Akash · Kartik · Nikhil · Nilesh · Pranay · Shreya**.
 - **Workaround in place:** see `fixtures/auth.ts`'s file-level comment for the full reasoning.
 - **Raised:** H0 (P1)
 
+### [Pranay → Kartik] CONTRACT: K4 and K6 do not exist yet — S5 and S6 are on fixtures
+- **What I need:** `GET /prices/series?days=180` (K4) and `GET /prices/nearby` (K6).
+- **Why:** S5 (180-day history chart) and S6 (nearby mandis, net-sorted) are both built and working against `fixtures/prices.ts`'s `fxPriceHistory` and `fixtures/nearby.ts`'s `fxNearby` — the exact CANON §7.3 shapes, nothing invented. `USE_FIXTURES` is the one line each screen needs flipped once your endpoints answer.
+- **Blocking:** P6 (S5), P7 (S6, S6's district_id comes from `useAuth().user.district_id`).
+- **Workaround in place:** `TODO(kartik):` in both screen files' headers.
+- **One thing worth checking when K6 lands:** CANON's own two-row `/prices/nearby` example (Lasalgaon/Pune) doesn't actually demonstrate a net-order-≠-gross-order case — Pune wins on both gross and net, so two rows sorted either way land in the same order. `fxNearby.ts` added a third row (Nagpur — high gross, high transport) specifically to exercise that reordering. Worth confirming your seed data for K6 also produces at least one real case of it, or S6's whole reason for existing never shows on stage.
+- **Raised:** H0 (P6/P7)
+
+### [Pranay → Kartik] CONTRACT: `/prices/nearby`'s own comment and worked numbers disagree on a `loading` term
+- **What I need:** confirm which is authoritative — the comment or the numbers — and if it's the comment, add `loading_paise_per_qtl` to `NearbyMarketRow` and to K6's response.
+- **Why:** `00_CANON.md`:606 comments `net_paise_per_qtl` as `// ★ gross - transport - commission - loading`, and `types/api.ts`:134 carries the identical four-term comment on the same field — but neither CANON's own worked example (`205000 - 8000 - 3075 = 193925`, checked by hand) nor `NearbyMarketRow` itself have a fourth `loading` value anywhere. The type has no field to subtract, and the arithmetic that's actually shown only ever does two subtractions. `fixtures/nearby.ts` follows the *numbers* (gross − transport − commission, three fields, two subtractions) because that's what's verifiably true from CANON's own example — but if K6 gets implemented from the *comment* instead, real nets will land ~loading's-worth of paise below what my fixture and S10's cost total agree on, and S6 stops agreeing with S9/S10 on stage.
+- **Blocking:** nothing today — the fixture is internally consistent — but it needs resolving before K6 ships.
+- **Workaround in place:** `fixtures/nearby.ts`'s file-level comment documents the same discrepancy; this is that note formalized.
+- **Raised:** H0 (P6/P7 review)
+
+### [Pranay → Nikhil] CONTRACT: N2 does not exist yet, and ForecastRes has no `source` field
+- **What I need:** `GET /ai/forecast` (N2). Separately: confirm CANON §7.4's `ForecastRes` shape (`{as_of_date, points, model_card}`, no `source`) is final, or that I8's "source badge is part of the chart" rule genuinely does not apply to a forecast — a model output, not an observed price row.
+- **Why:** S7 (14-day p10/p50/p90 fan) is built and working against `fixtures/forecast.ts`'s `fxForecast`. `ForecastFan` deliberately does not render a source badge, because there is nothing in CANON's actual response to badge — but `PRANAY.md` §2.7 rule 2 reads as if every chart needs one, and I don't want that read to silently drift into someone adding an invented `source` field to `ForecastRes` later to satisfy it.
+- **Blocking:** P6 (S7).
+- **Workaround in place:** `TODO(nikhil):` in `S07_Forecast.tsx`'s header; the contract gap itself is documented in `fixtures/forecast.ts`'s file-level comment.
+- **Raised:** H0 (P6)
+
+### [Pranay → Shreya] CONTRACT: `tab.home` / `tab.prices` / `tab.lots` / `tab.assistant` missing from all three locale files
+- **What I need:** those four keys added to `src/i18n/mr.json`, `hi.json`, and `en.json`.
+- **Why:** `main`'s `FarmerTabs.tsx` calls `t('tab.home')` etc., but none of the four keys exist in any of the three dictionaries — `useT()`'s fallback renders the literal `⟨tab.home⟩` on the tab bar for a farmer who cannot read English, let alone a raw i18n key. Verified: `grep -c '"tab\.' src/i18n/{mr,hi,en}.json` is `0` in all three.
+- **Blocking:** nothing today.
+- **Workaround in place:** rebased `FarmerTabs.tsx` keeps the hardcoded Marathi titles it already had rather than adopting `t('tab.*')` — the tab bar renders correctly, just not through your i18n system yet. Swap it once the keys exist.
+- **Raised:** H0 (post-merge rebase)
+
+### [Pranay → Shreya] BUG: `justify:` should be `justifyContent:` in two of your files
+- **What I need:** `components/ui/Button.tsx:76` and `screens/buyer/S22_EscrowTimeline.tsx:82` both have `justify: 'space-between'` (or similar) inside a `StyleSheet.create` object — React Native's style types have no `justify` property, only `justifyContent`.
+- **Why:** these are hard `tsc` errors, not warnings — RN's `StyleSheet.d.ts` intersects with `NamedStyles<any>` specifically to catch this. They currently block a clean `npx tsc --noEmit` for the *entire app*, not just the buyer screens, which means CI (or anyone) running a full typecheck sees red regardless of which lane they're working in. (A third instance was in my own `navigation/RootNavigator.tsx:55` — fixed on my side already.)
+- **Blocking:** a clean whole-app `tsc` run.
+- **Workaround in place:** none — not editing your files per CLAUDE.md §4. Reporting only.
+- **Raised:** H0 (post-merge rebase)
+
+### [Pranay → Shreya] STANDARDS: `catch (err: any)` in S17_BuyerLogin.tsx
+- **What I need:** typed catches (e.g. `catch (err) { if (err instanceof ApiError) ... }`, the pattern the rest of the app uses) at `screens/buyer/S17_BuyerLogin.tsx:31` and `:52`.
+- **Why:** `CLAUDE.md` §5 says TypeScript is strict mode, no `any`, no exceptions listed for catch blocks.
+- **Blocking:** nothing functionally — this is a standards note, not a broken build.
+- **Workaround in place:** none — not editing your files.
+- **Raised:** H0 (post-merge rebase)
+
+### [Pranay → Shreya] SCOPE: `app/package.json` on `main` adds a web build and 14 unrequested dependencies
+- **What I need:** a team decision on whether this scope is wanted at all before more work builds on it.
+- **Why:** `CLAUDE.md` §1 says there is no web build and no separate web project; §3 says no new dependency without asking the team. `main` now has `react-dom`, `react-native-web`, `vite@^5.4.21` *and* `webpack@^5.110.3`, `webpack-cli`, `webpack-dev-server`, `html-webpack-plugin`, `babel-loader`, `babel-plugin-react-native-web`, `@vitejs/plugin-react`, plus a `"web": "webpack serve"` script and +5,088 lockfile lines. Two competing bundlers for one unrequested target is itself a sign this wasn't a small addition.
+- **Blocking:** nothing of mine directly, but every future `npm install` on this repo now pulls a meaningfully larger dependency tree for a target CLAUDE.md says doesn't exist.
+- **Workaround in place:** none — reporting only, not touching `package.json` or deleting anything. This is a team call, not mine to make unilaterally.
+- **Raised:** H0 (post-merge rebase)
+
+### [Pranay → Nilesh] CONTRACT: does CANON §9's grading formula floor or round, and how do weakest-dimension ties break?
+- **What I need:** confirmation that `250 * (1 - damage_pct/100)` floors (matching every other money/score computation in this codebase's own discipline — `//` not `/`), and a tie-break rule for `weakest_dimension` when two of the six dimensions score equally low.
+- **Why:** building S13 (self-assay, P9) against this exact formula client-side (CANON §9, lines 810-826) so the six answers actually move the grade. The score column is documented as `int`, which implies floor/round happens somewhere, but CANON doesn't say which, and grading.py doesn't exist yet to check. A silent choice here means my client-computed grade could disagree with Akash's A5 the day it ships.
+- **Blocking:** P9 (S13), specifically the boundary tests at 750/500.
+- **Workaround in place:** flooring every intermediate term (`Math.floor`, matching this codebase's I1/I2 discipline elsewhere) until told otherwise; picking the first dimension encountered on a tie, in the fixed order size_uniform → colour_uniform → sprouting → moisture_feel → foreign_matter → damage_pct.
+- **Raised:** H0 (P9)
+
 ---
 
 ## Resolved before H0 — decisions and doc corrections
