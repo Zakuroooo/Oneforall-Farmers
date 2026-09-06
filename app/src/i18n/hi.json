@@ -379,5 +379,20 @@
   "matches_lots_included": "शामिल लॉट:",
   "matches_view_lot_detail": "लॉट विवरण देखें",
   "matches_make_offer": "प्रस्ताव भेजें",
-  "qtl_abbrev": "{qty} क्वि."
+  "qtl_abbrev": "{qty} क्वि.",
+
+  "lot_detail_header": "लॉट विवरण",
+  "lot_id_label": "लॉट क्रमांक: #{id}",
+  "farmer_label": "किसान: {name}",
+  "location_distance_line": "📍 {location} (दूरी: {distance} किमी)",
+  "lot_qty_kg_line": "मात्रा: {qty} क्विंटल ({kg} किलो)",
+  "self_assay_answers_title": "स्व-मूल्यांकन परीक्षण:",
+  "assay_onion_size_q": "प्याज का आकार:",
+  "assay_onion_size_a": "बड़ा (55+ मिमी) - अंक: {score}/{max}",
+  "assay_colour_shine_q": "रंग और चमक:",
+  "assay_colour_shine_a": "गहरा लाल, बेहतरीन छिलका - अंक: {score}/{max}",
+  "assay_moisture_dryness_q": "नमी / सूखापन:",
+  "assay_moisture_dryness_a": "पूरी तरह सूखा ({pct}% नमी) - अंक: {score}/{max}",
+  "warehouse_storage_title": "गोदाम भंडारण:",
+  "lot_detail_make_offer": "इस लॉट के लिए प्रस्ताव दें"
 }

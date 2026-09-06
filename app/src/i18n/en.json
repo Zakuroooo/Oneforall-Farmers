@@ -379,5 +379,20 @@
   "matches_lots_included": "Lots included:",
   "matches_view_lot_detail": "View lot detail",
   "matches_make_offer": "Make offer",
-  "qtl_abbrev": "{qty} qtl"
+  "qtl_abbrev": "{qty} qtl",
+
+  "lot_detail_header": "Lot detail",
+  "lot_id_label": "Lot no: #{id}",
+  "farmer_label": "Farmer: {name}",
+  "location_distance_line": "📍 {location} (distance: {distance} km)",
+  "lot_qty_kg_line": "Quantity: {qty} quintals ({kg} kg)",
+  "self_assay_answers_title": "Self-assay answers:",
+  "assay_onion_size_q": "Onion size:",
+  "assay_onion_size_a": "Large (55+ mm) - score: {score}/{max}",
+  "assay_colour_shine_q": "Colour and shine:",
+  "assay_colour_shine_a": "Deep red, good skin - score: {score}/{max}",
+  "assay_moisture_dryness_q": "Moisture / dryness:",
+  "assay_moisture_dryness_a": "Fully dried ({pct}% moisture) - score: {score}/{max}",
+  "warehouse_storage_title": "Warehouse storage:",
+  "lot_detail_make_offer": "Make an offer for this lot"
 }

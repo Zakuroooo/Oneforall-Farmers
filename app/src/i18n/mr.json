@@ -379,5 +379,20 @@
   "matches_lots_included": "लॉट समाविष्ट:",
   "matches_view_lot_detail": "लॉट तपशील पहा",
   "matches_make_offer": "ऑफर पाठवा",
-  "qtl_abbrev": "{qty} क्विं."
+  "qtl_abbrev": "{qty} क्विं.",
+
+  "lot_detail_header": "लॉट तपशील",
+  "lot_id_label": "लॉट क्र: #{id}",
+  "farmer_label": "शेतकरी: {name}",
+  "location_distance_line": "📍 {location} (अंतर: {distance} किमी)",
+  "lot_qty_kg_line": "प्रमाण: {qty} क्विंटल ({kg} किलो)",
+  "self_assay_answers_title": "स्वयं-पडताळणी चाचणी:",
+  "assay_onion_size_q": "कांद्याचा आकार:",
+  "assay_onion_size_a": "मोठा (५५+ मिमी) - गुण: {score}/{max}",
+  "assay_colour_shine_q": "रंग आणि चमक:",
+  "assay_colour_shine_a": "गडद लाल, उत्तम साल - गुण: {score}/{max}",
+  "assay_moisture_dryness_q": "ओलावा / सुकावा:",
+  "assay_moisture_dryness_a": "पूर्ण सुकलेला ({pct}% ओलावा) - गुण: {score}/{max}",
+  "warehouse_storage_title": "गोदाम साठा:",
+  "lot_detail_make_offer": "या लॉटसाठी ऑफर द्या"
 }
