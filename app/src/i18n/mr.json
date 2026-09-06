@@ -80,5 +80,7 @@
   "pledge_rate_label": "व्याज दर (वार्षिक, अंदाजे)",
   "pledge_compare_gain_label": "थांबून फायदा",
   "pledge_compare_vs": "विरुद्ध",
-  "pledge_warehouse_label": "गोदाम"
+  "pledge_warehouse_label": "गोदाम",
+
+  "stale_banner_text": "जुनी माहिती — शेवटचे अद्ययावत {time} वाजता"
 }

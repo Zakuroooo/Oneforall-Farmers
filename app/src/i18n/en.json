@@ -80,5 +80,7 @@
   "pledge_rate_label": "Interest rate (annual, indicative)",
   "pledge_compare_gain_label": "Gain from waiting",
   "pledge_compare_vs": "vs",
-  "pledge_warehouse_label": "Warehouse"
+  "pledge_warehouse_label": "Warehouse",
+
+  "stale_banner_text": "Old data — last updated at {time}"
 }

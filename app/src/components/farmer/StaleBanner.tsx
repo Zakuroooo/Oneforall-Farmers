@@ -25,7 +25,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { CACHE_STALE_MS } from '../../config';
-import { devNum } from '../../lib/i18n';
+import { devNum, translate } from '../../lib/i18n';
 import type { Locale } from '../../types/api';
 
 export interface StaleBannerProps {
@@ -90,7 +90,7 @@ export function StaleBanner({ dataUpdatedAt, locale = 'mr' }: StaleBannerProps) 
   return (
     <View style={styles.banner}>
       <Text style={styles.text}>
-        जुनी माहिती — शेवटचे अद्ययावत {formatClockMr(dataUpdatedAt, locale)} वाजता
+        {translate('stale_banner_text', locale, { time: formatClockMr(dataUpdatedAt, locale) })}
       </Text>
     </View>
   );

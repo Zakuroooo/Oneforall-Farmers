@@ -27,9 +27,19 @@ export function devNum(n: number | string, locale: Locale = 'mr'): string {
  * same fallback rules as `t()` itself — this is not a second translation
  * system, just the same one usable without a component.
  */
-export function translate(key: string, locale: Locale = 'mr'): string {
+export function translate(
+  key: string,
+  locale: Locale = 'mr',
+  vars?: Record<string, string | number>,
+): string {
   const dict = DICTS[locale] ?? DICTS.mr;
-  return dict[key] ?? `⟨${key}⟩`;
+  let text = dict[key] ?? `⟨${key}⟩`;
+  if (vars) {
+    for (const [k, v] of Object.entries(vars)) {
+      text = text.replace(new RegExp(`\\{${k}\\}`, 'g'), String(v));
+    }
+  }
+  return text;
 }
 
 export type TFn = (key: string, vars?: Record<string, string | number>) => string;
