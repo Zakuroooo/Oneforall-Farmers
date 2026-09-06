@@ -18,6 +18,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { getLot, submitAssay } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
+import { formatNumber } from '../../lib/money';
 import { computeGrade } from '../../lib/grading';
 import { DEFAULT_LOT_ID, USE_FIXTURES } from '../../config';
 import { fxLotListed } from '../../fixtures/lots';
@@ -53,55 +55,56 @@ const EMPTY_ANSWERS: Answers = {
 
 const DAMAGE_STEP = 5;
 
-/** One row per CANON §9 dimension, Marathi label + the three answer choices. */
+/** One row per CANON §9 dimension — dictionary keys, not text, resolved via
+ * translate() at render time. */
 const RATING_QUESTIONS: Array<{
   key: keyof Omit<Answers, 'damage_pct'>;
-  label_mr: string;
-  choices: Array<{ value: Rating; label_mr: string }>;
+  labelKey: string;
+  choices: Array<{ value: Rating; labelKey: string }>;
 }> = [
   {
     key: 'size_uniform',
-    label_mr: 'दाण्यांचा आकार किती सारखा आहे?',
+    labelKey: 'assay_q_size_uniform',
     choices: [
-      { value: 3, label_mr: 'खूप सारखा' },
-      { value: 2, label_mr: 'मिश्र' },
-      { value: 1, label_mr: 'खूप वेगवेगळा' },
+      { value: 3, labelKey: 'assay_size_uniform_3' },
+      { value: 2, labelKey: 'assay_size_uniform_2' },
+      { value: 1, labelKey: 'assay_size_uniform_1' },
     ],
   },
   {
     key: 'colour_uniform',
-    label_mr: 'रंग किती सारखा आहे?',
+    labelKey: 'assay_q_colour_uniform',
     choices: [
-      { value: 3, label_mr: 'सारखा' },
-      { value: 2, label_mr: 'काही डाग' },
-      { value: 1, label_mr: 'खूप डाग' },
+      { value: 3, labelKey: 'assay_colour_uniform_3' },
+      { value: 2, labelKey: 'assay_colour_uniform_2' },
+      { value: 1, labelKey: 'assay_colour_uniform_1' },
     ],
   },
   {
     key: 'sprouting',
-    label_mr: 'कोंब फुटले आहेत का?',
+    labelKey: 'assay_q_sprouting',
     choices: [
-      { value: 3, label_mr: 'नाही' },
-      { value: 2, label_mr: 'थोडे' },
-      { value: 1, label_mr: 'खूप' },
+      { value: 3, labelKey: 'assay_sprouting_3' },
+      { value: 2, labelKey: 'assay_sprouting_2' },
+      { value: 1, labelKey: 'assay_sprouting_1' },
     ],
   },
   {
     key: 'moisture_feel',
-    label_mr: 'ओलावा कसा वाटतो?',
+    labelKey: 'assay_q_moisture_feel',
     choices: [
-      { value: 3, label_mr: 'कोरडे' },
-      { value: 2, label_mr: 'किंचित ओलसर' },
-      { value: 1, label_mr: 'ओलसर' },
+      { value: 3, labelKey: 'assay_moisture_feel_3' },
+      { value: 2, labelKey: 'assay_moisture_feel_2' },
+      { value: 1, labelKey: 'assay_moisture_feel_1' },
     ],
   },
   {
     key: 'foreign_matter',
-    label_mr: 'माती/काडीकचरा किती आहे?',
+    labelKey: 'assay_q_foreign_matter',
     choices: [
-      { value: 3, label_mr: 'स्वच्छ' },
-      { value: 2, label_mr: 'थोडी माती' },
-      { value: 1, label_mr: 'खूप माती' },
+      { value: 3, labelKey: 'assay_foreign_matter_3' },
+      { value: 2, labelKey: 'assay_foreign_matter_2' },
+      { value: 1, labelKey: 'assay_foreign_matter_1' },
     ],
   },
 ];
@@ -111,21 +114,13 @@ const RATING_QUESTIONS: Array<{
  * this pure client-side screen does not have (S9/S10 are where a priced number
  * belongs). TODO(nilesh): if the server assay ever sends `tip_mr`/`tip_en`
  * verbatim with a real rupee delta, prefer that over this static map. */
-const TIP_MR: Record<AssayDimension, string> = {
-  damage_pct: 'नुकसान झालेले दाणे वेगळे केल्यास ग्रेड सुधारू शकतो.',
-  sprouting: 'कोंब फुटलेले दाणे वेगळे करा — हे ग्रेडवर सर्वात जास्त परिणाम करते.',
-  size_uniform: 'दाणे आकारानुसार चाळल्यास ग्रेड सुधारू शकतो.',
-  colour_uniform: 'रंगानुसार दाणे वेगळे केल्यास ग्रेड सुधारू शकतो.',
-  moisture_feel: 'माल चांगला वाळवल्यास ग्रेड सुधारू शकतो.',
-  foreign_matter: 'माती व काडीकचरा साफ केल्यास ग्रेड सुधारू शकतो.',
-};
-const TIP_EN: Record<AssayDimension, string> = {
-  damage_pct: 'Sorting out damaged grains could improve the grade.',
-  sprouting: 'Removing sprouted grains helps the most here.',
-  size_uniform: 'Sorting by size could improve the grade.',
-  colour_uniform: 'Sorting by colour could improve the grade.',
-  moisture_feel: 'Drying the produce further could improve the grade.',
-  foreign_matter: 'Cleaning out soil and debris could improve the grade.',
+const TIP_KEY: Record<AssayDimension, string> = {
+  damage_pct: 'tip_damage_pct',
+  sprouting: 'tip_sprouting',
+  size_uniform: 'tip_size_uniform',
+  colour_uniform: 'tip_colour_uniform',
+  moisture_feel: 'tip_moisture_feel',
+  foreign_matter: 'tip_foreign_matter',
 };
 
 const GRADE_BADGE: Record<Grade, BadgeType> = {
@@ -153,8 +148,11 @@ async function persistAssay(lotId: string, body: AssayReq): Promise<AssayRes> {
       score: graded.score,
       grade: graded.grade,
       weakest_dimension: graded.weakest_dimension,
-      tip_mr: TIP_MR[graded.weakest_dimension],
-      tip_en: TIP_EN[graded.weakest_dimension],
+      // `AssayRes.tip_mr`/`tip_en` are fixed wire-shape fields (CANON §7.5),
+      // not UI text — always Marathi and always English respectively,
+      // regardless of the app's selected display locale.
+      tip_mr: translate(TIP_KEY[graded.weakest_dimension], 'mr'),
+      tip_en: translate(TIP_KEY[graded.weakest_dimension], 'en'),
     };
   }
   return submitAssay(lotId, body);
@@ -196,12 +194,12 @@ export default function S13_SelfAssay({ route }: Props) {
 
   if (error) {
     return (
-      <ErrorState message="लॉट माहिती आणता आली नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+      <ErrorState message={translate('self_assay_error', locale)} onRetry={() => refetch()} />
     );
   }
 
   if (!lot) {
-    return <EmptyState title="तपासणीसाठी लॉट सापडला नाही." />;
+    return <EmptyState title={translate('self_assay_lot_not_found', locale)} />;
   }
 
   const allAnswered =
@@ -258,7 +256,7 @@ export default function S13_SelfAssay({ route }: Props) {
   if (submitFailed) {
     return (
       <ErrorState
-        message="ग्रेड जतन करता आला नाही. पुन्हा प्रयत्न करा."
+        message={translate('self_assay_save_error', locale)}
         onRetry={() => {
           const body = buildAssayReq();
           if (body) submit(body);
@@ -279,24 +277,40 @@ export default function S13_SelfAssay({ route }: Props) {
     return (
       <ScrollView contentContainerStyle={styles.root}>
         <Card variant="elevated" style={styles.resultCard}>
-          <Badge label={`ग्रेड ${result.grade}`} type={GRADE_BADGE[result.grade]} />
-          <Text style={styles.scoreText}>गुण: {result.score} (कमाल १०००)</Text>
-          <Text style={styles.tipTextMr}>{result.tip_mr}</Text>
-          {locale === 'en' ? <Text style={styles.tipTextEn}>{result.tip_en}</Text> : null}
+          <Badge
+            label={translate('grade_label_prefix', locale, { grade: result.grade })}
+            type={GRADE_BADGE[result.grade]}
+          />
+          <Text style={styles.scoreText}>
+            {translate('score_label', locale, {
+              score: formatNumber(result.score, locale),
+              max: formatNumber(1000, locale),
+            })}
+          </Text>
+          {/*
+            `AssayRes.tip_mr`/`tip_en` are the two fixed wire fields CANON
+            defines — there is no `tip_hi`. Rendering this app's own
+            dictionary by `weakest_dimension` instead of picking between
+            those two fields means a Hindi-locale farmer gets a real Hindi
+            tip rather than the Marathi wire field falling through by
+            default (which is exactly the kind of mixing this pass exists
+            to remove).
+          */}
+          <Text style={styles.tipTextMr}>{translate(TIP_KEY[result.weakest_dimension], locale)}</Text>
         </Card>
-        <Button title="पुन्हा तपासा" variant="outline" onPress={startOver} />
+        <Button title={translate('recheck_button', locale)} variant="outline" onPress={startOver} />
       </ScrollView>
     );
   }
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
-      <Text style={styles.header}>माल तपासा (सहा प्रश्न)</Text>
-      <Text style={styles.subheader}>फोटोची गरज नाही — फक्त पाहून उत्तर द्या.</Text>
+      <Text style={styles.header}>{translate('self_assay_header', locale)}</Text>
+      <Text style={styles.subheader}>{translate('self_assay_subheader', locale)}</Text>
 
       {RATING_QUESTIONS.map(q => (
         <Card key={q.key} style={styles.questionCard}>
-          <Text style={styles.questionLabel}>{q.label_mr}</Text>
+          <Text style={styles.questionLabel}>{translate(q.labelKey, locale)}</Text>
           <View style={styles.choiceRow}>
             {q.choices.map(c => {
               const selected = answers[q.key] === c.value;
@@ -306,7 +320,7 @@ export default function S13_SelfAssay({ route }: Props) {
                   onPress={() => setRating(q.key, c.value)}
                   style={[styles.choice, selected && styles.choiceSelected]}>
                   <Text style={[styles.choiceText, selected && styles.choiceTextSelected]}>
-                    {c.label_mr}
+                    {translate(c.labelKey, locale)}
                   </Text>
                 </TouchableOpacity>
               );
@@ -316,14 +330,14 @@ export default function S13_SelfAssay({ route }: Props) {
       ))}
 
       <Card style={styles.questionCard}>
-        <Text style={styles.questionLabel}>नुकसान किती % आहे?</Text>
+        <Text style={styles.questionLabel}>{translate('assay_damage_question', locale)}</Text>
         <View style={styles.stepperRow}>
           <TouchableOpacity
             style={styles.stepperButton}
             onPress={() => adjustDamage(-DAMAGE_STEP)}>
             <Text style={styles.stepperButtonText}>−</Text>
           </TouchableOpacity>
-          <Text style={styles.stepperValue}>{answers.damage_pct ?? 0}%</Text>
+          <Text style={styles.stepperValue}>{formatNumber(answers.damage_pct ?? 0, locale)}%</Text>
           <TouchableOpacity
             style={styles.stepperButton}
             onPress={() => adjustDamage(DAMAGE_STEP)}>
@@ -333,7 +347,7 @@ export default function S13_SelfAssay({ route }: Props) {
       </Card>
 
       <Button
-        title="ग्रेड तपासा"
+        title={translate('check_grade_button', locale)}
         onPress={checkGrade}
         disabled={!allAnswered}
         style={styles.submitButton}
