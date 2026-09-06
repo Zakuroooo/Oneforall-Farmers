@@ -25,6 +25,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { acceptOffer, counterOffer, getForecast, getOffers, rejectOffer } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_HORIZON_DAYS, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxForecast } from '../../fixtures/forecast';
@@ -119,17 +120,17 @@ export default function S14_CounterOffer({ route }: Props) {
 
   if (error) {
     return (
-      <ErrorState message="ऑफर आणता आली नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+      <ErrorState message={translate('offer_fetch_error', locale)} onRetry={() => refetch()} />
     );
   }
 
   if (!data) {
-    return <EmptyState title="ही ऑफर सापडली नाही — कदाचित आधीच उत्तर दिले गेले आहे." />;
+    return <EmptyState title={translate('offer_not_found', locale)} />;
   }
 
   if (actFailed) {
     return (
-      <ErrorState message="कारवाई करता आली नाही. पुन्हा प्रयत्न करा." onRetry={() => resetAct()} />
+      <ErrorState message={translate('offer_action_error', locale)} onRetry={() => resetAct()} />
     );
   }
 
@@ -144,10 +145,13 @@ export default function S14_CounterOffer({ route }: Props) {
   if (acted && actionResult) {
     const message =
       actionResult.kind === 'accepted'
-        ? 'ऑफर स्वीकारली. व्यवहार सुरू झाला — एस्क्रॉ टाइमलाइन "माझे लॉट" मध्ये दिसेल.'
+        ? translate('offer_accepted_message', locale)
         : actionResult.kind === 'rejected'
-          ? 'ऑफर नाकारली.'
-          : `नवीन काउंटर पाठवला: ${formatPaise(actionResult.offer.price_paise_per_qtl, locale)} प्रति क्विंटल (फेरी ${actionResult.offer.round}).`;
+          ? translate('offer_rejected_message', locale)
+          : translate('offer_countered_message', locale, {
+              price: formatPaise(actionResult.offer.price_paise_per_qtl, locale),
+              round: formatNumber(actionResult.offer.round, locale),
+            });
     return (
       <View style={styles.root}>
         <Card style={styles.resultCard}>
@@ -165,22 +169,28 @@ export default function S14_CounterOffer({ route }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
-      <Text style={styles.header}>व्यापाऱ्याची ऑफर — फेरी {offer.round}</Text>
+      <Text style={styles.header}>
+        {translate('offer_round_header', locale, { round: formatNumber(offer.round, locale) })}
+      </Text>
       <Card style={styles.offerCard}>
-        <Text style={styles.offerPrice}>{formatPaise(offer.price_paise_per_qtl, locale)} प्रति क्विंटल</Text>
+        <Text style={styles.offerPrice}>
+          {formatPaise(offer.price_paise_per_qtl, locale)} {translate('per_quintal_label', locale)}
+        </Text>
         {/* I2: kg on the wire, quintals on screen, floored via `toQuintal` —
             same rule S15 and S16 already follow. The price above is per
             quintal, so a kg figure next to it invited a farmer to read the
             two against each other in different units. */}
         <Text style={styles.offerQty}>
-          प्रमाण: {formatNumber(toQuintal(offer.qty_kg), locale)} क्विंटल
+          {translate('qty_label_value', locale, { qty: formatNumber(toQuintal(offer.qty_kg), locale) })}
         </Text>
         {offer.note ? <Text style={styles.offerNote}>{offer.note}</Text> : null}
       </Card>
 
       {/* The forecast, directly above the counter-price input — PRANAY.md
           §1.5. This ordering in the JSX is the feature, not a stray chart. */}
-      <Text style={styles.sectionLabel}>तुमचा अंदाज (पुढील {DEFAULT_HORIZON_DAYS} दिवस)</Text>
+      <Text style={styles.sectionLabel}>
+        {translate('your_forecast_label', locale, { days: formatNumber(DEFAULT_HORIZON_DAYS, locale) })}
+      </Text>
       <ForecastFan
         p10={forecast.points.map(p => p.p10_paise_per_qtl)}
         p50={forecast.points.map(p => p.p50_paise_per_qtl)}
@@ -188,30 +198,35 @@ export default function S14_CounterOffer({ route }: Props) {
         locale={locale}
       />
 
-      <Text style={styles.sectionLabel}>तुमची काउंटर किंमत (प्रति क्विंटल)</Text>
+      <Text style={styles.sectionLabel}>{translate('your_counter_price_label', locale)}</Text>
       <TextInput
         style={styles.input}
         keyboardType="numeric"
-        placeholder="उदा. २०५०००"
+        placeholder={translate('counter_price_placeholder', locale)}
         value={counterPrice}
         onChangeText={setCounterPrice}
         editable={!atLastRound}
       />
       {atLastRound ? (
-        <Text style={styles.lastRoundNote}>तिसरी फेरी झाली — यापुढे काउंटर करता येणार नाही.</Text>
+        <Text style={styles.lastRoundNote}>{translate('last_round_note', locale)}</Text>
       ) : null}
 
       <View style={styles.actionRow}>
-        <Button title="स्वीकारा" onPress={() => act('accept')} style={styles.actionButton} />
+        <Button title={translate('accept_button', locale)} onPress={() => act('accept')} style={styles.actionButton} />
         <Button
-          title="काउंटर करा"
+          title={translate('counter_button', locale)}
           variant="outline"
           onPress={() => act('counter')}
           disabled={!canSubmitCounter}
           style={styles.actionButton}
         />
       </View>
-      <Button title="नकार द्या" variant="ghost" onPress={() => act('reject')} style={styles.rejectButton} />
+      <Button
+        title={translate('reject_button', locale)}
+        variant="ghost"
+        onPress={() => act('reject')}
+        style={styles.rejectButton}
+      />
     </ScrollView>
   );
 }

@@ -242,5 +242,20 @@
   "tip_size_uniform": "दाणे आकारानुसार चाळल्यास ग्रेड सुधारू शकतो.",
   "tip_colour_uniform": "रंगानुसार दाणे वेगळे केल्यास ग्रेड सुधारू शकतो.",
   "tip_moisture_feel": "माल चांगला वाळवल्यास ग्रेड सुधारू शकतो.",
-  "tip_foreign_matter": "माती व काडीकचरा साफ केल्यास ग्रेड सुधारू शकतो."
+  "tip_foreign_matter": "माती व काडीकचरा साफ केल्यास ग्रेड सुधारू शकतो.",
+
+  "offer_fetch_error": "ऑफर आणता आली नाही. पुन्हा प्रयत्न करा.",
+  "offer_not_found": "ही ऑफर सापडली नाही — कदाचित आधीच उत्तर दिले गेले आहे.",
+  "offer_action_error": "कारवाई करता आली नाही. पुन्हा प्रयत्न करा.",
+  "offer_accepted_message": "ऑफर स्वीकारली. व्यवहार सुरू झाला — एस्क्रॉ टाइमलाइन \"माझे लॉट\" मध्ये दिसेल.",
+  "offer_rejected_message": "ऑफर नाकारली.",
+  "offer_countered_message": "नवीन काउंटर पाठवला: {price} प्रति क्विंटल (फेरी {round}).",
+  "offer_round_header": "व्यापाऱ्याची ऑफर — फेरी {round}",
+  "your_forecast_label": "तुमचा अंदाज (पुढील {days} दिवस)",
+  "your_counter_price_label": "तुमची काउंटर किंमत (प्रति क्विंटल)",
+  "counter_price_placeholder": "उदा. २०५०००",
+  "last_round_note": "तिसरी फेरी झाली — यापुढे काउंटर करता येणार नाही.",
+  "accept_button": "स्वीकारा",
+  "counter_button": "काउंटर करा",
+  "reject_button": "नकार द्या"
 }

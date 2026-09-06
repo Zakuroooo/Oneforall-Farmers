@@ -242,5 +242,20 @@
   "tip_size_uniform": "Sorting by size could improve the grade.",
   "tip_colour_uniform": "Sorting by colour could improve the grade.",
   "tip_moisture_feel": "Drying the produce further could improve the grade.",
-  "tip_foreign_matter": "Cleaning out soil and debris could improve the grade."
+  "tip_foreign_matter": "Cleaning out soil and debris could improve the grade.",
+
+  "offer_fetch_error": "Could not fetch the offer. Please try again.",
+  "offer_not_found": "This offer was not found — it may already have a response.",
+  "offer_action_error": "The action could not be completed. Please try again.",
+  "offer_accepted_message": "Offer accepted. The transaction has started — the escrow timeline will show under \"My Lots\".",
+  "offer_rejected_message": "Offer rejected.",
+  "offer_countered_message": "New counter sent: {price} per quintal (round {round}).",
+  "offer_round_header": "Buyer's offer — round {round}",
+  "your_forecast_label": "Your forecast (next {days} days)",
+  "your_counter_price_label": "Your counter price (per quintal)",
+  "counter_price_placeholder": "e.g. 205000",
+  "last_round_note": "That was the third round — no more countering from here.",
+  "accept_button": "Accept",
+  "counter_button": "Counter",
+  "reject_button": "Reject"
 }
