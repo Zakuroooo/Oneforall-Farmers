@@ -3,7 +3,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { ApiError, requestOtp, verifyOtp } from '../../lib/api';
@@ -11,6 +11,7 @@ import { setPendingAuth, useAuth } from '../../lib/auth';
 import { getLocale } from '../../lib/locale';
 import { translate } from '../../lib/i18n';
 import { formatNumber } from '../../lib/money';
+import { VoiceMic } from '../../components/ui/VoiceMic';
 import { USE_FIXTURES } from '../../config';
 import { fxOtpRequest } from '../../fixtures/auth';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
@@ -19,6 +20,26 @@ import type { Locale } from '../../types/api';
 type Props = NativeStackScreenProps<AuthStackParamList, 'S2_Phone'>;
 
 type Step = 'phone' | 'otp';
+
+/** Devanagari 0-9, in order — the reverse of `lib/i18n.tsx`'s `DEV_DIGITS`.
+ * An ASR transcript of spoken digits may come back in either script
+ * depending on the engine, so both are read here regardless of locale. */
+const DEV_TO_LATIN_DIGIT: Record<string, string> = {
+  '०': '0', '१': '1', '२': '2', '३': '3', '४': '4',
+  '५': '5', '६': '6', '७': '7', '८': '8', '९': '9',
+};
+
+/** Pulls digits out of a spoken transcript ("नऊ आठ सात..." transcribed as
+ * numerals, or "9876543210" transcribed as-is) — anything that is not a
+ * digit in either script is simply not a phone number or an OTP digit. */
+function digitsFromTranscript(text: string): string {
+  let out = '';
+  for (const ch of text) {
+    if (ch >= '0' && ch <= '9') out += ch;
+    else if (DEV_TO_LATIN_DIGIT[ch]) out += DEV_TO_LATIN_DIGIT[ch];
+  }
+  return out;
+}
 
 async function fixtureVerifyOtp(): Promise<never> {
   throw new ApiError('UNAUTHENTICATED', 'Invalid code', 401);
@@ -100,7 +121,7 @@ export default function S02_Phone({ navigation }: Props) {
 
   if (step === 'phone') {
     return (
-      <View style={styles.root}>
+      <ScrollView contentContainerStyle={styles.root}>
         <Text style={styles.title}>{translate('phone_title', locale)}</Text>
         <TextInput
           style={styles.input}
@@ -110,6 +131,10 @@ export default function S02_Phone({ navigation }: Props) {
           maxLength={10}
           placeholder="9876543210"
           accessibilityLabel={translate('phone_number', locale)}
+        />
+        <VoiceMic
+          locale={locale}
+          onTranscript={t => setPhone(digitsFromTranscript(t).slice(0, 10))}
         />
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <TouchableOpacity
@@ -123,12 +148,12 @@ export default function S02_Phone({ navigation }: Props) {
         <TouchableOpacity onPress={goToBuyerLogin} style={styles.buyerOptionBtn}>
           <Text style={styles.buyerOptionText}>{translate('buyer_login_prompt_phone', locale)}</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     );
   }
 
   return (
-    <View style={styles.root}>
+    <ScrollView contentContainerStyle={styles.root}>
       <Text style={styles.title}>{translate('otp_title', locale)}</Text>
       <Text style={styles.subtitle}>{translate('otp_sent_to', locale, { phone })}</Text>
       <TextInput
@@ -139,6 +164,10 @@ export default function S02_Phone({ navigation }: Props) {
         maxLength={6}
         placeholder="123456"
         accessibilityLabel={translate('otp_title', locale)}
+      />
+      <VoiceMic
+        locale={locale}
+        onTranscript={t => setCode(digitsFromTranscript(t).slice(0, 6))}
       />
       {error ? <Text style={styles.error}>{error}</Text> : null}
       <TouchableOpacity
@@ -161,7 +190,7 @@ export default function S02_Phone({ navigation }: Props) {
           <Text style={styles.resend}>{translate('resend_otp_button', locale)}</Text>
         </TouchableOpacity>
       )}
-    </View>
+    </ScrollView>
   );
 }
 

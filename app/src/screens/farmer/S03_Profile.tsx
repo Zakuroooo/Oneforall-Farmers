@@ -20,13 +20,17 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { ApiError, getDistricts, register } from '../../lib/api';
 import { clearPendingAuth, getPendingAuth, useAuth } from '../../lib/auth';
 import { getLocale } from '../../lib/locale';
 import { translate } from '../../lib/i18n';
+import { speakText } from '../../lib/voice';
+import { RegistrationAgent } from '../../lib/registrationAgent';
+import type { AgentAction } from '../../lib/registrationAgent';
+import { VoiceMic } from '../../components/ui/VoiceMic';
 import { USE_FIXTURES } from '../../config';
 import { fxAuthRegistered, fxDistricts } from '../../fixtures/auth';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
@@ -46,6 +50,14 @@ export default function S03_Profile({ navigation }: Props) {
   const [districtsLoading, setDistrictsLoading] = useState(true);
   const [districtsError, setDistrictsError] = useState(false);
 
+  // ★ Registration by voice — `RegistrationAgent` owns the name/district/
+  // village slot logic; this screen only renders whatever action it hands
+  // back and applies a confirmed value into the same state the manual form
+  // above already uses, so voice and typing stay two paths into one form,
+  // never two sources of truth.
+  const [agent, setAgent] = useState<RegistrationAgent | null>(null);
+  const [agentAction, setAgentAction] = useState<AgentAction | null>(null);
+
   const loadDistricts = () => {
     setDistrictsLoading(true);
     setDistrictsError(false);
@@ -53,9 +65,46 @@ export default function S03_Profile({ navigation }: Props) {
       .then(list => {
         setDistricts(list);
         setDistrictId(prev => prev ?? list[0]?.id ?? null);
+        const a = new RegistrationAgent(list);
+        setAgent(a);
+        setAgentAction(a.start());
       })
       .catch(() => setDistrictsError(true))
       .finally(() => setDistrictsLoading(false));
+  };
+
+  // Speaks whatever the agent is currently asking or confirming — every
+  // `ask`/`retry`/`prefill` transition gets its own utterance; `done` is
+  // silent (the "पुढे" button lighting up is feedback enough).
+  useEffect(() => {
+    if (!agentAction) return;
+    if (agentAction.type === 'ask') void speakText(agentAction.question_mr);
+    else if (agentAction.type === 'retry') void speakText(agentAction.message_mr);
+    else if (agentAction.type === 'prefill') void speakText(agentAction.confirm_mr);
+  }, [agentAction]);
+
+  const onVoiceTranscript = (transcript: string) => {
+    if (!agent) return;
+    setAgentAction(agent.next(transcript));
+  };
+
+  const applyAgentValues = (a: RegistrationAgent) => {
+    const values = a.getValues();
+    if (values.name !== undefined) setName(values.name);
+    if (values.districtId !== undefined) setDistrictId(values.districtId);
+    if (values.village !== undefined) setVillage(values.village);
+  };
+
+  const onVoiceConfirm = () => {
+    if (!agent) return;
+    const next = agent.confirm();
+    applyAgentValues(agent);
+    setAgentAction(next);
+  };
+
+  const onVoiceDeny = () => {
+    if (!agent) return;
+    setAgentAction(agent.deny());
   };
 
   useEffect(() => {
@@ -113,8 +162,33 @@ export default function S03_Profile({ navigation }: Props) {
   const canSubmit = name.trim().length > 0 && districtId !== null && !loading;
 
   return (
-    <View style={styles.root}>
+    <ScrollView contentContainerStyle={styles.root}>
       <Text style={styles.title}>{translate('profile_title', locale)}</Text>
+
+      {agent && agentAction && agentAction.type !== 'done' ? (
+        <View style={styles.voiceCard}>
+          <Text style={styles.voicePrompt}>
+            {agentAction.type === 'ask'
+              ? agentAction.question_mr
+              : agentAction.type === 'retry'
+                ? agentAction.message_mr
+                : agentAction.confirm_mr}
+          </Text>
+
+          {agentAction.type === 'prefill' ? (
+            <View style={styles.confirmRow}>
+              <TouchableOpacity style={styles.confirmYes} onPress={onVoiceConfirm}>
+                <Text style={styles.confirmYesText}>{translate('voice_confirm_yes', locale)}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.confirmNo} onPress={onVoiceDeny}>
+                <Text style={styles.confirmNoText}>{translate('voice_confirm_no', locale)}</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <VoiceMic locale={locale} onTranscript={onVoiceTranscript} />
+          )}
+        </View>
+      ) : null}
 
       <Text style={styles.label}>{translate('name', locale)}</Text>
       <TextInput
@@ -179,7 +253,7 @@ export default function S03_Profile({ navigation }: Props) {
         style={[styles.button, !canSubmit && styles.buttonDisabled]}>
         <Text style={styles.buttonLabel}>{loading ? '...' : translate('next', locale)}</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -226,4 +300,31 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: { opacity: 0.5 },
   buttonLabel: { color: '#FFF', fontSize: 18, fontWeight: '700' },
+  voiceCard: {
+    backgroundColor: '#F0FDF4',
+    borderWidth: 1.5,
+    borderColor: '#BBF7D0',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+  },
+  voicePrompt: { fontSize: 16, fontWeight: '700', color: '#1B5E20', marginBottom: 8, textAlign: 'center' },
+  confirmRow: { flexDirection: 'row', gap: 12, marginTop: 8 },
+  confirmYes: {
+    flex: 1,
+    backgroundColor: GREEN,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  confirmYesText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
+  confirmNo: {
+    flex: 1,
+    borderWidth: 1.5,
+    borderColor: GREEN,
+    borderRadius: 12,
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  confirmNoText: { color: GREEN, fontSize: 16, fontWeight: '700' },
 });

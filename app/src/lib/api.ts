@@ -299,3 +299,64 @@ export const getChatMessages = (txId: string) => get<ChatMessage[]>(`/tx/${txId}
 
 export const sendChatMessage = (txId: string, text: string) =>
   post<ChatMessage>(`/tx/${txId}/messages`, { text });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Voice — PROPOSED, same status as the chat section above: no CANON section
+// defines these, and neither route exists on the server yet (`voice.py`'s
+// router is an empty `APIRouter()`, `voice_engine.py` raises
+// `NotImplementedError` — per the backend-side handoff this was built
+// against). Wired here anyway, ahead of the backend, so the mic UI in S2/S3
+// has something real to call the moment the route lands — until then this
+// throws `ApiError('NETWORK', ...)` the same way any other unreachable
+// endpoint does, and the caller's existing error handling covers it.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Uploads a recorded clip for transcription. Not `post()` — that helper
+ * always sends `Content-Type: application/json`, which is wrong for a
+ * multipart body (and would stop `fetch` from setting its own boundary).
+ */
+export async function transcribeAudio(audioUri: string, locale: Locale): Promise<{ transcript: string }> {
+  const token = await getToken();
+  const form = new FormData();
+  // React Native's `FormData` accepts this `{uri, type, name}` shape in
+  // place of a real `Blob` — it reads the file at `uri` off disk at send
+  // time. `audioUri` is whatever `VoiceMic`'s recorder handed back.
+  form.append('audio', {
+    uri: audioUri,
+    type: 'audio/mp4',
+    name: 'clip.m4a',
+  } as unknown as Blob);
+  form.append('locale', locale);
+
+  const res = await fetch(`${API_BASE_URL}/voice/transcribe`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      // No Content-Type here — `fetch` sets `multipart/form-data` with the
+      // correct boundary itself only when it is left to do so.
+    },
+    body: form,
+  });
+
+  if (!res.ok) {
+    const body = (await res.json().catch(() => null)) as ApiErrorBody | null;
+    throw new ApiError(
+      body?.error?.code ?? 'NETWORK',
+      body?.error?.message ?? `HTTP ${res.status}`,
+      res.status,
+      body?.error?.field ?? null,
+    );
+  }
+  return (await res.json()) as { transcript: string };
+}
+
+/**
+ * Live TTS — kept for when the backend route exists, but nothing in this
+ * app calls it yet. `lib/voice.ts`'s `speakText()` speaks the agent's
+ * dynamic prompts through the device's own on-device TTS instead, which
+ * works offline today (I7) and needs no server round trip at all.
+ */
+export const narrate = (text: string, locale: Locale) =>
+  post<{ audio_url: string }>('/voice/narrate', { text, locale });

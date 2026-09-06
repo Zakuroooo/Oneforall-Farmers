@@ -432,5 +432,16 @@
   "chart_band_legend": "Shaded band = p10–p90 (80 times in 100 the price lands inside it)",
   "chart_median_legend": "Middle line = p50 (the most likely price)",
 
-  "coming_soon": "Coming soon"
+  "coming_soon": "Coming soon",
+
+  "voice_mic_idle": "🎤 Tap to speak",
+  "voice_mic_recording": "🔴 Listening... tap to stop",
+  "voice_mic_transcribing": "🎤 Recognizing...",
+  "voice_mic_permission_denied": "Microphone permission denied. Allow it in settings, or type instead.",
+  "voice_mic_error": "Could not recognize the audio. Try again, or type instead.",
+  "voice_or_type_label": "Or type:",
+  "voice_manual_placeholder": "Type here…",
+  "voice_manual_send": "Send",
+  "voice_confirm_yes": "Yes",
+  "voice_confirm_no": "No"
 }

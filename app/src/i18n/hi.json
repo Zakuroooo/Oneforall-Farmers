@@ -432,5 +432,16 @@
   "chart_band_legend": "छायांकित पट्टी = p१०–p९० (१०० में ८० बार कीमत इसी पट्टी में रहती है)",
   "chart_median_legend": "बीच की रेखा = p५० (सबसे संभावित कीमत)",
 
-  "coming_soon": "जल्द आ रहा है"
+  "coming_soon": "जल्द आ रहा है",
+
+  "voice_mic_idle": "🎤 बोलने के लिए दबाएं",
+  "voice_mic_recording": "🔴 सुन रहे हैं... रोकने के लिए दबाएं",
+  "voice_mic_transcribing": "🎤 पहचान रहे हैं...",
+  "voice_mic_permission_denied": "माइक्रोफ़ोन की अनुमति नहीं मिली। सेटिंग्स से अनुमति दें या टाइप करें।",
+  "voice_mic_error": "आवाज़ पहचानी नहीं जा सकी। फिर से कोशिश करें या टाइप करें।",
+  "voice_or_type_label": "या टाइप करें:",
+  "voice_manual_placeholder": "यहां टाइप करें…",
+  "voice_manual_send": "भेजें",
+  "voice_confirm_yes": "हां",
+  "voice_confirm_no": "नहीं"
 }

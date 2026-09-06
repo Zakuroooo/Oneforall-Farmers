@@ -432,5 +432,16 @@
   "chart_band_legend": "छायांकित पट्टा = p१०–p९० (१०० पैकी ८० वेळा भाव या पट्ट्यात राहतो)",
   "chart_median_legend": "मधली रेषा = p५० (सर्वात संभाव्य भाव)",
 
-  "coming_soon": "लवकरच"
+  "coming_soon": "लवकरच",
+
+  "voice_mic_idle": "🎤 बोलण्यासाठी दाबा",
+  "voice_mic_recording": "🔴 ऐकत आहोत... थांबवण्यासाठी दाबा",
+  "voice_mic_transcribing": "🎤 ओळखत आहोत...",
+  "voice_mic_permission_denied": "मायक्रोफोनची परवानगी नाकारली. सेटिंग्जमधून परवानगी द्या किंवा टाइप करा.",
+  "voice_mic_error": "आवाज ओळखता आला नाही. पुन्हा प्रयत्न करा किंवा टाइप करा.",
+  "voice_or_type_label": "किंवा टाइप करा:",
+  "voice_manual_placeholder": "इथे टाइप करा…",
+  "voice_manual_send": "पाठवा",
+  "voice_confirm_yes": "हो",
+  "voice_confirm_no": "नाही"
 }

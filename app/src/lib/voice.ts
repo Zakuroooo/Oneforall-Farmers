@@ -295,6 +295,18 @@ export async function speak(clips: string[]): Promise<void> {
   }
 }
 
+/**
+ * Speaks arbitrary Marathi text live through the device's on-device TTS
+ * engine — for text that cannot be a pre-generated clip sequence because it
+ * is not known until runtime (a farmer's own name, a village they typed or
+ * spoke). `speak()` above is for the fixed, decomposable vocabulary
+ * (rupees, days); this is for everything else voice.ts is asked to say.
+ */
+export async function speakText(text: string): Promise<void> {
+  await ensureTtsLanguage();
+  await speakViaTts(text);
+}
+
 export async function speakVerdict(v: WindowRes, t?: TFn): Promise<void> {
   if (v.action === 'NO_ADVICE') {
     await speak(['no_advice']);
