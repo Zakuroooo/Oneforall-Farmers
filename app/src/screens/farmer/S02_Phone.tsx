@@ -42,6 +42,7 @@ export default function S02_Phone({ navigation }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
+  const canGoBack = navigation.canGoBack();
   const isValid = phone.replace(/\D/g, '').length === 10;
 
   // ★ BUG FIX: this used to be a bare `setTimeout` that always "succeeded"
@@ -81,12 +82,14 @@ export default function S02_Phone({ navigation }: Props) {
 
         {/* ── Header ─────────────────────────────────── */}
         <View style={styles.header}>
-          {/* Back button */}
-          <TouchableOpacity
-            style={styles.backBtn}
-            onPress={() => navigation.goBack()}>
-            <Icon name="arrow-left" size={20} color={colors.onSurface} />
-          </TouchableOpacity>
+          {/* Back button — only shown when there is a screen to go back to */}
+          {canGoBack && (
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => navigation.goBack()}>
+              <Icon name="arrow-left" size={20} color={colors.onSurface} />
+            </TouchableOpacity>
+          )}
 
           <View style={styles.headerTextRow}>
             <Text style={styles.headerTitle}>{t('phone_login_signup')}</Text>
