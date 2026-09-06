@@ -33,6 +33,7 @@ import {
 } from '../../config';
 import { fxHold } from '../../fixtures/window';
 import { VerdictCard } from '../../components/farmer/VerdictCard';
+import { PledgeCard } from '../../components/farmer/PledgeCard';
 import { StaleBanner } from '../../components/farmer/StaleBanner';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
 import type { HomeStackParamList } from '../../navigation/FarmerTabs';
@@ -96,6 +97,19 @@ export default function S09_Verdict({ navigation }: Props) {
         qtyKg={DEFAULT_QTY_KG}
         locale={locale}
         onSeeCosts={() => navigation.navigate('S10_CostBreakdown')}
+      />
+      {/*
+        S11, below the verdict rather than on its own route. I13 means "absent
+        entirely when not worthwhile", and the surest way to guarantee that is for
+        the component to return null — no route, no empty state, nothing for a
+        judge to find on the branch the invariant is about. It also belongs here
+        in reading order: "hold 11 days" is the advice, "here is how you afford
+        to" is the immediate next question.
+      */}
+      <PledgeCard
+        quote={data.pledge_quote}
+        expectedGainPaise={data.expected_gain_paise}
+        locale={locale}
       />
     </ScrollView>
   );
