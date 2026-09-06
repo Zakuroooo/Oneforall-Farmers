@@ -170,7 +170,7 @@ export default function S12_CreateLot({ navigation }: Props) {
         </Card>
         <Button
           title="आता ग्रेड तपासा"
-          onPress={() => navigation.navigate('S13_SelfAssay')}
+          onPress={() => navigation.navigate('S13_SelfAssay', { lot_id: createdLot.id })}
           style={styles.submitButton}
         />
       </ScrollView>

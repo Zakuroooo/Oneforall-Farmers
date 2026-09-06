@@ -13,12 +13,12 @@
 
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { getLot } from '../../lib/api';
+import { getLot, submitAssay } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
 import { computeGrade } from '../../lib/grading';
-import type { GradingResult } from '../../lib/grading';
 import { DEFAULT_LOT_ID, USE_FIXTURES } from '../../config';
 import { fxLotListed } from '../../fixtures/lots';
 import { Card } from '../../components/ui/Card';
@@ -26,7 +26,10 @@ import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import type { BadgeType } from '../../components/ui/Badge';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
-import type { AssayDimension, Locale } from '../../types/api';
+import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
+import type { AssayDimension, AssayReq, AssayRes, Grade, Locale } from '../../types/api';
+
+type Props = NativeStackScreenProps<MyLotsStackParamList, 'S13_SelfAssay'>;
 
 type Rating = 1 | 2 | 3;
 
@@ -125,30 +128,63 @@ const TIP_EN: Record<AssayDimension, string> = {
   foreign_matter: 'Cleaning out soil and debris could improve the grade.',
 };
 
-const GRADE_BADGE: Record<GradingResult['grade'], BadgeType> = {
+const GRADE_BADGE: Record<Grade, BadgeType> = {
   A: 'GRADE_A',
   B: 'GRADE_B',
   C: 'GRADE_C',
 };
 
-async function fetchLot() {
+async function fetchLot(lotId: string) {
   if (USE_FIXTURES) return fxLotListed;
-  return getLot(DEFAULT_LOT_ID);
+  return getLot(lotId);
 }
 
-export default function S13_SelfAssay() {
+/**
+ * `POST /lots/{id}/assay` — CANON §7.5. Akash's route does not exist in this
+ * repo, so under `USE_FIXTURES` the response is built the same way `computeGrade`
+ * would be graded server-side: `lib/grading.ts`'s formula, plus the tip text
+ * this screen already carries for each `weakest_dimension`. When a real
+ * backend exists, `submitAssay` is the one that actually persists it.
+ */
+async function persistAssay(lotId: string, body: AssayReq): Promise<AssayRes> {
+  if (USE_FIXTURES) {
+    const graded = computeGrade(body);
+    return {
+      score: graded.score,
+      grade: graded.grade,
+      weakest_dimension: graded.weakest_dimension,
+      tip_mr: TIP_MR[graded.weakest_dimension],
+      tip_en: TIP_EN[graded.weakest_dimension],
+    };
+  }
+  return submitAssay(lotId, body);
+}
+
+export default function S13_SelfAssay({ route }: Props) {
+  const lotId = route.params?.lot_id ?? DEFAULT_LOT_ID;
+
   const [locale, setLocale] = useState<Locale>('mr');
   React.useEffect(() => {
     getLocale().then(l => l && setLocale(l));
   }, []);
 
   const { data: lot, isLoading, error, refetch } = useQuery({
-    queryKey: ['lots', DEFAULT_LOT_ID],
-    queryFn: fetchLot,
+    queryKey: ['lots', lotId],
+    queryFn: () => fetchLot(lotId),
   });
 
   const [answers, setAnswers] = useState<Answers>(EMPTY_ANSWERS);
-  const [result, setResult] = useState<GradingResult | null>(null);
+
+  const {
+    mutate: submit,
+    isPending: submitting,
+    isError: submitFailed,
+    isSuccess: submitted,
+    data: result,
+    reset: resetSubmit,
+  } = useMutation({
+    mutationFn: (body: AssayReq) => persistAssay(lotId, body),
+  });
 
   if (isLoading) {
     return (
@@ -188,7 +224,7 @@ export default function S13_SelfAssay() {
     });
   };
 
-  const checkGrade = () => {
+  const buildAssayReq = (): AssayReq | null => {
     if (
       answers.size_uniform === null ||
       answers.colour_uniform === null ||
@@ -197,35 +233,56 @@ export default function S13_SelfAssay() {
       answers.foreign_matter === null ||
       answers.damage_pct === null
     ) {
-      return;
+      return null;
     }
-    setResult(
-      computeGrade({
-        size_uniform: answers.size_uniform,
-        colour_uniform: answers.colour_uniform,
-        sprouting: answers.sprouting,
-        damage_pct: answers.damage_pct,
-        moisture_feel: answers.moisture_feel,
-        foreign_matter: answers.foreign_matter,
-      }),
-    );
+    return {
+      size_uniform: answers.size_uniform,
+      colour_uniform: answers.colour_uniform,
+      sprouting: answers.sprouting,
+      damage_pct: answers.damage_pct,
+      moisture_feel: answers.moisture_feel,
+      foreign_matter: answers.foreign_matter,
+    };
+  };
+
+  const checkGrade = () => {
+    const body = buildAssayReq();
+    if (body) submit(body);
   };
 
   const startOver = () => {
     setAnswers(EMPTY_ANSWERS);
-    setResult(null);
+    resetSubmit();
   };
 
-  if (result) {
+  if (submitFailed) {
+    return (
+      <ErrorState
+        message="ग्रेड जतन करता आला नाही. पुन्हा प्रयत्न करा."
+        onRetry={() => {
+          const body = buildAssayReq();
+          if (body) submit(body);
+        }}
+      />
+    );
+  }
+
+  if (submitting) {
+    return (
+      <ScrollView contentContainerStyle={styles.root}>
+        <Skeleton height={200} />
+      </ScrollView>
+    );
+  }
+
+  if (submitted && result) {
     return (
       <ScrollView contentContainerStyle={styles.root}>
         <Card variant="elevated" style={styles.resultCard}>
           <Badge label={`ग्रेड ${result.grade}`} type={GRADE_BADGE[result.grade]} />
           <Text style={styles.scoreText}>गुण: {result.score} (कमाल १०००)</Text>
-          <Text style={styles.tipTextMr}>{TIP_MR[result.weakest_dimension]}</Text>
-          {locale === 'en' ? (
-            <Text style={styles.tipTextEn}>{TIP_EN[result.weakest_dimension]}</Text>
-          ) : null}
+          <Text style={styles.tipTextMr}>{result.tip_mr}</Text>
+          {locale === 'en' ? <Text style={styles.tipTextEn}>{result.tip_en}</Text> : null}
         </Card>
         <Button title="पुन्हा तपासा" variant="outline" onPress={startOver} />
       </ScrollView>

@@ -91,7 +91,14 @@ function PricesStackNavigator() {
  */
 export type MyLotsStackParamList = {
   S12_CreateLot: undefined;
-  S13_SelfAssay: undefined;
+  /**
+   * `lot_id` is optional so S13 stays reachable directly (e.g. from a deep
+   * link or a future S15 lots list) without a lot already created in this
+   * session — it falls back to `DEFAULT_LOT_ID` from config. When S12
+   * navigates here it always passes the id of the lot it just created, so
+   * the assay actually scores that lot and not the standalone fixture.
+   */
+  S13_SelfAssay: { lot_id?: string } | undefined;
 };
 
 const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
