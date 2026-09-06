@@ -14,12 +14,30 @@
  * point's source — the segment represents the observation it leads into. This
  * is a real judgment call with no single obviously-correct answer; documented
  * here rather than silently picked.
+ *
+ * ★ Axes. This chart used to print the min at the bottom-left and the max at the
+ *   bottom-right of one horizontal row, which reads as "price went up from left
+ *   to right" — but those are the *vertical* extremes and the horizontal axis is
+ *   time. Now price is labelled on the y axis where it actually is, and the two
+ *   ends of the x axis carry the first and last `obs_date`, so a farmer can see
+ *   that this is six months and not six days.
+ *
+ *   Nothing was added *inside* the `<Svg>`. Gridlines would have been the
+ *   obvious way to draw an axis, and they are deliberately not here: every
+ *   `<Line>` in this chart is a data segment stroked by its source's colour
+ *   (I8), and `PriceHistory.test.tsx` asserts exactly that — one `<Line>` per
+ *   consecutive pair, and exactly two distinct strokes for the mixed-source
+ *   fixture. A decorative `<Line>` would quietly break both, so the axis is
+ *   built from RN `<Text>` around the SVG instead. The chart keeps the property
+ *   that a coloured line in it always means a provenance claim.
  */
 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 
+import { formatDateShort } from '../../lib/dates';
+import { translate } from '../../lib/i18n';
 import { formatPaise } from '../../lib/money';
 import { SOURCE_COLOR, TRUSTED, untrustedSourceLabel } from '../farmer/SourceBadge';
 import type { DataSource, Locale, PricePoint } from '../../types/api';
@@ -42,6 +60,10 @@ function legendLabel(source: DataSource, locale: Locale): string {
 export function PriceHistory({ points, locale }: Props) {
   if (points.length < 2) return null;
 
+  const first = points[0];
+  const last = points[points.length - 1];
+  if (!first || !last) return null;
+
   const values = points.map(p => p.modal_paise_per_qtl);
   const min = Math.min(...values);
   const max = Math.max(...values);
@@ -55,26 +77,44 @@ export function PriceHistory({ points, locale }: Props) {
 
   return (
     <View>
-      <Svg width="100%" height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`}>
-        {points.slice(1).map((point, idx) => {
-          const prev = points[idx]!;
-          return (
-            <Line
-              key={point.obs_date}
-              x1={xFor(idx)}
-              y1={yFor(prev.modal_paise_per_qtl)}
-              x2={xFor(idx + 1)}
-              y2={yFor(point.modal_paise_per_qtl)}
-              stroke={SOURCE_COLOR[point.source]}
-              strokeWidth={2}
-            />
-          );
-        })}
-      </Svg>
+      <Text style={styles.axisTitle}>{translate('chart_axis_price', locale)}</Text>
 
-      <View style={styles.axisRow}>
-        <Text style={styles.axisLabel}>{formatPaise(min, locale)}</Text>
-        <Text style={styles.axisLabel}>{formatPaise(max, locale)}</Text>
+      <View style={styles.plotRow}>
+        {/* `height: HEIGHT` + space-between puts max level with the top of the
+            plot and min level with the bottom, which is where they are. */}
+        <View style={styles.yAxis}>
+          <Text style={styles.axisLabel} numberOfLines={1}>
+            {formatPaise(max, locale)}
+          </Text>
+          <Text style={styles.axisLabel} numberOfLines={1}>
+            {formatPaise(min, locale)}
+          </Text>
+        </View>
+
+        <View style={styles.plot}>
+          <Svg width="100%" height={HEIGHT} viewBox={`0 0 ${WIDTH} ${HEIGHT}`}>
+            {points.slice(1).map((point, idx) => {
+              const prev = points[idx];
+              if (!prev) return null;
+              return (
+                <Line
+                  key={point.obs_date}
+                  x1={xFor(idx)}
+                  y1={yFor(prev.modal_paise_per_qtl)}
+                  x2={xFor(idx + 1)}
+                  y2={yFor(point.modal_paise_per_qtl)}
+                  stroke={SOURCE_COLOR[point.source]}
+                  strokeWidth={2}
+                />
+              );
+            })}
+          </Svg>
+
+          <View style={styles.xAxis}>
+            <Text style={styles.axisLabel}>{formatDateShort(first.obs_date, locale)}</Text>
+            <Text style={styles.axisLabel}>{formatDateShort(last.obs_date, locale)}</Text>
+          </View>
+        </View>
       </View>
 
       <View style={styles.legendRow}>
@@ -90,9 +130,13 @@ export function PriceHistory({ points, locale }: Props) {
 }
 
 const styles = StyleSheet.create({
-  axisRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 },
-  axisLabel: { fontSize: 12, color: '#888' },
-  legendRow: { flexDirection: 'row', gap: 16, marginTop: 10 },
+  axisTitle: { fontSize: 12, fontWeight: '600', color: '#666', marginBottom: 4 },
+  plotRow: { flexDirection: 'row', alignItems: 'stretch' },
+  yAxis: { height: HEIGHT, justifyContent: 'space-between', marginRight: 6, alignItems: 'flex-end' },
+  plot: { flex: 1 },
+  xAxis: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 2 },
+  axisLabel: { fontSize: 11, color: '#888' },
+  legendRow: { flexDirection: 'row', gap: 16, marginTop: 10, flexWrap: 'wrap' },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   legendDot: { width: 8, height: 8, borderRadius: 4 },
   legendLabel: { fontSize: 12, color: '#555' },
