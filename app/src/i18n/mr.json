@@ -120,5 +120,10 @@
   "village_label_optional": "गाव (ऐच्छिक)",
   "village_placeholder": "गावाचे नाव",
   "otp_invalid_expired": "OTP चुकीचा किंवा कालबाह्य आहे. पुन्हा सुरू करा.",
-  "restart_otp_link": "पुन्हा OTP साठी परत जा"
+  "restart_otp_link": "पुन्हा OTP साठी परत जा",
+
+  "price_fetch_error": "किंमत आणता आली नाही. पुन्हा प्रयत्न करा.",
+  "home_price_empty": "या मार्केटसाठी अजून किंमत उपलब्ध नाही.",
+  "today_price_per_qtl_label": "आजची किंमत (प्रति क्विंटल)",
+  "home_cta": "मी विकावे का?"
 }

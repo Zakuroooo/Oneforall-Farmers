@@ -120,5 +120,10 @@
   "village_label_optional": "Village (optional)",
   "village_placeholder": "Village name",
   "otp_invalid_expired": "The OTP is wrong or expired. Start again.",
-  "restart_otp_link": "Go back for a new OTP"
+  "restart_otp_link": "Go back for a new OTP",
+
+  "price_fetch_error": "Could not fetch the price. Please try again.",
+  "home_price_empty": "No price available yet for this market.",
+  "today_price_per_qtl_label": "Today's price (per quintal)",
+  "home_cta": "Should I sell?"
 }

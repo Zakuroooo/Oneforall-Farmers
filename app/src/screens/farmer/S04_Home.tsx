@@ -29,6 +29,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { getPriceSeries } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import { formatPaise } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxPriceSeries } from '../../fixtures/prices';
@@ -77,14 +78,14 @@ export default function S04_Home({ navigation }: Props) {
   if (error && !hasData) {
     return (
       <ErrorState
-        message="किंमत आणता आली नाही. पुन्हा प्रयत्न करा."
+        message={translate('price_fetch_error', locale)}
         onRetry={() => refetch()}
       />
     );
   }
 
   if (!data || !hasData) {
-    return <EmptyState title="या मार्केटसाठी अजून किंमत उपलब्ध नाही." />;
+    return <EmptyState title={translate('home_price_empty', locale)} />;
   }
 
   const today: PricePoint =
@@ -95,12 +96,12 @@ export default function S04_Home({ navigation }: Props) {
     <View style={styles.root}>
       <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
       <View style={styles.headerRow}>
-        <Text style={styles.commodity}>कांदा · लासलगाव</Text>
+        <Text style={styles.commodity}>{translate('demo_commodity_market', locale)}</Text>
         <SourceBadge source={today.source} locale={locale} />
       </View>
 
       <View style={styles.priceCard}>
-        <Text style={styles.priceLabel}>आजची किंमत (प्रति क्विंटल)</Text>
+        <Text style={styles.priceLabel}>{translate('today_price_per_qtl_label', locale)}</Text>
         <Text style={styles.price}>{formatPaise(today.modal_paise_per_qtl, locale)}</Text>
         <Text style={styles.range}>
           {formatPaise(today.min_paise_per_qtl, locale)} – {formatPaise(today.max_paise_per_qtl, locale)}
@@ -108,7 +109,7 @@ export default function S04_Home({ navigation }: Props) {
       </View>
 
       <TouchableOpacity style={styles.cta} onPress={() => navigation.navigate('S9_Verdict')}>
-        <Text style={styles.ctaLabel}>मी विकावे का?</Text>
+        <Text style={styles.ctaLabel}>{translate('home_cta', locale)}</Text>
       </TouchableOpacity>
     </View>
   );
