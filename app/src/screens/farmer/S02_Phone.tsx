@@ -61,7 +61,7 @@ export default function S02_Phone({ navigation }: Props) {
         await requestOtp(fullPhone);
       }
       setPendingAuth(fullPhone, '');
-      navigation.navigate('S3_Profile');
+      navigation.navigate('S3_OTP');
     } catch (e) {
       setError(e instanceof ApiError ? e.message : t('network_error_generic'));
     } finally {

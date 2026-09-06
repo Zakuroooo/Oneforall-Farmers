@@ -42,7 +42,14 @@ export type IconName =
   | 'eye'
   | 'clock'
   | 'info'
-  | 'x-circle';
+  | 'x-circle'
+  | 'message-circle'
+  | 'edit'
+  | 'refresh'
+  | 'map-pin'
+  | 'plus'
+  | 'camera'
+  | 'scale';
 
 interface IconProps {
   name: IconName;
@@ -260,6 +267,54 @@ const ICON_PATHS: Record<IconName, (color: string) => React.ReactElement> = {
     <G>
       <Circle cx={12} cy={12} r={10} stroke={c} strokeWidth={1.5} fill="none" />
       <Path d="M15 9L9 15M9 9L15 15" stroke={c} strokeWidth={1.5} strokeLinecap="round" fill="none" />
+    </G>
+  ),
+
+  'message-circle': (c) => (
+    <G>
+      <Path d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </G>
+  ),
+
+  edit: (c) => (
+    <G>
+      <Path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Path d="M18.5 2.5C18.8978 2.10217 19.4374 1.87868 20 1.87868C20.5626 1.87868 21.1022 2.10217 21.5 2.5C21.8978 2.89782 22.1213 3.43739 22.1213 4C22.1213 4.56261 21.8978 5.10218 21.5 5.5L12 15L8 16L9 12L18.5 2.5Z" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </G>
+  ),
+
+  refresh: (c) => (
+    <G>
+      <Path d="M23 4V10H17" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Path d="M1 20V14H7" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Path d="M3.51 9C4.01717 7.56678 4.87913 6.2854 6.01547 5.27542C7.1518 4.26543 8.52547 3.55976 10.0083 3.22426C11.4911 2.88875 13.0348 2.93434 14.4952 3.35677C15.9556 3.77921 17.2853 4.56471 18.36 5.64L23 10M1 14L5.64 18.36C6.71475 19.4353 8.04437 20.2208 9.50481 20.6432C10.9652 21.0657 12.5089 21.1112 13.9917 20.7757C15.4745 20.4402 16.8482 19.7346 17.9845 18.7246C19.1209 17.7146 19.9828 16.4332 20.49 15" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </G>
+  ),
+
+  'map-pin': (c) => (
+    <G>
+      <Path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Circle cx={12} cy={10} r={3} stroke={c} strokeWidth={1.5} fill="none" />
+    </G>
+  ),
+
+  plus: (c) => (
+    <G>
+      <Path d="M12 5V19M5 12H19" stroke={c} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </G>
+  ),
+
+  camera: (c) => (
+    <G>
+      <Path d="M23 19C23 19.5304 22.7893 20.0391 22.4142 20.4142C22.0391 20.7893 21.5304 21 21 21H3C2.46957 21 1.96086 20.7893 1.58579 20.4142C1.21071 20.0391 1 19.5304 1 19V8C1 7.46957 1.21071 6.96086 1.58579 6.58579C1.96086 6.21071 2.46957 6 3 6H7L9 3H15L17 6H21C21.5304 6 22.0391 6.21071 22.4142 6.58579C22.7893 6.96086 23 7.46957 23 8V19Z" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Circle cx={12} cy={13} r={4} stroke={c} strokeWidth={1.5} fill="none" />
+    </G>
+  ),
+
+  scale: (c) => (
+    <G>
+      <Path d="M16 16L12 12M12 12L8 16M12 12V21" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Path d="M20.39 18.39A5 5 0 0 0 18 9H16.74A8 8 0 1 0 3 16.3" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
     </G>
   ),
 };

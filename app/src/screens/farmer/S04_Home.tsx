@@ -23,6 +23,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, space, radius } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { useAuth } from '../../lib/auth';
 import type { HomeStackParamList } from '../../navigation/FarmerTabs';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'S4_Home'>;
@@ -117,6 +118,7 @@ const redOnions = require('../../assets/images/red_onions.jpg');
 
 export default function S04_Home({ navigation }: Props) {
   const { t } = useT();
+  const { user } = useAuth();
 
   return (
     <View style={styles.root}>
@@ -126,20 +128,31 @@ export default function S04_Home({ navigation }: Props) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
 
-        {/* ── 1. Top bar ─────────────────────────────────── */}
+        {/* ── 1. Top bar ─────────────────────────────────────
+             The app name/role/sign-out chrome already renders once,
+             globally, in RootNavigator — repeating it here as a second
+             "Mandi-Setu" brand label was both wrong-branded and a
+             redundant second header. This row now shows page context
+             (who's signed in, which market) instead of the app name. */}
         <View style={styles.topBar}>
           <View>
-            <Text style={styles.topGreeting}>Mandi-Setu</Text>
-            <Text style={styles.topDate}>Lasalgaon APMC</Text>
+            <Text style={styles.topGreeting} numberOfLines={1}>
+              {user?.name ?? t('app_name')}
+            </Text>
+            <Text style={styles.topDate}>{t('home_market_name')}</Text>
           </View>
+          {/* Voice narration and buyer-bid notifications are not wired yet
+              (no TTS-per-screen pipeline, no push/poll for new offers) — a
+              tappable icon that silently does nothing reads as a broken
+              button, so these render as plain, non-interactive glyphs
+              until there is a real handler behind them. */}
           <View style={styles.topActions}>
-            <TouchableOpacity style={styles.topIconBtn}>
-              <Icon name="mic" size={18} color={colors.primary} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.topIconBtn}>
-              <Icon name="bell" size={18} color={colors.onSurface} />
-              <View style={styles.bellDot} />
-            </TouchableOpacity>
+            <View style={styles.topIconBtn}>
+              <Icon name="mic" size={18} color={colors.outline} />
+            </View>
+            <View style={styles.topIconBtn}>
+              <Icon name="bell" size={18} color={colors.outline} />
+            </View>
           </View>
         </View>
 
