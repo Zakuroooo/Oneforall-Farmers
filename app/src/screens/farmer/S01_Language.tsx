@@ -3,7 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { useAuth } from '../../lib/auth';
-import { setLocale } from '../../lib/locale';
+import { useT } from '../../lib/i18n';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import type { Locale } from '../../types/api';
 
@@ -17,17 +17,18 @@ const OPTIONS: Array<{ code: Locale; label: string }> = [
 
 export default function S01_Language({ navigation }: Props) {
   const { signIn } = useAuth();
+  const { setLocale } = useT();
   const [selected, setSelected] = useState<Locale>('mr');
   const [saving, setSaving] = useState(false);
 
   const confirm = async () => {
     setSaving(true);
-    await setLocale(selected);
+    setLocale(selected);
     navigation.replace('S2_Phone');
   };
 
   const handleQuickFarmerDemo = async () => {
-    await setLocale(selected);
+    setLocale(selected);
     await signIn({
       token: 'demo-farmer-token',
       user: {
@@ -42,7 +43,7 @@ export default function S01_Language({ navigation }: Props) {
   };
 
   const handleQuickBuyerDemo = async () => {
-    await setLocale(selected);
+    setLocale(selected);
     await signIn({
       token: 'demo-buyer-token',
       user: {

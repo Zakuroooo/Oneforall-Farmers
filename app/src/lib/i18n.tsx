@@ -1,7 +1,8 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import mr from '../i18n/mr.json';
 import en from '../i18n/en.json';
 import hi from '../i18n/hi.json';
+import { getLocale as getPersistedLocale, setLocale as persistLocale } from './locale';
 import type { Locale } from '../types/api';
 
 const DICTS: Record<Locale, Record<string, string>> = { mr, hi, en };
@@ -71,7 +72,38 @@ const defaultContextValue: I18nContextValue = {
 const I18nContext = createContext<I18nContextValue>(defaultContextValue);
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
-  const [locale, setLocale] = useState<Locale>('mr'); // Marathi is the DEFAULT
+  const [locale, setLocaleState] = useState<Locale>('mr'); // Marathi is the DEFAULT until S1 has run
+
+  // ★ BUG FIXED: this context's `locale` was write-only from S1's side — S1
+  //   called `lib/locale.ts`'s `setLocale` (AsyncStorage) directly, never this
+  //   context's, so `t()` stayed on 'mr' for the entire app session no matter
+  //   what a farmer picked. Every screen's own `getLocale()`-on-mount pattern
+  //   for number formatting was unaffected (it never read this context), but
+  //   any component using `useT()`'s `t` for text — `VerdictCard`, `PledgeCard`
+  //   — silently ignored the language picker.
+  //
+  //   Two halves to the fix: read the persisted value once at boot (below),
+  //   and make `setLocale` (exposed below) the one function that both updates
+  //   this context *and* persists — see `S01_Language.tsx`, which now calls
+  //   this instead of `lib/locale.ts`'s export directly.
+  useEffect(() => {
+    let cancelled = false;
+    getPersistedLocale().then(l => {
+      if (!cancelled && l) setLocaleState(l);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const setLocale = useCallback((l: Locale) => {
+    setLocaleState(l);
+    persistLocale(l).catch(() => {
+      // Best-effort persistence — the in-memory context already has the
+      // right value for this session; a failed AsyncStorage write means the
+      // next cold start re-asks, not that this session is wrong.
+    });
+  }, []);
 
   const t = useCallback<TFn>(
     (key, vars) => {
