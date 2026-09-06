@@ -294,5 +294,21 @@
   "net_amount_value": "Net amount: {value}",
   "timeline_hide_link": "▾ Hide timeline",
   "timeline_show_link": "▸ View timeline",
-  "chat_with_buyer_link": "💬 Message the buyer"
+  "chat_with_buyer_link": "💬 Message the buyer",
+
+  "pool_fetch_error": "Could not fetch the pool information. Please try again.",
+  "pool_empty": "This pool has not formed yet.",
+  "total_qty_line": "Total quantity: {qty} quintals",
+  "avg_score_line": "Average score: {score} / {max}",
+  "total_share_line": "Total share: {share} ({members} farmers)",
+  "pool_wont_form_title": "This pool will not form.",
+  "pool_wont_form_body": "The farmers below would have gained more selling alone — the pool must not leave anyone worse off.",
+  "member_qty_score_line": "Quantity: {qty} quintals · Score: {score}",
+  "member_weight_line": "Weight (qty × grade multiplier): {weight}",
+  "vs_solo_line": "Compared to selling alone: {value}",
+  "vs_solo_loss_suffix": " — a loss",
+  "vs_solo_gain_suffix": " more",
+  "consent_agreed": "Agreed",
+  "consent_refused": "Refused",
+  "consent_not_asked": "Not asked yet"
 }

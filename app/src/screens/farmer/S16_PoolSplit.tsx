@@ -29,6 +29,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { getPool } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import { formatBps, formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { USE_FIXTURES } from '../../config';
 import { fxPool, fxPoolParetoViolation } from '../../fixtures/pools';
@@ -49,14 +50,14 @@ async function fetchPool(poolId: string): Promise<PoolDto> {
   return getPool(poolId);
 }
 
-const CONSENT_LABEL_MR: Record<'true' | 'false' | 'null', string> = {
-  true: 'संमती दिली',
-  false: 'नकार दिला',
-  null: 'अजून विचारले नाही',
+const CONSENT_LABEL_KEY: Record<'true' | 'false' | 'null', string> = {
+  true: 'consent_agreed',
+  false: 'consent_refused',
+  null: 'consent_not_asked',
 };
 
-function consentLabel(consented: boolean | null): string {
-  return CONSENT_LABEL_MR[String(consented) as 'true' | 'false' | 'null'];
+function consentLabel(consented: boolean | null, locale: Locale): string {
+  return translate(CONSENT_LABEL_KEY[String(consented) as 'true' | 'false' | 'null'], locale);
 }
 
 export default function S16_PoolSplit({ route }: Props) {
@@ -81,11 +82,11 @@ export default function S16_PoolSplit({ route }: Props) {
   }
 
   if (error) {
-    return <ErrorState message="गट माहिती आणता आली नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />;
+    return <ErrorState message={translate('pool_fetch_error', locale)} onRetry={() => refetch()} />;
   }
 
   if (!pool || pool.members.length === 0) {
-    return <EmptyState title="हा गट अजून तयार झालेला नाही." />;
+    return <EmptyState title={translate('pool_empty', locale)} />;
   }
 
   const shareSumBps = pool.members.reduce((sum, m) => sum + m.share_bps, 0);
@@ -97,20 +98,26 @@ export default function S16_PoolSplit({ route }: Props) {
       <Text style={styles.header}>{pool.fpo.name_mr}</Text>
       <Card style={styles.summaryCard}>
         <Text style={styles.summaryLine}>
-          एकूण प्रमाण: {formatNumber(toQuintal(pool.total_qty_kg), locale)} क्विंटल
+          {translate('total_qty_line', locale, { qty: formatNumber(toQuintal(pool.total_qty_kg), locale) })}
         </Text>
-        <Text style={styles.summaryLine}>सरासरी गुण: {formatNumber(pool.avg_score, locale)} / १०००</Text>
         <Text style={styles.summaryLine}>
-          एकूण वाटा: {formatBps(shareSumBps, locale)} ({pool.members.length} शेतकरी)
+          {translate('avg_score_line', locale, {
+            score: formatNumber(pool.avg_score, locale),
+            max: formatNumber(1000, locale),
+          })}
+        </Text>
+        <Text style={styles.summaryLine}>
+          {translate('total_share_line', locale, {
+            share: formatBps(shareSumBps, locale),
+            members: formatNumber(pool.members.length, locale),
+          })}
         </Text>
       </Card>
 
       {!poolForms ? (
         <Card style={styles.paretoBanner}>
-          <Text style={styles.paretoTitle}>हा गट तयार होणार नाही.</Text>
-          <Text style={styles.paretoBody}>
-            खालील शेतकऱ्यांना एकट्याने विकल्यास जास्त फायदा झाला असता — गटामुळे कोणाचेही नुकसान होता कामा नये.
-          </Text>
+          <Text style={styles.paretoTitle}>{translate('pool_wont_form_title', locale)}</Text>
+          <Text style={styles.paretoBody}>{translate('pool_wont_form_body', locale)}</Text>
         </Card>
       ) : null}
 
@@ -125,14 +132,19 @@ export default function S16_PoolSplit({ route }: Props) {
               <Text style={styles.memberShare}>{formatBps(member.share_bps, locale)}</Text>
             </View>
             <Text style={styles.memberLine}>
-              प्रमाण: {formatNumber(toQuintal(member.qty_kg), locale)} क्विंटल · गुण: {formatNumber(member.score_at_pool, locale)}
+              {translate('member_qty_score_line', locale, {
+                qty: formatNumber(toQuintal(member.qty_kg), locale),
+                score: formatNumber(member.score_at_pool, locale),
+              })}
             </Text>
-            <Text style={styles.memberLine}>वजन (qty × ग्रेड गुणक): {formatNumber(member.weight, locale)}</Text>
+            <Text style={styles.memberLine}>
+              {translate('member_weight_line', locale, { weight: formatNumber(member.weight, locale) })}
+            </Text>
             <Text style={[styles.memberVsSolo, violates && styles.memberVsSoloNegative]}>
-              एकट्याच्या तुलनेत: {formatPaise(member.vs_solo_paise, locale)}
-              {violates ? ' — नुकसान' : ' जास्त'}
+              {translate('vs_solo_line', locale, { value: formatPaise(member.vs_solo_paise, locale) })}
+              {translate(violates ? 'vs_solo_loss_suffix' : 'vs_solo_gain_suffix', locale)}
             </Text>
-            <Text style={styles.memberConsent}>{consentLabel(member.consented)}</Text>
+            <Text style={styles.memberConsent}>{consentLabel(member.consented, locale)}</Text>
           </Card>
         );
       })}

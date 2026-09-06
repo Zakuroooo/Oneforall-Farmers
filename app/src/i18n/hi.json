@@ -294,5 +294,21 @@
   "net_amount_value": "शुद्ध राशि: {value}",
   "timeline_hide_link": "▾ टाइमलाइन छुपाएं",
   "timeline_show_link": "▸ टाइमलाइन देखें",
-  "chat_with_buyer_link": "💬 व्यापारी से बात करें"
+  "chat_with_buyer_link": "💬 व्यापारी से बात करें",
+
+  "pool_fetch_error": "समूह की जानकारी नहीं लाई जा सकी। कृपया पुनः प्रयास करें।",
+  "pool_empty": "यह समूह अभी नहीं बना है।",
+  "total_qty_line": "कुल मात्रा: {qty} क्विंटल",
+  "avg_score_line": "औसत अंक: {score} / {max}",
+  "total_share_line": "कुल हिस्सा: {share} ({members} किसान)",
+  "pool_wont_form_title": "यह समूह नहीं बनेगा।",
+  "pool_wont_form_body": "नीचे दिए किसानों को अकेले बेचने पर ज्यादा फायदा होता — समूह से किसी का नुकसान नहीं होना चाहिए।",
+  "member_qty_score_line": "मात्रा: {qty} क्विंटल · अंक: {score}",
+  "member_weight_line": "वजन (मात्रा × ग्रेड गुणक): {weight}",
+  "vs_solo_line": "अकेले की तुलना में: {value}",
+  "vs_solo_loss_suffix": " — नुकसान",
+  "vs_solo_gain_suffix": " ज्यादा",
+  "consent_agreed": "सहमति दी",
+  "consent_refused": "मना किया",
+  "consent_not_asked": "अभी पूछा नहीं गया"
 }

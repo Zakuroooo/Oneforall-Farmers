@@ -294,5 +294,21 @@
   "net_amount_value": "निव्वळ रक्कम: {value}",
   "timeline_hide_link": "▾ टाइमलाइन लपवा",
   "timeline_show_link": "▸ टाइमलाइन पहा",
-  "chat_with_buyer_link": "💬 व्यापाऱ्याशी बोला"
+  "chat_with_buyer_link": "💬 व्यापाऱ्याशी बोला",
+
+  "pool_fetch_error": "गट माहिती आणता आली नाही. पुन्हा प्रयत्न करा.",
+  "pool_empty": "हा गट अजून तयार झालेला नाही.",
+  "total_qty_line": "एकूण प्रमाण: {qty} क्विंटल",
+  "avg_score_line": "सरासरी गुण: {score} / {max}",
+  "total_share_line": "एकूण वाटा: {share} ({members} शेतकरी)",
+  "pool_wont_form_title": "हा गट तयार होणार नाही.",
+  "pool_wont_form_body": "खालील शेतकऱ्यांना एकट्याने विकल्यास जास्त फायदा झाला असता — गटामुळे कोणाचेही नुकसान होता कामा नये.",
+  "member_qty_score_line": "प्रमाण: {qty} क्विंटल · गुण: {score}",
+  "member_weight_line": "वजन (qty × ग्रेड गुणक): {weight}",
+  "vs_solo_line": "एकट्याच्या तुलनेत: {value}",
+  "vs_solo_loss_suffix": " — नुकसान",
+  "vs_solo_gain_suffix": " जास्त",
+  "consent_agreed": "संमती दिली",
+  "consent_refused": "नकार दिला",
+  "consent_not_asked": "अजून विचारले नाही"
 }
