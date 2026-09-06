@@ -325,5 +325,22 @@
   "send_message_button": "पाठवा",
 
   "assistant_header": "मदत",
-  "assistant_subheader": "वारंवार विचारले जाणारे प्रश्न"
+  "assistant_subheader": "वारंवार विचारले जाणारे प्रश्न",
+
+  "tab_home": "मुख्यपृष्ठ",
+  "tab_prices": "भाव",
+  "tab_my_lots": "माझे लॉट",
+
+  "buyer_tab_demands": "मागणी",
+  "buyer_tab_matches": "जुळणी",
+  "buyer_tab_offers": "ऑफर",
+  "buyer_tab_transactions": "व्यवहार",
+  "buyer_tab_ledger": "खातेवही",
+  "buyer_tab_provenance": "पारदर्शकता",
+  "buyer_tab_dispute": "तक्रार",
+  "buyer_tab_chat": "चॅट",
+
+  "root_farmer_app_title": "🌾 शेतकरी ॲप",
+  "root_buyer_console_title": "💼 व्यापारी कंसोल",
+  "root_sign_out": "🚪 बाहेर पडा"
 }

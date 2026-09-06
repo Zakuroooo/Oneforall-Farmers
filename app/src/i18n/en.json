@@ -325,5 +325,22 @@
   "send_message_button": "Send",
 
   "assistant_header": "Help",
-  "assistant_subheader": "Frequently asked questions"
+  "assistant_subheader": "Frequently asked questions",
+
+  "tab_home": "Home",
+  "tab_prices": "Prices",
+  "tab_my_lots": "My Lots",
+
+  "buyer_tab_demands": "Demand",
+  "buyer_tab_matches": "Matches",
+  "buyer_tab_offers": "Offers",
+  "buyer_tab_transactions": "Transactions",
+  "buyer_tab_ledger": "Ledger",
+  "buyer_tab_provenance": "Transparency",
+  "buyer_tab_dispute": "Dispute",
+  "buyer_tab_chat": "Chat",
+
+  "root_farmer_app_title": "🌾 Farmer App",
+  "root_buyer_console_title": "💼 Buyer Console",
+  "root_sign_out": "🚪 Sign out"
 }

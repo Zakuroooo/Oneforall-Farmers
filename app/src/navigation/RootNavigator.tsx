@@ -6,6 +6,7 @@ import React from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { useAuth } from '../lib/auth';
+import { useT } from '../lib/i18n';
 import { AuthStack } from './AuthStack';
 import { BuyerTabs } from './BuyerTabs';
 import { FarmerTabs } from './FarmerTabs';
@@ -20,6 +21,7 @@ function Splash() {
 
 export function RootNavigator() {
   const { status, user, signOut } = useAuth();
+  const { t } = useT();
 
   if (status === 'loading') return <Splash />;
 
@@ -32,11 +34,11 @@ export function RootNavigator() {
       {/* Active Role Header with Sign Out (Requires OTP on re-login) */}
       <View style={[styles.topBar, isFarmer ? styles.farmerTopBar : styles.buyerTopBar]}>
         <Text style={styles.roleBadge}>
-          {isFarmer ? '🌾 शेतकरी ॲप (Farmer App)' : '💼 व्यापारी कंसोल (Buyer Console)'}
+          {isFarmer ? t('root_farmer_app_title') : t('root_buyer_console_title')}
           <Text style={styles.userName}> ({user.name})</Text>
         </Text>
         <TouchableOpacity onPress={signOut} style={styles.logoutBtn} activeOpacity={0.7}>
-          <Text style={styles.logoutBtnText}>🚪 बाहेर पडा (Sign Out)</Text>
+          <Text style={styles.logoutBtnText}>{t('root_sign_out')}</Text>
         </TouchableOpacity>
       </View>
 

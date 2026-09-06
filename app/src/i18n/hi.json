@@ -325,5 +325,22 @@
   "send_message_button": "भेजें",
 
   "assistant_header": "सहायता",
-  "assistant_subheader": "अक्सर पूछे जाने वाले प्रश्न"
+  "assistant_subheader": "अक्सर पूछे जाने वाले प्रश्न",
+
+  "tab_home": "मुखपृष्ठ",
+  "tab_prices": "भाव",
+  "tab_my_lots": "मेरे लॉट",
+
+  "buyer_tab_demands": "मांग",
+  "buyer_tab_matches": "मिलान",
+  "buyer_tab_offers": "प्रस्ताव",
+  "buyer_tab_transactions": "लेनदेन",
+  "buyer_tab_ledger": "खाता-बही",
+  "buyer_tab_provenance": "पारदर्शिता",
+  "buyer_tab_dispute": "शिकायत",
+  "buyer_tab_chat": "चैट",
+
+  "root_farmer_app_title": "🌾 किसान ऐप",
+  "root_buyer_console_title": "💼 व्यापारी कंसोल",
+  "root_sign_out": "🚪 साइन आउट करें"
 }

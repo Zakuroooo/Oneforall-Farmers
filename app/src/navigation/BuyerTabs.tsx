@@ -17,6 +17,7 @@ import { S23_BuyerReliability } from '../screens/buyer/S23_BuyerReliability';
 import { S24_DataProvenance } from '../screens/buyer/S24_DataProvenance';
 import { S25_Dispute } from '../screens/buyer/S25_Dispute';
 import { S27_BuyerChat } from '../screens/buyer/S27_BuyerChat';
+import { useT } from '../lib/i18n';
 
 export type BuyerTabParamList = {
   PostDemand: undefined;
@@ -57,6 +58,7 @@ function MatchesStackNavigator() {
 const Tab = createBottomTabNavigator<BuyerTabParamList>();
 
 export function BuyerTabs() {
+  const { t } = useT();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -69,42 +71,42 @@ export function BuyerTabs() {
       <Tab.Screen
         name="PostDemand"
         component={S18_PostDemand}
-        options={{ title: 'मागणी' }}
+        options={{ title: t('buyer_tab_demands') }}
       />
       <Tab.Screen
         name="Matches"
         component={MatchesStackNavigator}
-        options={{ title: 'जुळणी' }}
+        options={{ title: t('buyer_tab_matches') }}
       />
       <Tab.Screen
         name="Offers"
         component={S21_OfferThread}
-        options={{ title: 'ऑफर' }}
+        options={{ title: t('buyer_tab_offers') }}
       />
       <Tab.Screen
         name="Deals"
         component={S22_EscrowTimeline}
-        options={{ title: 'व्यवहार' }}
+        options={{ title: t('buyer_tab_transactions') }}
       />
       <Tab.Screen
         name="Ledger"
         component={S23_BuyerReliability}
-        options={{ title: 'खातेवही' }}
+        options={{ title: t('buyer_tab_ledger') }}
       />
       <Tab.Screen
         name="Provenance"
         component={S24_DataProvenance}
-        options={{ title: 'पारदर्शकता' }}
+        options={{ title: t('buyer_tab_provenance') }}
       />
       <Tab.Screen
         name="Dispute"
         component={S25_Dispute}
-        options={{ title: 'तक्रार' }}
+        options={{ title: t('buyer_tab_dispute') }}
       />
       <Tab.Screen
         name="Chat"
         component={S27_BuyerChat}
-        options={{ title: 'चॅट' }}
+        options={{ title: t('buyer_tab_chat') }}
       />
     </Tab.Navigator>
   );

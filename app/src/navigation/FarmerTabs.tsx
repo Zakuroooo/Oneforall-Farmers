@@ -5,9 +5,8 @@
  *   a mandi, in sunlight, possibly one-handed. Every tab past the fourth is a tab
  *   nobody presses, and the tab bar shrinks each label to fit.
  *
- * ★ Labels are Marathi and hardcoded here for P0. TODO(shreya): swap to `t()` once
- *   SH1 lands — the tab bar is one of the few places a language switch must take
- *   effect without a remount, so it is worth checking on the day.
+ * ★ Labels go through `useT()` so a language switch relabels the tab bar without
+ *   a remount — no separate SH1 handoff needed.
  *
  * Icons come later. TODO(shreya): the tab bar reads as text-only until then, which
  * is legible but plain; icons matter more here than on any other surface because
@@ -17,6 +16,8 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { useT } from '../lib/i18n';
 
 import S04_Home from '../screens/farmer/S04_Home';
 import S05_History from '../screens/farmer/S05_History';
@@ -152,6 +153,7 @@ function MyLotsStackNavigator() {
 const Tab = createBottomTabNavigator<FarmerTabParamList>();
 
 export function FarmerTabs() {
+  const { t } = useT();
   return (
     <Tab.Navigator
       initialRouteName="Home"
@@ -164,10 +166,10 @@ export function FarmerTabs() {
         tabBarLabelStyle: { fontSize: 13 },
         tabBarStyle: { height: 64, paddingBottom: 8, paddingTop: 8 },
       }}>
-      <Tab.Screen name="Home" component={HomeStackNavigator} options={{ title: 'मुख्यपृष्ठ' }} />
-      <Tab.Screen name="Prices" component={PricesStackNavigator} options={{ title: 'भाव' }} />
-      <Tab.Screen name="MyLots" component={MyLotsStackNavigator} options={{ title: 'माझे लॉट' }} />
-      <Tab.Screen name="Assistant" component={S28_Assistant} options={{ title: 'मदत' }} />
+      <Tab.Screen name="Home" component={HomeStackNavigator} options={{ title: t('tab_home') }} />
+      <Tab.Screen name="Prices" component={PricesStackNavigator} options={{ title: t('tab_prices') }} />
+      <Tab.Screen name="MyLots" component={MyLotsStackNavigator} options={{ title: t('tab_my_lots') }} />
+      <Tab.Screen name="Assistant" component={S28_Assistant} options={{ title: t('assistant_header') }} />
     </Tab.Navigator>
   );
 }
