@@ -28,7 +28,7 @@ import { useT } from '../lib/i18n';
 import { tabIcon } from './TabIcon';
 
 /** The one background colour for every farmer scene. */
-const SCREEN_BG = '#FFFFFF';
+const SCREEN_BG = '#FAF6EE';
 
 /** Applied to all three nested stacks, for the same reason as `sceneStyle` below. */
 const STACK_SCREEN_OPTIONS = {
@@ -72,6 +72,13 @@ export type FarmerTabParamList = {
  * `→ S10`), and back from it must land on the verdict, never on a tab. It takes
  * no params: it reads S9's own query key straight out of the cache, so it holds
  * up on a cold start and in airplane mode. See the header of the screen file.
+ *
+ * ★ S14 (counter-offer) and S15 (my lots) are NOT registered on this stack —
+ *   they live on `MyLotsStackNavigator` below. A screen name only this type
+ *   claimed but the navigator never rendered is exactly the "GO_BACK/action
+ *   not handled" class of crash: `navigation.navigate('S15_MyLots')` from
+ *   here would look up a route this stack has never heard of. S4 reaches
+ *   them through `navigation.getParent()` into the `MyLots` tab instead.
  */
 export type HomeStackParamList = {
   S4_Home: undefined;
@@ -179,12 +186,17 @@ export function FarmerTabs() {
         // `sceneStyle`, not the v6 `sceneContainerStyle` prop — bottom-tabs v7
         // moved it into `screenOptions` and dropped the old name entirely.
         sceneStyle: { backgroundColor: SCREEN_BG },
-        tabBarActiveTintColor: '#1B5E20',
-        tabBarInactiveTintColor: '#666',
-        // Bigger than the RN default. A 44 px target is the iOS minimum for a
-        // thumb; this is a farmer's thumb on a cheap screen, so we take the space.
-        tabBarLabelStyle: { fontSize: 13 },
-        tabBarStyle: { height: 64, paddingBottom: 8, paddingTop: 8 },
+        tabBarActiveTintColor: '#C2410C',
+        tabBarInactiveTintColor: '#8D7168',
+        tabBarLabelStyle: { fontSize: 12, fontFamily: 'PlusJakartaSans-SemiBold' },
+        tabBarStyle: {
+          height: 64,
+          paddingBottom: 8,
+          paddingTop: 8,
+          backgroundColor: '#FFFFFF',
+          borderTopWidth: 1,
+          borderTopColor: '#EADEC7',
+        },
       }}>
       <Tab.Screen
         name="Home"
@@ -204,7 +216,7 @@ export function FarmerTabs() {
       <Tab.Screen
         name="Assistant"
         component={S28_Assistant}
-        options={{ title: t('assistant_header'), tabBarIcon: tabIcon('assistant') }}
+        options={{ title: t('tab_assistant'), tabBarIcon: tabIcon('assistant') }}
       />
     </Tab.Navigator>
   );

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="light" lang="mr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu (मंडी-सेतू) | भाव का भरोसा, थेट सौदा</title>
+<!-- Google Fonts: Plus Jakarta Sans & Devanagari fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Rozha+One&amp;family=Yantramanav:wght@500;700;900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim from Design System -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-container": "#b9ffde",
+            "on-tertiary-fixed": "#002115",
+            "on-surface": "#1c1c17",
+            "on-error-container": "#93000a",
+            "surface-dim": "#dddad2",
+            "error": "#ba1a1a",
+            "primary-fixed-dim": "#ffb59d",
+            "surface": "#fdf9f1",
+            "surface-bright": "#fdf9f1",
+            "on-primary-container": "#ffece7",
+            "surface-tint": "#ac3400",
+            "surface-container-low": "#f7f3eb",
+            "on-background": "#1c1c17",
+            "primary-container": "#c2410c",
+            "inverse-on-surface": "#f4f0e8",
+            "on-surface-variant": "#59413a",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-secondary-fixed": "#3a0a00",
+            "on-primary-fixed-variant": "#832600",
+            "on-secondary-fixed-variant": "#842503",
+            "secondary-fixed": "#ffdbd1",
+            "primary-fixed": "#ffdbd0",
+            "tertiary-container": "#0f7c5b",
+            "error-container": "#ffdad6",
+            "surface-container-high": "#ece8e0",
+            "surface-container-highest": "#e6e2da",
+            "on-secondary": "#ffffff",
+            "background": "#fdf9f1",
+            "on-tertiary": "#ffffff",
+            "on-primary-fixed": "#390c00",
+            "on-secondary-container": "#6b1a00",
+            "tertiary-fixed": "#97f5cc",
+            "surface-container-lowest": "#ffffff",
+            "surface-variant": "#e6e2da",
+            "on-error": "#ffffff",
+            "secondary": "#a53c19",
+            "surface-container": "#f1ede6",
+            "inverse-surface": "#31302b",
+            "inverse-primary": "#ffb59d",
+            "secondary-container": "#fb7b54",
+            "primary": "#9b2f00",
+            "tertiary": "#006146",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-tertiary-fixed-variant": "#00513a",
+            "outline": "#8d7168",
+            "on-primary": "#ffffff",
+            "outline-variant": "#e1bfb5"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "margin-mobile": "1rem",
+            "gutter-mobile": "1rem",
+            "space-xs": "0.5rem",
+            "space-xl": "1.5rem",
+            "space-sm": "0.75rem",
+            "space-2xl": "2rem",
+            "space-lg": "1.25rem",
+            "touch-target-hero": "3.5rem",
+            "space-3xl": "2.5rem",
+            "margin-desktop": "2rem",
+            "space-4xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "space-2xs": "0.25rem",
+            "touch-target-min": "3rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .font-devanagari-display {
+      font-family: 'Yantramanav', 'Plus Jakarta Sans', sans-serif;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .touch-ripple:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-primary selection:text-on-primary">
+<!-- Main Mobile/Tablet Wrapper (Max width mobile canvas with tactile depth) -->
+<main class="w-full max-w-lg mx-auto min-h-screen flex flex-col justify-between relative overflow-x-hidden bg-surface shadow-2xl">
+<!-- Sun-cured Marigold Radial Ambient Aura (Mandi Yard Sunlight Glow) -->
+<div class="absolute -top-24 -left-20 w-96 h-96 rounded-full bg-gradient-to-br from-primary-container/25 via-secondary-container/15 to-transparent blur-3xl pointer-events-none -z-0"></div>
+<div class="absolute top-1/3 -right-24 w-80 h-80 rounded-full bg-gradient-to-bl from-primary/10 via-surface-container/40 to-transparent blur-2xl pointer-events-none -z-0"></div>
+<!-- Top Utility Ribbon: Connectivity & Voice Welcome & Language Pill -->
+<header class="relative z-20 w-full px-margin-mobile pt-space-md pb-space-xs flex items-center justify-between">
+<!-- Live Yard Status Chip -->
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container border border-outline-variant/60 shadow-sm">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-ping"></span>
+<span class="font-label-sm text-label-sm text-tertiary uppercase tracking-wider font-bold">लासलगाव थेट मंडी ऑनलाईन</span>
+</div>
+<!-- Hands-free Audio Assist Pill -->
+<button aria-label="Play welcome voice note" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 transition-all active:scale-95" id="voiceBtn" onclick="toggleAudioIntro()">
+<span class="material-symbols-outlined text-primary text-base" data-icon="volume_up">volume_up</span>
+<span class="font-label-sm text-label-sm font-bold">आवाज ऐका</span>
+</button>
+</header>
+<!-- Main Visual & Identity Canvas -->
+<div class="relative z-10 px-margin-mobile flex-1 flex flex-col items-center justify-center text-center">
+<!-- Central Tactile Agri-Fintech Emblem (The Setu - Wheat Shoot & Bridge Arch) -->
+<div class="relative mb-space-lg group">
+<!-- Sun Ray Ambient Ring -->
+<div class="absolute inset-0 rounded-3xl bg-primary-container/20 blur-xl group-hover:blur-2xl transition-all"></div>
+<!-- The Emblem Physical Surface -->
+<div class="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl bg-surface-container-lowest border-2 border-outline-variant/70 shadow-[0_12px_24px_rgba(154,52,18,0.12)] flex items-center justify-center p-3 transition-transform duration-300 group-hover:scale-105">
+<!-- Multi-tier Icon composition: Arch bridge + Golden Sprout + Scale of Trust -->
+<div class="w-full h-full rounded-2xl bg-gradient-to-b from-primary-container to-primary flex flex-col items-center justify-center text-on-primary shadow-inner relative overflow-hidden">
+<!-- Subtle backdrop arch watermark -->
+<span class="material-symbols-outlined absolute -bottom-3 text-white/20 text-7xl select-none" data-icon="water_lux">water_lux</span>
+<!-- Foreground Bridge & Sprout Symbolism -->
+<div class="relative z-10 flex flex-col items-center">
+<span class="material-symbols-outlined text-4xl text-surface-container-lowest drop-shadow" data-icon="spa" style="font-variation-settings: 'FILL' 1;">spa</span>
+<div class="w-10 h-1 bg-surface-container-lowest/80 rounded-full mt-1 mb-0.5"></div>
+<div class="flex items-center gap-1 text-on-primary-container text-[10px] font-bold tracking-widest uppercase">
+<span>SETU</span>
+</div>
+</div>
+<!-- Sunflare corner badge -->
+<span class="absolute top-1 right-1 text-xs text-on-primary-container/80 material-symbols-outlined" data-icon="wb_sunny">wb_sunny</span>
+</div>
+</div>
+<!-- Trust Stamp floating tag -->
+<div class="absolute -bottom-2 -right-3 bg-tertiary text-on-tertiary px-2.5 py-0.5 rounded-full border border-surface shadow-md flex items-center gap-1 font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-xs" data-icon="verified" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>प्रमाणित</span>
+</div>
+</div>
+<!-- App Brand Title -->
+<div class="space-y-1">
+<h1 class="font-devanagari-display text-4xl sm:text-5xl font-black text-primary tracking-tight leading-none drop-shadow-sm">
+          मंडी-सेतू
+        </h1>
+<p class="font-title-lg text-title-lg tracking-widest text-on-surface-variant font-extrabold uppercase">
+          MANDI-SETU
+        </p>
+</div>
+<!-- Core Brand Tagline (Rhythmic Devanagari & English) -->
+<div class="mt-space-md mb-space-lg max-w-xs">
+<div class="inline-block bg-surface-container-low px-4 py-2 rounded-xl border border-outline-variant/50 shadow-sm">
+<p class="font-devanagari-display text-xl sm:text-2xl font-bold text-on-surface leading-snug">
+            “भाव का भरोसा, थेट सौदा”
+          </p>
+<p class="font-label-md text-label-md text-secondary font-semibold tracking-wide mt-0.5">
+            Faith in your Price • Direct Mandi Trade
+          </p>
+</div>
+</div>
+<!-- Real Sensory Context: Lasalgaon Onion Yard Atmosphere Snippet -->
+<div class="w-full mb-space-lg">
+<div class="relative rounded-2xl overflow-hidden border border-outline-variant/60 shadow-sm bg-surface-container-low">
+<div class="flex items-center gap-3 p-2.5">
+<div class="w-14 h-14 rounded-xl overflow-hidden flex-shrink-0 border border-outline-variant/60 relative">
+<img alt="Lasalgaon Mandi Yard" class="w-full h-full object-cover" data-alt="Sunlit stacks of natural red onions packed densely in traditional jute burlap sacks inside an active Lasalgaon Mandi auction warehouse. Rich amber and terracotta sun rays stream through wooden high windows, casting warm golden illumination over the harvest produce with earth-toned shadows." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgu1Tx9Wkx9wBQj3cRhh5V2O3sGXsaF_78ke1nupdxj7ejWv30C3xfuxc4TLjdoFdtXS21By_FWE4bX5vTQr77E62b6VWQTXM4841EBZKEZY5OqVg9LFc80gZbS5SGLuaOcqkmzNmO123QWN66LaTvcj53iXiUtUkr7hQBZ9jTw8N1Yd9qzYCTd3ZZ0q29C4alrIXOQc1CQSxOgvBlmz3sImmJ60RDj0FDgL2bKxNY9gZYJDVie5Rt"/>
+<div class="absolute inset-0 bg-primary-container/10 mix-blend-multiply"></div>
+</div>
+<div class="text-left flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-tertiary font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-xs" data-icon="trending_up">trending_up</span> आजचा बाजार भाव
+                </span>
+<span class="font-label-sm text-label-sm text-outline">नाशिक APMC</span>
+</div>
+<p class="font-title-md text-title-md text-on-surface font-extrabold truncate">कांदा (गवरान लाल • Onion)</p>
+<p class="font-numeral-data text-numeral-data text-primary font-black tracking-tight">₹२,८५० - ₹३,१२० <span class="font-label-sm text-label-sm font-normal text-on-surface-variant">/क्विंटल</span></p>
+</div>
+</div>
+</div>
+</div>
+<!-- 3 Pillar Trust Badges (Grid Architecture) -->
+<div class="w-full grid grid-cols-3 gap-2 text-left mb-space-md">
+<!-- Badge 1: APMC & eNAM -->
+<div class="bg-surface-container-lowest p-2.5 rounded-xl border border-outline-variant/60 shadow-sm flex flex-col justify-between">
+<div class="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="account_balance">account_balance</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface font-extrabold leading-tight">APMC व eNAM</p>
+<p class="text-[10px] text-on-surface-variant font-medium mt-0.5 leading-3">अधिकृत संलग्न</p>
+</div>
+</div>
+<!-- Badge 2: Escrow Payout -->
+<div class="bg-surface-container-lowest p-2.5 rounded-xl border border-outline-variant/60 shadow-sm flex flex-col justify-between">
+<div class="w-7 h-7 rounded-lg bg-tertiary/10 text-tertiary flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="lock" style="font-variation-settings: 'FILL' 1;">lock</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface font-extrabold leading-tight">१००% सुरक्षित</p>
+<p class="text-[10px] text-tertiary font-bold mt-0.5 leading-3">एस्क्रो पेआउट</p>
+</div>
+</div>
+<!-- Badge 3: Direct Farmer -->
+<div class="bg-surface-container-lowest p-2.5 rounded-xl border border-outline-variant/60 shadow-sm flex flex-col justify-between">
+<div class="w-7 h-7 rounded-lg bg-secondary-container/20 text-primary-container flex items-center justify-center mb-2">
+<span class="material-symbols-outlined text-lg" data-icon="handshake">handshake</span>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface font-extrabold leading-tight">थेट शेतकरी</p>
+<p class="text-[10px] text-on-surface-variant font-medium mt-0.5 leading-3">शून्य दलाली</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Launch & Accessibility Pad -->
+<div class="relative z-30 w-full px-margin-mobile pb-space-lg pt-space-xs bg-gradient-to-t from-surface via-surface to-transparent">
+<!-- Language Selector Pill -->
+<div class="flex items-center justify-center mb-space-sm">
+<div class="inline-flex items-center gap-1.5 p-1 rounded-full bg-surface-container border border-outline-variant/60 shadow-inner text-xs font-semibold">
+<span class="material-symbols-outlined text-sm text-outline ml-2" data-icon="translate">translate</span>
+<button class="px-2.5 py-1 rounded-full bg-primary text-on-primary font-bold shadow-sm">मराठी</button>
+<button class="px-2.5 py-1 rounded-full text-on-surface-variant hover:text-on-surface transition-colors">हिंदी</button>
+<button class="px-2.5 py-1 rounded-full text-on-surface-variant hover:text-on-surface transition-colors">English</button>
+</div>
+</div>
+<!-- Primary High-Impact CTA Button (56dp touch-target-hero) -->
+<a class="touch-ripple w-full min-h-touch-target-hero bg-primary-container hover:bg-primary text-on-primary font-headline-sm-mobile text-headline-sm-mobile rounded-xl shadow-[0_4px_14px_rgba(194,65,12,0.39)] flex items-center justify-center gap-3 transition-all duration-150 active:translate-y-0.5 active:shadow-inner" href="#get-started">
+<span class="font-devanagari-display font-black tracking-wide text-lg">सुरू करा • Get Started</span>
+<span class="material-symbols-outlined text-2xl font-bold" data-icon="arrow_forward">arrow_forward</span>
+</a>
+<!-- Instant Phone Login Utility Option -->
+<div class="flex items-center justify-center gap-2 mt-space-sm">
+<span class="material-symbols-outlined text-sm text-tertiary" data-icon="bolt">bolt</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">ओटीपी (OTP) द्वारे १ सेकंदात थेट लॉगिन</span>
+</div>
+<!-- Legal & Mandi Gateway Node Footer -->
+<footer class="mt-space-md pt-space-xs border-t border-outline-variant/40 flex items-center justify-between text-on-surface-variant font-label-sm text-label-sm">
+<div class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-tertiary inline-block"></span>
+<span>लासलगाव • नाशिक नोड v2.4</span>
+</div>
+<div class="flex items-center gap-1 text-[10px] text-outline">
+<span class="material-symbols-outlined text-xs text-tertiary" data-icon="verified_user">verified_user</span>
+<span>२५६-बिट बँक एन्क्रिप्शन</span>
+</div>
+</footer>
+</div>
+<!-- Audio Welcome Toast (Hidden by default, triggered on voice pill click) -->
+<div class="hidden absolute bottom-24 left-4 right-4 z-50 bg-inverse-surface text-inverse-on-surface p-3.5 rounded-xl shadow-xl flex items-center justify-between transition-all" id="audioToast">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary-container flex items-center justify-center text-on-primary animate-pulse">
+<span class="material-symbols-outlined text-lg" data-icon="graphic_eq">graphic_eq</span>
+</div>
+<div class="text-left">
+<p class="font-label-md text-label-md font-bold text-white">नमस्कार शेतकरी बंधूंनो!</p>
+<p class="text-xs text-inverse-on-surface/80">मंडी-सेतू मध्ये आपले स्वागत आहे. थेट हमीभाव मिळवा.</p>
+</div>
+</div>
+<button class="text-inverse-on-surface/70 hover:text-white" onclick="toggleAudioIntro()">
+<span class="material-symbols-outlined text-xl" data-icon="close">close</span>
+</button>
+</div>
+</main>
+<!-- Interactive Lightweight Micro-script -->
+<script>
+    function toggleAudioIntro() {
+      const toast = document.getElementById('audioToast');
+      if (toast.classList.contains('hidden')) {
+        toast.classList.remove('hidden');
+        // Simple synthetic speech synthesis for audio welcome demonstration
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance("नमस्कार शेतकरी बंधूंनो. मंडी सेतू मध्ये आपले स्वागत आहे. थेट हमीभाव आणि सुरक्षित पेमेंट.");
+          utterance.lang = 'mr-IN';
+          utterance.rate = 0.9;
+          window.speechSynthesis.speak(utterance);
+        }
+        setTimeout(() => {
+          toast.classList.add('hidden');
+        }, 5000);
+      } else {
+        toast.classList.add('hidden');
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+    }
+  </script>
+</body></html>

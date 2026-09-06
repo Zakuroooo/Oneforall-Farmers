@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+
+<html class="light" lang="mr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu • OTP Verification</title>
+<!-- Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms & Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#ffffff",
+            "inverse-on-surface": "#f4f0e8",
+            "error-container": "#ffdad6",
+            "on-background": "#1c1c17",
+            "surface-variant": "#e6e2da",
+            "on-primary": "#ffffff",
+            "outline-variant": "#e1bfb5",
+            "secondary-container": "#fb7b54",
+            "on-secondary-fixed": "#3a0a00",
+            "primary": "#9b2f00",
+            "secondary-fixed-dim": "#ffb59f",
+            "surface-tint": "#ac3400",
+            "surface-container-high": "#ece8e0",
+            "on-surface-variant": "#59413a",
+            "primary-container": "#c2410c",
+            "tertiary": "#006146",
+            "surface-bright": "#fdf9f1",
+            "on-tertiary": "#ffffff",
+            "surface-dim": "#dddad2",
+            "on-error": "#ffffff",
+            "inverse-surface": "#31302b",
+            "outline": "#8d7168",
+            "on-primary-container": "#ffece7",
+            "inverse-primary": "#ffb59d",
+            "on-secondary-container": "#6b1a00",
+            "error": "#ba1a1a",
+            "surface": "#fdf9f1",
+            "surface-container-highest": "#e6e2da",
+            "tertiary-fixed": "#97f5cc",
+            "background": "#fdf9f1",
+            "secondary": "#a53c19",
+            "on-primary-fixed-variant": "#832600",
+            "on-error-container": "#93000a",
+            "surface-container-low": "#f7f3eb",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "primary-fixed": "#ffdbd0",
+            "on-tertiary-fixed": "#002115",
+            "on-tertiary-fixed-variant": "#00513a",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#b9ffde",
+            "on-surface": "#1c1c17",
+            "surface-container": "#f1ede6",
+            "on-primary-fixed": "#390c00",
+            "primary-fixed-dim": "#ffb59d",
+            "tertiary-container": "#0f7c5b",
+            "on-secondary-fixed-variant": "#842503",
+            "secondary-fixed": "#ffdbd1"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "touch-target-hero": "3.5rem",
+            "space-2xl": "2rem",
+            "space-2xs": "0.25rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "1.5rem",
+            "margin-desktop": "2rem",
+            "space-4xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "space-xs": "0.5rem",
+            "space-md": "1rem",
+            "space-sm": "0.75rem",
+            "space-lg": "1.25rem",
+            "margin-mobile": "1rem",
+            "touch-target-min": "3rem",
+            "space-3xl": "2.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    @keyframes pulse-cursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .animate-caret {
+      animation: pulse-cursor 1s ease-in-out infinite;
+    }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spin-slow 12s linear infinite;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col justify-between selection:bg-primary selection:text-on-primary">
+<!-- Outer Max-Width Enclosure for Mandi Device Form Factor -->
+<div class="w-full max-w-lg mx-auto flex flex-col flex-1 min-h-screen bg-background relative shadow-sm">
+<!-- Top App Bar (Task-Focused: Back Action present -> BottomNavBar suppressed per Semantic Shell rules) -->
+<header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md px-margin-mobile py-space-xs flex items-center justify-between shadow-sm">
+<!-- Left: Back Arrow Navigation -->
+<button aria-label="मागे जा (Go Back)" class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary active:scale-95 transition-transform hover:bg-surface-container-high" type="button">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<!-- Center: Screen Category / Headline -->
+<div class="flex flex-col items-center">
+<h1 class="font-headline-sm text-headline-sm text-primary font-bold tracking-tight">पडताळणी • Verification</h1>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">पायरी २ पैकी २ • Step 2 of 2</span>
+</div>
+<!-- Right: Voice Read-Aloud Action -->
+<button class="flex items-center gap-1 bg-surface-container-low border border-outline-variant/60 rounded-full px-space-xs py-1 text-primary active:scale-95 transition-all shadow-sm hover:bg-surface-container" id="voice-readout-btn" type="button">
+<span class="material-symbols-outlined text-[18px]">volume_up</span>
+<span class="font-label-sm text-label-sm font-bold text-primary">आवाज ऐका</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile pt-space-md pb-space-4xl flex flex-col">
+<!-- Hero Header & Identity Section -->
+<div class="flex flex-col items-center text-center mt-space-xs mb-space-lg">
+<!-- Amber Badge with SMS Icon -->
+<div class="w-16 h-16 rounded-full bg-primary-container/15 border-2 border-primary flex items-center justify-center shadow-sm mb-space-sm relative">
+<span class="material-symbols-outlined material-symbols-fill text-primary text-[32px]">sms</span>
+<!-- Micro Trust Seal Badge -->
+<span class="absolute -bottom-1 -right-1 bg-tertiary text-on-tertiary rounded-full w-6 h-6 flex items-center justify-center border-2 border-surface shadow-sm">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+</span>
+</div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-background font-extrabold tracking-tight">
+          ६ अंकी OTP टाका
+        </h2>
+<p class="font-label-md text-label-md text-on-surface-variant mt-1">Enter 6-Digit SMS Code</p>
+<!-- Subtitle with Masked Mobile Number & Edit Link -->
+<div class="mt-space-sm bg-surface-container-low px-space-md py-space-xs rounded-xl border border-outline-variant/40 flex items-center gap-1.5 flex-wrap justify-center">
+<span class="font-body-sm text-body-sm text-on-surface font-medium">
+<span class="font-numeral-data text-numeral-data text-on-surface font-bold tracking-normal">+91 98220 41209</span> या नंबरवर SMS पाठवला आहे.
+          </span>
+<button class="inline-flex items-center gap-0.5 text-primary hover:underline font-label-md text-label-md font-bold transition-colors ml-1" type="button">
+<span class="material-symbols-outlined text-[14px]">edit</span>
+            बदला (Edit)
+          </button>
+</div>
+</div>
+<!-- Tactile OTP Input Pin Field (6 Large High-Contrast Boxes) -->
+<div class="w-full my-space-xs">
+<label class="block text-center font-label-sm text-label-sm text-on-surface-variant mb-space-xs">
+          आपल्या मोबाईलवरील संदेशातून आलेला कोड टाका
+        </label>
+<div class="grid grid-cols-6 gap-2 sm:gap-2.5 justify-center max-w-sm mx-auto" id="otp-container">
+<!-- Box 1: Filled [4] -->
+<div class="h-[58px] rounded-xl bg-surface-container-lowest border-[1.5px] border-outline/50 shadow-sm flex items-center justify-center transition-all">
+<span class="font-numeral-hero text-numeral-hero text-on-surface">4</span>
+</div>
+<!-- Box 2: Filled [9] -->
+<div class="h-[58px] rounded-xl bg-surface-container-lowest border-[1.5px] border-outline/50 shadow-sm flex items-center justify-center transition-all">
+<span class="font-numeral-hero text-numeral-hero text-on-surface">9</span>
+</div>
+<!-- Box 3: Filled [2] -->
+<div class="h-[58px] rounded-xl bg-surface-container-lowest border-[1.5px] border-outline/50 shadow-sm flex items-center justify-center transition-all">
+<span class="font-numeral-hero text-numeral-hero text-on-surface">2</span>
+</div>
+<!-- Box 4: Filled [0] -->
+<div class="h-[58px] rounded-xl bg-surface-container-lowest border-[1.5px] border-outline/50 shadow-sm flex items-center justify-center transition-all">
+<span class="font-numeral-hero text-numeral-hero text-on-surface">0</span>
+</div>
+<!-- Box 5: Active Focused State with Pulsing Cursor -->
+<div class="h-[58px] rounded-xl bg-surface-container-lowest border-2 border-primary-container shadow-[0_4px_12px_-2px_rgba(194,65,12,0.2)] flex items-center justify-center relative ring-2 ring-primary-container/20">
+<span class="w-[2.5px] h-7 bg-primary-container rounded-full animate-caret"></span>
+</div>
+<!-- Box 6: Empty Inactive State -->
+<div class="h-[58px] rounded-xl bg-surface-container-low border-[1.5px] border-outline-variant/60 flex items-center justify-center">
+<span class="w-2 h-2 rounded-full bg-outline-variant"></span>
+</div>
+</div>
+</div>
+<!-- Auto-Read Android SMS Retriever Banner -->
+<div class="mt-space-md mb-space-sm">
+<div class="bg-tertiary-fixed/30 border border-tertiary-container/30 rounded-xl px-space-md py-space-xs flex items-center gap-2.5 shadow-sm">
+<div class="w-6 h-6 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[16px] font-bold">check</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface font-bold">
+              SMS आपोआप वाचत आहे...
+            </p>
+<p class="font-body-sm text-body-sm text-tertiary font-medium">
+              Auto-detecting OTP via Android SMS retriever
+            </p>
+</div>
+<span class="material-symbols-outlined text-tertiary text-[20px] animate-spin-slow shrink-0">sync</span>
+</div>
+</div>
+<!-- Timer & Resend Countdown Row -->
+<div class="mt-space-sm mb-space-lg flex items-center justify-between bg-surface-container rounded-xl p-space-sm border border-outline-variant/40">
+<div class="flex items-center gap-2">
+<!-- Animated Spinning Countdown Ring Indicator -->
+<div class="relative w-8 h-8 flex items-center justify-center shrink-0">
+<svg class="w-8 h-8 transform -rotate-90" viewbox="0 0 36 36">
+<path class="text-surface-variant" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3"></path>
+<path class="text-primary" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-dasharray="60, 100" stroke-linecap="round" stroke-width="3.5"></path>
+</svg>
+<span class="material-symbols-outlined text-[16px] text-primary absolute">timer</span>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant font-bold">पुन्हा OTP पाठवा (Resend OTP)</div>
+<div class="font-numeral-data text-numeral-data text-primary font-extrabold">
+              ००:२४ सेकंद <span class="text-on-surface-variant font-body-sm text-body-sm">(24s)</span>
+</div>
+</div>
+</div>
+<button class="opacity-50 cursor-not-allowed bg-surface-container-high text-on-surface-variant font-label-md text-label-md px-space-sm py-1.5 rounded-lg border border-outline-variant/40" disabled="" type="button">
+          पुन्हा पाठवा
+        </button>
+</div>
+<!-- Alternative Verification Options Accordion/Card Deck -->
+<div class="mt-auto space-y-space-xs">
+<p class="font-label-sm text-label-sm text-on-surface-variant font-bold px-1 uppercase tracking-wider">
+          पर्यायी मार्ग • Alternative Methods
+        </p>
+<!-- WhatsApp OTP Action Pill -->
+<button class="w-full flex items-center justify-between bg-surface-container-lowest border-[1.5px] border-outline-variant/60 hover:border-tertiary rounded-xl p-space-sm active:scale-[0.99] transition-all shadow-sm group" type="button">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-tertiary/10 border border-tertiary/30 text-tertiary flex items-center justify-center group-hover:bg-tertiary group-hover:text-on-tertiary transition-colors">
+<span class="material-symbols-outlined text-[22px]">chat</span>
+</div>
+<div class="text-left">
+<div class="font-title-md text-title-md text-on-surface font-bold flex items-center gap-1.5">
+                व्हॉट्सॲपवर OTP मिळवा
+                <span class="bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold px-1.5 py-0.5 rounded">झटपट</span>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Get OTP instantly on WhatsApp</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-tertiary group-hover:translate-x-0.5 transition-all">chevron_right</span>
+</button>
+<!-- Audio Phone Call OTP Pill -->
+<button class="w-full flex items-center justify-between bg-surface-container-lowest border-[1.5px] border-outline-variant/60 hover:border-primary rounded-xl p-space-sm active:scale-[0.99] transition-all shadow-sm group" type="button">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary/10 border border-primary/30 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-colors">
+<span class="material-symbols-outlined text-[22px]">call</span>
+</div>
+<div class="text-left">
+<div class="font-title-md text-title-md text-on-surface font-bold">
+                फोन कॉलद्वारे ऐका
+              </div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">Receive automated call in Marathi</div>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary group-hover:translate-x-0.5 transition-all">chevron_right</span>
+</button>
+</div>
+</main>
+<!-- Bottom Sticky Tactile Action Dock (Level 3 Elevation) -->
+<div class="sticky bottom-0 left-0 w-full z-30 bg-surface-container-lowest/95 backdrop-blur-md px-margin-mobile py-space-sm shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<!-- 56dp Primary Button in #C2410C with Tactile Depression -->
+<button class="w-full h-touch-target-hero bg-primary-container hover:bg-primary active:scale-[0.99] text-on-primary rounded-xl font-title-lg text-title-lg font-bold flex items-center justify-center gap-2 shadow-md transition-all active:translate-y-0.5" type="button">
+<span>पडताळणी करा व पुढे जा</span>
+<span class="text-on-primary/80 font-normal text-sm">Verify &amp; Proceed</span>
+<span class="material-symbols-outlined text-[20px] font-bold">arrow_forward</span>
+</button>
+<!-- Security Trust Footer Guarantee -->
+<div class="mt-space-xs flex items-center justify-center gap-2 text-center text-on-surface-variant">
+<span class="material-symbols-outlined text-[15px] text-tertiary material-symbols-fill">verified_user</span>
+<span class="font-label-sm text-label-sm tracking-normal">
+          २५६-बिट बँक दर्जाचे सुरक्षित प्रमाणीकरण • APMC Verified Mandi Gateway
+        </span>
+</div>
+</div>
+</div>
+<!-- Inline Micro-interaction Script for Field Usability -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const voiceBtn = document.getElementById('voice-readout-btn');
+      if (voiceBtn) {
+        voiceBtn.addEventListener('click', () => {
+          // Visual feedback for voice playback
+          voiceBtn.classList.add('ring-2', 'ring-primary');
+          const originalText = voiceBtn.innerHTML;
+          voiceBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[18px] animate-pulse">record_voice_over</span>
+            <span class="font-label-sm text-label-sm font-bold text-primary">बोलत आहे...</span>
+          `;
+          setTimeout(() => {
+            voiceBtn.innerHTML = originalText;
+            voiceBtn.classList.remove('ring-2', 'ring-primary');
+          }, 3200);
+        });
+      }
+    });
+  </script>
+</body></html>

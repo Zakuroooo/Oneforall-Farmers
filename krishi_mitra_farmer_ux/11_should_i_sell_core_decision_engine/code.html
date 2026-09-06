@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Mandi-Setu — Price Decision</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Plus Jakarta Sans Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#f7f3eb",
+            "secondary-container": "#fb7b54",
+            "on-primary-fixed": "#390c00",
+            "tertiary-fixed": "#97f5cc",
+            "secondary-fixed": "#ffdbd1",
+            "on-surface-variant": "#59413a",
+            "surface-bright": "#fdf9f1",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-highest": "#e6e2da",
+            "on-primary": "#ffffff",
+            "surface-container": "#f1ede6",
+            "on-secondary-container": "#6b1a00",
+            "on-background": "#1c1c17",
+            "primary-container": "#c2410c",
+            "on-tertiary": "#ffffff",
+            "tertiary": "#006146",
+            "surface-variant": "#e6e2da",
+            "error-container": "#ffdad6",
+            "on-secondary": "#ffffff",
+            "surface": "#fdf9f1",
+            "primary-fixed": "#ffdbd0",
+            "on-primary-container": "#ffece7",
+            "on-secondary-fixed-variant": "#842503",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-error": "#ffffff",
+            "on-tertiary-fixed-variant": "#00513a",
+            "on-tertiary-fixed": "#002115",
+            "secondary": "#a53c19",
+            "outline": "#8d7168",
+            "outline-variant": "#e1bfb5",
+            "tertiary-container": "#0f7c5b",
+            "on-primary-fixed-variant": "#832600",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#ffb59d",
+            "background": "#fdf9f1",
+            "inverse-on-surface": "#f4f0e8",
+            "error": "#ba1a1a",
+            "surface-container-high": "#ece8e0",
+            "surface-tint": "#ac3400",
+            "inverse-surface": "#31302b",
+            "primary": "#9b2f00",
+            "on-tertiary-container": "#b9ffde",
+            "inverse-primary": "#ffb59d",
+            "surface-dim": "#dddad2",
+            "on-surface": "#1c1c17",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-secondary-fixed": "#3a0a00"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.75rem",
+            "space-2xl": "2rem",
+            "space-md": "1rem",
+            "touch-target-min": "3rem",
+            "gutter-mobile": "1rem",
+            "space-2xs": "0.25rem",
+            "margin-mobile": "1rem",
+            "touch-target-hero": "3.5rem",
+            "space-3xl": "2.5rem",
+            "space-xl": "1.5rem",
+            "space-4xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "2rem",
+            "space-xs": "0.5rem",
+            "space-lg": "1.25rem"
+          },
+          "fontFamily": {
+            "title-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen antialiased selection:bg-primary selection:text-on-primary">
+<!-- Mobile App Wrapper -->
+<div class="max-w-md mx-auto min-h-screen flex flex-col bg-surface shadow-2xl relative pb-28">
+<!-- 1. Top App Bar -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md px-margin-mobile py-space-xs flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-sm">
+<button aria-label="Go back" class="w-10 h-10 rounded-xl flex items-center justify-center text-on-surface hover:bg-surface-container-high active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div>
+<span class="text-label-sm font-label-sm text-outline uppercase tracking-wider block">Decision Engine</span>
+<h1 class="text-headline-sm font-headline-sm text-on-surface font-extrabold tracking-tight">Price Decision</h1>
+</div>
+</div>
+<!-- Audio Listen / Voice Mandi Trigger -->
+<button aria-label="Listen to Audio Advisory in Marathi" class="flex items-center gap-1.5 bg-surface-container-highest hover:bg-surface-container text-on-surface px-3 py-2 rounded-full border border-outline-variant/50 shadow-xs active:scale-95 transition-all" id="voiceListenBtn" type="button">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+<span class="text-label-sm font-label-sm font-bold text-primary">आवाज ऐका</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile pt-space-sm space-y-space-md">
+<!-- Farmer Identity Pill & Mandi Benchmark -->
+<div class="flex items-center justify-between bg-surface-container-low px-3.5 py-2 rounded-xl border border-outline-variant/40">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-tertiary animate-pulse"></span>
+<p class="text-label-md font-label-md text-on-surface font-semibold">Farmer: Rambhau Patil</p>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-primary">pin_drop</span>
+<span class="text-label-sm font-label-sm font-bold">Lasalgaon APMC</span>
+</div>
+</div>
+<!-- 2. Verdict Hero -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/60 shadow-[0_2px_4px_rgba(154,52,18,0.04),0_1px_2px_rgba(24,24,27,0.06)] relative overflow-hidden">
+<div class="flex items-center justify-between mb-space-xs">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-label-sm font-label-sm bg-primary-fixed text-on-primary-fixed border border-primary/20">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">stars</span>
+            RECOMMENDED STRATEGY
+          </span>
+<span class="text-label-sm font-label-sm text-outline font-semibold">Confidence: 91%</span>
+</div>
+<!-- Big Emphatic Status -->
+<div class="my-space-xs">
+<h2 class="text-display-lg-mobile font-display-lg-mobile font-extrabold text-on-surface tracking-tight leading-tight">
+            HOLD FOR 11 DAYS
+          </h2>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1.5 font-medium leading-snug">
+            Based on your <span class="font-bold text-on-surface">40 Quintals</span> of <span class="text-primary font-bold">Grade A Onions</span> stored at Niphad.
+          </p>
+</div>
+<!-- Timeline & Market Window Strip -->
+<div class="mt-space-sm pt-space-xs border-t border-outline-variant/30 flex items-center justify-between text-body-sm font-body-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">calendar_month</span>
+<span class="text-on-surface-variant font-medium">Optimal Window:</span>
+</div>
+<span class="font-bold text-on-surface">Oct 29 – Nov 03</span>
+</div>
+</section>
+<!-- 3. The Non-Negotiable Symmetrical Money Section -->
+<section class="space-y-space-xs">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-label-lg font-label-lg text-on-surface font-bold uppercase tracking-wider">Financial Impact Matrix</h3>
+<span class="text-label-sm font-label-sm text-outline font-medium">Niphad Lot #40Q</span>
+</div>
+<!-- Symmetrical Cards Grid -->
+<div class="grid grid-cols-2 gap-space-xs">
+<!-- Left Card: Expected Gain -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/50 shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center gap-1.5 mb-2">
+<span class="w-6 h-6 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+</span>
+<span class="text-label-md font-label-md font-bold text-on-surface-variant">Expected Gain</span>
+</div>
+<div class="py-1">
+<span class="text-[26px] leading-[30px] font-black text-[#047857] tracking-tight block">
+                +₹6,290
+              </span>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/30">
+<span class="text-label-sm font-label-sm font-medium text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">insights</span>
+                +₹157/Qtl rise
+              </span>
+</div>
+</div>
+<!-- Right Card: Worst Case Risk -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/50 shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="flex items-center gap-1.5 mb-2">
+<span class="w-6 h-6 rounded-lg bg-error/10 flex items-center justify-center text-[#B91C1C]">
+<span class="material-symbols-outlined text-[16px]">trending_down</span>
+</span>
+<span class="text-label-md font-label-md font-bold text-on-surface-variant">Worst Case Risk</span>
+</div>
+<div class="py-1">
+<span class="text-[26px] leading-[30px] font-black text-[#B91C1C] tracking-tight block">
+                −₹4,800
+              </span>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/30">
+<span class="text-label-sm font-label-sm font-medium text-[#B91C1C] flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">shield_with_heart</span>
+                Max −₹120/Qtl dip
+              </span>
+</div>
+</div>
+</div>
+<!-- Empirical Backtest Subtext -->
+<div class="flex items-start gap-2 bg-surface-container-high/60 px-3.5 py-2.5 rounded-xl text-on-surface-variant border border-outline-variant/30">
+<span class="material-symbols-outlined text-[18px] text-outline mt-0.5">verified</span>
+<p class="text-label-sm font-label-sm leading-relaxed">
+            Calculated with <span class="font-bold text-on-surface">84% historical accuracy</span> over 180 mandi cycles across Nashik APMCs.
+          </p>
+</div>
+</section>
+<!-- 4. Cost & Deduction Breakdown Preview -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/60 shadow-sm">
+<div class="flex items-center justify-between pb-space-xs border-b border-outline-variant/30">
+<div>
+<h3 class="text-title-md font-title-md text-on-surface font-bold">Deductions &amp; Holding Net</h3>
+<p class="text-body-sm font-body-sm text-outline">All transparent mandi yard fees</p>
+</div>
+<div class="text-right">
+<span class="text-numeral-data font-numeral-data text-primary font-bold">₹155</span>
+<span class="text-label-sm font-label-sm text-outline block">per quintal</span>
+</div>
+</div>
+<!-- Fee Items List -->
+<div class="py-space-xs space-y-2 text-body-sm font-body-sm">
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-outline">local_shipping</span> Transport</span>
+<span class="font-semibold text-on-surface">₹60 / Qtl</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-outline">handshake</span> Commission (Mandi Adat)</span>
+<span class="font-semibold text-on-surface">₹51 / Qtl</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-outline">warehouse</span> Cold Storage (11 Days)</span>
+<span class="font-semibold text-on-surface">₹28 / Qtl</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-outline">nest_eco_leaf</span> Storage Spoilage Allowance</span>
+<span class="font-semibold text-on-surface">₹11 / Qtl</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<span class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px] text-outline">forklift</span> Loading &amp; Weighbridge</span>
+<span class="font-semibold text-on-surface">₹5 / Qtl</span>
+</div>
+</div>
+<!-- Tappable Accordion / Action -->
+<button class="w-full mt-2 pt-space-xs border-t border-outline-variant/30 flex items-center justify-between text-primary font-title-md hover:bg-surface-container-low px-2 py-1.5 rounded-lg transition-colors" type="button">
+<span class="text-label-md font-label-md font-bold">Open Itemized Cost Sheet</span>
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</section>
+<!-- 5. Cashflow Bridge (Loan Against Stored Crop) -->
+<section class="bg-gradient-to-br from-surface-container-low to-[#FAF0E1] rounded-2xl p-space-md border-1.5 border-outline-variant/80 shadow-sm relative">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5 text-secondary font-bold">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="text-label-md font-label-md uppercase tracking-wider">Cashflow Bridge</span>
+</div>
+<span class="px-2 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-label-sm font-label-sm font-bold">
+            Apply in 2 minutes
+          </span>
+</div>
+<h4 class="text-title-lg font-title-lg text-on-surface font-extrabold mb-1">
+          Need cash while waiting?
+        </h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant leading-relaxed mb-space-sm">
+          Get <span class="text-on-surface font-bold">₹34,000</span> instant loan against stored crop at <span class="font-semibold">9% p.a.</span> (Only <span class="text-primary font-bold">₹92 interest</span> for 11 days).
+        </p>
+<!-- Side-by-Side Comparison Tag -->
+<div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/40 flex items-center justify-between mb-space-xs">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-outline">Loan Cost</span>
+<span class="text-title-md font-title-md font-extrabold text-[#B91C1C]">₹92 interest</span>
+</div>
+<div class="text-outline font-bold text-label-sm">VS</div>
+<div class="flex flex-col text-right">
+<span class="text-label-sm font-label-sm text-outline">Projected Gain</span>
+<span class="text-title-md font-title-md font-extrabold text-[#047857]">+₹6,290</span>
+</div>
+</div>
+<button class="w-full mt-1 h-11 bg-surface-container-lowest hover:bg-surface-bright text-secondary border border-secondary/30 rounded-xl font-title-md text-label-md font-bold flex items-center justify-center gap-2 shadow-xs active:scale-[0.98] transition-all" type="button">
+<span>Explore ₹34,000 Loan</span>
+<span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</section>
+<!-- 6. Radical Honesty & Alternative Action (CTA Cluster) -->
+<section class="space-y-space-xs pt-space-xs">
+<!-- Button 1: Primary 56dp Bold Turmeric Amber -->
+<button class="w-full h-[56px] bg-primary-container hover:bg-primary text-on-primary rounded-xl font-title-lg text-title-lg font-extrabold flex items-center justify-center gap-2 shadow-md active:translate-y-0.5 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[22px]">lock_clock</span>
+<span>Lock In Hold Strategy</span>
+</button>
+<!-- Button 2: Secondary Outline 48dp -->
+<button class="w-full h-[48px] bg-surface-container-lowest hover:bg-surface-container-low text-primary border-[1.5px] border-primary/80 rounded-xl font-title-md text-title-md font-bold flex items-center justify-center gap-2 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]">sell</span>
+<span>Sell Today at ₹2,050/q Instead</span>
+</button>
+</section>
+<!-- Escrow & Mandi Board Guarantee Notice -->
+<div class="flex items-center justify-center gap-2 text-outline py-2">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+<span class="text-label-sm font-label-sm">Protected by Maharashtra Mandi Settlement Board</span>
+</div>
+</main>
+<!-- 7. Shared Component: BottomNavBar (Fixed Shell docked at bottom) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs min-h-touch-target-hero pb-safe bg-surface-container-lowest shadow-[0_-4px_20px_rgba(24,24,27,0.09)] border-t-2 border-outline-variant/50">
+<!-- Tab 1: Home (ACTIVE - Exact semantic root of Decision Engine flow) -->
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:translate-y-0.5 active:scale-95 transition-all" href="#home">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">storefront</span>
+<span class="text-label-sm font-label-sm font-bold">Home</span>
+</a>
+<!-- Tab 2: Market -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95" href="#market">
+<span class="material-symbols-outlined text-[22px]">trending_up</span>
+<span class="text-label-sm font-label-sm">Market</span>
+</a>
+<!-- Tab 3: My Produce -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95" href="#myproduce">
+<span class="material-symbols-outlined text-[22px]">inventory_2</span>
+<span class="text-label-sm font-label-sm">My Produce</span>
+</a>
+<!-- Tab 4: Deals -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95" href="#deals">
+<span class="material-symbols-outlined text-[22px]">handshake</span>
+<span class="text-label-sm font-label-sm">Deals</span>
+</a>
+</nav>
+</div>
+<!-- Micro-interactions Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const voiceBtn = document.getElementById('voiceListenBtn');
+      let isPlaying = false;
+      
+      voiceBtn.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        const icon = voiceBtn.querySelector('.material-symbols-outlined');
+        const text = voiceBtn.querySelector('span:last-child');
+        
+        if (isPlaying) {
+          icon.textContent = 'pause_circle';
+          text.textContent = 'थांबवा';
+          voiceBtn.classList.add('bg-primary-fixed', 'border-primary');
+        } else {
+          icon.textContent = 'volume_up';
+          text.textContent = 'आवाज ऐका';
+          voiceBtn.classList.remove('bg-primary-fixed', 'border-primary');
+        }
+      });
+    });
+  </script>
+</body></html>

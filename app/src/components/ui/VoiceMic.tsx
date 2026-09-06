@@ -4,8 +4,7 @@
  *
  * ★ Tap once to start recording, tap again to stop — not press-and-hold.
  *   A farmer holding a phone one-handed in a mandi is the exact case a
- *   press-and-hold gesture (which demands a second free hand or an
- *   uninterrupted thumb-down for the whole sentence) works against.
+ *   press-and-hold gesture works against.
  *
  * ★ `POST /voice/transcribe` does not exist on the server yet (see
  *   `lib/api.ts`'s voice section) — this component calls it anyway, per the
@@ -16,7 +15,10 @@
  *   ships.
  *
  * ★ Records to `.m4a` (AAC) — matches `transcribeAudio()`'s
- *   `type: 'audio/mp4'} multipart part.
+ *   `type: 'audio/mp4'` multipart part.
+ *
+ * ★ No emoji glyphs — the mic and send affordances are drawn `Icon`s
+ *   (`react-native-svg`), not a font gamble on a cheap device.
  */
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -25,6 +27,8 @@ import AudioRecorderPlayer, { AudioEncoderAndroidType, AudioSourceAndroidType, O
 
 import { transcribeAudio } from '../../lib/api';
 import { translate } from '../../lib/i18n';
+import { Icon } from './Icon';
+import { colors, fontFamily, radius, space } from '../../theme/tokens';
 import type { Locale } from '../../types/api';
 
 type MicState = 'idle' | 'recording' | 'transcribing';
@@ -140,8 +144,14 @@ export function VoiceMic({
           state === 'recording' && styles.micButtonRecording,
           (disabled || state === 'transcribing') && styles.micButtonDisabled,
         ]}
+        activeOpacity={0.85}
         accessibilityRole="button"
         accessibilityLabel={label}>
+        <Icon
+          name="mic"
+          size={20}
+          color={state === 'recording' ? colors.critical : colors.primary}
+        />
         <Text style={styles.micLabel}>{label}</Text>
       </TouchableOpacity>
 
@@ -155,6 +165,7 @@ export function VoiceMic({
             value={manualText}
             onChangeText={setManualText}
             placeholder={translate('voice_manual_placeholder', locale)}
+            placeholderTextColor={colors.outline}
             editable={!disabled}
             onSubmitEditing={submitManual}
           />
@@ -171,37 +182,41 @@ export function VoiceMic({
 }
 
 const styles = StyleSheet.create({
-  root: { marginVertical: 8 },
+  root: { marginVertical: space.xs },
   micButton: {
-    backgroundColor: '#E8F5E9',
-    borderRadius: 24,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: space.xs,
+    backgroundColor: colors.surfaceContainer,
+    borderRadius: radius.full,
+    paddingVertical: 14,
+    paddingHorizontal: space.md,
   },
-  micButtonRecording: { backgroundColor: '#FFEBEE' },
+  micButtonRecording: { backgroundColor: colors.criticalContainer },
   micButtonDisabled: { opacity: 0.5 },
-  micLabel: { fontSize: 15, fontWeight: '700', color: '#1B5E20' },
-  errorText: { color: '#C62828', fontSize: 13, marginTop: 8, textAlign: 'center' },
-  manualRow: { marginTop: 12 },
-  manualLabel: { fontSize: 13, color: '#64748B', marginBottom: 6 },
-  manualInputRow: { flexDirection: 'row', gap: 8 },
+  micLabel: { fontFamily: fontFamily.bold, fontSize: 15, color: colors.onSurface },
+  errorText: { color: colors.critical, fontSize: 13, marginTop: space.xs, textAlign: 'center' },
+  manualRow: { marginTop: space.sm },
+  manualLabel: { fontFamily: fontFamily.regular, fontSize: 13, color: colors.onSurfaceVariant, marginBottom: 6 },
+  manualInputRow: { flexDirection: 'row', gap: space.xs },
   manualInput: {
     flex: 1,
     borderWidth: 1.5,
-    borderColor: '#CBD5E1',
-    borderRadius: 10,
-    paddingHorizontal: 12,
+    borderColor: colors.outlineVariant,
+    borderRadius: radius.md,
+    paddingHorizontal: space.sm,
     paddingVertical: 10,
+    fontFamily: fontFamily.regular,
     fontSize: 15,
-    color: '#1E293B',
-    backgroundColor: '#FFFFFF',
+    color: colors.onSurface,
+    backgroundColor: colors.surface,
   },
   sendBtn: {
-    backgroundColor: '#1B5E20',
-    borderRadius: 10,
-    paddingHorizontal: 16,
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    paddingHorizontal: space.md,
     justifyContent: 'center',
   },
-  sendBtnText: { color: '#FFFFFF', fontWeight: '700', fontSize: 14 },
+  sendBtnText: { fontFamily: fontFamily.bold, color: colors.onPrimary, fontSize: 14 },
 });

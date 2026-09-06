@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu Daily Mission Control</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#f7f3eb",
+            "secondary-container": "#fb7b54",
+            "on-primary-fixed": "#390c00",
+            "tertiary-fixed": "#97f5cc",
+            "secondary-fixed": "#ffdbd1",
+            "on-surface-variant": "#59413a",
+            "surface-bright": "#fdf9f1",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-highest": "#e6e2da",
+            "on-primary": "#ffffff",
+            "surface-container": "#f1ede6",
+            "on-secondary-container": "#6b1a00",
+            "on-background": "#1c1c17",
+            "primary-container": "#c2410c",
+            "on-tertiary": "#ffffff",
+            "tertiary": "#006146",
+            "surface-variant": "#e6e2da",
+            "error-container": "#ffdad6",
+            "on-secondary": "#ffffff",
+            "surface": "#fdf9f1",
+            "primary-fixed": "#ffdbd0",
+            "on-primary-container": "#ffece7",
+            "on-secondary-fixed-variant": "#842503",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-error": "#ffffff",
+            "on-tertiary-fixed-variant": "#00513a",
+            "on-tertiary-fixed": "#002115",
+            "secondary": "#a53c19",
+            "outline": "#8d7168",
+            "outline-variant": "#e1bfb5",
+            "tertiary-container": "#0f7c5b",
+            "on-primary-fixed-variant": "#832600",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#ffb59d",
+            "background": "#fdf9f1",
+            "inverse-on-surface": "#f4f0e8",
+            "error": "#ba1a1a",
+            "surface-container-high": "#ece8e0",
+            "surface-tint": "#ac3400",
+            "inverse-surface": "#31302b",
+            "primary": "#9b2f00",
+            "on-tertiary-container": "#b9ffde",
+            "inverse-primary": "#ffb59d",
+            "surface-dim": "#dddad2",
+            "on-surface": "#1c1c17",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-secondary-fixed": "#3a0a00"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.75rem",
+            "space-2xl": "2rem",
+            "space-md": "1rem",
+            "touch-target-min": "3rem",
+            "gutter-mobile": "1rem",
+            "space-2xs": "0.25rem",
+            "margin-mobile": "1rem",
+            "touch-target-hero": "3.5rem",
+            "space-3xl": "2.5rem",
+            "space-xl": "1.5rem",
+            "space-4xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "2rem",
+            "space-xs": "0.5rem",
+            "space-lg": "1.25rem"
+          },
+          "fontFamily": {
+            "title-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      background-color: #FAF6EE;
+      color: #18181B;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 700, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface min-h-screen flex flex-col justify-between items-center text-on-surface selection:bg-secondary-fixed">
+<!-- TOP APP BAR (Shared Component Anchor) -->
+<header class="bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-md shadow-sm dark:shadow-none flex justify-between items-center w-full px-margin-mobile py-space-xs sticky top-0 z-40 max-w-lg mx-auto border-b border-outline-variant/40">
+<div class="flex items-center gap-space-sm">
+<div class="relative w-11 h-11 rounded-full overflow-hidden border-2 border-primary-container shrink-0 shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Close-up portrait of Rambhau Patil, a seasoned Maharashtrian farmer with sun-weathered warm skin, a crisp white khadi topi, wearing a saffron-accented beige kurta. The lighting is golden outdoor daylight, creating an authentic, trustworthy, and dignified rural tone." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAplAG7p9gJjYoQ2JtEC6SCzdkQGbYE3KsFiHmfFTSDqS4e2Xwa-wj-xavW7z_TmbGo3tUKl-RT0JQpAPtD_ZYs13IF295mRlMdbHgl5T9WzHCJLzd0HdxsgyiliW0gRTDOZEFL0ccQpiQohRTgkuNKvAnlE5Z3Q30pQw3uDVNbGlK7AAo9nSFlgM6zvnFfp3rs38QhoeEo7KfPgv0Ju-JzAVl-VNPSHv31FH4wiMf2k8J49WyB890M"/>
+</div>
+<div class="flex flex-col text-left">
+<div class="flex items-center gap-1 cursor-pointer group">
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider">Rambhau Patil · Niphad</span>
+</div>
+<button class="flex items-center gap-1 text-left -mt-0.5 active:scale-95 transition-transform" type="button">
+<span class="text-headline-sm font-headline-sm text-primary font-bold tracking-tight">Lasalgaon Mandi</span>
+<span class="material-symbols-outlined text-primary text-[18px]">expand_more</span>
+</button>
+</div>
+</div>
+<!-- Listen Aloud Action Button -->
+<button aria-label="Listen aloud current mandi updates" class="w-12 h-12 rounded-full bg-surface-container-highest hover:bg-surface-container-high active:scale-95 transition-all flex items-center justify-center text-primary shadow-sm border border-outline-variant/60" type="button">
+<span class="material-symbols-outlined fill-icon text-[24px]" data-icon="volume_up">volume_up</span>
+</button>
+</header>
+<!-- MAIN MISSION CONTROL CANVAS -->
+<main class="w-full max-w-lg mx-auto px-margin-mobile pt-space-sm pb-28 flex flex-col gap-space-md">
+<!-- URGENT ATTENTION STRIP -->
+<section class="bg-secondary-fixed/50 border border-secondary/30 rounded-xl p-3 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-full bg-secondary text-on-primary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined fill-icon text-[18px]" data-icon="notification_important">notification_important</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-bold text-on-secondary-fixed leading-tight">
+            2 Verified Buyers sent bids for your 40q Onion lot
+          </p>
+<span class="text-label-sm font-label-sm text-on-surface-variant font-medium">Valid for next 42 mins</span>
+</div>
+</div>
+<button class="bg-secondary text-on-primary text-label-md font-label-md px-3 py-2 rounded-lg font-bold shrink-0 hover:bg-primary active:scale-95 transition-transform shadow-xs">
+        Review Offers
+      </button>
+</section>
+<!-- TODAY'S LASALGAON ONION PRICE HERO CARD -->
+<section class="bg-surface-container-lowest rounded-2xl border border-outline-variant/50 p-space-md shadow-sm relative overflow-hidden">
+<div class="flex justify-between items-start mb-1">
+<div>
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase tracking-wider font-bold">Today's Modal Rate · Nashik</span>
+<h1 class="text-headline-md font-headline-md text-on-surface">Lasalgaon Red Onion</h1>
+</div>
+<span class="inline-flex items-center gap-1 bg-tertiary-fixed text-on-tertiary-fixed px-2.5 py-1 rounded-full text-label-md font-label-md">
+<span class="material-symbols-outlined text-[14px]" data-icon="north">north</span>
+          ₹100 (+5.2%)
+        </span>
+</div>
+<!-- Price Numeral & Sparkline -->
+<div class="flex items-baseline justify-between mt-2 mb-3">
+<div>
+<div class="flex items-baseline gap-1">
+<span class="text-numeral-hero font-numeral-hero text-on-surface tracking-tight">₹2,050</span>
+<span class="text-title-md font-title-md text-on-surface-variant font-medium">/ Quintal</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Arrivals today: 28,400 Bags (Active Yard)</span>
+</div>
+<!-- 7-Day Sparkline climb -->
+<div class="flex flex-col items-end">
+<div class="w-28 h-10 flex items-end gap-1.5 pb-1">
+<div class="w-2.5 bg-surface-container-high rounded-t-sm h-[45%]"></div>
+<div class="w-2.5 bg-surface-container-high rounded-t-sm h-[50%]"></div>
+<div class="w-2.5 bg-surface-container-high rounded-t-sm h-[40%]"></div>
+<div class="w-2.5 bg-surface-container-high rounded-t-sm h-[65%]"></div>
+<div class="w-2.5 bg-surface-container-high rounded-t-sm h-[60%]"></div>
+<div class="w-2.5 bg-tertiary-fixed-dim rounded-t-sm h-[78%]"></div>
+<div class="w-2.5 bg-tertiary-container rounded-t-sm h-[100%]"></div>
+</div>
+<span class="text-[10px] font-bold text-tertiary tracking-wide uppercase">7-Day Climb</span>
+</div>
+</div>
+<div class="pt-2.5 border-t border-surface-container-high flex justify-between items-center text-label-sm font-label-sm text-on-surface-variant">
+<span>Min: <strong class="text-on-surface">₹1,450</strong></span>
+<span class="text-outline-variant">|</span>
+<span>Avg: <strong class="text-on-surface">₹1,980</strong></span>
+<span class="text-outline-variant">|</span>
+<span>Max: <strong class="text-on-surface">₹2,280</strong></span>
+</div>
+</section>
+<!-- THE DECISION ENGINE CARD -->
+<section class="bg-surface-container-lowest rounded-2xl border-2 border-primary-container shadow-md overflow-hidden">
+<!-- Card Badge Header -->
+<div class="bg-surface-container-low px-space-md py-2.5 flex items-center justify-between border-b border-outline-variant/40">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px] fill-icon" data-icon="psychology">psychology</span>
+<span class="text-label-md font-label-md text-primary tracking-wider uppercase font-bold">AI Price Intelligence</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-surface-container-highest px-2 py-0.5 rounded-full font-semibold">
+          Confidence: Medium
+        </span>
+</div>
+<!-- Verdict Banner in deep terracotta/turmeric -->
+<div class="bg-primary-container text-on-primary-container px-space-md py-3 flex items-center justify-between">
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm tracking-wider uppercase font-bold text-secondary-fixed">Mandi-Setu Advisory</span>
+<p class="text-title-lg font-title-lg tracking-tight font-extrabold text-surface-bright">
+            RECOMMENDATION: HOLD FOR 11 DAYS
+          </p>
+</div>
+<div class="w-10 h-10 rounded-xl bg-on-primary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary text-[24px]" data-icon="lock_clock">lock_clock</span>
+</div>
+</div>
+<!-- Sub-caption Costs Deducted -->
+<div class="px-space-md pt-2 pb-1 text-center bg-surface-container-low/60 border-b border-outline-variant/30">
+<p class="text-label-sm font-label-sm text-on-surface-variant font-medium">
+          Holding costs accounted: <span class="font-bold text-on-surface">₹155/q</span> (Sprouting loss, bag weight loss &amp; storage)
+        </p>
+</div>
+<!-- Two Equal Columns Side-by-Side with IDENTICAL 24px Bold Typography -->
+<div class="grid grid-cols-2 divide-x divide-outline-variant/40 bg-surface-container-lowest p-space-md text-center">
+<!-- Left Column: Expected Gain -->
+<div class="flex flex-col items-center pr-2">
+<span class="text-label-md font-label-md text-on-surface-variant font-semibold mb-1">Expected Gain (40 q)</span>
+<span class="text-[24px] leading-[28px] font-extrabold text-[#047857] tracking-tight">
+            +₹6,290
+          </span>
+<span class="text-[11px] text-tertiary font-bold mt-1 inline-flex items-center">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_up">trending_up</span> Projected ₹2,205/q
+          </span>
+</div>
+<!-- Right Column: Worst Case -->
+<div class="flex flex-col items-center pl-2">
+<span class="text-label-md font-label-md text-on-surface-variant font-semibold mb-1">Worst Case Risk (40 q)</span>
+<span class="text-[24px] leading-[28px] font-extrabold text-[#B91C1C] tracking-tight">
+            −₹4,800
+          </span>
+<span class="text-[11px] text-error font-bold mt-1 inline-flex items-center">
+<span class="material-symbols-outlined text-[14px]" data-icon="trending_down">trending_down</span> Downside floor ₹1,930/q
+          </span>
+</div>
+</div>
+<!-- Cost Breakdown Trigger -->
+<div class="border-t border-outline-variant/30 bg-surface-container-low/40 px-space-md py-2.5">
+<button class="w-full flex items-center justify-between text-left text-primary hover:text-on-primary-fixed-variant active:scale-98 transition-all" type="button">
+<span class="text-label-md font-label-md font-bold">View ₹155/q Cost Breakdown &amp; Assumptions</span>
+<span class="material-symbols-outlined text-[18px]" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- ACTIVE LOTS SECTION (CAROUSEL / DETAIL CARD) -->
+<section class="flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<h2 class="text-headline-sm font-headline-sm text-on-surface">Your Active Produce Lots</h2>
+<span class="bg-surface-container-highest text-on-surface-variant text-label-sm font-label-sm px-2 py-0.5 rounded-full font-bold">1 Lot</span>
+</div>
+<a class="text-label-md font-label-md font-bold text-primary flex items-center" href="#all-lots">
+          Manage All <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+<!-- Produce Lot Card -->
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/50 p-space-md shadow-sm">
+<div class="flex gap-space-md">
+<!-- Commodity Photo -->
+<div class="w-24 h-24 rounded-xl overflow-hidden shrink-0 relative border border-outline-variant/40 shadow-xs">
+<img class="w-full h-full object-cover" data-alt="Close-up shot of freshly packed reddish-purple Indian Nashik onions spilling from textured rustic jute gunny sacks in a warm outdoor agricultural auction yard. The onions are clean, glossy with firm skins under bright natural daylight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBMdF0hT8FHvX7VsV2jmsp-NrpsuT3bjUl3BgIi4QG49F3wRNnAsF8R3c3y0QkRNFoYB1rOGvUinhlwGV15r_CQ1JqHAmkPzh4Qqr3i9kc_NAm4Kysofi1ZpYQz2dIX7YISxz3SQ64wM2fspvqnSIQV4ZnjrL7R7Q4TW6srpJth7KoO9OnPQ8VvAEpO4rgFxK-k4DdVNShmLoR9205tI_0MFrqyEzxPpmz0MZNel9_jqi4j4sO9x0y-"/>
+<span class="absolute bottom-1 left-1 bg-surface-container-lowest/90 backdrop-blur-xs text-[10px] font-extrabold text-on-surface px-1.5 py-0.5 rounded shadow-xs">
+              Nashik Red
+            </span>
+</div>
+<!-- Commodity Details -->
+<div class="flex flex-col justify-between flex-1 min-w-0">
+<div>
+<div class="flex items-center justify-between gap-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant font-semibold">Lot #NL-4081</span>
+<!-- Pulsating Buyer Interest Badge -->
+<span class="inline-flex items-center gap-1 bg-secondary-fixed text-on-secondary-fixed px-2 py-0.5 rounded-full text-label-sm font-label-sm font-bold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
+                  3 Buyers Interested
+                </span>
+</div>
+<h3 class="text-title-lg font-title-lg text-on-surface font-bold truncate mt-0.5">
+                Onion · Grade A (850/1000)
+              </h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+                Total Quantity: <strong class="text-on-surface font-bold">40 Quintals</strong> (80 Bags)
+              </p>
+</div>
+<div class="flex items-center justify-between pt-1">
+<div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Farmer Ask:</span>
+<span class="text-title-md font-title-md font-extrabold text-primary ml-1">₹2,000/q</span>
+</div>
+<button class="bg-surface-container-high hover:bg-surface-container-highest text-on-surface text-label-md font-label-md px-3 py-1.5 rounded-lg font-bold border border-outline-variant/60 active:scale-95 transition-all">
+                View Lot Detail
+              </button>
+</div>
+</div>
+</div>
+<!-- Escrow Guarantee Sub-tier -->
+<div class="mt-3 pt-2.5 border-t border-surface-container-high flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant">
+<div class="flex items-center gap-1 text-tertiary font-bold">
+<span class="material-symbols-outlined text-[16px] fill-icon" data-icon="verified_user">verified_user</span>
+<span>Mandi-Setu 100% Escrow Guarantee</span>
+</div>
+<span class="text-on-surface-variant">Stored at Niphad Yard</span>
+</div>
+</div>
+</section>
+<!-- QUICK MANDI ACTIONS BENTO -->
+<section class="grid grid-cols-2 gap-space-xs">
+<div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/40 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined fill-icon text-[20px]" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<span class="text-title-md font-title-md font-bold text-on-surface">Book Truck</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">3 local drivers ready</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl p-3 border border-outline-variant/40 flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-tertiary-fixed flex items-center justify-center text-tertiary shrink-0">
+<span class="material-symbols-outlined fill-icon text-[20px]" data-icon="receipt_long">receipt_long</span>
+</div>
+<div>
+<span class="text-title-md font-title-md font-bold text-on-surface">Weigh Slips</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Electronic Mandi slips</p>
+</div>
+</div>
+</section>
+</main>
+<!-- BOTTOM NAVIGATION BAR (Shared Component Anchor) -->
+<!-- Note: Destination count: 4, labels: ["Home", "Market", "My Produce", "Deals"]. Active state applied directly to 'Home'. -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs min-h-touch-target-hero pb-safe bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<!-- Item 1: Home (ACTIVE DESTINATION) -->
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#home">
+<span class="material-symbols-outlined fill-icon text-[22px]" data-icon="storefront">storefront</span>
+<span class="text-label-sm font-label-sm tracking-tight font-bold">Home</span>
+</a>
+<!-- Item 2: Market -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 hover:bg-surface-container-high dark:hover:bg-surface-container-high/50 rounded-xl active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#market">
+<span class="material-symbols-outlined text-[22px]" data-icon="trending_up">trending_up</span>
+<span class="text-label-sm font-label-sm">Market</span>
+</a>
+<!-- Item 3: My Produce -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 hover:bg-surface-container-high dark:hover:bg-surface-container-high/50 rounded-xl active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#produce">
+<span class="material-symbols-outlined text-[22px]" data-icon="inventory_2">inventory_2</span>
+<span class="text-label-sm font-label-sm">My Produce</span>
+</a>
+<!-- Item 4: Deals -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 hover:bg-surface-container-high dark:hover:bg-surface-container-high/50 rounded-xl active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#deals">
+<span class="material-symbols-outlined text-[22px]" data-icon="handshake">handshake</span>
+<span class="text-label-sm font-label-sm">Deals</span>
+</a>
+</nav>
+</body></html>

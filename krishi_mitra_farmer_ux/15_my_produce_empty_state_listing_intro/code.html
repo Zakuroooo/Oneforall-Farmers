@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Produce - Mandi-Setu</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed": "#3a0a00",
+            "outline-variant": "#e1bfb5",
+            "error-container": "#ffdad6",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "primary-container": "#c2410c",
+            "on-secondary": "#ffffff",
+            "inverse-on-surface": "#f4f0e8",
+            "on-primary-container": "#ffece7",
+            "outline": "#8d7168",
+            "inverse-primary": "#ffb59d",
+            "error": "#ba1a1a",
+            "on-secondary-container": "#6b1a00",
+            "tertiary": "#006146",
+            "on-error": "#ffffff",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-fixed": "#97f5cc",
+            "on-tertiary-fixed-variant": "#00513a",
+            "surface-container-low": "#f7f3eb",
+            "primary": "#9b2f00",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#842503",
+            "secondary": "#a53c19",
+            "on-error-container": "#93000a",
+            "secondary-fixed": "#ffdbd1",
+            "surface-dim": "#dddad2",
+            "on-primary-fixed-variant": "#832600",
+            "tertiary-container": "#0f7c5b",
+            "surface-container": "#f1ede6",
+            "background": "#fdf9f1",
+            "on-surface": "#1c1c17",
+            "on-surface-variant": "#59413a",
+            "surface-tint": "#ac3400",
+            "secondary-fixed-dim": "#ffb59f",
+            "surface-container-high": "#ece8e0",
+            "primary-fixed-dim": "#ffb59d",
+            "on-primary": "#ffffff",
+            "on-tertiary-fixed": "#002115",
+            "primary-fixed": "#ffdbd0",
+            "on-background": "#1c1c17",
+            "surface-container-highest": "#e6e2da",
+            "surface": "#fdf9f1",
+            "surface-variant": "#e6e2da",
+            "on-tertiary-container": "#b9ffde",
+            "on-primary-fixed": "#390c00",
+            "secondary-container": "#fb7b54",
+            "inverse-surface": "#31302b",
+            "surface-bright": "#fdf9f1"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-desktop": "2rem",
+            "space-sm": "0.75rem",
+            "space-xl": "1.5rem",
+            "touch-target-hero": "3.5rem",
+            "space-xs": "0.5rem",
+            "space-lg": "1.25rem",
+            "space-2xs": "0.25rem",
+            "space-md": "1rem",
+            "margin-mobile": "1rem",
+            "touch-target-min": "3rem",
+            "gutter-mobile": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-4xl": "3rem",
+            "space-3xl": "2.5rem",
+            "space-2xl": "2rem"
+          },
+          "fontFamily": {
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TOP APP BAR -->
+<header class="bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-md sticky top-0 z-40 w-full shadow-sm">
+<div class="max-w-md mx-auto px-margin-mobile py-space-xs flex justify-between items-center">
+<!-- Leading Farmer Profile -->
+<div class="flex items-center gap-space-xs">
+<div class="relative">
+<img class="w-10 h-10 rounded-full border-2 border-primary object-cover shadow-sm" data-alt="Profile portrait photo of Maharashtrian farmer Rambhau Patil wearing a traditional white topi cap, standing outdoors near agricultural farmland with warm natural sunlight casting gentle shadows on his weathered, confident face. The background exhibits subtle golden-amber hues of harvest crops under clear daylight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOyfuIgdtUHlLKMVijNDZjdo200g8Lo9e8_OUE0rm_ug60Pdo29vBr0ICabv6vKUY0GUO1ADxRjIe5F30BSDTE8EP3YHbH1oCARBQnto4VpjhqIUpAhqnxLzE7BV1jyyKZST_YyQzSqFAe5V3RX6-OdktgfsgtxkN448CUHhVupl35gzZHQExVY5HBWzP_V6j2KIw0caG_ii5zYDb1Q95dprLMSP-fBeHUP5XZD8K5zfqLuUQqZUt0"/>
+<span class="absolute bottom-0 right-0 w-3 h-3 bg-tertiary-container border-2 border-surface-container-lowest rounded-full"></span>
+</div>
+<div class="flex flex-col">
+<span class="text-title-md font-title-md text-on-surface leading-tight">Rambhau Patil</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px] text-primary" data-icon="location_on">location_on</span>
+            Niphad, Lasalgaon
+          </span>
+</div>
+</div>
+<!-- Center Headline (Contextual screen) -->
+<div class="text-center hidden sm:block">
+<h1 class="text-title-lg font-title-lg text-primary tracking-tight">Lasalgaon Mandi</h1>
+</div>
+<!-- Trailing Audio Guidance Trigger -->
+<button aria-label="Listen audio guidance" class="flex items-center gap-1.5 bg-surface-container-low hover:bg-surface-container-high active:scale-95 transition-all duration-150 border border-outline-variant/60 rounded-full px-3 py-1.5 text-primary shadow-sm" type="button">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="volume_up">volume_up</span>
+<span class="text-label-sm font-label-sm font-bold text-on-surface">आवाज ऐका</span>
+</button>
+</div>
+</header>
+<!-- MAIN SCROLLABLE CONTAINER -->
+<main class="flex-1 w-full max-w-md mx-auto px-margin-mobile pt-space-sm pb-space-4xl flex flex-col gap-space-md">
+<!-- 1. HEADER / CONTEXT BANNER -->
+<section class="space-y-space-2xs">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-tertiary-fixed/40 border border-tertiary/20 rounded-full">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse"></span>
+<span class="text-label-sm font-label-sm text-tertiary tracking-wide uppercase">Nashik APMC Onion Cycle 2024 · Active Trading</span>
+</div>
+<div class="pt-1">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-on-surface">No Lots Listed Yet</h2>
+<p class="text-body-md font-body-md text-on-surface-variant font-medium">अद्याप कोणताही माल नोंदवलेला नाही</p>
+</div>
+</section>
+<!-- 2. HIGH-IMPACT TACTILE ILLUSTRATION CARD -->
+<section class="relative bg-surface-container-lowest border border-outline-variant/50 rounded-2xl p-space-md shadow-sm overflow-hidden flex flex-col items-center text-center">
+<!-- Ambient Sunburst Backdrop Accent -->
+<div class="absolute -top-16 -right-16 w-36 h-36 bg-primary-fixed/30 rounded-full blur-2xl pointer-events-none"></div>
+<div class="absolute -bottom-16 -left-16 w-36 h-36 bg-tertiary-fixed-dim/20 rounded-full blur-2xl pointer-events-none"></div>
+<!-- Rich Visual Focal Container -->
+<div class="relative w-full h-44 rounded-xl overflow-hidden border border-outline-variant/40 bg-surface-container-low mb-space-sm shadow-inner flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="Tactile warm photographic agricultural composition of freshly harvested sun-cured Nashik red onions bursting from rustic woven jute gunny sacks set upon an authentic mandi wooden weighing platform. Sun-drenched terracotta lighting radiates warm amber and harvest ochre highlights, highlighting papery onion skins, natural twine textures, and a polished brass weight scale." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDLmO0Ku-hyrZMmmmB7gK0g-HB0QWX34JMpmfw-hF0Bbty8WlHd5NVDQeZiGjZQMDGcfiCol_YD-THsz_a6pLsoH8GlnSwfir64Cf9QCJJo60U9KQHTfYjLgpDm2DGdGcQVMWWmeKfeBUaQGG6cG7Bjx6PNUkwOtBt4YJmzkJuk1r-O1LXYUaqArLsGe1P34tilW3PybyHjkAQLb9_1X5MUJj2iS4FgutauD4i2A3I9Vb9DjiK_5mid"/>
+<!-- Live Tag Overlay -->
+<div class="absolute top-2.5 left-2.5 bg-surface-container-lowest/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-outline-variant/50 flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-tertiary text-[14px]" data-icon="verified">verified</span>
+<span class="text-label-sm font-label-sm text-on-surface font-semibold">Lasalgaon Benchmark: ₹2,850/Qtl</span>
+</div>
+</div>
+<!-- Farmer-Centric Callout Statement -->
+<div class="px-space-xs">
+<p class="text-body-md font-body-md text-on-surface font-bold leading-snug">
+          "Your harvest deserves direct verified buyers, not yard exploitation."
+        </p>
+<p class="text-label-md font-label-md text-on-surface-variant mt-1">
+          दलाली मुक्त थेट व्यापार · खात्रीशीर वजन आणि त्वरित पैसे
+        </p>
+</div>
+</section>
+<!-- 3. THREE CLEAR VALUE PROPOSITION BENEFIT CARDS -->
+<section class="space-y-space-xs">
+<div class="flex items-center justify-between px-1">
+<h3 class="text-title-md font-title-md text-on-surface">Why list on Mandi-Setu?</h3>
+<span class="text-label-sm font-label-sm text-primary font-bold">शेतकरी फायदे</span>
+</div>
+<!-- Card 1: Direct Escrow Buyer Access -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-space-sm shadow-sm flex items-start gap-space-sm hover:border-primary-container transition-colors">
+<div class="w-11 h-11 rounded-lg bg-primary-fixed/50 flex items-center justify-center flex-shrink-0 border border-primary/20 text-primary">
+<span class="material-symbols-outlined text-[22px]" data-icon="handshake">handshake</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h4 class="text-title-md font-title-md text-on-surface">Direct Escrow Buyer Access</h4>
+<span class="text-[10px] bg-surface-container-high text-on-surface-variant font-bold px-2 py-0.5 rounded">450+ Buyers</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+            Connect directly with verified buyers from Azadpur (Delhi), Vashi, and Bengaluru. Zero distress sales.
+          </p>
+</div>
+</div>
+<!-- Card 2: AI Quality Grading in 60 Seconds -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-space-sm shadow-sm flex items-start gap-space-sm hover:border-primary-container transition-colors">
+<div class="w-11 h-11 rounded-lg bg-secondary-fixed/50 flex items-center justify-center flex-shrink-0 border border-secondary/20 text-secondary">
+<span class="material-symbols-outlined text-[22px]" data-icon="document_scanner">document_scanner</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h4 class="text-title-md font-title-md text-on-surface">AI Quality Grading in 60s</h4>
+<span class="text-[10px] bg-tertiary-fixed/50 text-tertiary font-bold px-2 py-0.5 rounded">Grade A / B</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+            Snap 3 photos of your onion trolley. Get an instant fair-market Grade A/B certificate and mandi benchmark.
+          </p>
+</div>
+</div>
+<!-- Card 3: 100% Escrow Payment Guarantee -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-space-sm shadow-sm flex items-start gap-space-sm hover:border-primary-container transition-colors">
+<div class="w-11 h-11 rounded-lg bg-tertiary-fixed/40 flex items-center justify-center flex-shrink-0 border border-tertiary/20 text-tertiary">
+<span class="material-symbols-outlined text-[22px]" data-icon="security">security</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h4 class="text-title-md font-title-md text-on-surface">100% Escrow Payment Guarantee</h4>
+<span class="text-[10px] bg-tertiary-fixed text-on-tertiary-fixed-variant font-bold px-2 py-0.5 rounded">DBT Fast</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+            Buyer funds locked before tractor leaves your farm. Direct DBT transfer directly to Bank of Maharashtra.
+          </p>
+</div>
+</div>
+</section>
+<!-- 4. PRIMARY HERO CTA DOCK ZONE -->
+<section class="space-y-space-xs pt-space-xs">
+<!-- Primary Action: List First Lot -->
+<button class="w-full h-touch-target-hero bg-primary-container hover:bg-primary active:scale-[0.98] active:translate-y-0.5 transition-all text-on-primary rounded-2xl flex items-center justify-between px-space-lg shadow-[0_4px_16px_rgba(194,65,12,0.25)] border border-primary" type="button">
+<div class="flex items-center gap-space-xs">
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[20px]" data-icon="add">add</span>
+</div>
+<div class="text-left">
+<span class="block text-title-lg font-title-lg leading-tight">List Your First Lot</span>
+<span class="block text-label-sm font-label-sm opacity-90">पहिला माल नोंदवा (२ मिनिटे)</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-white text-[22px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Secondary Voice Listing Pill -->
+<button class="w-full min-h-touch-target-min bg-surface-container-low hover:bg-surface-container-high active:scale-[0.99] border-1.5 border-outline-variant/80 rounded-2xl flex items-center justify-center gap-space-xs px-space-md py-2.5 transition-all shadow-sm" type="button">
+<span class="material-symbols-outlined text-primary text-[20px]" data-icon="mic">mic</span>
+<span class="text-title-md font-title-md text-on-surface">Or say <span class="text-primary font-bold">"माझा कांदा नोंदवा"</span></span>
+</button>
+</section>
+<!-- 5. ASSISTED HELP / VILLAGE SAHAYAK CARD -->
+<section class="bg-surface-container-low border border-outline-variant/60 rounded-xl p-space-sm flex items-center justify-between shadow-xs">
+<div class="flex items-center gap-space-xs">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="support_agent">support_agent</span>
+</div>
+<div>
+<span class="text-label-lg font-label-lg text-on-surface block">Need help listing produce?</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant block">Niphad Sahayak: Kishor Bhau (98230-XXXXX)</span>
+</div>
+</div>
+<button class="px-3 py-1.5 bg-surface-container-lowest border border-outline-variant hover:bg-surface-container text-primary font-bold text-label-sm font-label-sm rounded-lg active:scale-95 transition-transform flex items-center gap-1 shadow-2xs" type="button">
+<span class="material-symbols-outlined text-[14px]" data-icon="call">call</span>
+        Call
+      </button>
+</section>
+<!-- Mandi Board Compliance Subtext -->
+<div class="text-center pb-space-lg">
+<p class="text-label-sm font-label-sm text-on-surface-variant">
+        APMC Reg: MH-NSK-LAS-2024-C9 · Regulated e-Mandi Gateway
+      </p>
+</div>
+</main>
+<!-- BOTTOM NAVIGATION BAR (Shared Component Execution) -->
+<!-- Active Tab: 'My Produce' strictly highlighted using style_active_navigation tokens -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs min-h-touch-target-hero pb-safe bg-surface-container-lowest dark:bg-inverse-surface shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="storefront">storefront</span>
+<span class="text-label-sm font-label-sm mt-0.5">Home</span>
+</a>
+<!-- Market -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="trending_up">trending_up</span>
+<span class="text-label-sm font-label-sm mt-0.5">Market</span>
+</a>
+<!-- My Produce (ACTIVE TAB) -->
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="inventory_2" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+<span class="text-label-sm font-label-sm mt-0.5 font-bold">My Produce</span>
+</a>
+<!-- Deals -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-[22px]" data-icon="handshake">handshake</span>
+<span class="text-label-sm font-label-sm mt-0.5">Deals</span>
+</a>
+</nav>
+</body></html>

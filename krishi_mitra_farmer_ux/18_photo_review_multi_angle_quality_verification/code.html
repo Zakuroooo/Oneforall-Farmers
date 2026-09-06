@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu: Photo Review &amp; Confirmation</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-container": "#0f7c5b",
+            "surface": "#fdf9f1",
+            "on-primary-container": "#ffece7",
+            "error-container": "#ffdad6",
+            "outline-variant": "#e1bfb5",
+            "surface-tint": "#ac3400",
+            "surface-container-high": "#ece8e0",
+            "on-secondary-container": "#6b1a00",
+            "on-tertiary-container": "#b9ffde",
+            "tertiary-fixed": "#97f5cc",
+            "on-surface-variant": "#59413a",
+            "primary": "#9b2f00",
+            "primary-container": "#c2410c",
+            "on-tertiary": "#ffffff",
+            "primary-fixed": "#ffdbd0",
+            "inverse-surface": "#31302b",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "secondary": "#a53c19",
+            "on-secondary-fixed": "#3a0a00",
+            "surface-bright": "#fdf9f1",
+            "on-background": "#1c1c17",
+            "on-surface": "#1c1c17",
+            "on-secondary": "#ffffff",
+            "tertiary": "#006146",
+            "primary-fixed-dim": "#ffb59d",
+            "on-tertiary-fixed-variant": "#00513a",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-tertiary-fixed": "#002115",
+            "on-error": "#ffffff",
+            "on-secondary-fixed-variant": "#842503",
+            "surface-container": "#f1ede6",
+            "surface-variant": "#e6e2da",
+            "on-primary-fixed": "#390c00",
+            "background": "#fdf9f1",
+            "secondary-fixed": "#ffdbd1",
+            "surface-dim": "#dddad2",
+            "inverse-on-surface": "#f4f0e8",
+            "surface-container-lowest": "#ffffff",
+            "error": "#ba1a1a",
+            "surface-container-low": "#f7f3eb",
+            "inverse-primary": "#ffb59d",
+            "outline": "#8d7168",
+            "on-primary-fixed-variant": "#832600",
+            "surface-container-highest": "#e6e2da",
+            "on-error-container": "#93000a",
+            "on-primary": "#ffffff",
+            "secondary-container": "#fb7b54"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "3xl": "1.5rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-2xs": "0.25rem",
+            "space-xs": "0.5rem",
+            "space-sm": "0.75rem",
+            "space-md": "1rem",
+            "space-lg": "1.25rem",
+            "space-xl": "1.5rem",
+            "space-2xl": "2rem",
+            "space-3xl": "2.5rem",
+            "space-4xl": "3rem",
+            "margin-mobile": "1rem",
+            "margin-desktop": "2rem",
+            "gutter-mobile": "1rem",
+            "gutter-desktop": "1.5rem",
+            "touch-target-min": "3rem",
+            "touch-target-hero": "3.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Pulsing dot for AI detection */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-ring {
+      animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen pb-44 selection:bg-primary-fixed">
+<!-- Mobile Screen Shell Container (Centered 480px max for Mandi-Setu Android ergonomics) -->
+<div class="max-w-md mx-auto min-h-screen flex flex-col bg-surface shadow-xl relative border-x border-outline-variant/30">
+<!-- Top Navigation Header (Linear inspection flow: task-focused departure, bottom nav suppressed) -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md px-margin-mobile py-space-sm flex items-center justify-between border-b border-outline-variant/30 shadow-sm">
+<div class="flex items-center gap-space-sm">
+<button aria-label="Back to Camera" class="w-10 h-10 rounded-xl bg-surface-container-lowest border border-outline-variant/50 flex items-center justify-center text-on-surface active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-title-lg">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center gap-1.5">
+<h1 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">Review Photo 1 of 3</h1>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-primary/10 text-primary uppercase tracking-wider">Lot #ND-842</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Top Layer Sample · <span class="font-semibold">वरील थर नमुना</span></p>
+</div>
+</div>
+<!-- Marathi Audio Readout Pill -->
+<button class="flex items-center gap-1 bg-surface-container-high hover:bg-surface-container px-2.5 py-1.5 rounded-full border border-outline-variant/60 text-primary active:scale-95 transition-all shadow-xs" type="button">
+<span class="material-symbols-outlined text-[18px] fill-icon text-primary">volume_up</span>
+<span class="font-label-md text-label-md text-on-surface font-bold">आवाज ऐका</span>
+</button>
+</header>
+<!-- Content Body -->
+<main class="flex-1 px-margin-mobile pt-space-md space-y-space-md">
+<!-- Multi-Angle Step Progress Tracker & AI Readiness Banner -->
+<section class="bg-surface-container-lowest p-space-sm rounded-2xl border border-outline-variant/50 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-tertiary font-bold">AI Quality Validation</span>
+</div>
+<span class="font-label-sm text-label-sm bg-tertiary-container/15 text-tertiary px-2 py-0.5 rounded-full font-bold">
+            98% Clarity Score
+          </span>
+</div>
+<!-- 3-Angle Segmented Steps -->
+<div class="grid grid-cols-3 gap-2 pt-1">
+<!-- Step 1: Active -->
+<div class="bg-primary-container text-on-primary rounded-xl px-2.5 py-2 flex flex-col justify-between shadow-xs relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[10px] tracking-wider uppercase font-bold text-on-primary-container">Angle 1</span>
+<span class="material-symbols-outlined text-[14px] fill-icon text-on-primary">check_circle</span>
+</div>
+<p class="font-title-md text-title-md font-bold leading-tight mt-1 text-white">Top Layer</p>
+<p class="font-label-sm text-[10px] text-on-primary-container">वरील थर</p>
+</div>
+<!-- Step 2: Pending -->
+<div class="bg-surface-container rounded-xl px-2.5 py-2 flex flex-col justify-between border border-outline-variant/40">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[10px] tracking-wider uppercase font-bold text-on-surface-variant">Angle 2</span>
+<span class="material-symbols-outlined text-[14px] text-outline">pending</span>
+</div>
+<p class="font-title-md text-title-md font-semibold text-on-surface leading-tight mt-1">Cross Cut</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant">मध्यम थर</p>
+</div>
+<!-- Step 3: Pending -->
+<div class="bg-surface-container rounded-xl px-2.5 py-2 flex flex-col justify-between border border-outline-variant/40">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[10px] tracking-wider uppercase font-bold text-on-surface-variant">Angle 3</span>
+<span class="material-symbols-outlined text-[14px] text-outline">pending</span>
+</div>
+<p class="font-title-md text-title-md font-semibold text-on-surface leading-tight mt-1">Roots &amp; Skin</p>
+<p class="font-label-sm text-[10px] text-on-surface-variant">तळ/मुळ्या</p>
+</div>
+</div>
+</section>
+<!-- Main Photo Preview with Interactive AI Inspection Markers -->
+<section class="relative rounded-2xl overflow-hidden border-2 border-outline-variant/60 shadow-md bg-inverse-surface group">
+<!-- Captured Onion Harvest Image from prompt context -->
+<div class="relative aspect-[4/5] w-full overflow-hidden bg-surface-dim">
+<img alt="Captured photo of freshly harvested Nashik red onions in wooden crate ready for Mandi auction" class="w-full h-full object-cover select-none" src="https://lh3.googleusercontent.com/aida/AEtjO1XpA_onrIoSMthCGq9MkVGn969U40IFIm7hMWbYKjoRh6m9fvy9Q7YwgaQqJM6exry3fNOiLjE5VZUrM3DVCRd_AkkLZheVPpHlRZ7GAFiTQp74r729TJ_Ct5V_6-0Erwu44YCLAkU5DrvPHptNK4dJWWgC0lhaDjvx8UpnAaaVdHgQg_--74rw0Z-dZSgL8O3TY1SXz2uqP4FdtwTlTjp89LQ3NRyO2bhN--2RIpZjL-8JXuNw4EN4aA"/>
+<!-- Gradient Vignettes for Outdoor Sunlight Contrast -->
+<div class="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/50 pointer-events-none"></div>
+<!-- Top Badges Overlay -->
+<div class="absolute top-3 inset-x-3 flex items-center justify-between pointer-events-none">
+<!-- Focus & Sunlight Chip -->
+<div class="bg-tertiary/90 text-on-tertiary px-2.5 py-1 rounded-full text-label-sm font-label-sm font-bold flex items-center gap-1.5 backdrop-blur-sm shadow-md border border-white/20">
+<span class="material-symbols-outlined text-[16px] fill-icon text-on-tertiary">verified</span>
+<span>Sharp Focus · Clear Sun</span>
+</div>
+<!-- Scale Reference Chip -->
+<div class="bg-inverse-surface/90 text-surface-bright px-2.5 py-1 rounded-full text-label-sm font-label-sm font-bold flex items-center gap-1.5 backdrop-blur-sm shadow-md border border-outline-variant/40">
+<span class="material-symbols-outlined text-[16px] text-secondary-container">toll</span>
+<span>₹10 Coin (1.0x Scale)</span>
+</div>
+</div>
+<!-- Interactive AI Inspection Marker 1 (Bulb Diameter) -->
+<div class="absolute top-[38%] left-[22%] -translate-x-1/2 -translate-y-1/2">
+<div class="relative flex items-center">
+<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-xs shadow-lg ring-2 ring-white">
+                1
+                <span class="absolute inset-0 rounded-full bg-primary-container pulse-ring"></span>
+</div>
+<div class="ml-2 bg-inverse-surface/90 text-surface-bright backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/20 shadow-lg whitespace-nowrap">
+<p class="font-label-sm text-label-sm font-bold text-white flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed"></span> 52–58 mm (Grade A)
+                </p>
+<p class="text-[10px] text-surface-dim">मध्यम-मोठा कांदा</p>
+</div>
+</div>
+</div>
+<!-- Interactive AI Inspection Marker 2 (Papery Skin Retention) -->
+<div class="absolute top-[52%] right-[12%] translate-x-0 -translate-y-1/2">
+<div class="relative flex items-center flex-row-reverse">
+<div class="w-7 h-7 rounded-full bg-primary-container text-on-primary flex items-center justify-center font-bold text-xs shadow-lg ring-2 ring-white">
+                2
+                <span class="absolute inset-0 rounded-full bg-primary-container pulse-ring"></span>
+</div>
+<div class="mr-2 bg-inverse-surface/90 text-surface-bright backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/20 shadow-lg whitespace-nowrap text-right">
+<p class="font-label-sm text-label-sm font-bold text-white flex items-center justify-end gap-1">
+                  95% Double Skin <span class="material-symbols-outlined text-[13px] text-tertiary-fixed">check</span>
+</p>
+<p class="text-[10px] text-surface-dim">उत्कृष्ट पापुद्रा</p>
+</div>
+</div>
+</div>
+<!-- Interactive AI Inspection Marker 3 (Moisture / Sprouting Zero Check) -->
+<div class="absolute bottom-[20%] left-[28%] -translate-x-1/2">
+<div class="relative flex items-center">
+<div class="w-7 h-7 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center font-bold text-xs shadow-lg ring-2 ring-white">
+                3
+              </div>
+<div class="ml-2 bg-inverse-surface/90 text-surface-bright backdrop-blur-md px-2.5 py-1 rounded-lg border border-white/20 shadow-lg whitespace-nowrap">
+<p class="font-label-sm text-label-sm font-bold text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary-fixed">eco</span> 0% Sprouting (कोरडा माल)
+                </p>
+<p class="text-[10px] text-surface-dim">No fungal black mold</p>
+</div>
+</div>
+</div>
+<!-- Fullscreen Zoom Hit Target -->
+<button aria-label="Magnify captured image" class="absolute bottom-3 right-3 bg-inverse-surface/80 hover:bg-inverse-surface text-surface-bright w-11 h-11 rounded-xl flex items-center justify-center backdrop-blur-md border border-white/20 active:scale-90 transition-transform shadow-lg" type="button">
+<span class="material-symbols-outlined text-[22px]">zoom_in</span>
+</button>
+<!-- Variety Stamp Pill -->
+<div class="absolute bottom-3 left-3 bg-surface-container-lowest/90 backdrop-blur-sm px-2.5 py-1 rounded-lg border border-outline-variant/40 flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[16px]">local_florist</span>
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Gavran Nashik Red (उन्हाळ कांदा)</span>
+</div>
+</div>
+</section>
+<!-- Image Quality Verification Checklist Card (High Contrast for Outdoor Sunlight) -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/50 shadow-sm space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant/30 pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-bold">fact_check</span>
+<h2 class="font-headline-sm text-title-md font-bold text-on-surface">Photo Viability Report</h2>
+</div>
+<span class="text-tertiary font-label-md font-bold flex items-center gap-1 bg-tertiary-container/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[16px]">task_alt</span> Passed 3/3
+          </span>
+</div>
+<!-- Verification Checklist Items -->
+<ul class="space-y-2.5">
+<!-- Check 1 -->
+<li class="flex items-center justify-between text-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[16px]">wb_sunny</span>
+</span>
+<div>
+<p class="font-title-md text-body-md font-semibold text-on-surface">Lighting &amp; Natural Sunlight</p>
+<p class="font-body-sm text-[11px] text-on-surface-variant">No harsh shadows or camera flash bounce</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-tertiary flex items-center gap-1">
+              Optimal <span class="material-symbols-outlined text-[16px]">check_circle</span>
+</span>
+</li>
+<!-- Check 2 -->
+<li class="flex items-center justify-between text-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[16px]">crop_free</span>
+</span>
+<div>
+<p class="font-title-md text-body-md font-semibold text-on-surface">Produce Crate Coverage</p>
+<p class="font-body-sm text-[11px] text-on-surface-variant">88% of sample crate clearly visible</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-tertiary flex items-center gap-1">
+              88% Visible <span class="material-symbols-outlined text-[16px]">check_circle</span>
+</span>
+</li>
+<!-- Check 3 -->
+<li class="flex items-center justify-between text-body-sm">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-tertiary/15 text-tertiary flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[16px]">screen_lock_rotation</span>
+</span>
+<div>
+<p class="font-title-md text-body-md font-semibold text-on-surface">Camera Stability &amp; Motion</p>
+<p class="font-body-sm text-[11px] text-on-surface-variant">Zero blur; calibrated to 1/250s shutter</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-tertiary flex items-center gap-1">
+              Zero Blur <span class="material-symbols-outlined text-[16px]">check_circle</span>
+</span>
+</li>
+</ul>
+<!-- Trust Note -->
+<div class="mt-2 bg-surface-container-low rounded-xl p-2.5 border border-outline-variant/40 flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-[18px] mt-0.5">verified_user</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+<strong class="text-on-surface font-bold">Buyer Trust Benefit:</strong> Verified sharp photos prevent commission agents (आडत्या) from arbitrarily deducting ₹150–200/Qtl for grading uncertainties.
+          </p>
+</div>
+</section>
+<!-- Farm & Lot Identification Subcard -->
+<section class="bg-surface-container rounded-xl p-3 border border-outline-variant/40 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-lg bg-surface-container-lowest border border-outline-variant/60 flex items-center justify-center font-bold text-primary text-sm shadow-xs">
+            NP
+          </div>
+<div>
+<p class="font-title-md text-body-md font-bold text-on-surface">Rambhau Patil · निफाड</p>
+<p class="font-label-sm text-[11px] text-on-surface-variant">Lot #ND-842 · Est. 140 Quintals (१४० क्विंटल)</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">tune</span>
+</section>
+</main>
+<!-- Bottom Anchored Action Dock (56dp+ Hero buttons for Field Hand Ergonomics) -->
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest border-t-2 border-outline-variant/50 shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<div class="max-w-md mx-auto p-margin-mobile pb-6 space-y-2">
+<div class="grid grid-cols-12 gap-2.5">
+<!-- Retake Button (Secondary 48px action) -->
+<button class="col-span-5 h-[54px] rounded-xl bg-surface-container-low border-2 border-outline-variant hover:bg-surface-container-high text-on-surface flex items-center justify-center gap-1.5 px-3 active:scale-95 active:bg-surface-container transition-all" type="button">
+<span class="material-symbols-outlined text-[20px] text-primary">replay</span>
+<span class="flex flex-col text-left leading-tight">
+<span class="font-title-md text-label-lg font-bold text-on-surface">Retake</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant">पुन्हा काढा</span>
+</span>
+</button>
+<!-- Confirm & Continue Button (Primary 56px Turmeric Amber Action) -->
+<button class="col-span-7 h-[54px] rounded-xl bg-primary-container hover:bg-primary text-on-primary flex items-center justify-center gap-2 px-4 shadow-md active:translate-y-0.5 active:scale-95 transition-all" type="button">
+<div class="flex flex-col text-left leading-tight">
+<span class="font-title-lg text-title-lg font-bold text-white flex items-center gap-1">
+                Confirm &amp; Next <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</span>
+<span class="font-label-sm text-[10px] text-on-primary-container font-medium">खात्री करा - २/३ कोन फोटो</span>
+</div>
+</button>
+</div>
+<!-- Offline Storage Guarantee Message -->
+<p class="text-center font-label-sm text-[11px] text-on-surface-variant flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-tertiary">cloud_done</span>
+          Saved offline locally. Auto-syncs to Lasalgaon Mandi APMC server.
+        </p>
+</div>
+</div>
+</div>
+<script>
+    // Simple micro-interaction for visual feedback on buttons
+    document.querySelectorAll('button').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        // Haptic simulation indicator (visual only)
+        this.classList.add('brightness-95');
+        setTimeout(() => this.classList.remove('brightness-95'), 120);
+      });
+    });
+  </script>
+</body></html>

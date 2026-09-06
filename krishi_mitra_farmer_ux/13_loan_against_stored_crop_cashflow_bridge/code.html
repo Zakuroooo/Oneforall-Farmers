@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu — Cashflow Bridge</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error-container": "#ffdad6",
+            "tertiary": "#006146",
+            "on-primary": "#ffffff",
+            "secondary": "#a53c19",
+            "on-tertiary-container": "#b9ffde",
+            "on-error-container": "#93000a",
+            "surface-bright": "#fdf9f1",
+            "on-primary-fixed-variant": "#832600",
+            "inverse-on-surface": "#f4f0e8",
+            "surface-dim": "#dddad2",
+            "on-error": "#ffffff",
+            "inverse-surface": "#31302b",
+            "on-primary-fixed": "#390c00",
+            "background": "#fdf9f1",
+            "surface-container": "#f1ede6",
+            "on-primary-container": "#ffece7",
+            "on-surface": "#1c1c17",
+            "on-secondary-container": "#6b1a00",
+            "tertiary-fixed": "#97f5cc",
+            "inverse-primary": "#ffb59d",
+            "error": "#ba1a1a",
+            "on-secondary-fixed": "#3a0a00",
+            "surface-container-highest": "#e6e2da",
+            "surface": "#fdf9f1",
+            "on-tertiary": "#ffffff",
+            "surface-container-low": "#f7f3eb",
+            "surface-variant": "#e6e2da",
+            "on-tertiary-fixed-variant": "#00513a",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-tertiary-fixed": "#002115",
+            "primary-fixed": "#ffdbd0",
+            "on-surface-variant": "#59413a",
+            "secondary-fixed": "#ffdbd1",
+            "on-background": "#1c1c17",
+            "secondary-fixed-dim": "#ffb59f",
+            "outline-variant": "#e1bfb5",
+            "primary": "#9b2f00",
+            "surface-container-high": "#ece8e0",
+            "outline": "#8d7168",
+            "tertiary-container": "#0f7c5b",
+            "primary-fixed-dim": "#ffb59d",
+            "surface-container-lowest": "#ffffff",
+            "on-secondary": "#ffffff",
+            "primary-container": "#c2410c",
+            "on-secondary-fixed-variant": "#842503",
+            "secondary-container": "#fb7b54",
+            "surface-tint": "#ac3400"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-2xl": "2rem",
+            "space-4xl": "3rem",
+            "margin-desktop": "2rem",
+            "touch-target-min": "3rem",
+            "space-3xl": "2.5rem",
+            "gutter-desktop": "1.5rem",
+            "space-2xs": "0.25rem",
+            "space-xl": "1.5rem",
+            "margin-mobile": "1rem",
+            "space-lg": "1.25rem",
+            "space-xs": "0.5rem",
+            "touch-target-hero": "3.5rem",
+            "space-md": "1rem",
+            "space-sm": "0.75rem",
+            "gutter-mobile": "1rem"
+          },
+          "fontFamily": {
+            "numeral-data": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: #c2410c;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 8px rgba(155, 47, 0, 0.4);
+      cursor: pointer;
+    }
+    input[type=range]::-moz-range-thumb {
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: #c2410c;
+      border: 3px solid #ffffff;
+      box-shadow: 0 2px 8px rgba(155, 47, 0, 0.4);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased selection:bg-primary-fixed-dim">
+<!-- Mobile Container Mockup Shell -->
+<div class="max-w-md mx-auto min-h-screen bg-background relative flex flex-col pb-36 shadow-2xl border-x border-outline-variant/30">
+<!-- Top App Bar & Contextual Header -->
+<header class="sticky top-0 z-40 bg-surface/90 backdrop-blur-md px-margin-mobile py-space-sm flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-sm">
+<button aria-label="Go Back" class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface hover:bg-surface-container-high active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[22px]">arrow_back</span>
+</button>
+<div>
+<h1 class="font-headline-sm text-headline-sm text-on-surface font-bold leading-tight">Cashflow Bridge</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-primary">warehouse</span>
+            Loan Against Stored Crop · Niphad Warehouse
+          </p>
+</div>
+</div>
+<!-- Audio Narration Pill for Farmers -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high border border-outline-variant/50 text-primary active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+<span class="font-label-md text-label-md font-bold tracking-tight text-primary">आवाज ऐका</span>
+</button>
+</header>
+<!-- Main Screen Flow -->
+<main class="px-margin-mobile pt-space-sm flex flex-col gap-space-md">
+<!-- Farmer & Lot Status Chip Bar -->
+<div class="flex items-center justify-between bg-surface-container-low px-space-md py-2.5 rounded-xl border border-outline-variant/40">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">
+            RP
+          </div>
+<div>
+<div class="font-title-md text-title-md leading-tight text-on-surface">Rambhau Patil</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Niphad, Nashik · 40Q Stored</div>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-tertiary/10 text-tertiary px-2.5 py-1 rounded-lg border border-tertiary/20">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-label-sm text-label-sm font-bold">e-NWR Active</span>
+</div>
+</div>
+<!-- Hero Comparison Card: The Financial Equation (Why Borrow While Waiting?) -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border-2 border-primary-container/30 shadow-[0_4px_16px_rgba(194,65,12,0.08)] relative overflow-hidden">
+<div class="absolute top-0 right-0 transform translate-x-2 -translate-y-2 w-28 h-28 bg-primary-fixed-dim/25 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">lightbulb</span>
+<h2 class="font-title-lg text-title-lg text-on-surface">Why Borrow While Waiting?</h2>
+</div>
+<span class="font-label-sm text-label-sm bg-primary/10 text-primary px-2 py-0.5 rounded font-bold uppercase tracking-wider">Smart Math</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+          Don't panic-sell at ₹2,100/Qtl today just to pay urgent farm bills. Hold 11 days for the forecasted ₹2,850 peak.
+        </p>
+<!-- Side-by-side Bento comparison -->
+<div class="grid grid-cols-2 gap-space-sm mb-space-md">
+<!-- Left: Loan Cost -->
+<div class="bg-surface-container-low rounded-xl p-space-sm border border-outline-variant/50 flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mb-1">Loan Cost (11 Days)</span>
+<div class="font-numeral-data text-numeral-data text-secondary">₹92 <span class="font-body-sm text-body-sm font-normal text-on-surface-variant">interest</span></div>
+</div>
+<div class="mt-2 text-[11px] font-medium text-on-surface-variant leading-tight">
+              @ 9% p.a. on ₹34,000
+            </div>
+</div>
+<!-- Right: Projected Waiting Gain -->
+<div class="bg-tertiary/10 rounded-xl p-space-sm border border-tertiary/30 flex flex-col justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-tertiary block mb-1">Projected Waiting Gain</span>
+<div class="font-numeral-data text-numeral-data text-tertiary">+₹6,290</div>
+</div>
+<div class="mt-2 text-[11px] font-bold text-tertiary leading-tight flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]">trending_up</span>
+              11-day market rally
+            </div>
+</div>
+</div>
+<!-- Net Affirmation Ribbon -->
+<div class="bg-surface-container-high rounded-xl p-3 border border-outline-variant/60 flex items-start gap-2.5">
+<span class="material-symbols-outlined text-tertiary text-[20px] mt-0.5 shrink-0" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<div class="font-body-sm text-body-sm text-on-surface leading-snug">
+            Spend <strong class="font-bold text-secondary">₹92</strong> in interest to protect <strong class="font-bold text-tertiary">+₹6,290</strong> in harvest value. <span class="font-bold text-tertiary bg-tertiary/15 px-1 py-0.5 rounded">Net surplus: +₹6,198</span>.
+          </div>
+</div>
+</section>
+<!-- Interactive Loan Amount Adjuster & Live Calculation -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/40 shadow-sm">
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-title-lg text-title-lg text-on-surface">Select Loan Amount</h3>
+<span class="font-label-sm text-label-sm text-tertiary bg-tertiary/10 px-2 py-0.5 rounded-full font-bold">Instant Disbursal</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">Borrow only what you need today for diesel, labor or seeds.</p>
+<!-- Big Display Counter -->
+<div class="bg-surface-container-low rounded-xl p-4 border-2 border-primary text-center mb-space-md">
+<span class="font-label-sm text-label-sm text-on-surface-variant block uppercase tracking-wider font-bold mb-0.5">Sanctioned Cash Bridge</span>
+<div class="font-numeral-hero text-numeral-hero text-primary tracking-tight" id="displayAmount">₹34,000</div>
+<div class="flex items-center justify-center gap-2 mt-1">
+<span class="font-label-sm text-label-sm bg-primary-fixed text-primary px-2 py-0.5 rounded font-bold">70% of Lot Value</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Collateral: ₹48,500</span>
+</div>
+</div>
+<!-- Slider Track -->
+<div class="space-y-2 mb-space-md">
+<input class="w-full h-2 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary-container" id="loanRange" max="34000" min="10000" step="1000" type="range" value="34000"/>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant font-bold">
+<span>Min: ₹10,000</span>
+<span class="text-primary">Max: ₹34,000</span>
+</div>
+</div>
+<!-- Live Calculated Dynamic Metrics Strip -->
+<div class="grid grid-cols-3 gap-2 bg-surface-container-low p-2.5 rounded-xl border border-outline-variant/30 text-center">
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">11-Day Interest</div>
+<div class="font-title-md text-title-md font-bold text-on-surface" id="calcInterest">₹92</div>
+</div>
+<div class="border-x border-outline-variant/40">
+<div class="font-label-sm text-label-sm text-on-surface-variant">Daily Cost</div>
+<div class="font-title-md text-title-md font-bold text-on-surface" id="calcDaily">₹8.38/day</div>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Total Payback</div>
+<div class="font-title-md text-title-md font-bold text-primary" id="calcTotal">₹34,092</div>
+</div>
+</div>
+</section>
+<!-- Purpose Quick-Tags -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/40 shadow-sm">
+<label class="font-title-md text-title-md text-on-surface block mb-1">Purpose of Bridge Cash <span class="font-normal text-on-surface-variant font-body-sm text-body-sm">(Optional)</span></label>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm">Helps NABARD customize subsidized seasonal credits.</p>
+<div class="flex flex-wrap gap-2">
+<button class="purpose-chip px-3 py-1.5 rounded-full text-label-md font-label-md bg-primary text-on-primary font-bold shadow-sm transition-all" type="button">
+            Fertilizer / Seeds
+          </button>
+<button class="purpose-chip px-3 py-1.5 rounded-full text-label-md font-label-md bg-surface-container border border-outline-variant/50 text-on-surface hover:bg-surface-container-high transition-all" type="button">
+            Labor Payments
+          </button>
+<button class="purpose-chip px-3 py-1.5 rounded-full text-label-md font-label-md bg-surface-container border border-outline-variant/50 text-on-surface hover:bg-surface-container-high transition-all" type="button">
+            Household / Medical
+          </button>
+<button class="purpose-chip px-3 py-1.5 rounded-full text-label-md font-label-md bg-surface-container border border-outline-variant/50 text-on-surface hover:bg-surface-container-high transition-all" type="button">
+            Electricity / Diesel
+          </button>
+</div>
+</section>
+<!-- Loan Specifications & Collateral Details Card -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/40 shadow-sm">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant/40 mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">description</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">Pledge Collateral Specs</h3>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary font-bold bg-tertiary/10 px-2 py-0.5 rounded">WDRA Reg. #MH-NIP-088</span>
+</div>
+<div class="space-y-2.5 font-body-sm text-body-sm">
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant">Stored Collateral:</span>
+<span class="font-title-md text-title-md text-on-surface font-bold text-right">40 Quintals Grade A Red Onion · Lot #LP-401</span>
+</div>
+<div class="flex justify-between items-start">
+<span class="text-on-surface-variant">Warehouse:</span>
+<span class="font-title-md text-title-md text-on-surface font-bold text-right">Shriram Warehouse, Niphad</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">Annual Interest Rate:</span>
+<span class="font-title-md text-title-md text-on-surface font-bold">9.0% p.a. (Simple Interest)</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">Daily Rate:</span>
+<span class="font-title-md text-title-md text-on-surface font-bold">Just ₹8.38 / day</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-on-surface-variant">Holding Period:</span>
+<span class="font-title-md text-title-md text-on-surface font-bold">11 Days (Flexible up to 90 days)</span>
+</div>
+<div class="flex justify-between items-center pt-2 border-t border-dashed border-outline-variant/50">
+<span class="font-title-md text-title-md text-on-surface font-bold">Total Repayment at 11 Days:</span>
+<span class="font-numeral-data text-numeral-data text-primary">₹34,092</span>
+</div>
+</div>
+</section>
+<!-- Automatic Settlement Mechanism (Farmer-Friendly Escrow Integration) -->
+<section class="bg-surface-container-low rounded-2xl p-space-md border border-outline-variant/40">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-tertiary text-[22px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">Automatic Settlement</h3>
+<span class="ml-auto font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed font-bold px-2 py-0.5 rounded">Zero Out-of-Pocket Burden</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-md">
+          You never have to arrange cash to pay this loan back. It is automatically settled when your onion lot sells in the mandi.
+        </p>
+<!-- Stepper Timeline -->
+<div class="relative pl-6 space-y-4 before:content-[''] before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-outline-variant">
+<!-- Step 1 -->
+<div class="relative">
+<div class="absolute -left-6 top-0 w-5 h-5 rounded-full bg-primary text-on-primary flex items-center justify-center text-[10px] font-bold">
+              1
+            </div>
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30">
+<span class="font-title-md text-title-md text-on-surface font-bold block">Instant Direct Disbursal</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+<strong class="text-on-surface font-bold">₹34,000</strong> credited to SBI A/c (...4108) in 15 minutes via IMPS.
+              </p>
+</div>
+</div>
+<!-- Step 2 -->
+<div class="relative">
+<div class="absolute -left-6 top-0 w-5 h-5 rounded-full bg-surface-container-highest text-on-surface-variant flex items-center justify-center text-[10px] font-bold">
+              2
+            </div>
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30">
+<span class="font-title-md text-title-md text-on-surface font-bold block">Day 11 Mandi Sale Deduction</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                When your 40q onion lot sells through Mandi-Setu escrow, the <strong class="text-on-surface font-bold">₹34,092</strong> loan is deducted automatically from the buyer's payment.
+              </p>
+</div>
+</div>
+<!-- Step 3 -->
+<div class="relative">
+<div class="absolute -left-6 top-0 w-5 h-5 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center text-[10px] font-bold">
+              3
+            </div>
+<div class="bg-surface-container-lowest p-3 rounded-xl border border-outline-variant/30">
+<span class="font-title-md text-title-md text-tertiary font-bold block">Harvest Surplus Payout</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                Remaining sale proceeds (<strong class="text-tertiary font-bold">~₹41,908+</strong>) transferred directly to your bank account.
+              </p>
+</div>
+</div>
+</div>
+<!-- Trust Note -->
+<div class="mt-4 pt-3 border-t border-outline-variant/40 flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-tertiary">check</span>
+<span class="font-label-sm text-label-sm font-semibold">No monthly EMI harassment, no physical visits, no land mortgage.</span>
+</div>
+</section>
+<!-- Lending Partner & Regulatory Compliance -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/40 flex items-center gap-space-sm">
+<div class="w-12 h-12 rounded-xl bg-surface-container-low flex items-center justify-center text-primary shrink-0 border border-outline-variant/40">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+</div>
+<div class="flex-1">
+<div class="font-title-md text-title-md text-on-surface font-bold leading-tight">Bank of Maharashtra &amp; NABARD</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            Refinance guarantee backed by WDRA e-NWR pledge certificate #WDRA-2024-NIP-9921
+          </p>
+</div>
+</section>
+</main>
+<!-- Bottom Anchored Primary Action Dock -->
+<div class="fixed bottom-16 left-0 right-0 max-w-md mx-auto z-40 bg-surface/95 backdrop-blur-md px-margin-mobile py-space-sm border-t border-outline-variant/40 shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<!-- Fair Credit Guarantee Micro-banner -->
+<div class="flex items-center justify-center gap-1.5 mb-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-tertiary">verified_user</span>
+<span class="font-label-sm text-label-sm">Protected by Mandi-Setu Fair Credit Charter · Zero Foreclosure Penalty</span>
+</div>
+<!-- Hero 56dp Primary Button -->
+<button class="w-full h-touch-target-hero bg-primary hover:bg-primary-container text-on-primary rounded-xl font-title-lg text-title-lg flex items-center justify-center gap-2 shadow-md active:scale-95 transition-all" id="disburseBtn" type="button">
+<span class="material-symbols-outlined text-[22px]">flash_on</span>
+<span>Disburse ₹34,000 to SBI A/c Now</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<!-- Secondary Utility Action -->
+<button class="w-full py-2.5 mt-1 font-label-md text-label-md text-primary font-bold hover:underline flex items-center justify-center gap-1" type="button">
+<span>Calculate Custom Tenure / View Sanction Letter</span>
+<span class="material-symbols-outlined text-[16px]">open_in_new</span>
+</button>
+</div>
+<!-- Bottom Navigation Bar (Matching Design System Shared Component) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs min-h-touch-target-hero bg-surface-container-lowest max-w-md mx-auto right-0 shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<!-- Home -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[24px]">storefront</span>
+<span class="font-label-sm text-label-sm mt-0.5">Home</span>
+</button>
+<!-- Market (Active according to user context/navigation intent) -->
+<button class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="font-label-sm text-label-sm mt-0.5 font-bold">Market</span>
+</button>
+<!-- My Produce -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[24px]">inventory_2</span>
+<span class="font-label-sm text-label-sm mt-0.5">My Produce</span>
+</button>
+<!-- Deals -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[24px]">handshake</span>
+<span class="font-label-sm text-label-sm mt-0.5">Deals</span>
+</button>
+</nav>
+</div>
+<script>
+    // Live Stepper and Loan Calculation logic for Rambhau Patil
+    const loanRange = document.getElementById('loanRange');
+    const displayAmount = document.getElementById('displayAmount');
+    const calcInterest = document.getElementById('calcInterest');
+    const calcDaily = document.getElementById('calcDaily');
+    const calcTotal = document.getElementById('calcTotal');
+    const disburseBtn = document.getElementById('disburseBtn');
+
+    function formatINR(val) {
+      return '₹' + Number(val).toLocaleString('en-IN');
+    }
+
+    loanRange.addEventListener('input', (e) => {
+      const principal = parseInt(e.target.value, 10);
+      
+      // Calculations: 9% per annum for 11 days
+      // Annual interest = principal * 0.09
+      // Daily interest = (principal * 0.09) / 365
+      // 11-day interest = daily * 11
+      const dailyInterest = (principal * 0.09) / 365;
+      const elevenDayInterest = Math.round(dailyInterest * 11);
+      const totalRepay = principal + elevenDayInterest;
+
+      displayAmount.textContent = formatINR(principal);
+      calcInterest.textContent = formatINR(elevenDayInterest);
+      calcDaily.textContent = '₹' + dailyInterest.toFixed(2) + '/day';
+      calcTotal.textContent = formatINR(totalRepay);
+
+      disburseBtn.innerHTML = `
+        <span class="material-symbols-outlined text-[22px]">flash_on</span>
+        <span>Disburse ${formatINR(principal)} to SBI A/c Now</span>
+        <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+      `;
+    });
+
+    // Purpose chip selector toggles
+    const purposeChips = document.querySelectorAll('.purpose-chip');
+    purposeChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        purposeChips.forEach(c => {
+          c.classList.remove('bg-primary', 'text-on-primary', 'font-bold', 'shadow-sm');
+          c.classList.add('bg-surface-container', 'text-on-surface');
+        });
+        chip.classList.add('bg-primary', 'text-on-primary', 'font-bold', 'shadow-sm');
+        chip.classList.remove('bg-surface-container', 'text-on-surface');
+      });
+    });
+  </script>
+</body></html>

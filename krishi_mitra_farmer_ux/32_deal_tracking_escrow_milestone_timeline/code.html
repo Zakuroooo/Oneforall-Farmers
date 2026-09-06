@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Deal Tracking — Mandi-Setu Escrow</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#f7f3eb",
+            "secondary-container": "#fb7b54",
+            "on-primary-fixed": "#390c00",
+            "tertiary-fixed": "#97f5cc",
+            "secondary-fixed": "#ffdbd1",
+            "on-surface-variant": "#59413a",
+            "surface-bright": "#fdf9f1",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-highest": "#e6e2da",
+            "on-primary": "#ffffff",
+            "surface-container": "#f1ede6",
+            "on-secondary-container": "#6b1a00",
+            "on-background": "#1c1c17",
+            "primary-container": "#c2410c",
+            "on-tertiary": "#ffffff",
+            "tertiary": "#006146",
+            "surface-variant": "#e6e2da",
+            "error-container": "#ffdad6",
+            "on-secondary": "#ffffff",
+            "surface": "#fdf9f1",
+            "primary-fixed": "#ffdbd0",
+            "on-primary-container": "#ffece7",
+            "on-secondary-fixed-variant": "#842503",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-error": "#ffffff",
+            "on-tertiary-fixed-variant": "#00513a",
+            "on-tertiary-fixed": "#002115",
+            "secondary": "#a53c19",
+            "outline": "#8d7168",
+            "outline-variant": "#e1bfb5",
+            "tertiary-container": "#0f7c5b",
+            "on-primary-fixed-variant": "#832600",
+            "on-error-container": "#93000a",
+            "primary-fixed-dim": "#ffb59d",
+            "background": "#fdf9f1",
+            "inverse-on-surface": "#f4f0e8",
+            "error": "#ba1a1a",
+            "surface-container-high": "#ece8e0",
+            "surface-tint": "#ac3400",
+            "inverse-surface": "#31302b",
+            "primary": "#9b2f00",
+            "on-tertiary-container": "#b9ffde",
+            "inverse-primary": "#ffb59d",
+            "surface-dim": "#dddad2",
+            "on-surface": "#1c1c17",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-secondary-fixed": "#3a0a00"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.75rem",
+            "space-2xl": "2rem",
+            "space-md": "1rem",
+            "touch-target-min": "3rem",
+            "gutter-mobile": "1rem",
+            "space-2xs": "0.25rem",
+            "margin-mobile": "1rem",
+            "touch-target-hero": "3.5rem",
+            "space-3xl": "2.5rem",
+            "space-xl": "1.5rem",
+            "space-4xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "2rem",
+            "space-xs": "0.5rem",
+            "space-lg": "1.25rem"
+          },
+          "fontFamily": {
+            "title-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.2; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .pulse-ring-anim {
+      animation: pulse-ring 2.2s infinite ease-in-out;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md antialiased selection:bg-primary-fixed selection:text-on-primary-fixed pb-32">
+<!-- TOP APP BAR -->
+<header class="bg-surface/90 backdrop-blur-md text-primary docked full-width top-0 shadow-sm sticky top-0 z-40 max-w-lg mx-auto">
+<div class="flex justify-between items-center w-full px-margin-mobile py-space-xs min-h-[56px]">
+<button aria-label="Go Back" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-high transition-colors active:scale-95 duration-150 text-on-surface">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div class="flex flex-col items-center text-center">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<h1 class="text-title-md font-title-md text-on-surface tracking-tight">Sauda #MS-8492 Tracking</h1>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Rambhau Patil • Lasalgaon Yard</p>
+</div>
+<button aria-label="Help and Support" class="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-high transition-colors active:scale-95 duration-150 text-primary">
+<span class="material-symbols-outlined text-[24px]">support_agent</span>
+</button>
+</div>
+</header>
+<main class="max-w-lg mx-auto px-margin-mobile space-y-space-md pt-space-xs">
+<!-- THE ESCROW STATUS BANNER (Primary Loud Anchor) -->
+<section class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-primary via-primary-container to-secondary p-space-md text-on-primary shadow-[0_6px_16px_-2px_rgba(194,65,12,0.22)] border-[1.5px] border-secondary-container/40">
+<!-- Tactile background seal watermark -->
+<div class="absolute -right-6 -bottom-6 opacity-10 pointer-events-none text-white select-none">
+<span class="material-symbols-outlined text-[160px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div class="relative z-10 flex flex-col gap-space-xs">
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/25 backdrop-blur-sm border border-white/20 text-on-primary-container">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="text-label-sm font-label-sm tracking-wider">CURRENT MONEY LOCATION</span>
+</div>
+<span class="text-label-sm font-label-sm bg-tertiary text-on-tertiary px-2 py-0.5 rounded-full border border-tertiary-fixed/30 font-bold">100% SECURED</span>
+</div>
+<div class="pt-1">
+<h2 class="text-display-lg-mobile md:text-display-lg font-display-lg-mobile md:font-display-lg text-white leading-tight tracking-tight">
+            ₹76,000 SAFE IN MANDI-SETU ESCROW
+          </h2>
+</div>
+<p class="text-body-sm font-body-sm text-on-primary-container/95 leading-relaxed pt-1">
+          Buyer deposited full funds. Money will be released to your bank upon delivery inspection.
+        </p>
+<!-- Guarantee Micro-Ribbon -->
+<div class="mt-2 pt-2 border-t border-white/15 flex items-center justify-between text-label-sm font-label-sm text-white/90">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-tertiary-fixed" style="font-variation-settings: 'FILL' 1;">gavel</span>
+            APMC Regulated Escrow Trust
+          </span>
+<span class="font-bold tracking-wide">ID: SETU-ESC-9941</span>
+</div>
+</div>
+</section>
+<!-- DEAL SNAPSHOT CARD (Bento Layout) -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-[#EADEC7] shadow-[0_2px_4px_rgba(154,52,18,0.04),0_1px_2px_rgba(24,24,27,0.06)]">
+<div class="flex items-center justify-between pb-space-xs border-b border-surface-container">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">handshake</span>
+<span class="text-label-md font-label-md text-on-surface-variant">Deal Snapshot</span>
+</div>
+<span class="text-label-sm font-label-sm px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant font-semibold">Lot #ON-841</span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm pt-space-sm">
+<!-- Buyer Column -->
+<div class="col-span-2 sm:col-span-1 bg-surface rounded-xl p-space-sm border border-[#EADEC7]/60">
+<p class="text-label-sm font-label-sm text-on-surface-variant">BUYER</p>
+<div class="flex items-center gap-1.5 mt-0.5">
+<h3 class="text-title-md font-title-md text-on-surface leading-snug">Pune Trading Co</h3>
+</div>
+<div class="mt-1 flex items-center gap-1 text-tertiary font-bold text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>Verified Escrow Trader</span>
+</div>
+</div>
+<!-- Total Value Column -->
+<div class="col-span-2 sm:col-span-1 bg-surface rounded-xl p-space-sm border border-[#EADEC7]/60 flex flex-col justify-between">
+<div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">TOTAL SETTLEMENT</p>
+<p class="text-headline-md font-headline-md text-primary font-extrabold mt-0.5">₹76,000</p>
+</div>
+<p class="text-label-sm font-label-sm text-tertiary flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]">account_balance</span>
+            Zero Deduction Assured
+          </p>
+</div>
+<!-- Lot Specs Full Width -->
+<div class="col-span-2 flex items-center justify-between bg-surface-container-low px-space-sm py-2 rounded-lg border border-[#EADEC7]/40">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">agriculture</span>
+<div>
+<p class="text-body-md font-body-md font-bold text-on-surface">40 Quintals Grade A Onion</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Agreed Mandi Rate @ ₹1,900/q</p>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded bg-white text-on-surface text-label-sm font-label-sm border border-[#EADEC7] font-bold">
+            Gavran Red
+          </span>
+</div>
+</div>
+</section>
+<!-- INTERACTIVE 6-STAGE VERTICAL ESCROW STEPPER -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-[#EADEC7] shadow-[0_2px_4px_rgba(154,52,18,0.04),0_1px_2px_rgba(24,24,27,0.06)]">
+<div class="flex items-center justify-between mb-space-md">
+<h3 class="text-title-lg font-title-lg text-on-surface">Live Delivery &amp; Payout Lifecycle</h3>
+<span class="text-label-sm font-label-sm bg-primary-fixed text-on-primary-fixed-variant px-2 py-0.5 rounded-full font-bold">STAGE 3 OF 6</span>
+</div>
+<div class="relative pl-1">
+<!-- Continuous Connector Spine -->
+<div class="absolute left-[19px] top-4 bottom-6 w-[3px] bg-surface-container-highest"></div>
+<!-- STAGE 1: Completed -->
+<div class="relative flex items-start gap-space-sm pb-space-lg group">
+<div class="relative z-10 flex-shrink-0 w-9 h-9 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-sm ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[20px] font-bold">check</span>
+</div>
+<div class="flex-1 pt-1">
+<div class="flex items-baseline justify-between">
+<h4 class="text-title-md font-title-md text-on-surface font-bold">Payment in Escrow (₹76,000 Locked)</h4>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Completed today 09:30 AM via RTGS</p>
+<div class="mt-1.5 inline-flex items-center gap-1 text-label-sm font-label-sm text-tertiary font-bold bg-tertiary/10 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+              Mandi Board Authorized Vault Receipt #4419
+            </div>
+</div>
+</div>
+<!-- STAGE 2: Completed -->
+<div class="relative flex items-start gap-space-sm pb-space-lg group">
+<div class="relative z-10 flex-shrink-0 w-9 h-9 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center shadow-sm ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[20px] font-bold">check</span>
+</div>
+<div class="flex-1 pt-1">
+<div class="flex items-baseline justify-between">
+<h4 class="text-title-md font-title-md text-on-surface font-bold">Dispatch Scheduled</h4>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Niphad Warehouse pickup arranged</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant/80 mt-1">Inspected &amp; weighed at loading ramp at 11:15 AM</p>
+</div>
+</div>
+<!-- STAGE 3: ACTIVE PULSATING HIGHLIGHT -->
+<div class="relative flex items-start gap-space-sm pb-space-lg">
+<div class="relative z-10 flex-shrink-0 w-9 h-9 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-md ring-4 ring-primary-fixed/60">
+<span class="absolute inset-0 rounded-full bg-primary-container pulse-ring-anim"></span>
+<span class="material-symbols-outlined text-[20px] relative z-10">local_shipping</span>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-xl p-space-sm border-[1.5px] border-primary shadow-[0_6px_16px_-2px_rgba(194,65,12,0.12)]">
+<div class="flex items-center justify-between gap-1 flex-wrap">
+<h4 class="text-title-md font-title-md text-primary font-extrabold">In Transit (Truck MH-15-EG-4412)</h4>
+<span class="inline-flex items-center gap-1 bg-secondary text-white text-label-sm font-label-sm px-2 py-0.5 rounded-full font-bold animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-white"></span> LIVE GPS
+              </span>
+</div>
+<!-- Driver Detail Drawer in Card -->
+<div class="mt-space-xs pt-space-xs border-t border-[#EADEC7] flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary-fixed text-primary flex items-center justify-center font-bold text-label-md font-label-md">
+                  RS
+                </div>
+<div>
+<p class="text-body-sm font-body-sm font-bold text-on-surface">Driver Ramesh Shinde</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Tata 407 (14-Tyre)</p>
+</div>
+</div>
+<a class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-white text-label-md font-label-md hover:bg-secondary active:scale-95 transition-all shadow-sm" href="tel:+919822000000">
+<span class="material-symbols-outlined text-[16px]">call</span>
+<span>Call Driver</span>
+</a>
+</div>
+<div class="mt-2 flex items-center gap-3 text-label-sm font-label-sm text-on-surface font-semibold bg-white/80 p-2 rounded-lg border border-[#EADEC7]/70">
+<span class="flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                ETA: 2 hours (approx. 02:45 PM)
+              </span>
+<span class="text-outline-variant">•</span>
+<span class="text-on-surface-variant">Route: Niphad-Lasalgaon Rd</span>
+</div>
+</div>
+</div>
+<!-- STAGE 4: Pending -->
+<div class="relative flex items-start gap-space-sm pb-space-lg group opacity-75">
+<div class="relative z-10 flex-shrink-0 w-9 h-9 rounded-full bg-surface-container-highest text-outline flex items-center justify-center border-2 border-outline-variant/60 ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[18px]">scale</span>
+</div>
+<div class="flex-1 pt-1">
+<h4 class="text-title-md font-title-md text-on-surface-variant font-semibold">Arrival at Lasalgaon Weighbridge</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant/80 mt-0.5">Automated gross weight printout will sync here</p>
+</div>
+</div>
+<!-- STAGE 5: Pending -->
+<div class="relative flex items-start gap-space-sm pb-space-lg group opacity-75">
+<div class="relative z-10 flex-shrink-0 w-9 h-9 rounded-full bg-surface-container-highest text-outline flex items-center justify-center border-2 border-outline-variant/60 ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[18px]">fact_check</span>
+</div>
+<div class="flex-1 pt-1">
+<h4 class="text-title-md font-title-md text-on-surface-variant font-semibold">Quality Inspection &amp; Weighment Slip Upload</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant/80 mt-0.5">Mandi grader verifies moisture threshold (&lt;10%)</p>
+</div>
+</div>
+<!-- STAGE 6: Pending (Final Payout) -->
+<div class="relative flex items-start gap-space-sm group opacity-75">
+<div class="relative z-10 flex-shrink-0 w-9 h-9 rounded-full bg-surface-container-highest text-outline flex items-center justify-center border-2 border-outline-variant/60 ring-4 ring-surface-container-lowest">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+</div>
+<div class="flex-1 pt-1">
+<h4 class="text-title-md font-title-md text-on-surface-variant font-semibold">Instant Payment Release</h4>
+<p class="text-body-sm font-body-sm text-on-surface-variant/80 mt-0.5">Direct NEFT/IMPS credit to SBI A/c ending in 4108</p>
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm text-tertiary mt-1">
+<span class="material-symbols-outlined text-[13px]">bolt</span> Instant Escrow Disbursal (&lt; 60 seconds)
+            </span>
+</div>
+</div>
+</div>
+</section>
+<!-- EMERGENCY ACTION & LEGAL PROOF -->
+<section class="space-y-space-xs pt-1">
+<div class="flex flex-col sm:flex-row gap-space-xs">
+<!-- Legal PDF Pill -->
+<button class="flex-1 flex items-center justify-between px-space-md py-3 rounded-xl bg-surface-container-low border border-[#EADEC7] hover:bg-surface-container transition-colors active:scale-[0.98] duration-150">
+<div class="flex items-center gap-2.5 text-left">
+<span class="material-symbols-outlined text-primary text-[24px]">picture_as_pdf</span>
+<div>
+<p class="text-label-md font-label-md text-on-surface font-bold">Download Escrow Legal Guarantee Agreement</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Digitally signed by APMC Lasalgaon</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">download</span>
+</button>
+</div>
+<!-- Report Issue Secondary Action -->
+<button class="w-full flex items-center justify-center gap-2 min-h-[48px] px-space-md py-2.5 rounded-xl border-[1.5px] border-secondary/70 bg-white text-secondary font-title-md hover:bg-secondary-fixed/30 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[20px]">report_problem</span>
+<span>Report Issue with Transit</span>
+</button>
+<!-- Trust Assurance Footnote -->
+<div class="flex items-center justify-center gap-1.5 py-2 text-center text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-tertiary" style="font-variation-settings: 'FILL' 1;">shield</span>
+<span>Your produce and payment are 100% insured by Mandi-Setu Board Protection.</span>
+</div>
+</section>
+</main>
+<!-- BOTTOM NAVIGATION BAR (Shared Component JSON Blueprint - Deals Active) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs min-h-touch-target-hero pb-safe bg-surface-container-lowest shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<!-- Item 1: Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95" href="#">
+<span class="material-symbols-outlined text-[22px]">storefront</span>
+<span class="text-label-sm font-label-sm mt-0.5">Home</span>
+</a>
+<!-- Item 2: Market -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95" href="#">
+<span class="material-symbols-outlined text-[22px]">trending_up</span>
+<span class="text-label-sm font-label-sm mt-0.5">Market</span>
+</a>
+<!-- Item 3: My Produce -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95" href="#">
+<span class="material-symbols-outlined text-[22px]">inventory_2</span>
+<span class="text-label-sm font-label-sm mt-0.5">My Produce</span>
+</a>
+<!-- Item 4: Deals (ACTIVE AS MANDATED BY CONTEXT) -->
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:translate-y-0.5 active:scale-95" href="#">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">handshake</span>
+<span class="text-label-sm font-label-sm mt-0.5 font-bold">Deals</span>
+</a>
+</nav>
+</body></html>

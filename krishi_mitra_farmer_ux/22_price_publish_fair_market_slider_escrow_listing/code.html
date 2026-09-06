@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu: Price &amp; Publish Lot</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-fixed": "#3a0a00",
+            "on-surface-variant": "#59413a",
+            "inverse-on-surface": "#f4f0e8",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-high": "#ece8e0",
+            "on-tertiary": "#ffffff",
+            "on-surface": "#1c1c17",
+            "on-secondary-container": "#6b1a00",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#fb7b54",
+            "tertiary-container": "#0f7c5b",
+            "on-secondary-fixed-variant": "#842503",
+            "secondary-fixed": "#ffdbd1",
+            "surface-container": "#f1ede6",
+            "on-error-container": "#93000a",
+            "on-primary-fixed": "#390c00",
+            "tertiary-fixed": "#97f5cc",
+            "error": "#ba1a1a",
+            "surface": "#fdf9f1",
+            "on-primary-container": "#ffece7",
+            "surface-container-highest": "#e6e2da",
+            "surface-tint": "#ac3400",
+            "primary": "#9b2f00",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "tertiary": "#006146",
+            "on-tertiary-container": "#b9ffde",
+            "surface-variant": "#e6e2da",
+            "surface-container-low": "#f7f3eb",
+            "surface-dim": "#dddad2",
+            "error-container": "#ffdad6",
+            "background": "#fdf9f1",
+            "secondary-fixed-dim": "#ffb59f",
+            "primary-container": "#c2410c",
+            "outline": "#8d7168",
+            "surface-bright": "#fdf9f1",
+            "outline-variant": "#e1bfb5",
+            "primary-fixed": "#ffdbd0",
+            "on-primary-fixed-variant": "#832600",
+            "primary-fixed-dim": "#ffb59d",
+            "inverse-primary": "#ffb59d",
+            "on-tertiary-fixed-variant": "#00513a",
+            "inverse-surface": "#31302b",
+            "secondary": "#a53c19",
+            "on-tertiary-fixed": "#002115",
+            "on-error": "#ffffff",
+            "on-primary": "#ffffff",
+            "on-background": "#1c1c17"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "touch-target-hero": "3.5rem",
+            "space-3xl": "2.5rem",
+            "space-xs": "0.5rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "1.5rem",
+            "space-sm": "0.75rem",
+            "margin-mobile": "1rem",
+            "touch-target-min": "3rem",
+            "space-4xl": "3rem",
+            "space-2xs": "0.25rem",
+            "space-lg": "1.25rem",
+            "margin-desktop": "2rem",
+            "space-2xl": "2rem",
+            "gutter-desktop": "1.5rem"
+          },
+          "fontFamily": {
+            "label-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+            "title-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+            "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "numeral-data": ["18px", {"lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700"}],
+            "headline-md": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "title-lg": ["16px", {"lineHeight": "22px", "fontWeight": "700"}],
+            "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "500"}],
+            "display-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700"}],
+            "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+            "label-lg": ["14px", {"lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+            "headline-lg-mobile": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "numeral-hero": ["32px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Hardware accelerated range styling */
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: #c2410c;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(194, 65, 12, 0.35);
+      cursor: pointer;
+      margin-top: -10px;
+    }
+    input[type=range]::-moz-range-thumb {
+      height: 28px;
+      width: 28px;
+      border-radius: 50%;
+      background: #c2410c;
+      border: 3px solid #ffffff;
+      box-shadow: 0 4px 10px rgba(194, 65, 12, 0.35);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen pb-36 selection:bg-primary selection:text-on-primary">
+<!-- Mobile Frame Container (Max 430px / 390px native target) -->
+<div class="max-w-md mx-auto min-h-screen bg-background relative flex flex-col shadow-xl">
+<!-- Top App Bar (Task-Focused with Back action: Shell Suppressed as per Semantic Protocol) -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md px-margin-mobile py-space-xs border-b border-outline-variant/40">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-space-xs">
+<button aria-label="Go back to step 4" class="w-10 h-10 rounded-full flex items-center justify-center bg-surface-container hover:bg-surface-container-high active:scale-95 transition-all text-on-surface" type="button">
+<span class="material-symbols-outlined text-title-lg" data-icon="arrow_back">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center gap-1.5">
+<h1 class="text-headline-sm font-headline-sm text-primary tracking-tight">Price &amp; Publish Lot</h1>
+<span class="bg-secondary-fixed text-on-secondary-fixed text-label-sm font-label-sm px-1.5 py-0.5 rounded">#LP-403</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">विक्री भाव ठरवा • 40 Qtl</p>
+</div>
+</div>
+<!-- Marathi Voice Audio Read-Aloud Button -->
+<button class="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-surface-container border border-outline-variant/60 hover:bg-surface-container-high active:scale-95 transition-all shadow-sm" id="voiceListenBtn" type="button">
+<span class="material-symbols-outlined text-primary text-title-md material-symbols-fill" data-icon="volume_up">volume_up</span>
+<span class="text-label-sm font-label-sm text-on-surface font-bold">आवाज ऐका</span>
+</button>
+</div>
+<!-- Step Progress Bar (Step 5 of 5) -->
+<div class="mt-space-sm">
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-1 text-on-surface">
+<span class="text-primary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-sm text-tertiary material-symbols-fill" data-icon="check_circle">check_circle</span>
+            Step 5 of 5: Final Pricing &amp; Publish
+          </span>
+<span class="text-tertiary font-bold">अंतिम टप्पा</span>
+</div>
+<div class="grid grid-cols-5 gap-1.5 h-1.5 w-full">
+<div class="bg-tertiary rounded-full"></div>
+<div class="bg-tertiary rounded-full"></div>
+<div class="bg-tertiary rounded-full"></div>
+<div class="bg-tertiary rounded-full"></div>
+<div class="bg-primary-container rounded-full ring-2 ring-primary-fixed"></div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="px-margin-mobile py-space-sm space-y-space-md flex-1">
+<!-- Produce Summary Micro-Card with Attached Lot Image -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 p-space-sm shadow-sm flex items-center gap-space-sm">
+<div class="relative w-20 h-20 rounded-lg overflow-hidden shrink-0 border border-outline-variant/40 bg-surface-container">
+<img alt="Gavran Red Onion lot packed in gunny bags" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AEtjO1X9Iiyjf2keWlsaKEVaz6Azrl2TCvJMwRTPpDAGCWevURkrpYhm0QJHl4RAlrhulzW9PZZc2n5nQ3xDpCMpSjTp47O3lI3M-pJoRpwFStI-HiOPkql7ZQUlvxpt_9juGrIUoyLiB3noN3T95O34iYet99lkggRC0gjdQODMcokeWIKn3EI9ds5IL3N70rbAsus2lj9V8BI4RnNRs83_IguaQ6Eo1Li4fPV88-I2gOIfD3aafSF0thPnwFY"/>
+<span class="absolute bottom-1 left-1 bg-tertiary text-on-tertiary text-[10px] font-bold px-1.5 py-0.2 rounded shadow">
+            Grade A
+          </span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<h2 class="text-title-md font-title-md text-on-surface truncate">Gavran Red Onion</h2>
+<span class="text-label-sm font-label-sm text-tertiary font-bold bg-tertiary-container/15 px-1.5 py-0.5 rounded">
+              Score 850/1000
+            </span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant truncate">उन्हाळ कांदा • 40 Qtl (80 Gunny Bags · 4,000 kg)</p>
+<div class="flex items-center gap-1 mt-1 text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="location_on">location_on</span>
+<span class="truncate">Lasalgaon Mandi Yard • Rambhau Patil (Niphad)</span>
+</div>
+</div>
+</section>
+<!-- Core Pricing Engine: Interactive Asking Price Selector -->
+<section class="bg-surface-container-lowest rounded-2xl border-2 border-primary-container/70 p-space-md shadow-[0_6px_16px_-2px_rgba(194,65,12,0.12)]">
+<div class="flex items-center justify-between mb-2">
+<div>
+<span class="text-label-sm font-label-sm uppercase tracking-wider text-primary font-bold">Asking Price Per Quintal</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">अपेक्षित दर प्रति क्विंटल</p>
+</div>
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm bg-tertiary-container/15 text-tertiary font-bold px-2 py-0.5 rounded-full">
+<span class="material-symbols-outlined text-sm material-symbols-fill" data-icon="insights">insights</span>
+            Fair Corridor
+          </span>
+</div>
+<!-- Numeric Display & Steppers -->
+<div class="flex items-center justify-between gap-2 my-space-sm bg-surface-container-low p-2 rounded-xl border border-outline-variant/50">
+<!-- Decrease Steppers -->
+<div class="flex items-center gap-1.5">
+<button class="min-h-10 px-2.5 rounded-lg bg-surface-container-lowest border border-outline/30 text-title-md font-bold text-on-surface active:scale-90 hover:bg-surface-container transition-all shadow-xs" id="sub50" title="Subtract ₹50" type="button">
+              −₹50
+            </button>
+<button class="w-10 h-10 rounded-lg bg-surface-container-lowest border border-outline/30 text-title-md font-bold text-on-surface active:scale-90 hover:bg-surface-container flex items-center justify-center transition-all shadow-xs" id="sub10" title="Subtract ₹10" type="button">
+              −₹10
+            </button>
+</div>
+<!-- Hero Price Value -->
+<div class="text-center px-1">
+<div class="flex items-baseline justify-center">
+<span class="text-title-lg font-title-lg text-primary mr-0.5">₹</span>
+<span class="text-numeral-hero font-numeral-hero text-on-surface tracking-tight" id="priceDisplay">2,100</span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant block -mt-1">/ Quintal (100 kg)</span>
+</div>
+<!-- Increase Steppers -->
+<div class="flex items-center gap-1.5">
+<button class="w-10 h-10 rounded-lg bg-surface-container-lowest border border-outline/30 text-title-md font-bold text-primary active:scale-90 hover:bg-surface-container flex items-center justify-center transition-all shadow-xs" id="add10" title="Add ₹10" type="button">
+              +₹10
+            </button>
+<button class="min-h-10 px-2.5 rounded-lg bg-surface-container-lowest border border-outline/30 text-title-md font-bold text-primary active:scale-90 hover:bg-surface-container transition-all shadow-xs" id="add50" title="Add ₹50" type="button">
+              +₹50
+            </button>
+</div>
+</div>
+<!-- Fair-Market Price Corridor Interactive Slider -->
+<div class="mt-4 pt-1">
+<div class="relative w-full">
+<!-- Shaded Fair Value Zone Marker (₹2,050 to ₹2,150) -->
+<div class="absolute h-2.5 rounded bg-tertiary-fixed-dim/50 top-1.5" style="left: 45.4%; width: 18.2%;"></div>
+<input class="w-full h-2.5 bg-surface-container-highest rounded-lg appearance-none cursor-pointer focus:outline-none relative z-10" id="priceRange" max="2350" min="1800" step="10" type="range" value="2100"/>
+</div>
+<!-- Optimal Liquidity Badge -->
+<div class="flex justify-center mt-2">
+<span class="inline-flex items-center gap-1 text-[11px] font-bold text-tertiary bg-tertiary-container/20 px-2 py-0.5 rounded-full border border-tertiary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-ping"></span>
+              Fair Value Corridor: ₹2,050 – ₹2,150 · Optimal Liquidity (जलद विक्री)
+            </span>
+</div>
+<!-- Benchmark Callouts Below Slider -->
+<div class="grid grid-cols-3 gap-1 mt-3 pt-2 border-t border-outline-variant/40 text-center">
+<div class="px-1">
+<span class="text-[10px] uppercase font-bold text-on-surface-variant block">APMC Modal Avg</span>
+<span class="text-label-sm font-label-sm font-bold text-on-surface">₹2,050 / Qtl</span>
+</div>
+<div class="px-1 bg-surface-container rounded py-0.5 border border-outline-variant/40">
+<span class="text-[10px] uppercase font-bold text-primary block">Your Asking</span>
+<span class="text-label-sm font-label-sm font-bold text-primary">+₹50 Grade Prem.</span>
+</div>
+<div class="px-1">
+<span class="text-[10px] uppercase font-bold text-on-surface-variant block">Export Premium</span>
+<span class="text-label-sm font-label-sm font-bold text-tertiary">₹2,180 / Qtl</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Projected Earnings & Transparent Payout Breakdown -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 p-space-md shadow-sm">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/40">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary" data-icon="account_balance_wallet">account_balance_wallet</span>
+<h3 class="text-title-md font-title-md text-on-surface">Net Payout Breakdown</h3>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">40 Quintals</span>
+</div>
+<div class="py-2.5 space-y-2 text-body-sm font-body-sm">
+<div class="flex justify-between items-center text-on-surface">
+<span class="text-on-surface-variant">Gross Lot Value (40 Qtl × <span id="unitCalc">₹2,100</span>):</span>
+<span class="text-title-md font-title-md text-on-surface" id="grossValue">₹84,000</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span>Estimated Unloading &amp; Hamali (80 bags):</span>
+<span class="material-symbols-outlined text-xs text-outline" data-icon="help_outline">help_outline</span>
+</div>
+<span class="text-error font-medium">− ₹600 (₹15/bag)</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span>Mandi-Setu Platform Fee:</span>
+<span class="bg-tertiary text-on-tertiary text-[10px] font-bold px-1.5 py-0.2 rounded">Farmer Promo</span>
+</div>
+<span class="text-tertiary font-bold">₹0 FREE</span>
+</div>
+</div>
+<!-- Net Settlement In-Bank Banner -->
+<div class="mt-2 p-3 bg-surface-container-low rounded-xl border border-tertiary/30 flex items-center justify-between">
+<div>
+<span class="text-label-sm font-label-sm text-tertiary font-bold uppercase tracking-wider block">Net In-Bank Payout</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">खात्यात जमा होणारी रक्कम</span>
+</div>
+<div class="text-right">
+<div class="flex items-center justify-end gap-1 text-tertiary font-extrabold text-numeral-data">
+<span class="material-symbols-outlined text-lg material-symbols-fill" data-icon="verified_user">verified_user</span>
+<span id="netPayout">₹83,400</span>
+</div>
+<span class="text-[10px] text-tertiary font-semibold block">Same-Day RTGS / UPI</span>
+</div>
+</div>
+<!-- Escrow Guarantee Lock Badge -->
+<div class="mt-2.5 flex items-center gap-2 p-2 bg-surface-container rounded-lg text-label-sm font-label-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-tertiary material-symbols-fill text-base shrink-0" data-icon="lock">lock</span>
+<span><strong>100% Escrow Guarantee:</strong> Mandi Board holds buyer funds before dispatch. Zero buyer default risk.</span>
+</div>
+</section>
+<!-- Buyer Trade Preferences & Terms -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 p-space-md shadow-sm space-y-space-md">
+<div>
+<h3 class="text-title-md font-title-md text-on-surface">Logistics &amp; Dispatch Method</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant">मालाची वाहतूक आणि उचल पर्याय निवडा</p>
+</div>
+<!-- Toggle Cards for Logistics -->
+<div class="grid grid-cols-1 gap-2.5">
+<!-- Option 1: Farmgate Pickup (Selected) -->
+<label class="relative flex items-start gap-3 p-3 rounded-xl border-2 border-primary-container bg-surface-container-low cursor-pointer transition-all">
+<input checked="" class="mt-1 text-primary focus:ring-primary h-4 w-4" name="logistics" type="radio" value="farmgate"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="text-title-sm font-bold text-on-surface">Farmgate Pickup (शेत बांधावर उचल)</span>
+<span class="text-label-sm font-label-sm bg-primary-fixed text-on-primary-fixed px-2 py-0.5 rounded font-bold">Recommended</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Buyer dispatches truck directly to Niphad farm shed. Buyer covers all freight.</p>
+</div>
+</label>
+<!-- Option 2: Deliver to Lasalgaon Yard -->
+<label class="relative flex items-start gap-3 p-3 rounded-xl border border-outline-variant/60 bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer transition-all">
+<input class="mt-1 text-primary focus:ring-primary h-4 w-4" name="logistics" type="radio" value="yard"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="text-title-sm font-bold text-on-surface">Deliver to Lasalgaon APMC Yard</span>
+<span class="text-label-sm font-label-sm text-tertiary font-bold">+₹1,800 freight aid</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Farmer arranges local tractor/tempo to APMC Gate #2 by tomorrow 10:00 AM.</p>
+</div>
+</label>
+</div>
+<!-- Minimum Lot Allocation Selection -->
+<div class="pt-2 border-t border-outline-variant/40">
+<label class="text-label-md font-label-md text-on-surface block mb-1.5">Lot Splitting Permission (माल विभागणी)</label>
+<div class="grid grid-cols-2 gap-2">
+<button class="py-2 px-3 rounded-lg border-2 border-primary-container bg-surface-container-low text-primary text-label-md font-label-md font-bold flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-sm material-symbols-fill" data-icon="check_circle">check_circle</span>
+              Full Lot Only (40 Qtl)
+            </button>
+<button class="py-2 px-3 rounded-lg border border-outline-variant/70 bg-surface-container-lowest text-on-surface-variant text-label-md font-label-md flex items-center justify-center gap-1 hover:bg-surface-container" type="button">
+              Allow Split (Min 20 Qtl)
+            </button>
+</div>
+</div>
+<!-- Deal Urgency / Listing Duration -->
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant/40">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="schedule">schedule</span>
+<div>
+<span class="text-label-md font-label-md text-on-surface block">Listing Offer Window</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">बोली स्वीकारण्याचा कालावधी</span>
+</div>
+</div>
+<span class="inline-flex items-center gap-1 bg-surface-container px-2.5 py-1 rounded-full border border-outline-variant/50 text-label-sm font-label-sm font-bold text-on-surface">
+<span class="material-symbols-outlined text-sm text-primary material-symbols-fill" data-icon="timelapse">timelapse</span>
+            48 Hours Active
+          </span>
+</div>
+</section>
+<!-- Active Buyer Radar Live Pulse Alert Strip -->
+<section class="bg-surface-container-low border border-outline-variant/70 rounded-xl p-3 shadow-xs flex items-start gap-2.5">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed flex items-center justify-center text-primary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-lg material-symbols-fill animate-pulse" data-icon="bolt">bolt</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center gap-1.5">
+<span class="text-label-md font-label-md font-bold text-on-surface">Active Buyer Radar</span>
+<span class="w-2 h-2 rounded-full bg-tertiary animate-ping"></span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5 leading-snug">
+<strong>7 Verified Traders</strong> actively bidding on Grade A Onions in Nashik/Lasalgaon right now. First competitive counter-bid expected within <strong>15 minutes</strong>.
+          </p>
+</div>
+</section>
+</main>
+<!-- Bottom Sticky Action Dock (Level 3 Elevation) -->
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest border-t-2 border-outline-variant/50 p-space-sm shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<div class="max-w-md mx-auto space-y-1.5">
+<!-- 56dp Primary Button in Turmeric Amber -->
+<button class="w-full h-touch-target-hero bg-primary-container text-on-primary rounded-xl font-title-lg text-title-lg flex items-center justify-center gap-2 shadow-md hover:bg-primary active:scale-[0.98] active:translate-y-0.5 transition-all" id="publishBtn" type="button">
+<span>Publish Lot to Marketplace</span>
+<span class="text-label-md font-normal opacity-90">· माल विक्रीसाठी टाका</span>
+<span class="material-symbols-outlined text-xl" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Offline & Reassurance Subtext -->
+<div class="flex items-center justify-center gap-1.5 text-center text-label-sm font-label-sm text-on-surface-variant px-2">
+<span class="material-symbols-outlined text-xs text-tertiary" data-icon="cloud_done">cloud_done</span>
+<span>Draft encrypted · Auto-submits on weak signal · Cancel anytime before match</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive Logic for Steppers, Slider, and Real-Time Calculation -->
+<script>
+    (function() {
+      const priceRange = document.getElementById('priceRange');
+      const priceDisplay = document.getElementById('priceDisplay');
+      const unitCalc = document.getElementById('unitCalc');
+      const grossValue = document.getElementById('grossValue');
+      const netPayout = document.getElementById('netPayout');
+      const sub10 = document.getElementById('sub10');
+      const sub50 = document.getElementById('sub50');
+      const add10 = document.getElementById('add10');
+      const add50 = document.getElementById('add50');
+      const publishBtn = document.getElementById('publishBtn');
+      const voiceListenBtn = document.getElementById('voiceListenBtn');
+
+      const LOT_QUANTITY = 40; // Quintals
+      const HAMALI_DEDUCTION = 600; // Flat INR 600 (80 bags * 15)
+
+      function updateCalculations(price) {
+        price = Math.max(1800, Math.min(2350, price));
+        priceRange.value = price;
+        priceDisplay.textContent = price.toLocaleString('en-IN');
+        unitCalc.textContent = '₹' + price.toLocaleString('en-IN');
+
+        const gross = LOT_QUANTITY * price;
+        const net = gross - HAMALI_DEDUCTION;
+
+        grossValue.textContent = '₹' + gross.toLocaleString('en-IN');
+        netPayout.textContent = '₹' + net.toLocaleString('en-IN');
+      }
+
+      priceRange.addEventListener('input', (e) => {
+        updateCalculations(parseInt(e.target.value, 10));
+      });
+
+      sub10.addEventListener('click', () => {
+        updateCalculations(parseInt(priceRange.value, 10) - 10);
+      });
+
+      sub50.addEventListener('click', () => {
+        updateCalculations(parseInt(priceRange.value, 10) - 50);
+      });
+
+      add10.addEventListener('click', () => {
+        updateCalculations(parseInt(priceRange.value, 10) + 10);
+      });
+
+      add50.addEventListener('click', () => {
+        updateCalculations(parseInt(priceRange.value, 10) + 50);
+      });
+
+      publishBtn.addEventListener('click', () => {
+        const currentPrice = priceRange.value;
+        publishBtn.innerHTML = `
+          <span class="material-symbols-outlined animate-spin text-xl">sync</span>
+          <span>Listing Lot #LP-403...</span>
+        `;
+        setTimeout(() => {
+          publishBtn.innerHTML = `
+            <span class="material-symbols-outlined text-xl material-symbols-fill">check_circle</span>
+            <span>Lot Published Successfully!</span>
+          `;
+          publishBtn.classList.remove('bg-primary-container');
+          publishBtn.classList.add('bg-tertiary');
+        }, 1200);
+      });
+
+      voiceListenBtn.addEventListener('click', () => {
+        voiceListenBtn.classList.add('ring-2', 'ring-primary');
+        const synth = window.speechSynthesis;
+        if (synth) {
+          const text = "लॉट क्रमांक एल पी 403, 40 क्विंटल उन्हाळ कांदा. अपेक्षित भाव 2100 रुपये प्रति क्विंटल. निव्वळ हातात मिळणारी रक्कम 83,400 रुपये.";
+          const utterance = new SpeechSynthesisUtterance(text);
+          utterance.lang = 'mr-IN';
+          synth.speak(utterance);
+          utterance.onend = () => voiceListenBtn.classList.remove('ring-2', 'ring-primary');
+        }
+      });
+    })();
+  </script>
+</body></html>

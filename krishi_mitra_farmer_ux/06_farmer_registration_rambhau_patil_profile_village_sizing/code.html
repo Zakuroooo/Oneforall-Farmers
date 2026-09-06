@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html class="light" lang="mr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu • शेतकरी नोंदणी (Farmer Registration)</title>
+<!-- Google Fonts: Plus Jakarta Sans & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN with forms and container queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Verbatim Tailwind Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary": "#ffffff",
+            "inverse-on-surface": "#f4f0e8",
+            "error-container": "#ffdad6",
+            "on-background": "#1c1c17",
+            "surface-variant": "#e6e2da",
+            "on-primary": "#ffffff",
+            "outline-variant": "#e1bfb5",
+            "secondary-container": "#fb7b54",
+            "on-secondary-fixed": "#3a0a00",
+            "primary": "#9b2f00",
+            "secondary-fixed-dim": "#ffb59f",
+            "surface-tint": "#ac3400",
+            "surface-container-high": "#ece8e0",
+            "on-surface-variant": "#59413a",
+            "primary-container": "#c2410c",
+            "tertiary": "#006146",
+            "surface-bright": "#fdf9f1",
+            "on-tertiary": "#ffffff",
+            "surface-dim": "#dddad2",
+            "on-error": "#ffffff",
+            "inverse-surface": "#31302b",
+            "outline": "#8d7168",
+            "on-primary-container": "#ffece7",
+            "inverse-primary": "#ffb59d",
+            "on-secondary-container": "#6b1a00",
+            "error": "#ba1a1a",
+            "surface": "#fdf9f1",
+            "surface-container-highest": "#e6e2da",
+            "tertiary-fixed": "#97f5cc",
+            "background": "#fdf9f1",
+            "secondary": "#a53c19",
+            "on-primary-fixed-variant": "#832600",
+            "on-error-container": "#93000a",
+            "surface-container-low": "#f7f3eb",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "primary-fixed": "#ffdbd0",
+            "on-tertiary-fixed": "#002115",
+            "on-tertiary-fixed-variant": "#00513a",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#b9ffde",
+            "on-surface": "#1c1c17",
+            "surface-container": "#f1ede6",
+            "on-primary-fixed": "#390c00",
+            "primary-fixed-dim": "#ffb59d",
+            "tertiary-container": "#0f7c5b",
+            "on-secondary-fixed-variant": "#842503",
+            "secondary-fixed": "#ffdbd1"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "touch-target-hero": "3.5rem",
+            "space-2xl": "2rem",
+            "space-2xs": "0.25rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "1.5rem",
+            "margin-desktop": "2rem",
+            "space-4xl": "3rem",
+            "gutter-desktop": "1.5rem",
+            "space-xs": "0.5rem",
+            "space-md": "1rem",
+            "space-sm": "0.75rem",
+            "space-lg": "1.25rem",
+            "margin-mobile": "1rem",
+            "touch-target-min": "3rem",
+            "space-3xl": "2.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    /* Material Symbols base config */
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Subtle jute grain background feel */
+    body {
+      background-color: #fdf9f1;
+      color: #1c1c17;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col justify-between antialiased selection:bg-primary-container selection:text-on-primary">
+<!-- TOP SHELL: Linear Task Screen (No global bottom tabs to honor semantic shell isolation) -->
+<header class="sticky top-0 z-40 w-full bg-surface/95 backdrop-blur-md border-b border-outline-variant/30 shadow-sm transition-all">
+<div class="max-w-lg mx-auto px-margin-mobile h-16 flex items-center justify-between">
+<!-- Back Navigation Action -->
+<button aria-label="मागे जा" class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface hover:bg-surface-container-high active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-primary">arrow_back</span>
+</button>
+<!-- Center Step Badge -->
+<div class="flex flex-col items-center">
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-fixed text-on-primary-fixed border border-primary/20">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-label-sm text-label-sm tracking-wide uppercase">नोंदणी • Step 2 of 2</span>
+</div>
+</div>
+<!-- Right Voice Speaker Trigger (High accessibility for mandi audio prompt) -->
+<button aria-label="आवाज ऐका" class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-container-lowest border border-outline-variant/60 shadow-xs hover:bg-surface-container text-primary active:scale-95 transition-all" id="voiceReadoutBtn" type="button">
+<span class="material-symbols-outlined fill-icon text-primary text-xl">volume_up</span>
+<span class="font-label-md text-label-md text-primary font-bold">ऐका</span>
+</button>
+</div>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<main class="flex-1 w-full max-w-lg mx-auto px-margin-mobile pt-space-md pb- space-3xl">
+<!-- HERO PROFILE BADGE & CONVERSATIONAL HEADING -->
+<div class="relative overflow-hidden rounded-2xl bg-surface-container-lowest border border-outline-variant/40 p-space-md shadow-sm mb-space-lg">
+<div class="absolute -right-6 -bottom-6 w-28 h-28 bg-primary-fixed/30 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-start gap- space-md">
+<!-- Farmer Avatar Anchor matching reference style -->
+<div class="relative flex-shrink-0">
+<div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-primary-container shadow-md bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="A warm, respectful portrait of a cheerful middle-aged Maharashtrian farmer with a neat beard, wearing a crisp traditional white Kurta shirt inside a bright rural Lasalgaon agricultural produce mandi office, framed by soft warm sunlight and natural earthy tones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDekusz8ui4ii7gwkDCFZJpAAI9ZlSdd_m8G9VPYgXK2VOcQXR_brTFM8-6g2GfGExDR34dHVJgq88cKUtj4yiYVJaDJiAJpWCza0QOEKvhGltZ5bcki5pBB8ac5jRgWKVYgHCHTp-rLmX8fjvQitU_MX_dGpySfzpvS6avm-KrFZHmtVYOjzfydkl4-AFS7ZfU6BlLKjOVsc5dMLlLYR9sfg2cnmp5XNRiPbP5ZUYBcbiZofESe9uF"/>
+</div>
+<div class="absolute -bottom-1 -right-1 bg-tertiary text-on-tertiary rounded-full p-0.5 border-2 border-surface-container-lowest shadow">
+<span class="material-symbols-outlined fill-icon text-[14px] p-0.5">verified</span>
+</div>
+</div>
+<div class="flex-1">
+<div class="inline-flex items-center gap-1 text-primary text-label-sm font-label-sm tracking-wider uppercase mb-0.5">
+<span class="material-symbols-outlined text-[13px]">assignment_ind</span>
+<span>शेतकरी नोंदणी • Profile Setup</span>
+</div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-extrabold tracking-tight">
+            तुमची माहिती भरा
+          </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            योग्य थेट बाजार भाव व जवळच्या अधिकृत खरेदीदारांशी जोडण्यासाठी.
+          </p>
+</div>
+</div>
+<!-- Live Mandi Benchmark Pill -->
+<div class="mt-space-sm pt-space-xs border-t border-surface-container flex items-center justify-between text-on-surface-variant">
+<span class="font-label-sm text-label-sm flex items-center gap-1 text-tertiary font-bold">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+          लासलगाव मुख्य यार्ड थेट जोडणी
+        </span>
+<span class="font-label-sm text-label-sm text-outline">नाशिक विभाग</span>
+</div>
+</div>
+<!-- TACTILE REGISTRATION FORM -->
+<form class="space-y-space-md" id="farmerForm" onsubmit="event.preventDefault();">
+<!-- FIELD 1: Full Name with Voice Dictation Button -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/50 shadow-sm focus-within:border-primary-container focus-within:ring-2 focus-within:ring-primary-container/20 transition-all">
+<div class="flex items-center justify-between mb-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-bold flex items-center gap-1.5" for="fullName">
+<span>शेतकऱ्याचे नाव</span>
+<span class="font-body-sm text-body-sm text-outline font-normal">(7/12 किंवा आधार प्रमाणे)</span>
+</label>
+<span class="font-label-sm text-label-sm text-tertiary bg-tertiary-fixed/30 px-2 py-0.5 rounded-md font-bold">आधार लिंक</span>
+</div>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-outline pointer-events-none material-symbols-outlined">person</span>
+<input class="w-full h-13 pl-11 pr-12 rounded-xl bg-surface border-1.5 border-outline-variant/60 font-body-lg text-body-lg text-on-surface font-bold focus:bg-surface-container-lowest focus:border-primary-container focus:ring-0 transition-colors" id="fullName" name="fullName" placeholder="उदा. रामभाऊ विठ्ठल पाटील" type="text" value="रामभाऊ विठ्ठल पाटील"/>
+<!-- Voice mic button for hands-free entry in dusty yards -->
+<button aria-label="आवाजाने बोला" class="absolute right-2 w-9 h-9 flex items-center justify-center rounded-lg bg-primary-fixed text-primary hover:bg-primary-container hover:text-on-primary active:scale-90 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]">mic</span>
+</button>
+</div>
+</div>
+<!-- FIELD 2: District Picker (Tactile Dropdown Card) -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/50 shadow-sm">
+<label class="block font-label-lg text-label-lg text-on-surface font-bold mb-1.5" for="districtSelect">
+          जिल्हा <span class="font-body-sm text-body-sm text-outline font-normal">(District)</span>
+</label>
+<div class="relative">
+<span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-outline pointer-events-none material-symbols-outlined">map</span>
+<select class="w-full h-13 pl-11 pr-10 rounded-xl bg-surface border-1.5 border-outline-variant/60 font-title-lg text-title-lg text-on-surface font-bold appearance-none focus:bg-surface-container-lowest focus:border-primary-container focus:ring-0 transition-colors" id="districtSelect" name="district">
+<option selected="" value="nashik">नाशिक (Nashik Mandi Division)</option>
+<option value="ahmednagar">अहमदनगर (Ahmednagar)</option>
+<option value="pune">पुणे (Pune APMC)</option>
+<option value="solapur">सोलापूर (Solapur)</option>
+<option value="chhatrapati_sambhajinagar">छत्रपती संभाजीनगर (Aurangabad)</option>
+</select>
+<span class="absolute right-3.5 top-1/2 -translate-y-1/2 text-primary pointer-events-none material-symbols-outlined">expand_more</span>
+</div>
+</div>
+<!-- FIELD 3: Taluka & Village with GPS Quick-Locate -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/50 shadow-sm focus-within:border-primary-container focus-within:ring-2 focus-within:ring-primary-container/20 transition-all">
+<div class="flex items-center justify-between mb-1.5">
+<label class="font-label-lg text-label-lg text-on-surface font-bold" for="talukaVillage">
+            तालुका व गाव <span class="font-body-sm text-body-sm text-outline font-normal">(Taluka &amp; Village)</span>
+</label>
+<button class="inline-flex items-center gap-1 text-primary text-label-sm font-label-sm font-bold hover:underline active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-[15px]">my_location</span>
+<span>चालू ठिकाण शोधा</span>
+</button>
+</div>
+<div class="relative flex items-center">
+<span class="absolute left-3.5 text-outline pointer-events-none material-symbols-outlined">location_on</span>
+<input class="w-full h-13 pl-11 pr-4 rounded-xl bg-surface border-1.5 border-outline-variant/60 font-body-lg text-body-lg text-on-surface font-bold focus:bg-surface-container-lowest focus:border-primary-container focus:ring-0 transition-colors" id="talukaVillage" name="talukaVillage" placeholder="उदा. निफाड, मु. पो. निफाड" type="text" value="निफाड, मु. पो. निफाड"/>
+</div>
+<p class="font-label-sm text-label-sm text-tertiary mt-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] fill-icon">check_circle</span>
+<span>लासलगाव मुख्य बाजार समितीपासून १२ किमी अंतरावर</span>
+</p>
+</div>
+<!-- FIELD 4: Total Landholding (Acre Stepper with Tactile Hit Areas) -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/50 shadow-sm">
+<div class="flex items-center justify-between mb-2">
+<label class="font-label-lg text-label-lg text-on-surface font-bold">
+            एकूण बागायती शेतजमीन <span class="font-body-sm text-body-sm text-outline font-normal">(Cultivated Land)</span>
+</label>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">७/१२ नोंद</span>
+</div>
+<!-- Custom Mandi Bid Engine Stepper Styling -->
+<div class="flex items-center justify-between bg-surface border-2 border-primary-container rounded-2xl p-1.5 shadow-inner">
+<button aria-label="जमीन कमी करा" class="w-12 h-12 rounded-xl bg-surface-container-lowest text-primary font-extrabold flex items-center justify-center border border-outline-variant/40 shadow-sm active:scale-90 hover:bg-primary-fixed transition-all" id="decrementLand" type="button">
+<span class="material-symbols-outlined font-bold">remove</span>
+</button>
+<div class="text-center px-4">
+<div class="flex items-baseline justify-center gap-1">
+<span class="font-numeral-hero text-numeral-hero text-on-surface font-extrabold tracking-tight" id="landValue">५.५</span>
+<span class="font-title-lg text-title-lg text-primary font-bold">एकर</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">२.२२ हेक्टर समतुल्य</span>
+</div>
+<button aria-label="जमीन वाढवा" class="w-12 h-12 rounded-xl bg-primary text-on-primary font-extrabold flex items-center justify-center shadow-md active:scale-90 hover:bg-primary-container transition-all" id="incrementLand" type="button">
+<span class="material-symbols-outlined font-bold">add</span>
+</button>
+</div>
+</div>
+<!-- FIELD 5: Primary Harvest Commodity Chips -->
+<div class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/50 shadow-sm">
+<div class="flex items-center justify-between mb-2.5">
+<label class="font-label-lg text-label-lg text-on-surface font-bold">
+            मुख्य पीक निवडा <span class="font-body-sm text-body-sm text-outline font-normal">(Primary Harvest)</span>
+</label>
+<span class="font-label-sm text-label-sm text-outline">एकाधिक निवड शक्य</span>
+</div>
+<!-- Tactile Chips Grid -->
+<div class="grid grid-cols-2 gap-2.5" id="cropChipGroup">
+<!-- Active Onion Pill -->
+<button class="crop-chip group flex items-center justify-between px-3.5 py-3 rounded-xl bg-primary text-on-primary shadow-md border-1.5 border-primary transition-all active:scale-95" data-selected="true" type="button">
+<span class="flex items-center gap-2 font-title-md text-title-md font-bold">
+<span class="text-xl">🧅</span>
+<span>कांदा (Onion)</span>
+</span>
+<span class="material-symbols-outlined text-[20px] fill-icon text-on-primary">check_circle</span>
+</button>
+<!-- Soybean Pill -->
+<button class="crop-chip group flex items-center justify-between px-3.5 py-3 rounded-xl bg-surface text-on-surface hover:bg-surface-container border-1.5 border-outline-variant/60 transition-all active:scale-95" data-selected="false" type="button">
+<span class="flex items-center gap-2 font-title-md text-title-md font-semibold">
+<span class="text-xl">🌱</span>
+<span>सोयाबीन</span>
+</span>
+<span class="material-symbols-outlined text-[20px] text-outline opacity-40">radio_button_unchecked</span>
+</button>
+<!-- Maize Pill -->
+<button class="crop-chip group flex items-center justify-between px-3.5 py-3 rounded-xl bg-surface text-on-surface hover:bg-surface-container border-1.5 border-outline-variant/60 transition-all active:scale-95" data-selected="false" type="button">
+<span class="flex items-center gap-2 font-title-md text-title-md font-semibold">
+<span class="text-xl">🌾</span>
+<span>मका (Maize)</span>
+</span>
+<span class="material-symbols-outlined text-[20px] text-outline opacity-40">radio_button_unchecked</span>
+</button>
+<!-- Grapes Pill -->
+<button class="crop-chip group flex items-center justify-between px-3.5 py-3 rounded-xl bg-surface text-on-surface hover:bg-surface-container border-1.5 border-outline-variant/60 transition-all active:scale-95" data-selected="false" type="button">
+<span class="flex items-center gap-2 font-title-md text-title-md font-semibold">
+<span class="text-xl">🍇</span>
+<span>द्राक्षे (Grapes)</span>
+</span>
+<span class="material-symbols-outlined text-[20px] text-outline opacity-40">radio_button_unchecked</span>
+</button>
+</div>
+</div>
+<!-- ESCROW & APMC GUARANTEE LOCK BANNER (Domain-Specific Level 2 Component) -->
+<div class="rounded-2xl bg-surface-container p-3.5 border border-outline-variant/50 flex items-start gap-3">
+<div class="w-9 h-9 rounded-xl bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined fill-icon text-[20px]">verified_user</span>
+</div>
+<div class="text-left">
+<h4 class="font-title-md text-title-md text-on-surface font-bold">थेट बँक खात्यात सुरक्षित पेमेंट</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+            माल वजन काट्यावरून निघण्यापूर्वी लासलगाव कृषी उत्पन्न बाजार समिती (APMC) हमी एस्क्रो खात्यात जमा केली जाईल.
+          </p>
+</div>
+</div>
+</form>
+</main>
+<!-- BOTTOM DOCKED ACTION DECK (Level 3 Sticky Bottom Tray) -->
+<footer class="sticky bottom-0 left-0 w-full z-50 bg-surface-container-lowest/95 backdrop-blur-lg border-t-2 border-outline-variant/40 shadow-[0_-4px_20px_rgba(24,24,27,0.09)] py-3 px-margin-mobile">
+<div class="max-w-lg mx-auto flex flex-col gap-2">
+<!-- 56dp Primary Button with tactile haptic translation -->
+<button class="w-full h-14 bg-primary-container hover:bg-primary text-on-primary rounded-xl font-title-lg text-title-lg font-bold flex items-center justify-center gap-2 shadow-lg hover:shadow-xl active:translate-y-0.5 active:scale-[0.99] transition-all" id="submitBtn" type="button">
+<span>नोंदणी पूर्ण करा • Complete Registration</span>
+<span class="material-symbols-outlined font-bold">arrow_forward</span>
+</button>
+<!-- APMC Mandi Official Trust Seal -->
+<div class="flex items-center justify-center gap-1.5 text-center text-outline">
+<span class="material-symbols-outlined text-[16px] text-tertiary fill-icon">gavel</span>
+<span class="font-label-sm text-label-sm font-bold tracking-tight text-on-surface-variant">
+          🛡️ लासलगाव APMC अधिकृत शेतकरी थेट नोंदणी पोर्टल • महाराष्ट्र शासन
+        </span>
+</div>
+</div>
+</footer>
+<!-- LIGHTWEIGHT INTERACTIVE LOGIC (Acre stepper, voice playback preview, chip toggling) -->
+<script>
+    // Landholding Stepper Logic
+    const landValueEl = document.getElementById('landValue');
+    const decrementBtn = document.getElementById('decrementLand');
+    const incrementBtn = document.getElementById('incrementLand');
+    let currentAcre = 5.5;
+
+    decrementBtn.addEventListener('click', () => {
+      if (currentAcre > 0.5) {
+        currentAcre = Math.round((currentAcre - 0.5) * 10) / 10;
+        landValueEl.textContent = currentAcre.toFixed(1).replace('.', '.');
+      }
+    });
+
+    incrementBtn.addEventListener('click', () => {
+      if (currentAcre < 100) {
+        currentAcre = Math.round((currentAcre + 0.5) * 10) / 10;
+        landValueEl.textContent = currentAcre.toFixed(1).replace('.', '.');
+      }
+    });
+
+    // Multi-Crop Toggle Interaction
+    const cropChips = document.querySelectorAll('.crop-chip');
+    cropChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const isSelected = chip.getAttribute('data-selected') === 'true';
+        const iconSpan = chip.querySelector('.material-symbols-outlined');
+        
+        if (isSelected) {
+          chip.setAttribute('data-selected', 'false');
+          chip.className = 'crop-chip group flex items-center justify-between px-3.5 py-3 rounded-xl bg-surface text-on-surface hover:bg-surface-container border-1.5 border-outline-variant/60 transition-all active:scale-95';
+          iconSpan.textContent = 'radio_button_unchecked';
+          iconSpan.className = 'material-symbols-outlined text-[20px] text-outline opacity-40';
+        } else {
+          chip.setAttribute('data-selected', 'true');
+          chip.className = 'crop-chip group flex items-center justify-between px-3.5 py-3 rounded-xl bg-primary text-on-primary shadow-md border-1.5 border-primary transition-all active:scale-95';
+          iconSpan.textContent = 'check_circle';
+          iconSpan.className = 'material-symbols-outlined text-[20px] fill-icon text-on-primary';
+        }
+      });
+    });
+
+    // Accessibility Voice Read-out Button Toast / Feedback
+    const voiceBtn = document.getElementById('voiceReadoutBtn');
+    voiceBtn.addEventListener('click', () => {
+      const originalText = voiceBtn.innerHTML;
+      voiceBtn.classList.add('bg-primary-fixed');
+      voiceBtn.innerHTML = `
+        <span class="material-symbols-outlined fill-icon text-primary animate-spin">graphic_eq</span>
+        <span class="font-label-md text-label-md text-primary font-bold">वाचत आहे...</span>
+      `;
+      setTimeout(() => {
+        voiceBtn.innerHTML = originalText;
+        voiceBtn.classList.remove('bg-primary-fixed');
+      }, 2400);
+    });
+
+    // Registration Completion Action Mock
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.addEventListener('click', () => {
+      submitBtn.innerHTML = `
+        <span class="material-symbols-outlined fill-icon animate-bounce">check_circle</span>
+        <span>नोंदणी यशस्वी! जोडत आहे...</span>
+      `;
+      submitBtn.classList.replace('bg-primary-container', 'bg-tertiary');
+      setTimeout(() => {
+        alert('नोंदणी यशस्वी! लासलगाव बाजार समितीमध्ये आपले स्वागत आहे.');
+      }, 400);
+    });
+  </script>
+</body></html>

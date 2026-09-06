@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html class="light" lang="mr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Screen 28: Make Counter Offer · Mandi-Setu</title>
+<!-- Material Symbols & Typography -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with custom config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary": "#ffffff",
+            "surface-container-highest": "#e6e2da",
+            "on-secondary-fixed": "#3a0a00",
+            "surface-tint": "#ac3400",
+            "primary-fixed-dim": "#ffb59d",
+            "on-primary-container": "#ffece7",
+            "on-surface": "#1c1c17",
+            "on-secondary": "#ffffff",
+            "surface-variant": "#e6e2da",
+            "tertiary": "#006146",
+            "outline-variant": "#e1bfb5",
+            "error-container": "#ffdad6",
+            "surface-container-lowest": "#ffffff",
+            "surface-container": "#f1ede6",
+            "primary": "#9b2f00",
+            "on-tertiary-fixed-variant": "#00513a",
+            "surface-container-high": "#ece8e0",
+            "outline": "#8d7168",
+            "inverse-on-surface": "#f4f0e8",
+            "on-error": "#ffffff",
+            "surface-bright": "#fdf9f1",
+            "on-tertiary": "#ffffff",
+            "secondary-fixed": "#ffdbd1",
+            "error": "#ba1a1a",
+            "secondary-container": "#fb7b54",
+            "on-secondary-container": "#6b1a00",
+            "surface": "#fdf9f1",
+            "on-primary-fixed": "#390c00",
+            "primary-container": "#c2410c",
+            "primary-fixed": "#ffdbd0",
+            "on-tertiary-container": "#b9ffde",
+            "inverse-primary": "#ffb59d",
+            "tertiary-fixed": "#97f5cc",
+            "on-primary-fixed-variant": "#832600",
+            "tertiary-container": "#0f7c5b",
+            "secondary-fixed-dim": "#ffb59f",
+            "secondary": "#a53c19",
+            "on-tertiary-fixed": "#002115",
+            "on-error-container": "#93000a",
+            "on-secondary-fixed-variant": "#842503",
+            "inverse-surface": "#31302b",
+            "surface-dim": "#dddad2",
+            "on-surface-variant": "#59413a",
+            "surface-container-low": "#f7f3eb",
+            "background": "#fdf9f1",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-background": "#1c1c17"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-2xs": "0.25rem",
+            "touch-target-min": "3rem",
+            "space-md": "1rem",
+            "space-lg": "1.25rem",
+            "touch-target-hero": "3.5rem",
+            "space-4xl": "3rem",
+            "gutter-mobile": "1rem",
+            "margin-desktop": "2rem",
+            "space-sm": "0.75rem",
+            "space-xl": "1.5rem",
+            "space-xs": "0.5rem",
+            "space-3xl": "2.5rem",
+            "margin-mobile": "1rem",
+            "space-2xl": "2rem",
+            "gutter-desktop": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-sm": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    /* Hardware-smooth transitions for mobile tactile controls */
+    .touch-press:active {
+      transform: scale(0.96);
+      transition: transform 100ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="bg-inverse-surface text-on-surface antialiased overflow-x-hidden select-none">
+<!-- ============================================================= -->
+<!-- BACKGROUND SIMULATION: Screen 27 (Live Bargaining Room Behind) -->
+<!-- Contextual dim overlay representing the high-stakes sauda deck -->
+<!-- ============================================================= -->
+<div aria-hidden="true" class="fixed inset-0 pointer-events-none opacity-25 filter blur-[3px] scale-[1.02] transform transition-transform">
+<div class="max-w-md mx-auto h-full bg-surface-container-low px-4 pt-4 flex flex-col space-y-4">
+<!-- Simulated Top Bar -->
+<div class="flex items-center justify-between pb-3 border-b border-outline-variant/40">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary">storefront</span>
+</div>
+<div>
+<div class="h-4 w-28 bg-on-surface/20 rounded"></div>
+<div class="h-3 w-16 bg-on-surface/10 rounded mt-1"></div>
+</div>
+</div>
+<div class="h-6 w-20 bg-primary/20 rounded-full"></div>
+</div>
+<!-- Simulated Negotiation Chat Bubble -->
+<div class="self-start max-w-[80%] bg-surface-container-lowest p-3 rounded-2xl border border-outline-variant/30">
+<div class="h-3 w-32 bg-on-surface/30 rounded mb-2"></div>
+<div class="h-6 w-48 bg-primary-container/20 rounded"></div>
+</div>
+<div class="self-end max-w-[80%] bg-primary-container/10 p-3 rounded-2xl border border-primary-container/30">
+<div class="h-3 w-28 bg-primary/40 rounded mb-1"></div>
+<div class="h-5 w-36 bg-primary/20 rounded"></div>
+</div>
+</div>
+</div>
+<!-- Deep scrim with tactile focus blur -->
+<div class="fixed inset-0 bg-inverse-surface/60 backdrop-blur-[2px] z-20"></div>
+<!-- ============================================================= -->
+<!-- MAIN TACTILE BOTTOM SHEET CONTAINER (SCREEN 28) -->
+<!-- ============================================================= -->
+<div class="fixed inset-0 z-30 flex flex-col justify-end overflow-y-auto max-w-lg mx-auto">
+<!-- Modal Canvas -->
+<main aria-labelledby="modal-heading" aria-modal="true" class="w-full bg-surface rounded-t-[28px] shadow-[0_-12px_40px_rgba(24,24,27,0.28)] border-t border-outline-variant/40 flex flex-col max-h-[94vh] transition-transform duration-200 ease-out overflow-hidden" role="dialog">
+<!-- Tactile Grab Handle & Sheet Header -->
+<header class="pt-space-xs pb-space-sm px-margin-mobile bg-surface-container-low border-b border-outline-variant/30 relative flex-shrink-0">
+<!-- Center Handle Bar for physical touch hint -->
+<div class="w-12 h-1.5 bg-outline-variant rounded-full mx-auto mb-2.5"></div>
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-lg bg-primary-container/15 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]">handshake</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="font-headline-sm text-headline-sm text-on-surface leading-tight" id="modal-heading">
+                  काउन्टर ऑफर पाठवा
+                </h1>
+<span class="font-label-sm text-label-sm text-primary bg-primary-container/15 px-2 py-0.5 rounded-full border border-primary-container/20">
+                  Round 2/3
+                </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1.5 mt-0.5">
+<span>लॉट #LP-403</span>
+<span>•</span>
+<span class="font-bold text-on-surface">४० क्विंटल गावराण कांदा</span>
+<span>•</span>
+<span>Pune Trading Co</span>
+</p>
+</div>
+</div>
+<!-- Top Action Cluster (Audio Speak & Close) -->
+<div class="flex items-center gap-1.5">
+<button aria-label="आवाज ऐका (Listen to Price Guidance)" class="h-9 px-2.5 bg-surface-container hover:bg-surface-container-high rounded-xl border border-outline-variant/40 flex items-center gap-1 text-primary active:scale-95 transition-all" id="audio-prompt-btn" title="आवाज ऐका (Speak Details)" type="button">
+<span class="material-symbols-outlined text-[19px]">volume_up</span>
+<span class="font-label-md text-label-md hidden xs:inline">ऐका</span>
+</button>
+<button aria-label="बंद करा (Close Sheet)" class="w-9 h-9 rounded-xl bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant active:scale-90 transition-all border border-outline-variant/30" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Scrollable Sheet Body (Daylight Resilient Form Architecture) -->
+<div class="overflow-y-auto px-margin-mobile py-space-sm space-y-space-md flex-1">
+<!-- SECTION 1: NEGOTIATION ROUND BENCHMARK & COMPARISON BAR -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-sm border border-outline-variant/50 shadow-sm">
+<!-- Step Corridor Segmented Tracker -->
+<div class="flex items-center justify-between mb-space-xs text-on-surface-variant font-label-md text-label-md">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-bold text-primary">फेरी २ सुरु (१ काउन्टर शिल्लक)</span>
+</div>
+<span class="text-outline font-medium">अंतिम फेरी ३ नंतर सौदा निश्चित</span>
+</div>
+<!-- Three-Part Progress Meter -->
+<div class="grid grid-cols-3 gap-1.5 mb-space-sm">
+<div class="h-2 rounded-full bg-primary-container"></div>
+<div class="h-2 rounded-full bg-primary"></div>
+<div class="h-2 rounded-full bg-surface-container-highest"></div>
+</div>
+<!-- Price Corridor Anchors: Buyer vs You -->
+<div class="grid grid-cols-2 gap-2 bg-surface-container-low p-2.5 rounded-xl border border-outline-variant/30">
+<!-- Buyer's Last Bid -->
+<div class="border-r border-outline-variant/40 pr-2">
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm">व्यापाऱ्याची बोली (Pune)</span>
+<span class="material-symbols-outlined text-sm text-secondary">trending_down</span>
+</div>
+<div class="font-numeral-data text-numeral-data text-on-surface mt-0.5">₹1,850<span class="font-body-sm text-body-sm text-on-surface-variant font-normal"> /Qtl</span></div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">एकूण: ₹74,000</div>
+</div>
+<!-- Farmer's Original Ask -->
+<div class="pl-2">
+<div class="flex items-center justify-between text-outline">
+<span class="font-label-sm text-label-sm">तुमची पहिली मागणी</span>
+<span class="material-symbols-outlined text-sm text-tertiary">check</span>
+</div>
+<div class="font-numeral-data text-numeral-data text-on-surface mt-0.5">₹2,100<span class="font-body-sm text-body-sm text-on-surface-variant font-normal"> /Qtl</span></div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">एकूण: ₹84,000</div>
+</div>
+</div>
+<!-- Algorithmic Recommendation Pill -->
+<div class="mt-2.5 flex items-start gap-2 bg-tertiary/10 border border-tertiary/20 rounded-xl p-2.5">
+<span class="material-symbols-outlined text-tertiary text-[20px] flex-shrink-0 mt-0.5">tips_and_updates</span>
+<div>
+<div class="flex items-center gap-1.5 font-label-md text-label-md text-tertiary font-bold">
+<span>शिफारस: ₹1,920/क्विंटल</span>
+<span class="bg-tertiary text-on-tertiary text-[10px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider">८२% खात्री</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-0.5 leading-snug">
+                लासलगाव व पिंपळगाव आजचा सरासरी भाव पाहता या दरावर व्यापारी सौदा मान्य करण्याची शक्यता ८२% आहे.
+              </p>
+</div>
+</div>
+</section>
+<!-- SECTION 2: TACTILE NUMERIC STEPPER & PRICE DIAL ENGINE -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border-2 border-primary-container/80 shadow-md">
+<div class="flex items-center justify-between text-on-surface-variant mb-1">
+<span class="font-label-md text-label-md uppercase tracking-wider text-outline font-bold">तुमचा नवीन काउन्टर दर (New Ask)</span>
+<span class="font-label-sm text-label-sm text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">कमाल बदल: ±₹100</span>
+</div>
+<!-- Massive Outdoor Daylight Numeric Readout -->
+<div class="flex items-baseline justify-center gap-1 py-1 text-center">
+<span class="font-title-lg text-title-lg text-primary font-bold">₹</span>
+<span class="font-numeral-hero text-numeral-hero text-primary tracking-tight font-extrabold text-[40px] leading-none" id="counter-price">
+              1,920
+            </span>
+<span class="font-title-md text-title-md text-on-surface-variant font-medium">/ क्विंटल</span>
+</div>
+<!-- Visual Slider Range Indicator (Relative Position within corridor) -->
+<div class="px-2 my-3">
+<div class="relative h-2.5 bg-surface-container-highest rounded-full overflow-hidden">
+<!-- Spread Bar -->
+<div class="absolute inset-y-0 left-0 bg-secondary/70 w-[20%]"></div>
+<div class="absolute inset-y-0 left-[20%] bg-primary-container w-[28%] transition-all duration-150" id="corridor-progress"></div>
+</div>
+<div class="flex justify-between text-[11px] font-label-sm text-outline mt-1 font-semibold">
+<span>खरेदीदार: ₹1,850</span>
+<span class="text-primary font-bold">काउन्टर: ₹1,920</span>
+<span>मागणी: ₹2,100</span>
+</div>
+</div>
+<!-- Large Tactile Quick-Increment Stepper Docks (52px Touch Hit Targets) -->
+<div class="grid grid-cols-4 gap-2 pt-1">
+<button class="touch-press h-[50px] rounded-xl bg-surface-container-low hover:bg-surface-container active:bg-primary-container active:text-on-primary border border-outline-variant/60 font-numeral-data text-numeral-data text-on-surface flex flex-col items-center justify-center transition-colors" onclick="adjustPrice(-50)" type="button">
+<span class="leading-none text-primary font-bold">−५०</span>
+<span class="text-[10px] text-outline font-medium">−₹50</span>
+</button>
+<button class="touch-press h-[50px] rounded-xl bg-surface-container-low hover:bg-surface-container active:bg-primary-container active:text-on-primary border border-outline-variant/60 font-numeral-data text-numeral-data text-on-surface flex flex-col items-center justify-center transition-colors" onclick="adjustPrice(-10)" type="button">
+<span class="leading-none text-primary font-bold">−१०</span>
+<span class="text-[10px] text-outline font-medium">−₹10</span>
+</button>
+<button class="touch-press h-[50px] rounded-xl bg-surface-container-low hover:bg-surface-container active:bg-primary-container active:text-on-primary border border-outline-variant/60 font-numeral-data text-numeral-data text-on-surface flex flex-col items-center justify-center transition-colors" onclick="adjustPrice(10)" type="button">
+<span class="leading-none text-primary font-bold">+१०</span>
+<span class="text-[10px] text-outline font-medium">+₹10</span>
+</button>
+<button class="touch-press h-[50px] rounded-xl bg-surface-container-low hover:bg-surface-container active:bg-primary-container active:text-on-primary border border-outline-variant/60 font-numeral-data text-numeral-data text-on-surface flex flex-col items-center justify-center transition-colors" onclick="adjustPrice(50)" type="button">
+<span class="leading-none text-primary font-bold">+५०</span>
+<span class="text-[10px] text-outline font-medium">+₹50</span>
+</button>
+</div>
+</section>
+<!-- SECTION 3: RADICAL FINANCIAL TRANSPARENCY (NET PAYOUT CALCULATION) -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-sm border border-outline-variant/50">
+<div class="flex items-center justify-between pb-2 border-b border-outline-variant/30">
+<span class="font-title-md text-title-md text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-tertiary text-[20px]">account_balance_wallet</span>
+              थेट बँक जमा हिशोब (Net Payout)
+            </span>
+<span class="font-label-sm text-label-sm text-tertiary bg-tertiary/10 px-2 py-0.5 rounded font-bold">
+              झटपट RTGS
+            </span>
+</div>
+<div class="pt-2.5 space-y-2 text-on-surface-variant font-body-sm text-body-sm">
+<!-- Row: Gross Valuation -->
+<div class="flex justify-between items-center">
+<span>एकूण माल किंमत (४० क्विंटल × ₹१,९२०)</span>
+<span class="font-numeral-data text-numeral-data text-on-surface" id="gross-val">₹76,800</span>
+</div>
+<!-- Row: Mandi & Hamali Deduction -->
+<div class="flex justify-between items-center text-outline">
+<span class="flex items-center gap-1">
+<span>हमाली व तोलाई (Hamali / Loading)</span>
+<span class="material-symbols-outlined text-[14px]">info</span>
+</span>
+<span class="font-medium text-error">−₹600</span>
+</div>
+<!-- Row: Extra Gain Pill -->
+<div class="flex justify-between items-center bg-tertiary/10 p-2 rounded-lg text-tertiary font-bold">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[18px]">price_check</span>
+                व्यापाऱ्याच्या ₹1,850 पेक्षा अधिक नफा:
+              </span>
+<span class="font-numeral-data text-numeral-data" id="extra-gain">+₹2,800</span>
+</div>
+<!-- Total Settlement Payout -->
+<div class="pt-2 border-t border-dashed border-outline-variant/50 flex justify-between items-baseline">
+<div>
+<span class="font-title-lg text-title-lg text-on-surface block">खात्यात जमा होणारी रक्कम</span>
+<span class="font-label-sm text-label-sm text-outline">काटा पावतीनंतर २४ तासांत थेट बँक जमा</span>
+</div>
+<div class="text-right">
+<span class="font-numeral-hero text-numeral-hero text-primary font-bold block" id="net-payout">₹76,200</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold">शून्य कमिशन (0% Cut)</span>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 4: QUICK-REASON & NEGOTIATION CHIPS (1-TAP REASONS) -->
+<section class="space-y-2">
+<div class="flex items-center justify-between">
+<span class="font-label-md text-label-md text-on-surface font-bold">
+              काउन्टर सोबत व्यापारी संदेश जोडा (Select Terms):
+            </span>
+<span class="font-label-sm text-label-sm text-outline">१ टॅप निवडा</span>
+</div>
+<!-- Tactile Filter Pill Grid -->
+<div class="flex flex-wrap gap-2">
+<!-- Chip 1: Selected -->
+<button class="chip-item h-[38px] px-3.5 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center gap-1.5 shadow-sm border border-primary transition-all active:scale-95" data-selected="true" onclick="toggleChip(this)" type="button">
+<span class="material-symbols-outlined text-[16px]">verified</span>
+<span>माल १ नंबर ग्रेडेड आहे (Grade A Export)</span>
+</button>
+<!-- Chip 2: Selected -->
+<button class="chip-item h-[38px] px-3.5 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center gap-1.5 shadow-sm border border-primary transition-all active:scale-95" data-selected="true" onclick="toggleChip(this)" type="button">
+<span class="material-symbols-outlined text-[16px]">local_shipping</span>
+<span>शेतातून त्वरित उचल हवी (Pickup Today)</span>
+</button>
+<!-- Chip 3: Unselected -->
+<button class="chip-item h-[38px] px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md flex items-center gap-1.5 border border-outline-variant/60 hover:bg-surface-container transition-all active:scale-95" data-selected="false" onclick="toggleChip(this)" type="button">
+<span class="material-symbols-outlined text-[16px]">do_not_disturb_on</span>
+<span>अंतिम दर, काटा कपात नाही (No Dagi Cut)</span>
+</button>
+<!-- Chip 4: Unselected -->
+<button class="chip-item h-[38px] px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md flex items-center gap-1.5 border border-outline-variant/60 hover:bg-surface-container transition-all active:scale-95" data-selected="false" onclick="toggleChip(this)" type="button">
+<span class="material-symbols-outlined text-[16px]">inventory_2</span>
+<span>४० क्विंटल पूर्ण लॉट (Full Lot Only)</span>
+</button>
+</div>
+</section>
+<!-- SECTION 5: ESCROW TRUST GUARANTEE BANNER -->
+<section class="bg-surface-container-low rounded-xl p-3 border border-outline-variant/40 flex items-start gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-tertiary-container text-on-tertiary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+</div>
+<div>
+<div class="font-label-lg text-label-lg text-on-surface font-bold flex items-center gap-1">
+<span>१००% मंडी-सेतू एस्कॉ गॅरंटी</span>
+<span class="text-tertiary text-xs">● सुरक्षित</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 leading-snug">
+              व्यापाऱ्याने हा ₹1,920 चा काउन्टर स्वीकारताच संपूर्ण ₹76,800 रक्कम आधी मंडी एस्कॉ खात्यात सुरक्षित जमा होईल. गाडी लोड होण्यापूर्वी पेमेंटची हमी!
+            </p>
+</div>
+</section>
+</div>
+<!-- ============================================================= -->
+<!-- BOTTOM DOCKED HIGH-INTENT ACTION DOCK (LEVEL 3 ELEVATION) -->
+<!-- ============================================================= -->
+<footer class="p-margin-mobile bg-surface-container-lowest border-t-2 border-outline-variant/50 shadow-[0_-4px_20px_rgba(24,24,27,0.09)] space-y-2 flex-shrink-0">
+<!-- Primary 56dp Big Tactile Action CTA -->
+<button class="w-full h-touch-target-hero bg-primary-container hover:bg-primary text-on-primary rounded-xl font-title-lg text-title-lg flex items-center justify-center gap-2 shadow-md active:translate-y-0.5 active:scale-[0.98] transition-all duration-150" id="submit-counter-btn" type="button">
+<span class="material-symbols-outlined text-[22px]">send</span>
+<span id="btn-label-text">काउन्टर ऑफर पाठवा • Send ₹1,920 Counter</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<!-- Secondary Dismiss / Keep Existing Offer Option -->
+<button class="w-full h-11 bg-transparent hover:bg-surface-container-low rounded-lg font-label-lg text-label-lg text-on-surface-variant flex items-center justify-center gap-1.5 transition-colors active:scale-98" type="button">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span>रद्द करा व परत जा (Keep ₹1,850 on table)</span>
+</button>
+</footer>
+</main>
+</div>
+<!-- Micro-interaction Script for Stepper and Live Calculation -->
+<script>
+    let currentPrice = 1920;
+    const buyerPrice = 1850;
+    const totalQtl = 40;
+    const hamaliCut = 600;
+
+    function formatINR(val) {
+      return '₹' + val.toLocaleString('en-IN');
+    }
+
+    function updateCalculations() {
+      // Boundaries: min buyer offer (1850) to max ask (2150)
+      if (currentPrice < 1850) currentPrice = 1850;
+      if (currentPrice > 2150) currentPrice = 2150;
+
+      const gross = currentPrice * totalQtl;
+      const extra = (currentPrice - buyerPrice) * totalQtl;
+      const net = gross - hamaliCut;
+
+      document.getElementById('counter-price').innerText = currentPrice.toLocaleString('en-IN');
+      document.getElementById('gross-val').innerText = formatINR(gross);
+      document.getElementById('net-payout').innerText = formatINR(net);
+      
+      const extraGainEl = document.getElementById('extra-gain');
+      if (extra >= 0) {
+        extraGainEl.innerText = '+' + formatINR(extra);
+        extraGainEl.className = 'font-numeral-data text-numeral-data text-tertiary';
+      } else {
+        extraGainEl.innerText = formatINR(extra);
+        extraGainEl.className = 'font-numeral-data text-numeral-data text-error';
+      }
+
+      document.getElementById('btn-label-text').innerText = `काउन्टर ऑफर पाठवा • Send ${formatINR(currentPrice)} Counter`;
+
+      // Update corridor bar percentage (Corridor between 1850 and 2100)
+      const ratio = Math.min(Math.max((currentPrice - 1850) / (2100 - 1850), 0), 1);
+      const widthPct = (ratio * 70) + 10;
+      const corridorBar = document.getElementById('corridor-progress');
+      if (corridorBar) {
+        corridorBar.style.width = widthPct + '%';
+      }
+    }
+
+    function adjustPrice(delta) {
+      currentPrice += delta;
+      updateCalculations();
+    }
+
+    function toggleChip(btn) {
+      const isSelected = btn.getAttribute('data-selected') === 'true';
+      if (isSelected) {
+        btn.setAttribute('data-selected', 'false');
+        btn.className = 'chip-item h-[38px] px-3.5 rounded-full bg-surface-container-lowest text-on-surface-variant font-label-md text-label-md flex items-center gap-1.5 border border-outline-variant/60 hover:bg-surface-container transition-all active:scale-95';
+      } else {
+        btn.setAttribute('data-selected', 'true');
+        btn.className = 'chip-item h-[38px] px-3.5 rounded-full bg-primary text-on-primary font-label-md text-label-md flex items-center gap-1.5 shadow-sm border border-primary transition-all active:scale-95';
+      }
+    }
+
+    // Interactive Audio Feedback Simulation
+    document.getElementById('audio-prompt-btn').addEventListener('click', function() {
+      const btn = this;
+      btn.classList.add('bg-primary-container', 'text-on-primary');
+      setTimeout(() => {
+        btn.classList.remove('bg-primary-container', 'text-on-primary');
+      }, 1200);
+    });
+  </script>
+</body></html>

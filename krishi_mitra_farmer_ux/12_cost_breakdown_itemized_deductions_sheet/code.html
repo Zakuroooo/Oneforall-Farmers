@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Screen 12: Cost Breakdown Modal Bottom Sheet - Mandi-Setu</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-fixed": "#390c00",
+            "surface-container": "#f1ede6",
+            "secondary": "#a53c19",
+            "on-secondary-fixed": "#3a0a00",
+            "primary-container": "#c2410c",
+            "surface-tint": "#ac3400",
+            "on-tertiary-fixed": "#002115",
+            "inverse-primary": "#ffb59d",
+            "on-secondary-fixed-variant": "#842503",
+            "on-primary-fixed-variant": "#832600",
+            "on-surface-variant": "#59413a",
+            "surface-container-highest": "#e6e2da",
+            "inverse-on-surface": "#f4f0e8",
+            "tertiary-container": "#0f7c5b",
+            "secondary-container": "#fb7b54",
+            "surface": "#fdf9f1",
+            "on-surface": "#1c1c17",
+            "primary-fixed-dim": "#ffb59d",
+            "primary-fixed": "#ffdbd0",
+            "secondary-fixed": "#ffdbd1",
+            "on-secondary-container": "#6b1a00",
+            "on-background": "#1c1c17",
+            "on-tertiary": "#ffffff",
+            "surface-container-low": "#f7f3eb",
+            "error": "#ba1a1a",
+            "outline": "#8d7168",
+            "on-error-container": "#93000a",
+            "surface-container-lowest": "#ffffff",
+            "outline-variant": "#e1bfb5",
+            "background": "#fdf9f1",
+            "error-container": "#ffdad6",
+            "tertiary": "#006146",
+            "primary": "#9b2f00",
+            "on-secondary": "#ffffff",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-error": "#ffffff",
+            "surface-variant": "#e6e2da",
+            "surface-dim": "#dddad2",
+            "inverse-surface": "#31302b",
+            "on-tertiary-container": "#b9ffde",
+            "surface-container-high": "#ece8e0",
+            "surface-bright": "#fdf9f1",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-primary": "#ffffff",
+            "tertiary-fixed": "#97f5cc",
+            "on-tertiary-fixed-variant": "#00513a",
+            "on-primary-container": "#ffece7"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "2xl": "1rem",
+            "3xl": "1.5rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-2xs": "0.25rem",
+            "space-xs": "0.5rem",
+            "space-sm": "0.75rem",
+            "space-md": "1rem",
+            "space-lg": "1.25rem",
+            "space-xl": "1.5rem",
+            "space-2xl": "2rem",
+            "space-3xl": "2.5rem",
+            "space-4xl": "3rem",
+            "margin-mobile": "1rem",
+            "gutter-mobile": "1rem",
+            "margin-desktop": "2rem",
+            "gutter-desktop": "1.5rem",
+            "touch-target-min": "3rem",
+            "touch-target-hero": "3.5rem"
+          },
+          "fontFamily": {
+            "display-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen flex justify-center items-end sm:items-center p-0">
+<!-- Mobile Frame Simulated Canvas -->
+<div class="relative w-full max-w-md h-screen max-h-[920px] bg-inverse-surface/60 backdrop-blur-sm flex flex-col justify-end overflow-hidden shadow-2xl">
+<!-- Dimmed & Frosted Parent Context Header (Screen 11 Underneath) -->
+<header class="flex justify-between items-center w-full px-margin-mobile py-space-xs sticky top-0 z-10 max-w-lg mx-auto opacity-75 pointer-events-none select-none">
+<div class="flex items-center gap-space-xs">
+<div class="w-10 h-10 rounded-full border-2 border-outline-variant/40 overflow-hidden bg-surface-container shadow-sm flex items-center justify-center">
+<img class="w-full h-full object-cover" data-alt="Close up photographic portrait of a middle-aged Maharashtrian onion farmer wearing a clean traditional white Gandhi topi, confident outdoors under harvest sunlight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD00-RBYJzv_HqrIU3hkOvFl4Fx334mcaiIszR0N449C5NvOuMZbWeJRrVkX2g0kAd417rKtDR6NFldCd7xRNAs2J-yYZQsPkS-fE3Nbs88DTIlT2yRXGNvvubVZjsIaw_Ob5kUi3r-f6JHQoi6k_vlusOI4MhqJWuxmGu9LKrSMu6GH8V7b3gcWmUU-vkwZ4ifO-Gwl1xeskZqg1LnC2RIJ9TY0ZtfQnqX4RsDIq4EkKzRm1TxMDob"/>
+</div>
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm text-surface-container-high tracking-tight">Mandi-Setu</span>
+<span class="text-title-md font-title-md text-surface-bright font-bold">Lasalgaon Mandi</span>
+</div>
+</div>
+<div class="flex items-center gap-space-xs text-surface-bright">
+<span class="material-symbols-outlined text-[24px]">volume_up</span>
+</div>
+</header>
+<!-- Simulated Underlay Card (Faded Peek of Screen 11 Sell Decision) -->
+<div class="w-full px-4 pt-4 pb-2 opacity-35 pointer-events-none -mb-8 scale-95 origin-bottom">
+<div class="bg-surface-container-lowest p-4 rounded-2xl border border-outline-variant shadow-sm">
+<div class="flex justify-between items-center mb-2">
+<span class="text-label-md font-label-md text-on-surface-variant">Recommended Strategy</span>
+<span class="bg-tertiary-container text-on-tertiary px-2 py-0.5 rounded text-label-sm font-label-sm">Hold 11 Days</span>
+</div>
+<div class="text-headline-md font-headline-md text-primary">Hold Onion Lot #LP-401</div>
+</div>
+</div>
+<!-- The Modal Bottom Sheet (Screen 12) -->
+<main class="relative w-full bg-surface-container-lowest rounded-t-3xl shadow-[0_-8px_32px_rgba(24,24,27,0.22)] border-t-[1.5px] border-outline-variant/60 flex flex-col max-h-[777px] z-20">
+<!-- Drag Handle Bar Area -->
+<div class="w-full pt-3 pb-2 flex flex-col items-center justify-center cursor-grab active:cursor-grabbing">
+<div class="w-12 h-1.5 bg-outline-variant/80 rounded-full"></div>
+</div>
+<!-- Modal Sheet Header -->
+<div class="px-margin-mobile pt-1 pb-space-sm flex items-start justify-between border-b border-surface-container">
+<div class="flex-1 pr-2">
+<div class="flex items-center gap-2">
+<h1 class="text-headline-sm font-headline-sm text-on-surface font-extrabold tracking-tight">Itemized Cost Breakdown</h1>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">
+            Lot #LP-401 · <span class="font-semibold text-on-surface">40 Quintals</span> (80 Bags) · 11-Day Holding Window at Niphad
+          </p>
+</div>
+<div class="flex items-center gap-1.5 shrink-0">
+<!-- Voice Audio Accessibility Button -->
+<button aria-label="Listen cost breakdown in Marathi" class="h-9 px-2.5 bg-surface-container-low hover:bg-surface-container border border-outline-variant/60 rounded-xl flex items-center gap-1 text-primary active:scale-95 transition-transform duration-150" type="button">
+<span class="material-symbols-outlined text-[18px]">volume_up</span>
+<span class="text-label-sm font-label-sm font-bold text-on-surface">ऐका</span>
+</button>
+<!-- Dismiss / Close Action -->
+<button aria-label="Close cost sheet modal" class="w-9 h-9 rounded-xl bg-surface-container-low hover:bg-surface-container-high border border-outline-variant/60 flex items-center justify-center text-on-surface-variant active:scale-95 transition-transform duration-150" type="button">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+</div>
+<!-- Scrollable Breakdown Body -->
+<div class="flex-1 overflow-y-auto px-margin-mobile py-space-md space-y-space-md scroll-smooth">
+<!-- Total Deductions Summary Hero Card -->
+<div class="bg-surface rounded-2xl p-space-md border-2 border-primary-container/20 shadow-sm relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 w-28 h-28 bg-primary-fixed/30 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex justify-between items-start mb-3">
+<div>
+<span class="inline-flex items-center gap-1 text-label-sm font-label-sm text-primary uppercase font-bold tracking-wider">
+<span class="material-symbols-outlined text-[15px]">receipt_long</span>
+                Total Storage &amp; Yard Deductions
+              </span>
+<div class="flex items-baseline gap-2 mt-1">
+<span class="text-numeral-hero font-numeral-hero text-on-surface tracking-tight">₹155</span>
+<span class="text-title-md font-title-md text-on-surface-variant font-semibold">/ Quintal</span>
+</div>
+</div>
+<div class="text-right">
+<span class="text-label-sm font-label-sm text-on-surface-variant">40 Quintal Total</span>
+<div class="text-title-lg font-title-lg text-primary font-extrabold mt-0.5">₹6,200</div>
+<span class="text-label-sm font-label-sm text-outline">(40 Qtl × ₹155)</span>
+</div>
+</div>
+<!-- Profit Buffer Impact Pill Strip -->
+<div class="bg-surface-container-lowest rounded-xl p-space-sm border border-outline-variant/50 grid grid-cols-2 gap-2 text-left">
+<div class="border-r border-outline-variant/40 pr-2">
+<span class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-tertiary">trending_up</span>
+                Gross 11-Day Gain
+              </span>
+<div class="text-headline-sm font-headline-sm text-tertiary font-bold mt-0.5">+₹8,090</div>
+<span class="text-label-sm font-label-sm text-outline-variant/90 text-on-surface-variant">+₹202/Qtl modal rally</span>
+</div>
+<div class="pl-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[15px] text-tertiary">account_balance_wallet</span>
+                Net Profit Buffer
+              </span>
+<div class="text-headline-sm font-headline-sm text-tertiary font-bold mt-0.5">+₹1,890</div>
+<span class="text-label-sm font-label-sm text-tertiary font-semibold">After all deductions paid</span>
+</div>
+</div>
+</div>
+<!-- Section Title: Itemized Ledger -->
+<div>
+<div class="flex justify-between items-center mb-2 px-1">
+<h2 class="text-title-md font-title-md text-on-surface font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[19px]">fact_check</span>
+              5 Transparent Holding Cost Items
+            </h2>
+<span class="text-label-sm font-label-sm text-on-surface-variant font-medium">All-Inclusive</span>
+</div>
+<!-- Stack of 5 Transparent Ledger Cards -->
+<div class="space-y-2.5">
+<!-- Item 1: Transport -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-3 shadow-sm hover:border-primary-container transition-colors">
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">local_shipping</span>
+</div>
+<div>
+<div class="text-title-md font-title-md text-on-surface font-bold">Transport (Niphad to Lasalgaon APMC)</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Pre-negotiated local truck rate, door-to-ramp.</div>
+</div>
+</div>
+<div class="text-right shrink-0 pl-2">
+<div class="text-title-md font-title-md text-on-surface font-extrabold">₹60 <span class="text-label-sm font-label-sm text-on-surface-variant font-normal">/ Qtl</span></div>
+<div class="text-label-sm font-label-sm text-on-surface-variant font-bold">₹2,400 total</div>
+</div>
+</div>
+</div>
+<!-- Item 2: Commission (APMC Adat) -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-3 shadow-sm hover:border-primary-container transition-colors">
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">gavel</span>
+</div>
+<div>
+<div class="text-title-md font-title-md text-on-surface font-bold">Commission (APMC Mandi Adat)</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Regulated 2.5% statutory yard adat cap under Maharashtra APMC Act.</div>
+</div>
+</div>
+<div class="text-right shrink-0 pl-2">
+<div class="text-title-md font-title-md text-on-surface font-extrabold">₹51 <span class="text-label-sm font-label-sm text-on-surface-variant font-normal">/ Qtl</span></div>
+<div class="text-label-sm font-label-sm text-on-surface-variant font-bold">₹2,040 total</div>
+</div>
+</div>
+</div>
+<!-- Item 3: Storage Niphad -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-3 shadow-sm hover:border-primary-container transition-colors">
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">warehouse</span>
+</div>
+<div>
+<div class="text-title-md font-title-md text-on-surface font-bold">Cold / Dry Storage (11 Days)</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Shriram Warehouse Niphad, ₹2.55/bag/day controlled aeration rate.</div>
+</div>
+</div>
+<div class="text-right shrink-0 pl-2">
+<div class="text-title-md font-title-md text-on-surface font-extrabold">₹28 <span class="text-label-sm font-label-sm text-on-surface-variant font-normal">/ Qtl</span></div>
+<div class="text-label-sm font-label-sm text-on-surface-variant font-bold">₹1,120 total</div>
+</div>
+</div>
+</div>
+<!-- Item 4: Moisture & Dehydration Allowance -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-3 shadow-sm hover:border-primary-container transition-colors">
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">water_drop</span>
+</div>
+<div>
+<div class="text-title-md font-title-md text-on-surface font-bold">Storage Spoilage &amp; Dehydration</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Projected 0.55% weight loss &amp; skin drying over 11 days.</div>
+</div>
+</div>
+<div class="text-right shrink-0 pl-2">
+<div class="text-title-md font-title-md text-on-surface font-extrabold">₹11 <span class="text-label-sm font-label-sm text-on-surface-variant font-normal">/ Qtl</span></div>
+<div class="text-label-sm font-label-sm text-on-surface-variant font-bold">₹440 total</div>
+</div>
+</div>
+</div>
+<!-- Item 5: Loading & Weighbridge -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-3 shadow-sm hover:border-primary-container transition-colors">
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container flex items-center justify-center text-primary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[20px]">scale</span>
+</div>
+<div>
+<div class="text-title-md font-title-md text-on-surface font-bold">Loading &amp; Weighbridge Fee</div>
+<div class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Automated electronic weigh slip &amp; labor per quintal bag.</div>
+</div>
+</div>
+<div class="text-right shrink-0 pl-2">
+<div class="text-title-md font-title-md text-on-surface font-extrabold">₹5 <span class="text-label-sm font-label-sm text-on-surface-variant font-normal">/ Qtl</span></div>
+<div class="text-label-sm font-label-sm text-on-surface-variant font-bold">₹200 total</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- APMC Transparency Seal Guarantee -->
+<div class="bg-surface-container-low border border-tertiary/30 rounded-2xl p-space-md flex gap-3 items-start">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-tertiary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[22px] material-symbols-fill">verified_user</span>
+</div>
+<div class="flex-1">
+<div class="text-title-md font-title-md text-tertiary font-extrabold flex items-center gap-1.5">
+              APMC Transparency Seal — Zero Hidden Deductions
+            </div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1 leading-relaxed">
+              Unregulated farmgate traders often deduct 4–7 kg extra per bag for "kachra" (waste) and delayed payment cuts. Mandi-Setu locks exact statutory weights with zero unauthorized deductions.
+            </p>
+</div>
+</div>
+<!-- Comparative Route Card: Farmgate Middleman "Danda" vs Mandi-Setu Transparent Route -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant/60 rounded-2xl p-space-md shadow-sm">
+<div class="flex items-center justify-between pb-2 mb-2 border-b border-surface-container">
+<span class="text-title-md font-title-md text-on-surface font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[20px]">balance</span>
+              Middleman Farmgate "Danda" vs Mandi-Setu
+            </span>
+</div>
+<div class="grid grid-cols-2 gap-3 pt-1">
+<!-- Middleman Column -->
+<div class="bg-surface-container p-2.5 rounded-xl border border-outline-variant/40 flex flex-col justify-between">
+<div>
+<span class="text-label-sm font-label-sm text-error font-bold block uppercase tracking-wide">Middleman Cut</span>
+<div class="text-title-lg font-title-lg text-error font-extrabold mt-1">~₹280 <span class="text-label-sm font-label-sm font-normal">/ Qtl</span></div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1.5 leading-snug">
+                  Hidden weighment cuts (5kg/bag) + below-mandi distress rate.
+                </p>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/30 text-label-sm font-label-sm text-error font-semibold">
+                Loss: -₹11,200 on 40 Qtl
+              </div>
+</div>
+<!-- Mandi-Setu Column -->
+<div class="bg-tertiary-fixed/20 p-2.5 rounded-xl border border-tertiary/40 flex flex-col justify-between">
+<div>
+<span class="text-label-sm font-label-sm text-tertiary font-bold block uppercase tracking-wide">Mandi-Setu Route</span>
+<div class="text-title-lg font-title-lg text-tertiary font-extrabold mt-1">₹155 <span class="text-label-sm font-label-sm font-normal">/ Qtl</span></div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1.5 leading-snug">
+                  100% itemized statutory costs, digital weighment &amp; direct payout.
+                </p>
+</div>
+<div class="mt-3 pt-2 border-t border-tertiary/30 text-label-sm font-label-sm text-tertiary font-extrabold">
+                Advantage: +₹7,200 Net
+              </div>
+</div>
+</div>
+</div>
+<!-- Escrow Guarantee Lock Banner -->
+<div class="bg-surface-container-high rounded-xl p-3 flex items-center justify-between border border-outline-variant/40">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[20px]">lock</span>
+<span class="text-label-md font-label-md text-on-surface font-semibold">Direct Escrow Mandi Settlement Guarantee</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">verified</span>
+</div>
+</div>
+<!-- Sticky Bottom Action Dock (Level 3 Elevation) -->
+<div class="sticky bottom-0 bg-surface-container-lowest border-t-2 border-outline-variant/40 p-margin-mobile shadow-[0_-6px_20px_rgba(24,24,27,0.08)] flex flex-col gap-2">
+<!-- Primary 56dp CTA Button -->
+<button class="w-full h-touch-target-hero bg-primary hover:bg-primary-container text-on-primary rounded-xl text-title-lg font-title-lg font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform duration-150 shadow-md" type="button">
+<span>Got It — Return to Price Decision</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<!-- Secondary Document Action -->
+<div class="flex items-center justify-center pt-0.5">
+<button class="text-primary hover:text-primary-container text-label-lg font-label-lg font-bold flex items-center gap-1.5 py-1 px-3 active:scale-95 transition-transform duration-150" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+<span>Download Itemized PDF Receipt / Tax Invoice</span>
+</button>
+</div>
+<!-- Global Navigation Dock for App Consistency -->
+<nav aria-label="Global farmer navigation" class="flex justify-around items-center pt-2 pb-1 border-t border-surface-container">
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 active:translate-y-0.5 active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-[22px]">storefront</span>
+<span class="text-label-sm font-label-sm mt-0.5">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:translate-y-0.5 active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-[22px]">trending_up</span>
+<span class="text-label-sm font-label-sm mt-0.5 font-bold">Market</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 active:translate-y-0.5 active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-[22px]">inventory_2</span>
+<span class="text-label-sm font-label-sm mt-0.5">My Produce</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 active:translate-y-0.5 active:scale-95 transition-all duration-150">
+<span class="material-symbols-outlined text-[22px]">handshake</span>
+<span class="text-label-sm font-label-sm mt-0.5">Deals</span>
+</button>
+</nav>
+</div>
+</main>
+</div>
+</body></html>

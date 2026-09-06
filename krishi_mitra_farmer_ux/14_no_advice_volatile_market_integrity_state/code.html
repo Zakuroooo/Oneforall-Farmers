@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu · Algorithmic Integrity Advisory</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-fixed-variant": "#832600",
+            "on-primary": "#ffffff",
+            "surface-container": "#f1ede6",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "primary": "#9b2f00",
+            "surface-container-lowest": "#ffffff",
+            "outline-variant": "#e1bfb5",
+            "on-primary-fixed": "#390c00",
+            "on-error": "#ffffff",
+            "inverse-primary": "#ffb59d",
+            "surface-variant": "#e6e2da",
+            "surface-dim": "#dddad2",
+            "on-tertiary-fixed": "#002115",
+            "tertiary": "#006146",
+            "error-container": "#ffdad6",
+            "outline": "#8d7168",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-secondary": "#ffffff",
+            "surface-container-low": "#f7f3eb",
+            "primary-container": "#c2410c",
+            "surface-container-high": "#ece8e0",
+            "on-secondary-fixed-variant": "#842503",
+            "secondary": "#a53c19",
+            "surface": "#fdf9f1",
+            "on-secondary-fixed": "#3a0a00",
+            "on-tertiary": "#ffffff",
+            "on-background": "#1c1c17",
+            "background": "#fdf9f1",
+            "on-primary-container": "#ffece7",
+            "on-tertiary-container": "#b9ffde",
+            "on-tertiary-fixed-variant": "#00513a",
+            "on-secondary-container": "#6b1a00",
+            "on-surface-variant": "#59413a",
+            "primary-fixed-dim": "#ffb59d",
+            "error": "#ba1a1a",
+            "tertiary-container": "#0f7c5b",
+            "surface-tint": "#ac3400",
+            "surface-bright": "#fdf9f1",
+            "primary-fixed": "#ffdbd0",
+            "on-error-container": "#93000a",
+            "inverse-surface": "#31302b",
+            "on-surface": "#1c1c17",
+            "secondary-fixed": "#ffdbd1",
+            "secondary-container": "#fb7b54",
+            "surface-container-highest": "#e6e2da",
+            "tertiary-fixed": "#97f5cc",
+            "inverse-on-surface": "#f4f0e8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-4xl": "3rem",
+            "margin-desktop": "2rem",
+            "space-sm": "0.75rem",
+            "touch-target-hero": "3.5rem",
+            "space-2xs": "0.25rem",
+            "space-2xl": "2rem",
+            "touch-target-min": "3rem",
+            "margin-mobile": "1rem",
+            "space-lg": "1.25rem",
+            "space-3xl": "2.5rem",
+            "space-xl": "1.5rem",
+            "gutter-desktop": "1.5rem",
+            "space-xs": "0.5rem",
+            "space-md": "1rem",
+            "gutter-mobile": "1rem"
+          },
+          "fontFamily": {
+            "title-lg": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface antialiased selection:bg-primary-fixed-dim selection:text-on-primary-fixed min-h-screen pb-44">
+<!-- Top Navigation App Bar -->
+<header class="bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-md sticky top-0 z-40 w-full border-b border-outline-variant/40 shadow-sm max-w-lg mx-auto">
+<div class="flex justify-between items-center w-full px-margin-mobile py-space-xs min-h-touch-target-min">
+<div class="flex items-center gap-space-sm">
+<button aria-label="Go back to dashboard" class="w-10 h-10 rounded-xl flex items-center justify-center text-on-surface hover:bg-surface-container-high transition-colors active:scale-95 duration-150" type="button">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center gap-1.5">
+<h1 class="text-headline-sm font-headline-sm text-primary tracking-tight">Price Decision Engine</h1>
+<span class="w-2 h-2 rounded-full bg-secondary-container inline-block"></span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Lasalgaon Mandi · Rambhau Patil (Niphad)</p>
+</div>
+</div>
+<!-- Listen Aloud Audio Guide for Outdoor Daylight Visibility -->
+<button class="flex items-center gap-1 px-3 py-1.5 rounded-full bg-surface-container-high text-primary hover:bg-primary-fixed transition-colors active:scale-95 duration-150 border border-outline-variant/50" id="voiceGuidanceBtn" type="button">
+<span class="material-symbols-outlined text-[18px]" data-icon="volume_up" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+<span class="text-label-sm font-label-sm">बोला</span>
+</button>
+</div>
+</header>
+<main class="max-w-lg mx-auto px-margin-mobile pt-space-md space-y-space-md">
+<!-- Active Lot Micro-Bar -->
+<section class="bg-surface-container-lowest rounded-xl p-space-sm border border-outline-variant/60 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary font-bold text-base border border-outline-variant/40">
+          🧅
+        </div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-title-md font-title-md text-on-surface">Red Onion (Gavran)</span>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider bg-surface-container text-on-surface-variant uppercase">Lot #LP-401</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">40 Quintals stored · Shriram Cold Warehouse</p>
+</div>
+</div>
+<div class="text-right">
+<span class="text-label-sm font-label-sm text-outline">Stored Moisture</span>
+<p class="text-title-md font-title-md text-on-surface tabular-nums">11.8% <span class="text-tertiary text-xs">● Dry</span></p>
+</div>
+</section>
+<!-- PROMINENT INTEGRITY BADGE & REFUSAL HERO CARD -->
+<section class="relative overflow-hidden bg-surface-container-lowest rounded-2xl border-2 border-primary-container p-space-lg shadow-[0_6px_20px_-4px_rgba(194,65,12,0.14)]">
+<!-- Ambient background insignia of scale -->
+<div class="absolute -right-4 -bottom-6 opacity-5 pointer-events-none select-none text-primary">
+<span class="material-symbols-outlined text-[160px]" data-icon="balance">balance</span>
+</div>
+<!-- Radical Transparency Protocol Tag -->
+<div class="flex items-center gap-2 mb-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-pulse"></span>
+<span class="text-[10px] font-extrabold tracking-wider text-primary uppercase bg-primary-fixed/60 px-2 py-0.5 rounded border border-outline-variant">
+          Radical Transparency Protocol · Model Refusal
+        </span>
+</div>
+<div class="flex items-start gap-3.5 mb-space-sm">
+<div class="w-12 h-12 rounded-xl bg-primary-container text-on-primary flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined text-2xl" data-icon="balance" style="font-variation-settings: 'FILL' 1;">balance</span>
+</div>
+<div>
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-on-surface tracking-tight">
+            No Recommendation Today
+          </h2>
+<p class="text-label-sm font-label-sm text-primary font-bold mt-0.5">
+            Lasalgaon APMC yard data insufficient for high-conviction decision
+          </p>
+</div>
+</div>
+<!-- Verbatim Integrity Copy -->
+<blockquote class="bg-surface-container-low rounded-xl p-space-sm border-l-4 border-primary-container text-body-md font-body-md text-on-surface mb-space-md">
+        "Prices have been unusually volatile this week. The range is too wide for us to give you a number we would stand behind."
+      </blockquote>
+<!-- Confidence Dial & Standard Bar -->
+<div class="bg-surface rounded-xl p-space-sm border border-outline-variant/70 space-y-2">
+<div class="flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-on-surface-variant">Algorithmic Confidence Score</span>
+<span class="font-bold text-primary tabular-nums">54% (Paused below 80%)</span>
+</div>
+<div class="w-full h-3 bg-surface-container-high rounded-full overflow-hidden flex relative">
+<!-- Required Threshold line marker -->
+<div class="absolute left-[80%] top-0 bottom-0 w-0.5 bg-tertiary z-10"></div>
+<!-- Current 54% Confidence -->
+<div class="h-full bg-secondary-container rounded-full" style="width: 54%;"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] text-outline pt-0.5">
+<span>0% Blind guess</span>
+<span class="text-tertiary font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[12px]" data-icon="check_circle">check_circle</span>
+            80% Safety Floor
+          </span>
+<span>100% Locked</span>
+</div>
+</div>
+</section>
+<!-- TRANSPARENCY BREAKDOWN (WHY ADVICE IS PAUSED) -->
+<section class="bg-surface-container-lowest rounded-2xl border border-outline-variant/60 p-space-md shadow-sm space-y-space-md">
+<div class="flex items-center justify-between border-b border-outline-variant/40 pb-space-xs">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="analytics">analytics</span>
+<h3 class="text-title-lg font-title-lg text-on-surface">Why We Paused Advice</h3>
+</div>
+<span class="text-label-sm font-label-sm bg-surface-container px-2 py-0.5 rounded text-on-surface-variant">
+          Lasalgaon 72h Yard Scan
+        </span>
+</div>
+<!-- Fluctuation Meter / Variance Range -->
+<div class="p-space-sm rounded-xl bg-surface-container-low border border-outline-variant/60">
+<div class="flex justify-between items-baseline mb-1">
+<span class="text-label-sm font-label-sm text-on-surface-variant">72-Hour APMC Price Swing</span>
+<span class="text-label-md font-label-md text-error font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-sm" data-icon="swap_vert">swap_vert</span>
+            ± ₹420 / Quintal
+          </span>
+</div>
+<!-- Range Visual Ladder -->
+<div class="relative py-3">
+<div class="h-2 rounded-full bg-surface-container-high w-full relative">
+<div class="absolute left-[15%] right-[15%] h-full bg-primary/30 rounded-full"></div>
+<!-- Low Marker -->
+<div class="absolute left-[15%] -top-1.5 w-4 h-4 bg-surface-container-lowest border-2 border-primary rounded-full shadow"></div>
+<!-- High Marker -->
+<div class="absolute right-[15%] -top-1.5 w-4 h-4 bg-surface-container-lowest border-2 border-primary rounded-full shadow"></div>
+</div>
+</div>
+<div class="flex justify-between items-center text-body-sm font-body-sm pt-1">
+<div>
+<span class="text-outline text-[11px] block">48h Yard Low</span>
+<span class="text-title-md font-title-md text-on-surface font-bold">₹1,780</span>
+</div>
+<div class="text-center px-2 py-1 rounded bg-surface-container text-primary font-bold text-xs">
+            23.6% Spread
+          </div>
+<div class="text-right">
+<span class="text-outline text-[11px] block">48h Yard High</span>
+<span class="text-title-md font-title-md text-on-surface font-bold">₹2,200</span>
+</div>
+</div>
+</div>
+<!-- Volatility Drivers List -->
+<div class="space-y-2.5">
+<h4 class="text-label-sm font-label-sm uppercase tracking-wider text-outline">
+          3 Real-Time Volatility Drivers Identified
+        </h4>
+<!-- Driver 1 -->
+<div class="flex items-start gap-3 p-2.5 rounded-xl bg-surface border border-outline-variant/40">
+<div class="w-7 h-7 rounded-lg bg-surface-container text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]" data-icon="cloud_sync">cloud_sync</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">
+              Unseasonal rains reported across Nashik &amp; Dhule belt
+            </p>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">
+              Affects curing quality and causes sudden moisture variance at yard weighing.
+            </p>
+</div>
+</div>
+<!-- Driver 2 -->
+<div class="flex items-start gap-3 p-2.5 rounded-xl bg-surface border border-outline-variant/40">
+<div class="w-7 h-7 rounded-lg bg-surface-container text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">
+              Mandi arrivals spiked 42% yesterday (41,000 bags vs normal 28,000)
+            </p>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">
+              Yard congestion led to sudden distress liquidations by distant smallholders.
+            </p>
+</div>
+</div>
+<!-- Driver 3 -->
+<div class="flex items-start gap-3 p-2.5 rounded-xl bg-surface border border-outline-variant/40">
+<div class="w-7 h-7 rounded-lg bg-surface-container text-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]" data-icon="policy">policy</span>
+</div>
+<div>
+<p class="text-body-sm font-body-sm font-semibold text-on-surface">
+              Export duty policy review under discussion at Central level
+            </p>
+<p class="text-label-sm font-label-sm text-on-surface-variant mt-0.5">
+              Traders are withholding large purchase orders pending ministry notifications.
+            </p>
+</div>
+</div>
+</div>
+<!-- Charter Standard Note -->
+<div class="bg-surface-container-high/60 rounded-xl p-3 flex items-center gap-2.5 border border-outline-variant/50">
+<span class="material-symbols-outlined text-primary text-xl flex-shrink-0" data-icon="verified_user">verified_user</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">
+<strong class="text-on-surface">Accuracy Guarantee:</strong> Mandi-Setu algorithms only issue Sell/Hold directives when predictive accuracy exceeds 80%. Today's 54% confidence falls into our mandatory safeguard halt.
+        </p>
+</div>
+</section>
+<!-- WHAT RAMBHAU CAN DO RIGHT NOW (PRAGMATIC PLAYBOOK) -->
+<section class="space-y-space-sm">
+<div class="flex items-center justify-between px-1">
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Pragmatic Options for Rambhau</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Actionable steps while the market stabilises</p>
+</div>
+<span class="text-label-sm font-label-sm text-primary font-bold">3 Routes</span>
+</div>
+<!-- Option A: Partial Lot Hedge -->
+<div class="bg-surface-container-lowest rounded-2xl border-1.5 border-outline-variant/70 p-space-md shadow-sm hover:border-primary transition-colors">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-primary-fixed text-on-primary-fixed font-bold text-xs flex items-center justify-center">A</span>
+<span class="text-title-md font-title-md text-on-surface">Sell A Partial Lot (15 Quintals)</span>
+</div>
+<span class="text-label-sm font-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded font-semibold">Recommended Hedge</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">
+          Lock in cash for pending fertilizer and household bills (~₹28,500). Keep your remaining 25 quintals safe in the warehouse for the post-volatility rebound.
+        </p>
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant/40">
+<span class="text-label-sm font-label-sm text-on-surface font-semibold">Risk Exposure: Moderate</span>
+<button class="text-label-sm font-label-sm text-primary font-bold flex items-center gap-1 hover:underline active:scale-95 transition-transform" type="button">
+            Calculate Split Lot
+            <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Option B: Verified Cashflow Loan against Warehouse Receipt -->
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/60 p-space-md shadow-sm hover:border-primary transition-colors">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant font-bold text-xs flex items-center justify-center">B</span>
+<span class="text-title-md font-title-md text-on-surface">Verified Cashflow Advance</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline">e-NWR Backed</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">
+          Get up to ₹34,000 immediate working capital against your 40 quintal warehouse receipt at 9% p.a. Avoid being forced to sell during distress hours.
+        </p>
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant/40">
+<span class="text-label-sm font-label-sm text-on-surface font-semibold">No Distressed Sale Required</span>
+<button class="text-label-sm font-label-sm text-primary font-bold flex items-center gap-1 hover:underline active:scale-95 transition-transform" type="button">
+            View Eligibility
+            <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Option C: Price Sentinel -->
+<div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/60 p-space-md shadow-sm hover:border-primary transition-colors">
+<div class="flex justify-between items-start mb-2">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-surface-container text-on-surface-variant font-bold text-xs flex items-center justify-center">C</span>
+<span class="text-title-md font-title-md text-on-surface">Target Price Trigger Alert</span>
+</div>
+<span class="text-label-sm font-label-sm text-tertiary font-bold">Instant SMS</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mb-3">
+          Set automated ping: "Call Rambhau if Lasalgaon Grade-A bid crosses ₹2,150/q with over 5 confirmed buyers".
+        </p>
+<div class="flex items-center justify-between pt-2 border-t border-outline-variant/40">
+<span class="text-label-sm font-label-sm text-on-surface font-semibold">Pre-set: ₹2,150 / Qtl</span>
+<button class="text-label-sm font-label-sm text-primary font-bold flex items-center gap-1 hover:underline active:scale-95 transition-transform" type="button">
+            Customize Alert
+            <span class="material-symbols-outlined text-sm" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+</section>
+<!-- HISTORICAL PRECEDENT / INTEGRITY RECORD -->
+<section class="bg-surface-container-low rounded-2xl p-space-md border border-outline-variant/60 space-y-2">
+<div class="flex items-center gap-2 text-primary font-bold text-label-sm">
+<span class="material-symbols-outlined text-base" data-icon="history_edu">history_edu</span>
+<span>HISTORICAL TRACK RECORD OF HONEST REFUSALS</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface">
+        We refused advice <strong>4 times in the last 12 months</strong> during flash swings. In 3 of those instances, farmers who rushed into panic-selling at the yard lost an average of <strong>₹12,400 per 40-quintal lot</strong> compared to waiting 36 hours.
+      </p>
+<div class="flex items-center gap-2 pt-1 text-[11px] text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-xs text-tertiary" data-icon="verified">verified</span>
+        Audited against Lasalgaon Mandi Board actual trade receipts.
+      </div>
+</section>
+</main>
+<!-- STICKY BOTTOM ACTION TRAY -->
+<div class="fixed bottom-[68px] left-0 right-0 z-40 bg-surface/95 backdrop-blur-md border-t-1.5 border-outline-variant/60 px-margin-mobile py-space-xs shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<div class="max-w-lg mx-auto space-y-2">
+<!-- Primary Touch Target -->
+<button class="w-full h-touch-target-hero rounded-xl bg-primary-container text-on-primary font-title-lg text-title-lg flex items-center justify-center gap-2 shadow-md hover:bg-primary transition-colors active:scale-[0.98] duration-150" type="button">
+<span class="material-symbols-outlined text-xl" data-icon="notifications_active">notifications_active</span>
+<span>Set Price Alert &amp; Check Back Tomorrow</span>
+</button>
+<!-- Secondary Action -->
+<button class="w-full h-11 rounded-xl bg-surface-container-lowest border-1.5 border-primary text-primary font-title-md text-title-md flex items-center justify-center gap-2 hover:bg-surface-container transition-colors active:scale-[0.98] duration-150" type="button">
+<span class="material-symbols-outlined text-base" data-icon="monitoring">monitoring</span>
+<span>View Live Unfiltered Bids on Mandi Yard</span>
+</button>
+<div class="text-center">
+<p class="text-[10px] text-outline tracking-tight">
+          Protected by Mandi-Setu Farmer-First Algorithm Charter · Lasalgaon APMC Verified
+        </p>
+</div>
+</div>
+</div>
+<!-- Shared Component: BottomNavBar (Active: Market) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs min-h-touch-target-hero pb-safe bg-surface-container-lowest dark:bg-inverse-surface border-t-2 border-outline-variant/50 dark:border-outline/40 shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<!-- Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95 duration-150" href="#home">
+<span class="material-symbols-outlined text-[22px]" data-icon="storefront">storefront</span>
+<span class="text-label-sm font-label-sm mt-0.5">Home</span>
+</a>
+<!-- Market (Active State per decision engine context) -->
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#market">
+<span class="material-symbols-outlined text-[22px]" data-icon="trending_up" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="text-label-sm font-label-sm mt-0.5">Market</span>
+</a>
+<!-- My Produce -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95 duration-150" href="#produce">
+<span class="material-symbols-outlined text-[22px]" data-icon="inventory_2">inventory_2</span>
+<span class="text-label-sm font-label-sm mt-0.5">My Produce</span>
+</a>
+<!-- Deals -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95 duration-150" href="#deals">
+<span class="material-symbols-outlined text-[22px]" data-icon="handshake">handshake</span>
+<span class="text-label-sm font-label-sm mt-0.5">Deals</span>
+</a>
+</nav>
+<!-- Lightweight inline interaction for Voice Audio Feedback -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const voiceBtn = document.getElementById('voiceGuidanceBtn');
+      if (voiceBtn) {
+        voiceBtn.addEventListener('click', () => {
+          const isPlaying = voiceBtn.getAttribute('data-playing') === 'true';
+          if (!isPlaying) {
+            voiceBtn.setAttribute('data-playing', 'true');
+            voiceBtn.classList.add('bg-primary', 'text-on-primary');
+            voiceBtn.classList.remove('bg-surface-container-high', 'text-primary');
+            voiceBtn.innerHTML = `
+              <span class="material-symbols-outlined text-[18px] animate-pulse" data-icon="graphic_eq">graphic_eq</span>
+              <span class="text-label-sm font-label-sm">ऐका चालू आहे...</span>
+            `;
+          } else {
+            voiceBtn.setAttribute('data-playing', 'false');
+            voiceBtn.classList.remove('bg-primary', 'text-on-primary');
+            voiceBtn.classList.add('bg-surface-container-high', 'text-primary');
+            voiceBtn.innerHTML = `
+              <span class="material-symbols-outlined text-[18px]" data-icon="volume_up" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+              <span class="text-label-sm font-label-sm">बोला</span>
+            `;
+          }
+        });
+      }
+    });
+  </script>
+</body></html>

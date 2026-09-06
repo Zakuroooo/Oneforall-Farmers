@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+
+<html class="light" lang="mr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu • Deals Hub (माझे सौदे)</title>
+<!-- Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary": "#9b2f00",
+            "error-container": "#ffdad6",
+            "primary-container": "#c2410c",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed": "#3a0a00",
+            "outline-variant": "#e1bfb5",
+            "surface-bright": "#fdf9f1",
+            "surface-container-highest": "#e6e2da",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-container": "#b9ffde",
+            "surface-container-high": "#ece8e0",
+            "surface-variant": "#e6e2da",
+            "inverse-on-surface": "#f4f0e8",
+            "outline": "#8d7168",
+            "inverse-surface": "#31302b",
+            "background": "#fdf9f1",
+            "on-secondary-fixed-variant": "#842503",
+            "surface": "#fdf9f1",
+            "tertiary": "#006146",
+            "on-error-container": "#93000a",
+            "secondary": "#a53c19",
+            "inverse-primary": "#ffb59d",
+            "surface-container-low": "#f7f3eb",
+            "on-tertiary": "#ffffff",
+            "primary-fixed-dim": "#ffb59d",
+            "on-primary-fixed": "#390c00",
+            "tertiary-container": "#0f7c5b",
+            "on-surface": "#1c1c17",
+            "on-primary-fixed-variant": "#832600",
+            "on-tertiary-fixed-variant": "#00513a",
+            "on-primary": "#ffffff",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-tertiary-fixed": "#002115",
+            "error": "#ba1a1a",
+            "on-error": "#ffffff",
+            "surface-tint": "#ac3400",
+            "secondary-fixed": "#ffdbd1",
+            "primary-fixed": "#ffdbd0",
+            "on-secondary-container": "#6b1a00",
+            "surface-container": "#f1ede6",
+            "on-surface-variant": "#59413a",
+            "secondary-container": "#fb7b54",
+            "surface-dim": "#dddad2",
+            "on-background": "#1c1c17",
+            "tertiary-fixed": "#97f5cc",
+            "on-primary-container": "#ffece7"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xl": "1.5rem",
+            "touch-target-min": "3rem",
+            "gutter-mobile": "1rem",
+            "space-2xs": "0.25rem",
+            "space-xs": "0.5rem",
+            "margin-mobile": "1rem",
+            "touch-target-hero": "3.5rem",
+            "space-sm": "0.75rem",
+            "space-md": "1rem",
+            "gutter-desktop": "1.5rem",
+            "space-lg": "1.25rem",
+            "space-2xl": "2rem",
+            "space-4xl": "3rem",
+            "margin-desktop": "2rem",
+            "space-3xl": "2.5rem"
+          },
+          "fontFamily": {
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md selection:bg-primary selection:text-on-primary">
+<!-- Shell Container restricted to Mobile viewport max width -->
+<div class="w-full max-w-lg mx-auto flex flex-col min-h-screen relative pb-28">
+<!-- Top App Bar (Anchored Shared Component) -->
+<header class="flex justify-between items-center w-full px-margin-mobile py-space-xs sticky top-0 z-40 max-w-lg mx-auto bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-md border-b border-outline-variant/40 dark:border-outline/30 shadow-sm dark:shadow-none">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container p-0.5 bg-surface-container-lowest shadow-sm flex-shrink-0">
+<img class="w-full h-full object-cover rounded-full" data-alt="Close up realistic portrait photo of Maharashtrian farmer Rambhau Patil wearing traditional crisp white Gandhi topi and khadi shirt smiling warmly outdoors with sunlit agricultural market yard in subtle soft bokeh backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCvt6F71XQNIFXPN1GW-QGHhE4NJyh74jSKFpTil0-ToT7DU7W9hxh2vXtwJtQOBIvIHPLV8fmnoB-38x8GmUvZQD-h0hfttCDLi7FwYZkFkMUH4VVWkG1h2mgUjGAMdxWS1UJucEOhjtD4um4E3wL4f2cFcMHWK1P7RIwK79MTr11kijnz1W2LNWKko4EefT5P33Wea21mMiXmHLTeGDfV2czC_1ai5viFjczq1FE5ZoR74XsiqQOG"/>
+</div>
+<div class="flex flex-col text-left">
+<div class="flex items-center gap-1.5">
+<span class="font-title-lg text-title-lg text-primary tracking-tight font-bold">Lasalgaon Mandi</span>
+<span class="inline-flex items-center px-1.5 py-0.5 rounded bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm uppercase font-bold">APMC</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium">रामभाऊ पाटील • निफाड (नाशिक)</span>
+</div>
+</div>
+<!-- Audio Assistance CTA for Harsh Daylight & Fast scanning -->
+<button class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface-container-high hover:bg-surface-container transition-colors active:scale-95 duration-150 border border-outline-variant/60 shadow-xs" title="आवाज ऐका (Listen)">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="volume_up">volume_up</span>
+<span class="font-label-md text-label-md text-primary font-bold">ऐका</span>
+</button>
+</header>
+<!-- Page Title & Deals Volume Hero Strip -->
+<section class="px-margin-mobile pt-space-md pb-space-xs">
+<div class="flex items-end justify-between mb-space-xs">
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface font-extrabold tracking-tight">माझे सौदे • My Deals</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary text-sm fill-icon" data-icon="verified_user">verified_user</span>
+            APMC Escrow Guaranteed Trades
+          </p>
+</div>
+</div>
+<!-- Financial Metric Banner (Daylight Resilient) -->
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-space-md shadow-sm flex items-center justify-between mt-space-xs">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-lg bg-tertiary/10 flex items-center justify-center text-tertiary flex-shrink-0">
+<span class="material-symbols-outlined text-2xl fill-icon" data-icon="account_balance_wallet">account_balance_wallet</span>
+</div>
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wide">एकूण व्यवहार मूल्य • 3 Deals</span>
+<div class="font-numeral-data text-numeral-data text-on-surface font-extrabold">₹१,८०,६०० <span class="font-label-md text-label-md text-tertiary font-bold ml-1">सुरक्षित निधी</span></div>
+</div>
+</div>
+<div class="text-right">
+<span class="inline-flex items-center px-2 py-1 rounded-md bg-surface-container-high text-on-surface-variant font-label-md text-label-md font-bold">
+            ३ सौदे सक्रिय
+          </span>
+</div>
+</div>
+</section>
+<!-- Segmented Stage Tabs (Touch friendly 48dp ergonomics) -->
+<nav class="px-margin-mobile py-space-xs sticky top-[57px] z-30 bg-background/95 backdrop-blur-sm">
+<div class="flex p-1 bg-surface-container-high rounded-xl border border-outline-variant/40 shadow-inner">
+<!-- Active Tab 1 -->
+<button class="flex-1 min-h-touch-target-min py-2 px-1 flex flex-col items-center justify-center rounded-lg bg-surface-container-lowest shadow-sm border border-outline-variant/50 active:scale-98 transition-all">
+<span class="font-label-lg text-label-lg text-primary font-extrabold flex items-center gap-1">
+            एस्क्रो सुरक्षित
+            <span class="w-4 h-4 rounded-full bg-primary text-on-primary text-[10px] font-extrabold flex items-center justify-center">१</span>
+</span>
+<span class="font-label-sm text-[10px] text-primary-container font-semibold">Active Escrow</span>
+</button>
+<!-- Tab 2 -->
+<button class="flex-1 min-h-touch-target-min py-2 px-1 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container transition-all text-on-surface-variant">
+<span class="font-label-lg text-label-lg text-on-surface-variant font-bold flex items-center gap-1">
+            वाहतुकीत
+            <span class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface font-bold text-[10px] flex items-center justify-center">१</span>
+</span>
+<span class="font-label-sm text-[10px] text-outline font-medium">In Transit</span>
+</button>
+<!-- Tab 3 -->
+<button class="flex-1 min-h-touch-target-min py-2 px-1 flex flex-col items-center justify-center rounded-lg hover:bg-surface-container transition-all text-on-surface-variant">
+<span class="font-label-lg text-label-lg text-on-surface-variant font-bold flex items-center gap-1">
+            पूर्ण झाले
+            <span class="w-4 h-4 rounded-full bg-surface-container-highest text-on-surface font-bold text-[10px] flex items-center justify-center">१</span>
+</span>
+<span class="font-label-sm text-[10px] text-outline font-medium">Settled</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="px-margin-mobile pt-space-xs space-y-space-md flex-1">
+<!-- Escrow Safety Assurance Ribbon -->
+<div class="rounded-xl bg-surface-container-low border border-outline-variant/70 p-3.5 flex items-start gap-3 shadow-xs">
+<div class="w-8 h-8 rounded-full bg-tertiary-container text-on-tertiary flex items-center justify-center flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-lg fill-icon" data-icon="shield">shield</span>
+</div>
+<div class="text-left">
+<div class="flex items-center gap-1.5">
+<span class="font-title-md text-title-md text-on-surface font-bold">मंडी-सेतू १००% पेमेंट हमी</span>
+<span class="material-symbols-outlined text-tertiary text-base fill-icon" data-icon="check_circle">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-tight mt-0.5">
+            वजन पावती येताच २ तासांत बँक खात्यात थेट RTGS. कोणतीही अडचण आल्यास APMC लवाद संरक्षण.
+          </p>
+</div>
+</div>
+<!-- CARD 1: PRIMARY ACTIVE DEAL CARD (From Screen 30) -->
+<article class="bg-surface-container-lowest rounded-xl border-2 border-primary-container shadow-[0_6px_16px_-2px_rgba(194,65,12,0.14),0_2px_6px_-1px_rgba(24,24,27,0.08)] overflow-hidden transition-all">
+<!-- Top Reference & Status Bar -->
+<div class="bg-primary-container/10 px-space-md py-2.5 border-b border-primary-container/20 flex items-center justify-between flex-wrap gap-2">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-outline font-bold uppercase tracking-wider">सौदा क्र:</span>
+<span class="font-numeral-data text-sm font-extrabold text-on-surface">#SD-2024-8842</span>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-tertiary text-on-tertiary font-label-sm text-[11px] font-bold shadow-xs">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container animate-pulse"></span>
+            एस्क्रो सुरक्षित • गाडी नियोजित
+          </span>
+</div>
+<div class="p-space-md space-y-space-sm">
+<!-- Produce & Quality Grid -->
+<div class="flex items-start justify-between gap-3">
+<div class="space-y-1">
+<div class="inline-flex items-center gap-1.5">
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">गावरान लाल कांदा</h3>
+<span class="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-bold">Grade A</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                Gavran Red Onion • क्वालिटी स्कोअर: <span class="font-bold text-on-surface">८५०/१०००</span>
+</p>
+</div>
+<!-- Small Onion Commodity Thumbnail -->
+<div class="w-14 h-14 rounded-lg bg-surface-container border border-outline-variant/50 overflow-hidden flex-shrink-0 shadow-inner">
+<img class="w-full h-full object-cover" data-alt="High angle macro close-up photograph of sun-cured ruby red Indian onions in a traditional woven jute sack under sharp golden hour daylight in Lasalgaon mandi with clear dry skin texture and organic dirt dust." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA5HDtYBArHi1rkL81iI_L_oKvmhwOdFXr563TrLcOhGZrxUlVXYg4Ym2lnpiNjcnL9ykSQ9rEHo8VFfgVRSPj-zL7912RQbvVPCtoWm3CYaXjVIvIbTKAlrIaYyG9R0b_SOytycdsb8YAPuE9oVH2Rkm9NU5elA76NQZ8tomUS1-tGbA3BEgUTobYKXl2iP_m7LjEwqbD_xt9KHfrpony3_TUhfSAyXcy6qgvINKbhL6-vG3KE7Bk0"/>
+</div>
+</div>
+<!-- Quantity, Rate and Settlement Highlights (Tactile Grid) -->
+<div class="grid grid-cols-2 gap-2 bg-surface-container-low rounded-lg p-3 border border-outline-variant/40">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">वजन व पोती</span>
+<p class="font-title-lg text-title-lg text-on-surface font-extrabold">४० क्विंटल <span class="font-body-sm text-body-sm text-outline font-normal">(८० पोती)</span></p>
+<p class="font-label-md text-label-md text-primary font-bold mt-0.5">दर: ₹१,९०० / क्विंटल</p>
+</div>
+<div class="text-right border-l border-outline-variant/50 pl-2">
+<span class="font-label-sm text-label-sm text-tertiary font-bold flex items-center justify-end gap-1">
+<span class="material-symbols-outlined text-xs fill-icon" data-icon="lock">lock</span>
+                १००% एस्क्रो जमा
+              </span>
+<p class="font-numeral-data text-headline-sm text-primary font-black">₹७५,४००</p>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-tight font-semibold">नक्त देय रक्कम (Net)</span>
+</div>
+</div>
+<!-- Counterparty Information -->
+<div class="flex items-center justify-between text-sm py-1 border-t border-b border-surface-container-high">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-lg" data-icon="business">business</span>
+<div class="text-left">
+<span class="font-body-md text-body-md text-on-surface font-bold">Pune Trading Co.</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant block text-xs">गुलटेकडी APMC, पुणे</span>
+</div>
+</div>
+<div class="flex items-center gap-1 bg-surface-bright px-2 py-0.5 rounded border border-outline-variant/50">
+<span class="material-symbols-outlined text-primary text-sm fill-icon" data-icon="star">star</span>
+<span class="font-label-md text-label-md font-extrabold text-on-surface">४.९</span>
+<span class="text-xs text-outline">(१२०+ सौदे)</span>
+</div>
+</div>
+<!-- Next Milestone Dispatch Alert -->
+<div class="bg-surface-container rounded-lg p-2.5 flex items-start gap-2.5 border border-outline-variant/40">
+<span class="material-symbols-outlined text-primary-container text-xl mt-0.5" data-icon="local_shipping">local_shipping</span>
+<div class="flex-1">
+<span class="font-label-md text-label-md text-primary-container font-extrabold uppercase tracking-wide">पुढील टप्पा • लॉजिस्टिक्स</span>
+<p class="font-body-sm text-body-sm text-on-surface font-semibold leading-tight">
+                उद्या स. १०:०० • गाडी शेतावर येईल (Truck MH-15-EG-4402 arrives at Niphad shed)
+              </p>
+</div>
+</div>
+<!-- Card Actions (48dp Touch CTA) -->
+<div class="pt-1 flex items-center gap-2">
+<button class="flex-1 min-h-touch-target-min px-4 rounded-xl bg-primary hover:bg-primary-container text-on-primary font-title-lg text-title-lg font-bold flex items-center justify-center gap-1.5 shadow-sm active:translate-y-0.5 active:scale-98 transition-all">
+<span>सौदा ट्रॅक करा • Live</span>
+<span class="material-symbols-outlined text-xl" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="min-h-touch-target-min px-3.5 rounded-xl bg-surface-container-lowest border-1.5 border-outline-variant/80 hover:bg-surface-container-high text-on-surface font-title-md text-title-md font-bold flex items-center justify-center gap-1 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-lg" data-icon="receipt_long">receipt_long</span>
+<span>पावती</span>
+</button>
+</div>
+</div>
+</article>
+<!-- CARD 2: IN-TRANSIT DEAL CARD -->
+<article class="bg-surface-container-lowest rounded-xl border border-outline-variant/80 shadow-sm overflow-hidden">
+<!-- Header Strip -->
+<div class="bg-surface-container-low px-space-md py-2 border-b border-outline-variant/40 flex items-center justify-between flex-wrap gap-2">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">सौदा:</span>
+<span class="font-label-md text-label-md font-bold text-on-surface">#SD-2024-8715</span>
+</div>
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-on-secondary-fixed-variant font-label-sm text-[11px] font-bold border border-outline-variant/60">
+<span class="material-symbols-outlined text-sm" data-icon="local_shipping">local_shipping</span>
+            वाहतुकीत • काटा वजन पूर्ण
+          </span>
+</div>
+<div class="p-space-md space-y-space-sm">
+<div class="flex items-start justify-between">
+<div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">सोयाबीन (Soybean JS-335)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">२५ क्विंटल • ओलावा ८.४% (मानक)</p>
+</div>
+<div class="text-right">
+<span class="font-numeral-data text-title-lg font-bold text-on-surface">₹१,१२,५००</span>
+<span class="block font-label-sm text-[10px] text-tertiary font-bold">SBI वर्ग प्रक्रिया सुरु</span>
+</div>
+</div>
+<div class="flex items-center gap-1 text-xs text-on-surface-variant font-medium">
+<span class="material-symbols-outlined text-sm text-outline" data-icon="handshake">handshake</span>
+<span>Sahyadri Farmers FPO, Mohadi • रवानगी: आज दु. १२:३०</span>
+</div>
+<!-- Micro Progress Stepper -->
+<div class="py-2 bg-surface-container-low rounded-lg px-3 border border-outline-variant/30">
+<div class="flex items-center justify-between text-[11px] font-bold text-on-surface mb-1.5">
+<span class="text-tertiary flex items-center gap-0.5"><span class="material-symbols-outlined text-xs fill-icon" data-icon="check_circle">check_circle</span> एस्क्रो</span>
+<span class="text-tertiary flex items-center gap-0.5"><span class="material-symbols-outlined text-xs fill-icon" data-icon="check_circle">check_circle</span> शेत वजन</span>
+<span class="text-tertiary flex items-center gap-0.5"><span class="material-symbols-outlined text-xs fill-icon" data-icon="check_circle">check_circle</span> गाडी रवाना</span>
+<span class="text-primary font-extrabold flex items-center gap-0.5">● बँक वर्ग (१ तास)</span>
+</div>
+<div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden flex">
+<div class="bg-tertiary h-full w-3/4"></div>
+<div class="bg-primary-container h-full w-1/4 animate-pulse"></div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex items-center gap-2 pt-1">
+<button class="flex-1 h-11 px-3 rounded-lg bg-surface-container-high hover:bg-surface-container text-on-surface font-title-md text-title-md font-bold flex items-center justify-center gap-1 border border-outline-variant/60 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-base" data-icon="near_me">near_me</span>
+<span>ट्रॅकिंग पहा</span>
+</button>
+<button class="flex-1 h-11 px-3 rounded-lg bg-surface-container-lowest hover:bg-surface-container text-primary font-title-md text-title-md font-bold flex items-center justify-center gap-1 border border-primary-container active:scale-95 transition-all">
+<span class="material-symbols-outlined text-base" data-icon="scale">scale</span>
+<span>काटा पावती</span>
+</button>
+</div>
+</div>
+</article>
+<!-- CARD 3: COMPLETED PAST DEAL CARD -->
+<article class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 shadow-xs overflow-hidden opacity-95">
+<div class="bg-surface-container-low px-space-md py-2 border-b border-outline-variant/40 flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-outline">सौदा: #SD-2024-8502</span>
+<span class="text-xs text-on-surface-variant">• १२ मार्च २०२४</span>
+</div>
+<span class="inline-flex items-center gap-0.5 px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-label-sm text-[11px] font-bold">
+<span class="material-symbols-outlined text-xs fill-icon" data-icon="check_circle">check_circle</span>
+            पूर्ण वर्ग (Settled)
+          </span>
+</div>
+<div class="p-space-md space-y-2">
+<div class="flex items-center justify-between">
+<div>
+<h4 class="font-title-lg text-title-lg text-on-surface font-bold">उन्हाळ कांदा (Summer Onion)</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant">३० क्विंटल @ ₹१,७२०/क्विंटल</p>
+</div>
+<div class="text-right">
+<span class="font-numeral-data text-title-lg font-bold text-on-surface">₹५१,०००</span>
+<span class="block font-label-sm text-[10px] text-tertiary font-semibold">थेट RTGS वर्ग</span>
+</div>
+</div>
+<div class="pt-2 flex items-center justify-between border-t border-surface-container">
+<span class="font-label-sm text-label-sm text-outline">युटीआर: APMC2024031298412</span>
+<button class="text-primary hover:text-primary-container font-label-lg text-label-lg font-bold flex items-center gap-1 py-1">
+<span class="material-symbols-outlined text-base" data-icon="description">description</span>
+              अंतिम कर पावती (Invoice)
+            </button>
+</div>
+</div>
+</article>
+<!-- Bottom Mandi Support Note -->
+<div class="text-center py-2">
+<p class="font-label-md text-label-md text-outline flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-base" data-icon="support_agent">support_agent</span>
+          काही प्रश्न आहेत? लासलगाव मंडी सहाय्य: १८००-२३३-८९०० (टोल फ्री)
+        </p>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Shared Component - Deals tab is ACTIVE) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs min-h-touch-target-hero pb-safe bg-surface-container-lowest dark:bg-inverse-surface border-t-2 border-outline-variant/50 dark:border-outline/40 shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<!-- Home (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 hover:bg-surface-container-high dark:hover:bg-surface-container-high/50 transition-colors active:translate-y-0.5 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="storefront">storefront</span>
+<span class="font-label-sm text-label-sm font-label-sm mt-0.5">Home</span>
+</a>
+<!-- Market (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 hover:bg-surface-container-high dark:hover:bg-surface-container-high/50 transition-colors active:translate-y-0.5 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="trending_up">trending_up</span>
+<span class="font-label-sm text-label-sm font-label-sm mt-0.5">Market</span>
+</a>
+<!-- My Produce (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 hover:bg-surface-container-high dark:hover:bg-surface-container-high/50 transition-colors active:translate-y-0.5 active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined text-2xl" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-label-sm font-label-sm mt-0.5">My Produce</span>
+</a>
+<!-- Deals (ACTIVE Destination: Matches intent & screen title 'माझे सौदे / Deals') -->
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#">
+<span class="material-symbols-outlined text-2xl fill-icon" data-icon="handshake">handshake</span>
+<span class="font-label-sm text-label-sm font-bold mt-0.5">Deals</span>
+</a>
+</nav>
+</div>
+</body></html>

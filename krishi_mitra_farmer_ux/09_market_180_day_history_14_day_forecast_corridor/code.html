@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lasalgaon Mandi · Market Pulse</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-secondary-container": "#6b1a00",
+            "outline": "#8d7168",
+            "on-background": "#1c1c17",
+            "primary-fixed-dim": "#ffb59d",
+            "tertiary": "#006146",
+            "on-secondary-fixed": "#3a0a00",
+            "error": "#ba1a1a",
+            "surface": "#fdf9f1",
+            "secondary-fixed": "#ffdbd1",
+            "surface-dim": "#dddad2",
+            "primary-container": "#c2410c",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-surface-variant": "#59413a",
+            "secondary": "#a53c19",
+            "on-tertiary": "#ffffff",
+            "surface-tint": "#ac3400",
+            "surface-container-low": "#f7f3eb",
+            "on-tertiary-fixed-variant": "#00513a",
+            "on-primary-fixed-variant": "#832600",
+            "on-secondary": "#ffffff",
+            "on-tertiary-container": "#b9ffde",
+            "on-error": "#ffffff",
+            "primary-fixed": "#ffdbd0",
+            "surface-variant": "#e6e2da",
+            "secondary-fixed-dim": "#ffb59f",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-container": "#ffece7",
+            "on-error-container": "#93000a",
+            "inverse-primary": "#ffb59d",
+            "on-secondary-fixed-variant": "#842503",
+            "secondary-container": "#fb7b54",
+            "on-primary-fixed": "#390c00",
+            "surface-container-highest": "#e6e2da",
+            "background": "#fdf9f1",
+            "inverse-on-surface": "#f4f0e8",
+            "outline-variant": "#e1bfb5",
+            "on-primary": "#ffffff",
+            "surface-container": "#f1ede6",
+            "tertiary-fixed": "#97f5cc",
+            "inverse-surface": "#31302b",
+            "surface-container-high": "#ece8e0",
+            "tertiary-container": "#0f7c5b",
+            "on-tertiary-fixed": "#002115",
+            "error-container": "#ffdad6",
+            "surface-bright": "#fdf9f1",
+            "on-surface": "#1c1c17",
+            "primary": "#9b2f00"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "touch-target-hero": "3.5rem",
+            "gutter-mobile": "1rem",
+            "space-xs": "0.5rem",
+            "space-4xl": "3rem",
+            "space-2xs": "0.25rem",
+            "space-md": "1rem",
+            "space-lg": "1.25rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "2rem",
+            "space-2xl": "2rem",
+            "space-3xl": "2.5rem",
+            "space-sm": "0.75rem",
+            "space-xl": "1.5rem",
+            "touch-target-min": "3rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    body {
+      -webkit-font-smoothing: antialiased;
+      background-color: #fdf9f1;
+    }
+    .pb-safe {
+      padding-bottom: env(safe-area-inset-bottom, 16px);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-md min-h-screen flex justify-center selection:bg-primary selection:text-on-primary">
+<div class="w-full max-w-[390px] bg-background min-h-screen flex flex-col relative pb-32 shadow-xl border-x border-outline-variant/30">
+<!-- TopAppBar from Shared Components JSON & Spec -->
+<header class="bg-surface/90 dark:bg-inverse-surface/90 backdrop-blur-md text-primary dark:text-inverse-primary border-b border-outline-variant/40 dark:border-outline/30 shadow-sm dark:shadow-none flex justify-between items-center w-full px-margin-mobile py-space-xs sticky top-0 z-40 max-w-lg mx-auto">
+<div class="flex items-center gap-space-xs">
+<div class="w-10 h-10 rounded-full border-2 border-primary overflow-hidden shrink-0 bg-surface-container shadow-sm">
+<img class="w-full h-full object-cover" data-alt="Warm studio close-up portrait of Rambhau Patil, a seasoned Maharashtrian onion farmer from Niphad Nashik wearing a pristine white khadi topi and Nehru jacket with sun-baked expressive features and trustworthy gaze, daylight aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtEO9cpbqC_ULpDBN2e7SlblDsTwidBbvRZASdIj-ZilJPnhqTWA38roHEzEkbK7MBjVTkPzq1sFqT4I4k7zVUkzIeeD-hJmPvqkEQ2PrJwLhJ_DKDCMAU2MtmtvR5uUYWu2J_J2JBVEy_fdLXMi5FHNpWyWnm7Fv6NWztwA8pxEN_j2bV6X0wJwUmO6m3wSiGSF9BO6MxnPyewz9UR6R51I9NlMBkQxDBv01x_OtDeqfLe4bADmeh"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1">
+<span class="text-title-lg font-title-lg text-primary dark:text-inverse-primary tracking-tight">Lasalgaon Mandi</span>
+<span class="w-2 h-2 rounded-full bg-tertiary animate-pulse inline-block"></span>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Market Pulse · Live Yard</span>
+</div>
+</div>
+<button aria-label="Listen in Marathi" class="flex items-center gap-1 bg-surface-container-high px-space-xs py-1.5 rounded-full border border-outline-variant/60 active:scale-95 transition-transform duration-150 shadow-sm">
+<span class="material-symbols-outlined text-primary text-[18px]">volume_up</span>
+<span class="text-label-sm font-label-sm text-primary font-bold">आवाज ऐका</span>
+</button>
+</header>
+<!-- Main Content Area -->
+<main class="flex flex-col px-margin-mobile pt-space-sm space-y-space-md">
+<!-- Commodity Filter & Live Yard Status Bar -->
+<section class="flex items-center justify-between">
+<div class="inline-flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/80 rounded-full px-3 py-1.5 shadow-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-secondary-container"></span>
+<span class="text-label-md font-label-md text-on-surface font-bold">Red Onion (Gavran)</span>
+<span class="material-symbols-outlined text-on-surface-variant text-[16px]">expand_more</span>
+</div>
+<div class="inline-flex items-center gap-1.5 bg-tertiary-fixed text-on-tertiary-fixed-variant px-2.5 py-1 rounded-full border border-tertiary/20 text-label-sm font-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+          Late Kharif Active
+        </div>
+</section>
+<!-- Section 2: Today's Modal Price & Quick Stats Bento Card -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md border border-outline-variant/60 shadow-sm">
+<div class="flex justify-between items-start">
+<div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Today's Benchmark Modal Price</span>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="text-numeral-hero font-numeral-hero text-on-surface">₹2,050</span>
+<span class="text-label-lg font-label-lg text-on-surface-variant">/ Quintal</span>
+</div>
+</div>
+<div class="inline-flex items-center gap-0.5 bg-tertiary/10 text-tertiary px-2.5 py-1 rounded-lg text-label-md font-label-md font-bold">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+            +₹100 (+5.2%)
+          </div>
+</div>
+<div class="mt-space-sm pt-space-xs border-t border-outline-variant/30 flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]">local_shipping</span>
+<span class="text-label-md font-label-md text-on-surface font-bold">28,400 Bags</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">(Active Yard)</span>
+</div>
+<span class="text-label-sm font-label-sm text-tertiary font-bold bg-surface-container px-2 py-0.5 rounded">High Buyer Depth</span>
+</div>
+<!-- Day Range Visual Meter -->
+<div class="mt-space-md bg-surface-container-low p-space-sm rounded-lg border border-outline-variant/40">
+<div class="flex justify-between items-center text-label-sm font-label-sm text-on-surface-variant mb-1.5">
+<span>Low: <strong class="text-on-surface">₹1,450</strong></span>
+<span>Mandi Avg: <strong class="text-primary font-bold">₹1,980</strong></span>
+<span>High: <strong class="text-tertiary font-bold">₹2,280</strong></span>
+</div>
+<div class="relative w-full h-2.5 bg-surface-container-highest rounded-full overflow-hidden">
+<div class="absolute left-[20%] right-[10%] h-full bg-gradient-to-r from-secondary-container via-primary-container to-tertiary-container rounded-full"></div>
+<!-- Pin pointing to current ₹2,050 which is approx 72% -->
+<div class="absolute left-[72%] -top-0.5 w-3.5 h-3.5 bg-on-surface rounded-full border-2 border-surface-container-lowest shadow-md -translate-x-1/2"></div>
+</div>
+<div class="flex justify-between text-[10px] text-on-surface-variant/80 mt-1 font-medium">
+<span>Minimum Gate Lot</span>
+<span>Modal Median</span>
+<span>Grade-A Export Lot</span>
+</div>
+</div>
+</section>
+<!-- Section 3: 180-Day Historical Price Chart & Range Selector -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md border border-outline-variant/60 shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Mandi Historical Trend</h3>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Nashik APMC Onion Cycle</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">show_chart</span>
+</div>
+<!-- Period Selector Pills -->
+<div class="flex items-center justify-between bg-surface-container-low p-1 rounded-xl border border-outline-variant/40">
+<button class="flex-1 py-1 text-center text-label-sm font-label-sm text-on-surface-variant rounded-lg hover:bg-surface-container">7D</button>
+<button class="flex-1 py-1 text-center text-label-sm font-label-sm text-on-surface-variant rounded-lg hover:bg-surface-container">30D</button>
+<button class="flex-1 py-1 text-center text-label-sm font-label-sm text-on-surface-variant rounded-lg hover:bg-surface-container">90D</button>
+<button class="flex-1 py-1 text-center text-label-sm font-label-sm bg-primary text-on-primary font-bold rounded-lg shadow-sm">180D</button>
+<button class="flex-1 py-1 text-center text-label-sm font-label-sm text-on-surface-variant rounded-lg hover:bg-surface-container">1Y</button>
+</div>
+<!-- Bespoke 180-Day SVG Chart Container -->
+<div class="relative w-full h-44 bg-surface-container-lowest rounded-lg border border-outline-variant/30 p-2 overflow-hidden flex flex-col justify-end">
+<!-- Horizontal Grid Lines with Price Labels -->
+<div class="absolute inset-x-2 top-3 flex items-center justify-between border-b border-dashed border-outline-variant/50 pb-0.5">
+<span class="text-[10px] text-outline font-semibold">₹2,500</span>
+<span class="text-[9px] text-outline-variant">Upper Resistance</span>
+</div>
+<div class="absolute inset-x-2 top-16 flex items-center justify-between border-b border-dashed border-outline-variant/50 pb-0.5">
+<span class="text-[10px] text-outline font-semibold">₹2,000</span>
+<span class="text-[9px] text-outline-variant">Baseline Modal</span>
+</div>
+<div class="absolute inset-x-2 bottom-9 flex items-center justify-between border-b border-dashed border-outline-variant/50 pb-0.5">
+<span class="text-[10px] text-outline font-semibold">₹1,500</span>
+<span class="text-[9px] text-outline-variant">Monsoon Support</span>
+</div>
+<!-- SVG Bezier Curve Area Chart -->
+<svg class="w-full h-32 overflow-visible" preserveaspectratio="none" viewbox="0 0 350 110">
+<defs>
+<lineargradient id="amberHarvestGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#c2410c" stop-opacity="0.32"></stop>
+<stop offset="85%" stop-color="#c2410c" stop-opacity="0.02"></stop>
+<stop offset="100%" stop-color="#c2410c" stop-opacity="0"></stop>
+</lineargradient>
+</defs>
+<!-- Gradient Area -->
+<path d="M 0,55 
+                     C 30,50 50,20 85,15 
+                     C 120,10 150,92 195,95 
+                     C 240,98 265,65 300,48 
+                     C 325,35 340,32 350,30 
+                     L 350,110 L 0,110 Z" fill="url(#amberHarvestGradient)"></path>
+<!-- Primary Bezier Line -->
+<path d="M 0,55 
+                     C 30,50 50,20 85,15 
+                     C 120,10 150,92 195,95 
+                     C 240,98 265,65 300,48 
+                     C 325,35 340,32 350,30" fill="none" stroke="#c2410c" stroke-linecap="round" stroke-width="3"></path>
+<!-- Highlight Peak Dot Aug 14 (85, 15) -->
+<circle cx="85" cy="15" fill="#9b2f00" r="4" stroke="#ffffff" stroke-width="2"></circle>
+<!-- Dip Dot Monsoon (195, 95) -->
+<circle cx="195" cy="95" fill="#ba1a1a" r="3.5" stroke="#ffffff" stroke-width="2"></circle>
+<!-- Current Oct 18 Dot (350, 30) -->
+<circle cx="350" cy="30" fill="#006146" r="5" stroke="#ffffff" stroke-width="2.5"></circle>
+</svg>
+<!-- Tooltip Callout for Today's point -->
+<div class="absolute right-2 top-5 bg-on-surface text-surface px-2 py-1 rounded-md shadow-md text-right">
+<p class="text-[10px] font-bold tracking-tight text-secondary-fixed">Oct 18 · Today</p>
+<p class="text-label-sm font-label-sm font-numeral-hero font-extrabold text-on-tertiary-container">₹2,050/q</p>
+</div>
+<!-- Bottom Axis Time Labels -->
+<div class="flex justify-between items-center text-[10px] text-on-surface-variant/70 pt-1">
+<span>May 2024</span>
+<span>Jul (Rain Dip ₹1,420)</span>
+<span>Aug (Peak ₹2,420)</span>
+<span class="font-bold text-on-surface">Oct (Now)</span>
+</div>
+</div>
+<!-- Historical Context Callout Banner -->
+<div class="flex items-start gap-2 bg-surface-container-low p-2.5 rounded-lg border border-outline-variant/50 text-body-sm font-body-sm text-on-surface">
+<span class="material-symbols-outlined text-primary shrink-0 text-[18px]">history_edu</span>
+<p class="text-[12px] leading-tight">
+            Past 180-day modal peak was <strong>₹2,420 (Aug 14)</strong> during pre-monsoon export surge. Seasonal post-harvest storage release is currently driving steady volume absorption.
+          </p>
+</div>
+</section>
+<!-- Section 4: 14-Day Predictive Forecast Corridor (The Core Intelligence) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md border-2 border-primary-container/40 shadow-md space-y-space-sm">
+<div class="flex justify-between items-start">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary-container text-[20px]">psychology</span>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">14-Day Forecast Corridor</h3>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Algorithmic supply intake vs terminal demand</p>
+</div>
+<span class="bg-tertiary/10 text-tertiary border border-tertiary/30 px-2 py-0.5 rounded-full text-label-sm font-label-sm font-bold shrink-0">
+            84% Confidence
+          </span>
+</div>
+<!-- Forecast Visual Curve with Probability Band -->
+<div class="relative bg-surface-container-low rounded-xl p-3 border border-outline-variant/60 overflow-hidden">
+<div class="flex justify-between items-center mb-1 text-[11px] font-semibold text-on-surface-variant">
+<span>Today (₹2,050)</span>
+<span class="text-primary font-bold">Nov 02 Peak Window</span>
+<span>Nov 05 (Exit)</span>
+</div>
+<!-- Probability Corridor SVG -->
+<div class="w-full h-36 relative">
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 340 120">
+<defs>
+<!-- Shaded Probability Corridor Gradient -->
+<lineargradient id="corridorShade" x1="0%" x2="100%" y1="0%" y2="0%">
+<stop offset="0%" stop-color="#fed7aa" stop-opacity="0.5"></stop>
+<stop offset="70%" stop-color="#bbf7d0" stop-opacity="0.7"></stop>
+<stop offset="100%" stop-color="#fed7aa" stop-opacity="0.4"></stop>
+</lineargradient>
+</defs>
+<!-- Pessimistic Floor (Bottom curve) & Optimistic Peak (Top curve) Corridor -->
+<polygon fill="url(#corridorShade)" points="
+                0,65 
+                45,60 90,52 140,35 190,20 230,12 270,22 310,40 340,55
+                340,95 300,90 260,82 220,74 170,72 120,75 70,82 0,85
+              "></polygon>
+<!-- Lower Floor Dashed Line -->
+<path d="M 0,85 C 70,82 120,75 170,72 C 220,74 260,82 340,95" fill="none" stroke="#ba1a1a" stroke-dasharray="3,3" stroke-width="1.5"></path>
+<!-- Upper Ceiling Dashed Line -->
+<path d="M 0,65 C 90,52 140,35 190,20 C 230,12 270,22 340,55" fill="none" stroke="#006146" stroke-dasharray="3,3" stroke-width="1.5"></path>
+<!-- Recommended Modal Path (Solid Thick Line) -->
+<path d="M 0,75 
+                       C 50,70 100,58 150,44 
+                       C 190,30 220,24 235,24 
+                       C 260,25 300,50 340,75" fill="none" stroke="#c2410c" stroke-linecap="round" stroke-width="3.5"></path>
+<!-- Day 11 Optimum Marker Vertical Guide -->
+<line stroke="#006146" stroke-dasharray="2,2" stroke-width="1.5" x1="235" x2="235" y1="12" y2="105"></line>
+<circle cx="235" cy="24" fill="#006146" r="6" stroke="#ffffff" stroke-width="2"></circle>
+</svg>
+<!-- Overlay Badge for Peak Recommendation at Nov 02 (Day 11) -->
+<div class="absolute left-[42%] -top-1 bg-tertiary text-on-tertiary px-2 py-1 rounded-lg shadow-md border border-white/40 flex flex-col items-center">
+<span class="text-[9px] font-bold uppercase tracking-wider text-tertiary-fixed">Optimal Harvest Sell</span>
+<span class="text-label-md font-label-md font-extrabold text-white">Nov 02 · ₹2,205/q</span>
+</div>
+<!-- Floor and Ceiling tags inside graph -->
+<span class="absolute left-1 bottom-1 text-[9px] text-error font-bold">Downside Floor: ₹1,930</span>
+<span class="absolute right-1 top-2 text-[9px] text-tertiary font-bold">Rally Ceiling: ₹2,350</span>
+</div>
+<!-- Bottom Corridor Breakdown Info -->
+<div class="mt-2 bg-surface-container-lowest p-2 rounded-lg border border-outline-variant/40 flex items-center justify-between text-label-sm font-label-sm">
+<div class="flex items-center gap-1 text-on-surface">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span>Nov 01 – Nov 03</span>
+</div>
+<span class="text-tertiary font-bold">Estimated Net Gain: +₹6,200 / 40q</span>
+</div>
+</div>
+<p class="text-[11px] text-on-surface-variant/90 leading-tight">
+          Calculated with 84% historical accuracy over 180 Nashik APMC mandi cycles. Deductions of ₹155/q accounted for in net calculation.
+        </p>
+<!-- Audit Link -->
+<a class="flex items-center justify-between pt-2 border-t border-outline-variant/40 text-primary hover:text-primary-container group transition-colors" href="#forecast-audit">
+<span class="text-label-md font-label-md font-bold">How reliable is this forecast? View 90-day predictive audit</span>
+<span class="material-symbols-outlined text-[18px] group-translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</section>
+<!-- Section 5: Nearby Mandis Ranked by Actual Net Returns -->
+<section class="space-y-space-sm">
+<div class="flex flex-col">
+<div class="flex items-center justify-between">
+<h3 class="text-headline-sm font-headline-sm text-on-surface">Nearby Mandis Ranked by Net Payout</h3>
+<span class="text-label-sm font-label-sm text-primary font-bold bg-primary/10 px-2 py-0.5 rounded">40 Quintals Lot</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">
+            What you actually clear in bank after freight, yard adat &amp; labor
+          </p>
+</div>
+<!-- Rank 1: Lasalgaon APMC -->
+<div class="bg-surface-container-lowest rounded-xl border-2 border-tertiary/60 p-space-md shadow-sm relative overflow-hidden">
+<div class="absolute top-0 right-0 bg-tertiary text-on-tertiary px-3 py-0.5 text-label-sm font-label-sm font-bold rounded-bl-lg flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">verified</span>
+            Best Net Return · Rank #1
+          </div>
+<div class="flex items-start justify-between mt-1">
+<div>
+<h4 class="text-title-lg font-title-lg text-on-surface">Lasalgaon APMC</h4>
+<p class="text-label-sm font-label-sm text-on-surface-variant">0 km from local yard · 14 km from Niphad</p>
+</div>
+</div>
+<!-- Price & Return Row -->
+<div class="grid grid-cols-2 gap-2 mt-space-sm bg-surface-container-low p-2.5 rounded-lg border border-outline-variant/40">
+<div>
+<span class="text-label-sm font-label-sm text-on-surface-variant block">Gross Mandi Rate</span>
+<span class="text-title-lg font-title-lg text-on-surface">₹2,050 <span class="text-label-sm font-normal text-on-surface-variant">/q</span></span>
+<span class="text-[11px] text-error block mt-0.5 font-medium">−₹155/q Deductions</span>
+</div>
+<div class="border-l border-outline-variant/60 pl-3">
+<span class="text-label-sm font-label-sm text-tertiary font-bold block">Net In Your Bank</span>
+<span class="text-numeral-data font-numeral-data text-tertiary">₹1,895 <span class="text-label-sm font-normal text-on-surface-variant">/q</span></span>
+<span class="text-label-sm font-label-sm text-on-surface font-extrabold block mt-0.5">Total: ₹75,800</span>
+</div>
+</div>
+<!-- Cost Breakdown Line items -->
+<div class="flex items-center justify-between text-[11px] text-on-surface-variant mt-2 px-1">
+<span>Freight: ₹60/q</span>
+<span>•</span>
+<span>Adat (2.5%): ₹51/q</span>
+<span>•</span>
+<span>Labor/Loading: ₹44/q</span>
+</div>
+<!-- Bottom Action -->
+<div class="mt-3 pt-2 border-t border-outline-variant/30 flex items-center justify-between">
+<span class="inline-flex items-center gap-1 text-[11px] text-tertiary font-bold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+              Zero Transit Delay · Same-Day RTGS
+            </span>
+<button class="bg-primary hover:bg-primary-container text-on-primary px-3 py-1.5 rounded-lg text-label-md font-label-md font-bold active:scale-95 transition-transform">
+              Book Gate Slot
+            </button>
+</div>
+</div>
+<!-- Rank 2: Pimpalgaon APMC -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/80 p-space-md shadow-sm relative">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-1.5">
+<h4 class="text-title-lg font-title-lg text-on-surface">Pimpalgaon APMC</h4>
+<span class="bg-surface-container text-on-surface-variant text-[10px] px-1.5 py-0.5 rounded font-bold">Rank #2</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">32 km away · ~50 min freight transit</p>
+</div>
+<div class="text-right">
+<span class="text-label-sm font-label-sm text-on-surface-variant block">Gross Rate</span>
+<span class="text-title-lg font-title-lg text-on-surface font-bold text-tertiary">₹2,110/q</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-space-sm bg-surface-container-low p-2.5 rounded-lg border border-outline-variant/40">
+<div>
+<span class="text-label-sm font-label-sm text-on-surface-variant block">Deductions Total</span>
+<span class="text-title-md font-title-md text-error">−₹215 /q</span>
+<span class="text-[10px] text-on-surface-variant block">Freight ₹110 • Adat ₹55</span>
+</div>
+<div class="border-l border-outline-variant/60 pl-3">
+<span class="text-label-sm font-label-sm text-on-surface-variant font-medium block">Net Realization</span>
+<span class="text-numeral-data font-numeral-data text-on-surface">₹1,895 <span class="text-label-sm font-normal">/q</span></span>
+<span class="text-label-sm font-label-sm text-on-surface font-bold block mt-0.5">Total: ₹75,800</span>
+</div>
+</div>
+<!-- Insight Note -->
+<div class="mt-2.5 bg-surface-container p-2 rounded-lg text-[11px] text-on-surface-variant flex items-start gap-1.5">
+<span class="material-symbols-outlined text-primary text-[16px] shrink-0">info</span>
+<span><strong>Caution:</strong> Headline rate is ₹60 higher, but extra ₹55/q diesel &amp; toll leaves you identical to Lasalgaon with 3 hrs added queue time.</span>
+</div>
+</div>
+<!-- Rank 3: Nashik APMC -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant/80 p-space-md shadow-sm relative">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center gap-1.5">
+<h4 class="text-title-lg font-title-lg text-on-surface">Nashik APMC (Dindori Rd)</h4>
+<span class="bg-surface-container text-on-surface-variant text-[10px] px-1.5 py-0.5 rounded font-bold">Rank #3</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">58 km away · Long distance tractor haul</p>
+</div>
+<div class="text-right">
+<span class="text-label-sm font-label-sm text-on-surface-variant block">Gross Rate</span>
+<span class="text-title-lg font-title-lg text-on-surface font-bold">₹2,080/q</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-space-sm bg-surface-container-low p-2.5 rounded-lg border border-outline-variant/40">
+<div>
+<span class="text-label-sm font-label-sm text-on-surface-variant block">Deductions Total</span>
+<span class="text-title-md font-title-md text-error">−₹275 /q</span>
+<span class="text-[10px] text-on-surface-variant block">Freight ₹165 • Yard ₹110</span>
+</div>
+<div class="border-l border-outline-variant/60 pl-3">
+<span class="text-label-sm font-label-sm text-on-surface-variant font-medium block">Net Realization</span>
+<span class="text-numeral-data font-numeral-data text-error">₹1,805 <span class="text-label-sm font-normal">/q</span></span>
+<span class="text-label-sm font-label-sm text-error font-bold block mt-0.5">Total: ₹72,200</span>
+</div>
+</div>
+<!-- Downside Tag Banner -->
+<div class="mt-2.5 bg-error-container/40 p-2 rounded-lg text-[11px] text-on-error-container font-semibold flex items-center justify-between">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-error text-[16px]">trending_down</span>
+              −₹3,600 lower net payout due to long haulage.
+            </span>
+</div>
+</div>
+</section>
+<!-- Escrow & Mandi Security Stamp -->
+<section class="bg-surface-container-low p-3 rounded-xl border border-outline-variant/50 flex items-center gap-3">
+<div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-primary text-[20px]">verified_user</span>
+</div>
+<div class="flex flex-col">
+<span class="text-label-sm font-label-sm font-bold text-on-surface">Maharashtra APMC Act Guaranteed</span>
+<span class="text-[11px] text-on-surface-variant leading-tight">Prompt 24-hour DBT settlement to Rambhau Patil's Bank of Maharashtra A/C.</span>
+</div>
+</section>
+</main>
+<!-- BottomNavBar as per Shared Components JSON -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs min-h-touch-target-hero pb-safe bg-surface-container-lowest dark:bg-inverse-surface border-t-2 border-outline-variant/50 dark:border-outline/40 shadow-[0_-4px_20px_rgba(24,24,27,0.09)]">
+<!-- Home Tab (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#home">
+<span class="material-symbols-outlined text-[22px]">storefront</span>
+<span class="text-label-sm font-label-sm mt-0.5">Home</span>
+</a>
+<!-- Market Tab (ACTIVE based on screen intent & exact match) -->
+<a class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#market">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+<span class="text-label-sm font-label-sm mt-0.5 font-bold">Market</span>
+</a>
+<!-- My Produce Tab (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#produce">
+<span class="material-symbols-outlined text-[22px]">inventory_2</span>
+<span class="text-label-sm font-label-sm mt-0.5">My Produce</span>
+</a>
+<!-- Deals Tab (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-3 py-1.5 active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#deals">
+<span class="material-symbols-outlined text-[22px]">handshake</span>
+<span class="text-label-sm font-label-sm mt-0.5">Deals</span>
+</a>
+</nav>
+</div>
+</body></html>

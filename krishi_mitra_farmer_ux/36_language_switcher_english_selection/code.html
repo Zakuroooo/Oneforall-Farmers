@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html class="light" lang="mr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu • भाषा निवडा (Language Switcher)</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Plus Jakarta Sans Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim from theme -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline": "#8d7168",
+            "on-surface": "#1c1c17",
+            "on-primary-fixed-variant": "#832600",
+            "on-error": "#ffffff",
+            "on-primary-container": "#ffece7",
+            "background": "#fdf9f1",
+            "surface-container": "#f1ede6",
+            "on-background": "#1c1c17",
+            "inverse-on-surface": "#f4f0e8",
+            "surface-bright": "#fdf9f1",
+            "surface-tint": "#ac3400",
+            "inverse-surface": "#31302b",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-surface-variant": "#59413a",
+            "tertiary-fixed": "#97f5cc",
+            "surface-container-low": "#f7f3eb",
+            "secondary": "#a53c19",
+            "primary-fixed": "#ffdbd0",
+            "on-secondary-fixed-variant": "#842503",
+            "error": "#ba1a1a",
+            "inverse-primary": "#ffb59d",
+            "on-tertiary-container": "#b9ffde",
+            "surface": "#fdf9f1",
+            "on-error-container": "#93000a",
+            "secondary-container": "#fb7b54",
+            "on-secondary-fixed": "#3a0a00",
+            "on-tertiary-fixed-variant": "#00513a",
+            "surface-container-high": "#ece8e0",
+            "on-tertiary": "#ffffff",
+            "surface-container-highest": "#e6e2da",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed": "#390c00",
+            "on-secondary": "#ffffff",
+            "secondary-fixed-dim": "#ffb59f",
+            "primary-container": "#c2410c",
+            "tertiary": "#006146",
+            "outline-variant": "#e1bfb5",
+            "primary": "#9b2f00",
+            "on-secondary-container": "#6b1a00",
+            "surface-variant": "#e6e2da",
+            "on-primary": "#ffffff",
+            "primary-fixed-dim": "#ffb59d",
+            "secondary-fixed": "#ffdbd1",
+            "tertiary-container": "#0f7c5b",
+            "surface-dim": "#dddad2",
+            "on-tertiary-fixed": "#002115",
+            "error-container": "#ffdad6"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-mobile": "1rem",
+            "space-3xl": "2.5rem",
+            "touch-target-min": "3rem",
+            "gutter-mobile": "1rem",
+            "touch-target-hero": "3.5rem",
+            "space-4xl": "3rem",
+            "space-xs": "0.5rem",
+            "gutter-desktop": "1.5rem",
+            "space-md": "1rem",
+            "space-xl": "1.5rem",
+            "space-sm": "0.75rem",
+            "space-2xl": "2rem",
+            "space-2xs": "0.25rem",
+            "margin-desktop": "2rem",
+            "space-lg": "1.25rem"
+          },
+          "fontFamily": {
+            "title-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "title-lg": ["16px", {"lineHeight": "22px", "fontWeight": "700"}],
+            "display-lg-mobile": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+            "label-sm": ["11px", {"lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700"}],
+            "headline-md": ["20px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-md": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+            "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600"}],
+            "numeral-data": ["18px", {"lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700"}],
+            "title-md": ["15px", {"lineHeight": "20px", "fontWeight": "600"}],
+            "label-lg": ["14px", {"lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700"}],
+            "headline-lg-mobile": ["22px", {"lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+            "body-sm": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+            "numeral-hero": ["32px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+            "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+            "headline-sm": ["18px", {"lineHeight": "24px", "fontWeight": "600"}],
+            "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "500"}]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #fdf9f1;
+      color: #1c1c17;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-background text-on-surface antialiased flex flex-col justify-between selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Main Container (Restricted Mobile & Tablet viewport width with outdoor high-contrast canvas) -->
+<div class="w-full max-w-lg mx-auto min-h-screen flex flex-col bg-background relative shadow-xl">
+<!-- 1. TOP APP BAR (FOCUSED TASK NAVIGATION: Suppresses standard shell navigation) -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md px-margin-mobile py-space-sm flex items-center justify-between shadow-sm">
+<div class="flex items-center space-x-space-sm">
+<button aria-label="मागे जा" class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface border border-outline-variant/40 active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-primary text-xl">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center space-x-1.5">
+<span class="font-headline-sm text-headline-sm text-on-surface">भाषा बदला</span>
+<span class="text-xs px-1.5 py-0.5 rounded bg-surface-container-high text-on-surface-variant font-label-sm">Screen 36</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Language Settings • Mandi-Setu</p>
+</div>
+</div>
+<!-- Top Right Audio Read-Aloud Action -->
+<button aria-label="आवाज ऐका" class="h-10 px-3 rounded-xl bg-surface-container-low border border-primary-container/30 flex items-center space-x-1.5 text-primary active:scale-95 transition-all shadow-sm" type="button">
+<span class="material-symbols-outlined text-primary fill-icon text-lg">volume_up</span>
+<span class="font-label-md text-label-md text-primary font-bold">आवाज ऐका</span>
+</button>
+</header>
+<!-- CONTENT SCROLL AREA -->
+<main class="flex-1 px-margin-mobile pt-space-md pb-32 space-y-space-md">
+<!-- 2. EXPLANATORY HEADER & VOICE PROMPT BANNER (TACTILE OUTDOOR DAYLIGHT ASSIST) -->
+<section class="bg-surface-container-low rounded-xl p-space-md border border-outline-variant/50 shadow-sm relative overflow-hidden">
+<div class="absolute -right-4 -bottom-4 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-8xl text-primary">translate</span>
+</div>
+<div class="flex items-start gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
+<span class="material-symbols-outlined text-xl">record_voice_over</span>
+</div>
+<div class="space-y-1">
+<h1 class="font-headline-sm text-headline-sm text-on-surface">तुम्हाला कोणती भाषा सोपी वाटते? निवडा.</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">
+              निवडलेली भाषा त्वरित लागू होईल. बाजार भाव, पावती व सर्व व्यवहार त्याच भाषेत दिसतील.
+            </p>
+</div>
+</div>
+<!-- Audio Guidance Micro-Chip -->
+<div class="mt-space-sm pt-space-xs border-t border-outline-variant/40 flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest/80 text-on-surface text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-sm text-tertiary-container fill-icon">check_circle</span>
+<span>प्रत्येक भाषेत ऐकून खात्री करा</span>
+</div>
+<span class="font-label-sm text-label-sm text-outline">१ सेकंदात बदल</span>
+</div>
+</section>
+<!-- 3. TACTILE 3-CARD LANGUAGE SELECTOR -->
+<section aria-label="Language selection cards" class="space-y-space-sm">
+<!-- CARD 1: MARATHI (ACTIVE / SELECTED) -->
+<div class="relative bg-surface-container-lowest rounded-xl border-2 border-primary-container p-space-md shadow-[0_4px_16px_rgba(194,65,12,0.12)] transition-all">
+<!-- Top Badge & Selection Indicator -->
+<div class="flex items-center justify-between mb-space-xs">
+<div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-primary-fixed text-on-primary-fixed-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm fill-icon text-primary">verified</span>
+<span>निवडलेली भाषा • Active</span>
+</div>
+<!-- Custom Checked Radio Indicator -->
+<div class="w-6 h-6 rounded-full bg-primary-container text-on-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-base font-bold">check</span>
+</div>
+</div>
+<!-- Script Title and Subtitle -->
+<div class="flex items-baseline justify-between">
+<div class="space-y-0.5">
+<span class="text-2xl font-extrabold text-on-surface tracking-tight font-title-lg">मराठी</span>
+<p class="font-label-md text-label-md text-primary font-semibold">Marathi (महाराष्ट्र APMC मानक)</p>
+</div>
+<span class="text-xs px-2 py-0.5 rounded-full bg-tertiary/10 text-tertiary font-label-sm font-bold border border-tertiary/20">
+              प्राधान्य
+            </span>
+</div>
+<!-- Live Preview Quote Box -->
+<div class="mt-space-sm p-space-sm rounded-lg bg-surface-container-low border border-outline-variant/60">
+<div class="flex items-center gap-1 text-outline text-label-sm font-label-sm mb-1">
+<span class="material-symbols-outlined text-xs">format_quote</span>
+<span>थेट स्क्रीन नमुना (Live Preview):</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface font-semibold leading-relaxed">
+              "भाव का भरोसा, थेट सौदा. आजचा लासलगाव कांदा भाव <span class="text-primary font-bold">₹२,०५०/क्विंटल</span>."
+            </p>
+</div>
+<!-- Audio Preview Button -->
+<div class="mt-space-sm flex items-center justify-between pt-space-xs">
+<button class="h-10 px-3.5 rounded-lg bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant text-on-surface font-label-md text-label-md flex items-center gap-2 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-primary fill-icon text-base">play_arrow</span>
+<span class="font-semibold">आवाज नमुना ऐका <span class="text-on-surface-variant font-normal">(0:04)</span></span>
+</button>
+<span class="text-xs text-on-surface-variant font-label-sm">स्थानिक बोली</span>
+</div>
+</div>
+<!-- CARD 2: HINDI (INACTIVE / SELECTABLE) -->
+<div class="relative bg-surface-container-lowest rounded-xl border border-outline-variant/60 hover:border-outline p-space-md shadow-sm transition-all active:scale-[0.99] cursor-pointer">
+<!-- Top Badge & Selection Indicator -->
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">पर्याय २</span>
+<!-- Unchecked Radio Indicator -->
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant bg-surface flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>
+</div>
+</div>
+<!-- Script Title and Subtitle -->
+<div class="flex items-baseline justify-between">
+<div class="space-y-0.5">
+<span class="text-2xl font-bold text-on-surface tracking-tight font-title-lg">हिन्दी</span>
+<p class="font-label-md text-label-md text-on-surface-variant">Hindi (राष्ट्रीय मंडी मानक)</p>
+</div>
+<span class="text-xs px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm">
+              eNAM सुसंगत
+            </span>
+</div>
+<!-- Live Preview Quote Box -->
+<div class="mt-space-sm p-space-sm rounded-lg bg-surface-container-low/60 border border-outline-variant/40">
+<div class="flex items-center gap-1 text-outline text-label-sm font-label-sm mb-1">
+<span class="material-symbols-outlined text-xs">format_quote</span>
+<span>लाइव प्रिव्यू (Live Preview):</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-relaxed">
+              "भाव का भरोसा, सीधा सौदा। आज का लासलगांव प्याज भाव <span class="text-on-surface font-bold">₹२,०५०/क्विंटल</span>।"
+            </p>
+</div>
+<!-- Audio Preview Button -->
+<div class="mt-space-sm flex items-center justify-between pt-space-xs">
+<button class="h-10 px-3.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/60 text-on-surface font-label-md text-label-md flex items-center gap-2 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-primary fill-icon text-base">play_arrow</span>
+<span>आवाज नमूना सुनें <span class="text-on-surface-variant font-normal">(0:04)</span></span>
+</button>
+<span class="text-xs text-outline font-label-sm">स्पष्ट आवाज</span>
+</div>
+</div>
+<!-- CARD 3: ENGLISH (INACTIVE / SELECTABLE) -->
+<div class="relative bg-surface-container-lowest rounded-xl border border-outline-variant/60 hover:border-outline p-space-md shadow-sm transition-all active:scale-[0.99] cursor-pointer">
+<!-- Top Badge & Selection Indicator -->
+<div class="flex items-center justify-between mb-space-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Option 3</span>
+<!-- Unchecked Radio Indicator -->
+<div class="w-6 h-6 rounded-full border-2 border-outline-variant bg-surface flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-transparent"></div>
+</div>
+</div>
+<!-- Script Title and Subtitle -->
+<div class="flex items-baseline justify-between">
+<div class="space-y-0.5">
+<span class="text-2xl font-bold text-on-surface tracking-tight font-title-lg">English</span>
+<p class="font-label-md text-label-md text-on-surface-variant">English (Formal Trading &amp; Legal View)</p>
+</div>
+<span class="text-xs px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm">
+              Bills &amp; Tax
+            </span>
+</div>
+<!-- Live Preview Quote Box -->
+<div class="mt-space-sm p-space-sm rounded-lg bg-surface-container-low/60 border border-outline-variant/40">
+<div class="flex items-center gap-1 text-outline text-label-sm font-label-sm mb-1">
+<span class="material-symbols-outlined text-xs">format_quote</span>
+<span>Live Screen Preview:</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface leading-relaxed">
+              "Faith in price, direct trade. Today's Lasalgaon Onion rate <span class="text-on-surface font-bold">₹2,050/qtl</span>."
+            </p>
+</div>
+<!-- Audio Preview Button -->
+<div class="mt-space-sm flex items-center justify-between pt-space-xs">
+<button class="h-10 px-3.5 rounded-lg bg-surface-container hover:bg-surface-container-high border border-outline-variant/60 text-on-surface font-label-md text-label-md flex items-center gap-2 active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-primary fill-icon text-base">play_arrow</span>
+<span>Listen Sample <span class="text-on-surface-variant font-normal">(0:04)</span></span>
+</button>
+<span class="text-xs text-outline font-label-sm">Standard Accent</span>
+</div>
+</div>
+</section>
+<!-- 4. AUDIO & VOICE READOUT PREFERENCES (आवाज सहाय्य प्राधान्ये) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md border border-outline-variant/70 shadow-sm space-y-space-md">
+<!-- Toggle Header Row -->
+<div class="flex items-start justify-between gap-space-sm">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">hearing</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface">आवाज सहाय्य प्राधान्ये</h2>
+</div>
+<p class="font-title-md text-title-md text-on-surface font-semibold">ॲपमध्ये नेहमी आवाज सहाय्य चालू ठेवा</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-snug">
+              ऊन किंवा घाईच्या वेळी सर्व भाव व सौदे मराठीत मोठ्याने ऐकता येतील.
+            </p>
+</div>
+<!-- Tactical iOS/Mandi High Contrast Toggle Button (STATE: ON) -->
+<button aria-checked="true" class="w-14 h-8 rounded-full bg-primary-container p-1 flex items-center justify-end transition-colors flex-shrink-0 shadow-inner" role="switch" type="button">
+<div class="w-6 h-6 rounded-full bg-surface-container-lowest shadow-md flex items-center justify-center">
+<span class="material-symbols-outlined text-xs text-primary font-bold">check</span>
+</div>
+</button>
+</div>
+<div class="h-px bg-outline-variant/40"></div>
+<!-- Voice Speed Selector Section -->
+<div class="space-y-2">
+<div class="flex items-center justify-between">
+<label class="font-label-md text-label-md text-on-surface-variant font-semibold">वाचनाचा वेग (Voice Speed):</label>
+<span class="font-label-sm text-label-sm text-primary font-bold">सामान्य (1.0x)</span>
+</div>
+<!-- Segmented Pill Selector -->
+<div class="grid grid-cols-3 gap-2 p-1 rounded-xl bg-surface-container-low border border-outline-variant/60">
+<!-- Slow -->
+<button class="py-2.5 rounded-lg text-center font-label-md text-label-md text-on-surface hover:bg-surface transition-colors" type="button">
+              सावकाश
+            </button>
+<!-- Normal (Active) -->
+<button class="py-2.5 rounded-lg text-center font-label-md text-label-md bg-primary text-on-primary font-bold shadow-sm" type="button">
+              सामान्य
+            </button>
+<!-- Fast -->
+<button class="py-2.5 rounded-lg text-center font-label-md text-label-md text-on-surface hover:bg-surface transition-colors" type="button">
+              जलद
+            </button>
+</div>
+</div>
+<!-- Guarantee & Offline Badge -->
+<div class="flex items-center gap-2 pt-1 text-outline">
+<span class="material-symbols-outlined text-base text-tertiary">offline_bolt</span>
+<span class="font-label-sm text-label-sm">इंटरनेट नसतानाही आवाज सहाय्य अखंड चालू राहते.</span>
+</div>
+</section>
+</main>
+<!-- 5. DIRECT CONFIRMATION ACTION DECK (THUMB ZONE - FIXED AT BOTTOM) -->
+<footer class="sticky bottom-0 left-0 right-0 z-50 bg-surface/95 backdrop-blur-lg border-t-2 border-outline-variant/50 p-margin-mobile pb-6 shadow-[0_-6px_20px_rgba(24,24,27,0.08)] space-y-space-xs">
+<!-- Safe & Offline Instant Apply Micro Note -->
+<div class="flex items-center justify-center gap-1.5 text-center text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-sm text-tertiary">lock</span>
+<span>भाषा बदलल्यास कोणताही डेटा किंवा नोंदणी बदलत नाही · Offline Instant Apply</span>
+</div>
+<!-- Primary Action Button (Turmeric Amber Hero 56dp) -->
+<button class="w-full h-14 rounded-xl bg-primary-container hover:bg-primary active:scale-[0.99] text-on-primary font-title-lg text-title-lg font-bold flex items-center justify-center gap-2 shadow-[0_4px_14px_rgba(194,65,12,0.35)] transition-all" type="button">
+<span class="material-symbols-outlined text-2xl font-bold">check_circle</span>
+<span>ही भाषा निश्चित करा • Save &amp; Apply</span>
+</button>
+<!-- Secondary Cancel / Dismiss Button -->
+<button class="w-full h-11 rounded-xl bg-transparent hover:bg-surface-container-high text-on-surface-variant font-title-md text-title-md font-semibold flex items-center justify-center active:scale-98 transition-colors" type="button">
+        मागे जा (Cancel)
+      </button>
+</footer>
+</div>
+</body></html>

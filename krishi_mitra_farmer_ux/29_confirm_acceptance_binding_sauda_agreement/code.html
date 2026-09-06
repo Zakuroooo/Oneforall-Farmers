@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+
+<html class="light" lang="mr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu — सौदा स्वीकृती (Confirm Agreement)</title>
+<!-- Fonts & Material Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-primary-container": "#ffece7",
+            "tertiary-container": "#0f7c5b",
+            "on-secondary-fixed-variant": "#842503",
+            "on-secondary-fixed": "#3a0a00",
+            "on-secondary-container": "#6b1a00",
+            "on-tertiary": "#ffffff",
+            "outline-variant": "#e1bfb5",
+            "on-error-container": "#93000a",
+            "primary": "#9b2f00",
+            "background": "#fdf9f1",
+            "outline": "#8d7168",
+            "on-tertiary-fixed-variant": "#00513a",
+            "surface": "#fdf9f1",
+            "on-primary-fixed": "#390c00",
+            "inverse-surface": "#31302b",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "surface-dim": "#dddad2",
+            "primary-container": "#c2410c",
+            "on-tertiary-fixed": "#002115",
+            "on-surface-variant": "#59413a",
+            "secondary-fixed-dim": "#ffb59f",
+            "primary-fixed": "#ffdbd0",
+            "secondary-fixed": "#ffdbd1",
+            "surface-container-high": "#ece8e0",
+            "on-tertiary-container": "#b9ffde",
+            "on-surface": "#1c1c17",
+            "surface-container-highest": "#e6e2da",
+            "surface-container-low": "#f7f3eb",
+            "primary-fixed-dim": "#ffb59d",
+            "secondary": "#a53c19",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-fixed": "#97f5cc",
+            "on-secondary": "#ffffff",
+            "on-background": "#1c1c17",
+            "surface-bright": "#fdf9f1",
+            "surface-container": "#f1ede6",
+            "secondary-container": "#fb7b54",
+            "on-primary": "#ffffff",
+            "inverse-primary": "#ffb59d",
+            "surface-tint": "#ac3400",
+            "error": "#ba1a1a",
+            "inverse-on-surface": "#f4f0e8",
+            "on-error": "#ffffff",
+            "surface-variant": "#e6e2da",
+            "error-container": "#ffdad6",
+            "tertiary": "#006146",
+            "on-primary-fixed-variant": "#832600"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin-desktop": "2rem",
+            "space-md": "1rem",
+            "space-2xs": "0.25rem",
+            "space-xl": "1.5rem",
+            "space-3xl": "2.5rem",
+            "space-4xl": "3rem",
+            "touch-target-hero": "3.5rem",
+            "space-lg": "1.25rem",
+            "space-sm": "0.75rem",
+            "gutter-mobile": "1rem",
+            "space-2xl": "2rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.5rem",
+            "gutter-desktop": "1.5rem",
+            "touch-target-min": "3rem"
+          },
+          "fontFamily": {
+            "display-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Smooth pulses and tactile button presses */
+    @keyframes softPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.82; transform: scale(0.98); }
+    }
+    .timer-pulse {
+      animation: softPulse 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen pb-36 font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Mobile Wrapper Container with Tablet Max-Width Alignment -->
+<div class="max-w-lg mx-auto bg-surface min-h-screen relative flex flex-col shadow-lg border-x border-outline-variant/30">
+<!-- 1. Header Navigation Bar (Task-focused context: Back Action, Audio read-aloud) -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md px-margin-mobile py-space-xs flex items-center justify-between shadow-sm border-b border-outline-variant/40">
+<div class="flex items-center gap-space-xs">
+<button aria-label="मागे जा (Go Back)" class="w-10 h-10 rounded-xl flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-title-lg">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center gap-1.5">
+<h1 class="text-headline-sm font-headline-sm text-on-surface tracking-tight">सौदा स्वीकृती</h1>
+<span class="bg-primary-fixed text-primary text-label-sm font-label-sm px-1.5 py-0.5 rounded">#LP-403</span>
+</div>
+<p class="text-label-sm font-label-sm text-on-surface-variant">Confirm Binding Agreement</p>
+</div>
+</div>
+<!-- Voice Audio Assist Button -->
+<button class="flex items-center gap-1 bg-surface-container-lowest border border-outline-variant/60 hover:bg-surface-container-high active:scale-95 px-2.5 py-1.5 rounded-full shadow-sm text-primary transition-all" type="button">
+<span class="material-symbols-outlined text-body-lg fill-icon" data-icon="volume_up">volume_up</span>
+<span class="text-label-md font-label-md">आवाज ऐका</span>
+</button>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile pt-space-sm space-y-space-md">
+<!-- 2. APMC Legal Binding Banner + Countdown Timer -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md border-l-4 border-primary-container shadow-sm space-y-space-xs">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary-container fill-icon" data-icon="verified_user">verified_user</span>
+<div>
+<h2 class="text-title-md font-title-md text-on-surface">अधिकृत ई-सौदा करार</h2>
+<p class="text-label-sm font-label-sm text-on-surface-variant">APMC Act 1963 • Enforceable Trade Contract</p>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-tertiary-fixed-dim/30 text-tertiary font-label-sm text-label-sm rounded-md font-bold uppercase tracking-wider">कायदेशीर</span>
+</div>
+<!-- Timer Pill -->
+<div class="timer-pulse flex items-center justify-between bg-primary-fixed/40 border border-primary-container/30 px-space-sm py-1.5 rounded-lg">
+<div class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-body-lg" data-icon="timer">timer</span>
+<span class="text-label-md font-label-md">स्वीकृतीची मुदत:</span>
+</div>
+<div class="text-numeral-data font-numeral-data text-primary tracking-tight">
+            १४:५२ <span class="text-label-sm font-label-sm">शिल्लक (14:52 mins)</span>
+</div>
+</div>
+</section>
+<!-- 3. Produce Details & Counterparties Bento Card -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/50 p-space-md shadow-sm space-y-space-md">
+<!-- Commodity Header with Real Image from Context -->
+<div class="flex items-center gap-space-sm pb-space-sm border-b border-surface-container-highest">
+<img class="w-16 h-16 rounded-lg object-cover border border-outline-variant/40 flex-shrink-0 shadow-sm" data-alt="A sunlit Indian agricultural warehouse filled with rustic burlap jute sacks overflowing with freshly harvested, high-grade Maharashtra Nashik red onions with deep burgundy papery skins. Warm, bright morning sunlight slants through brick warehouse windows casting rich amber shadows. The setting conveys authentic physical agricultural trade, earthy textures, and daylight clarity." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA6o1VA_o3SOe_kdZTbnP2IhpbSNWajoCdPvVeFnTaUIKYcKX8Pf5KLltLAMq3YMqyYitSSwFEqbiC9EPnCmEOYEgPX1VXUOsm1Qqyil1IV3IvZ1obMNs_Js96xRId1loSSihsFXIfWFQ_TgE0WlbWPjtFsLDkisT2RYB6th4mGVbwY_WedFbxLIveIgWhNKLh8SDW937zEdfUc1GCzjdKl9lf5itN6HdOxlE316MvhCv3AfRLBvAQI"/>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-primary uppercase font-bold tracking-wider">उन्हाळ कांदा (Gavran Red)</span>
+<span class="text-label-sm font-label-sm bg-tertiary text-on-tertiary px-1.5 py-0.5 rounded font-bold">Grade A (850)</span>
+</div>
+<h3 class="text-title-lg font-title-lg text-on-surface truncate">४० क्विंटल (80 पोती / ५० किलो)</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Lot #LP-403 • AI Assayed Quality Verified</p>
+</div>
+</div>
+<!-- Two Parties Visual Grid -->
+<div class="grid grid-cols-2 gap-space-xs bg-surface-container-low p-space-xs rounded-xl border border-outline-variant/30 text-body-sm">
+<!-- Seller / Farmer -->
+<div class="p-space-xs bg-surface-container-lowest rounded-lg border border-outline-variant/30 flex flex-col justify-between">
+<div class="flex items-center gap-1.5 text-on-surface-variant text-label-sm font-label-sm pb-1">
+<span class="material-symbols-outlined text-body-md text-primary" data-icon="person">person</span>
+<span>शेतकरी (Seller)</span>
+</div>
+<div>
+<p class="text-title-md font-title-md text-on-surface leading-snug">रामभाऊ पाटील</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">निफाड, नाशिक (शेत बांध)</p>
+</div>
+</div>
+<!-- Buyer / Vyapari -->
+<div class="p-space-xs bg-surface-container-lowest rounded-lg border border-outline-variant/30 flex flex-col justify-between">
+<div class="flex items-center justify-between pb-1">
+<span class="flex items-center gap-1 text-on-surface-variant text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-body-md text-tertiary fill-icon" data-icon="storefront">storefront</span>
+<span>खरेदीदार (Buyer)</span>
+</span>
+<div class="flex items-center text-tertiary text-label-sm font-bold">
+<span class="material-symbols-outlined text-label-sm fill-icon" data-icon="star">star</span>
+<span>4.7</span>
+</div>
+</div>
+<div>
+<p class="text-title-md font-title-md text-on-surface leading-snug truncate">Pune Trading Co.</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant truncate">गुलटेकडी APMC, पुणे</p>
+<p class="text-[10px] text-outline font-mono">Lic: MH-PUN-2018-84920</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Itemized Financial Settlement (थेट बँक जमा हिशोब) -->
+<section class="bg-surface-container-lowest rounded-xl border-2 border-outline-variant/60 shadow-sm overflow-hidden">
+<!-- Card Header -->
+<div class="bg-surface-container-high px-space-md py-space-xs flex items-center justify-between border-b border-outline-variant/40">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary fill-icon" data-icon="receipt_long">receipt_long</span>
+<h3 class="text-title-md font-title-md text-on-surface">थेट बँक जमा हिशोब</h3>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Direct RTGS Breakdown</span>
+</div>
+<div class="p-space-md space-y-space-sm">
+<!-- Row 1: Agreed Rate -->
+<div class="flex justify-between items-center text-body-md">
+<div>
+<span class="text-on-surface font-semibold">निश्चित भाव (Agreed Rate)</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">₹१,९०० × ४० क्विंटल (40 Qtl)</p>
+</div>
+<span class="text-numeral-data font-numeral-data text-on-surface">₹७६,०००</span>
+</div>
+<!-- Row 2: Hamali / Loading -->
+<div class="flex justify-between items-center text-body-md border-t border-dashed border-outline-variant/40 pt-2">
+<div>
+<span class="text-on-surface">शेत हमाली (Loading Charges)</span>
+<p class="text-label-sm font-label-sm text-on-surface-variant">८० पोती भरणा (₹७.५ / पोते)</p>
+</div>
+<span class="text-numeral-data font-numeral-data text-error">- ₹६००</span>
+</div>
+<!-- Row 3: Platform Fee -->
+<div class="flex justify-between items-center text-body-md border-t border-dashed border-outline-variant/40 pt-2">
+<div class="flex items-center gap-1.5">
+<span class="text-on-surface">मंडी-सेतू शुल्क (Platform Fee)</span>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold px-1.5 py-0.2 rounded">०% मोफत</span>
+</div>
+<span class="text-numeral-data font-numeral-data text-tertiary font-bold">₹०</span>
+</div>
+<!-- Final Net Payout Callout Banner -->
+<div class="bg-surface-container-low rounded-xl p-space-sm border-2 border-tertiary/40 flex items-center justify-between mt-space-xs shadow-inner">
+<div>
+<span class="text-label-md font-label-md text-tertiary uppercase font-bold tracking-wider">शेतकऱ्याला थेट बँक जमा</span>
+<p class="text-headline-sm font-headline-sm text-on-surface font-bold">Net Payout to Farmer</p>
+<p class="text-label-sm font-label-sm text-on-surface-variant">शेत वजन पावतीनंतर तात्काळ RTGS</p>
+</div>
+<div class="text-right">
+<span class="text-numeral-hero font-numeral-hero text-tertiary block tracking-tight">₹७५,४००</span>
+<span class="text-label-sm font-label-sm bg-tertiary text-on-tertiary px-2 py-0.5 rounded-full font-bold">१००% हमी</span>
+</div>
+</div>
+<!-- Escrow Guarantee Badge Box -->
+<div class="flex items-center gap-2.5 p-space-xs bg-tertiary/5 border border-tertiary/20 rounded-lg">
+<span class="material-symbols-outlined text-tertiary fill-icon text-title-lg" data-icon="lock">lock</span>
+<p class="text-label-md font-label-md text-on-surface leading-tight">
+<strong class="text-tertiary font-bold">₹७६,००० रक्कम</strong> APMC अधिकृत बँक एस्क्रो खात्यात सुरक्षित जमा आहे. पेमेंटची १००% हमी.
+            </p>
+</div>
+</div>
+</section>
+<!-- 5. Logistics & Loading Protocol -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/50 p-space-md shadow-sm space-y-space-sm">
+<h3 class="text-title-md font-title-md text-on-surface flex items-center gap-1.5 pb-1 border-b border-surface-container-highest">
+<span class="material-symbols-outlined text-primary-container" data-icon="local_shipping">local_shipping</span>
+<span>वाहतूक व वजन अटी (Logistics Terms)</span>
+</h3>
+<!-- Logistics Bento Items -->
+<div class="space-y-space-xs">
+<!-- Step 1: Vehicle Arrival -->
+<div class="flex items-start gap-space-xs p-2 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-primary text-headline-sm mt-0.5" data-icon="schedule">schedule</span>
+<div>
+<p class="text-title-md font-title-md text-on-surface">उद्या सकाळी १०:०० ते दुपारी १:००</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Pune Trading Co. ची ६-चाकी गाडी थेट आपल्या शेत बांधावर (निफाड) येईल.</p>
+</div>
+</div>
+<!-- Step 2: Weighbridge -->
+<div class="flex items-start gap-space-xs p-2 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-primary text-headline-sm mt-0.5" data-icon="scale">scale</span>
+<div>
+<p class="text-title-md font-title-md text-on-surface">काटा वजन (Digital Weighment)</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">निफाड सहकारी वजनकाटा किंवा बांधावरील डिजिटल स्केल. कोणतीही अनधिकृत दागी/कपात नाही.</p>
+</div>
+</div>
+<!-- Step 3: Instant Payment -->
+<div class="flex items-start gap-space-xs p-2 rounded-lg bg-surface-container-low">
+<span class="material-symbols-outlined text-tertiary text-headline-sm mt-0.5" data-icon="bolt">bolt</span>
+<div>
+<p class="text-title-md font-title-md text-on-surface">२ तासांत बँक खात्यात पैसे</p>
+<p class="text-body-sm font-body-sm text-on-surface-variant">गाडीत भरणा पूर्ण होऊन स्वाक्षरी केलेली वजन पावती ॲपमध्ये अपलोड करताच RTGS सुरू होईल.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 6. Legal / Regulatory Binding Confirmation Checkbox -->
+<section class="bg-surface-container-low border border-outline-variant/60 rounded-xl p-space-sm">
+<label class="flex items-start gap-space-sm cursor-pointer select-none">
+<input checked="" class="mt-1 w-5 h-5 rounded border-2 border-primary text-primary focus:ring-primary focus:ring-offset-background" id="contractAcceptance" type="checkbox"/>
+<div class="space-y-0.5">
+<span class="text-title-md font-title-md text-on-surface block leading-tight">
+              मी ४० क्विंटल कांदा ₹१,९००/क्विंटल दराने विकण्यास पूर्ण संमती देत आहे.
+            </span>
+<span class="text-body-sm font-body-sm text-on-surface-variant block">
+              हा सौदा APMC e-Mandi नियमांनुसार दोन्ही बाजूंसाठी कायदेशीर बंधनकारक आहे.
+            </span>
+</div>
+</label>
+</section>
+<!-- Security Microtext Stamp -->
+<div class="flex items-center justify-center gap-1.5 text-label-sm font-label-sm text-outline pb-space-sm">
+<span class="material-symbols-outlined text-body-sm" data-icon="lock">lock</span>
+<span>२५६-बिट एनक्रिप्टेड • APMC नियम १९६३ अंतर्गत थेट संरक्षित</span>
+</div>
+</main>
+<!-- 7. Sticky Bottom Ergonomic Action Dock (Level 3 Elevation & Touch Reach) -->
+<aside class="sticky bottom-0 left-0 right-0 bg-surface-container-lowest/98 backdrop-blur-md px-margin-mobile py-space-sm border-t-2 border-outline-variant/50 shadow-[0_-4px_20px_rgba(24,24,27,0.09)] space-y-space-xs z-50">
+<!-- Primary 56dp CTA in Turmeric Amber -->
+<button class="w-full h-touch-target-hero bg-primary-container text-on-primary rounded-xl flex items-center justify-center gap-2 shadow-md hover:bg-primary active:scale-[0.98] active:translate-y-0.5 transition-all text-title-lg font-title-lg" id="acceptDealBtn" type="button">
+<span class="material-symbols-outlined fill-icon text-headline-sm" data-icon="handshake">handshake</span>
+<span>सौदा पक्का करा • Accept &amp; Lock Deal (₹७५,४००)</span>
+</button>
+<!-- Secondary Decline Action -->
+<div class="flex items-center justify-between px-space-xs pt-0.5">
+<button class="text-label-md font-label-md text-outline hover:text-error transition-colors py-1 flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-body-sm" data-icon="close">close</span>
+<span>सौदा नाकारा (Decline Offer)</span>
+</button>
+<button class="text-label-md font-label-md text-primary hover:underline py-1 flex items-center gap-1" type="button">
+<span class="material-symbols-outlined text-body-sm" data-icon="support_agent">support_agent</span>
+<span>मंडी मित्र मदत (Helpline)</span>
+</button>
+</div>
+</aside>
+</div>
+<!-- Interactive State Scripts for Farmer Flow -->
+<script>
+    // Visual tactile feedback on Lock Deal button
+    const acceptBtn = document.getElementById('acceptDealBtn');
+    const checkbox = document.getElementById('contractAcceptance');
+
+    checkbox.addEventListener('change', () => {
+      if (!checkbox.checked) {
+        acceptBtn.disabled = true;
+        acceptBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        acceptBtn.disabled = false;
+        acceptBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    });
+
+    acceptBtn.addEventListener('click', () => {
+      if (checkbox.checked) {
+        acceptBtn.innerHTML = `
+          <span class="material-symbols-outlined animate-spin text-headline-sm">sync</span>
+          <span>सौदा लॉक होत आहे... (Locking Deal)</span>
+        `;
+        setTimeout(() => {
+          alert('अभिनंदन! सौदा यशस्वीरीत्या पक्का झाला. ₹७६,००० एस्क्रो खात्यात लॉक झाले आहेत. उद्या सकाळी १० वाजता गाडी येईल.');
+          acceptBtn.innerHTML = `
+            <span class="material-symbols-outlined text-headline-sm">check_circle</span>
+            <span>सौदा पक्का झाला! (Confirmed)</span>
+          `;
+          acceptBtn.classList.remove('bg-primary-container');
+          acceptBtn.classList.add('bg-tertiary');
+        }, 1000);
+      }
+    });
+  </script>
+</body></html>

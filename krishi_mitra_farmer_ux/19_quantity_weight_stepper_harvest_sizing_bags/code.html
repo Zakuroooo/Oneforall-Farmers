@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Mandi-Setu | Lot Quantity &amp; Weight (Step 2/5)</title>
+<!-- Material Symbols Font -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container": "#f1ede6",
+            "on-primary-container": "#ffece7",
+            "on-secondary": "#ffffff",
+            "on-error": "#ffffff",
+            "surface-container-high": "#ece8e0",
+            "primary-fixed": "#ffdbd0",
+            "error": "#ba1a1a",
+            "surface-bright": "#fdf9f1",
+            "tertiary-fixed": "#97f5cc",
+            "secondary-container": "#fb7b54",
+            "secondary-fixed-dim": "#ffb59f",
+            "background": "#fdf9f1",
+            "surface-tint": "#ac3400",
+            "surface-container-highest": "#e6e2da",
+            "on-tertiary-fixed": "#002115",
+            "on-secondary-fixed-variant": "#842503",
+            "surface": "#fdf9f1",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-primary": "#ffffff",
+            "on-secondary-container": "#6b1a00",
+            "tertiary": "#006146",
+            "on-primary-fixed": "#390c00",
+            "tertiary-container": "#0f7c5b",
+            "on-error-container": "#93000a",
+            "surface-dim": "#dddad2",
+            "on-primary-fixed-variant": "#832600",
+            "on-secondary-fixed": "#3a0a00",
+            "on-tertiary-fixed-variant": "#00513a",
+            "inverse-primary": "#ffb59d",
+            "error-container": "#ffdad6",
+            "inverse-on-surface": "#f4f0e8",
+            "outline-variant": "#e1bfb5",
+            "surface-variant": "#e6e2da",
+            "on-surface-variant": "#59413a",
+            "outline": "#8d7168",
+            "primary-fixed-dim": "#ffb59d",
+            "on-tertiary-container": "#b9ffde",
+            "on-surface": "#1c1c17",
+            "on-background": "#1c1c17",
+            "primary": "#9b2f00",
+            "secondary-fixed": "#ffdbd1",
+            "on-tertiary": "#ffffff",
+            "secondary": "#a53c19",
+            "surface-container-low": "#f7f3eb",
+            "surface-container-lowest": "#ffffff",
+            "primary-container": "#c2410c",
+            "inverse-surface": "#31302b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-2xs": "0.25rem",
+            "space-2xl": "2rem",
+            "margin-mobile": "1rem",
+            "space-4xl": "3rem",
+            "space-3xl": "2.5rem",
+            "space-sm": "0.75rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "2rem",
+            "touch-target-min": "3rem",
+            "space-lg": "1.25rem",
+            "space-xl": "1.5rem",
+            "space-md": "1rem",
+            "touch-target-hero": "3.5rem",
+            "gutter-mobile": "1rem",
+            "space-xs": "0.5rem"
+          },
+          "fontFamily": {
+            "title-md": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        }
+      }
+    };
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-1 {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Smooth transition for active stepper tactile response */
+    .tactile-btn:active {
+      transform: translateY(2px) scale(0.96);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.18);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-on-primary">
+<!-- TOP APP BAR (Focused Linear Navigation - Sub-page shell pattern) -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md border-b border-outline-variant/40 max-w-lg w-full mx-auto px-margin-mobile py-space-xs transition-colors">
+<div class="flex items-center justify-between min-h-[44px]">
+<!-- Back Arrow + Flow Info -->
+<div class="flex items-center gap-space-xs">
+<button aria-label="Go Back" class="w-10 h-10 rounded-xl flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-title-lg text-title-lg tracking-tight text-on-surface">Lot Quantity</span>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-1.5 py-0.5 rounded border border-outline-variant/50">#LP-403</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-none">वजन आणि गोणी संख्या</p>
+</div>
+</div>
+<!-- Rural Audio Assistant Button -->
+<button class="flex items-center gap-1.5 bg-surface-container hover:bg-surface-container-high px-2.5 py-1.5 rounded-xl border border-outline-variant/60 active:scale-95 transition-all text-primary font-label-md text-label-md shadow-sm" type="button">
+<span class="material-symbols-outlined text-primary fill-1" data-icon="volume_up" data-weight="fill">volume_up</span>
+<span class="text-on-surface font-title-md text-[13px]">आवाज ऐका</span>
+</button>
+</div>
+<!-- Stepped Progress Bar: Step 2 of 5 -->
+<div class="mt-space-xs pt-1">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant mb-1">
+<span class="text-primary font-bold">Step 2 of 5: Quantity · वजन</span>
+<span class="text-tertiary font-bold flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]" data-icon="cloud_done">cloud_done</span> Draft Saved
+        </span>
+</div>
+<div class="grid grid-cols-5 gap-1.5 h-1.5 w-full bg-surface-container-high rounded-full overflow-hidden p-0.5">
+<div class="bg-tertiary rounded-full h-full"></div>
+<div class="bg-primary-container rounded-full h-full"></div>
+<div class="bg-surface-dim rounded-full h-full"></div>
+<div class="bg-surface-dim rounded-full h-full"></div>
+<div class="bg-surface-dim rounded-full h-full"></div>
+</div>
+</div>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<main class="flex-1 w-full max-w-lg mx-auto px-margin-mobile pt-space-sm pb-36 space-y-space-md">
+<!-- CURRENT LOT REFERENCE BANNER (Visual link to farmer's onions) -->
+<section class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-3 shadow-sm flex items-center gap-3">
+<div class="w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 bg-surface-container relative border border-outline-variant/40">
+<img class="w-full h-full object-cover" data-alt="Close up photograph of freshly harvested Lasalgaon Maharashtra red onions neatly piled in traditional rough burlap jute gunny sacks inside a sunlit rural rustic farm storehouse shed, featuring deep reddish-purple onion skins with earthy organic details in warm afternoon lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBW7FXAgiZvn5Cuv-xsf10t49dhf1R4RrWkR9O8xq0PNXlaZifyBjTEYtX5CAc2w-9vSdjjzq4WY9kBW4P7roXdGGKtDijha6w2mkhxD_t7WdbNiSYKQn0ooVKIBVtCOX1AqOmlt0cJfLEtsC40ZuWz4grGJ9F0VsMbH5Tyu-lNQuTHqa98aglESFG3ofUQpUZB_r1-ydDgdZFk83P2rkojmxx0AYDk3jL7mhPpHP8GqouPybUUybls"/>
+<span class="absolute bottom-0 inset-x-0 bg-primary/90 text-on-primary font-label-sm text-[9px] text-center leading-tight py-0.5 font-bold">GAVRAN</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<h2 class="font-title-lg text-title-lg text-on-surface truncate">Gavran Red Onion</h2>
+<span class="font-label-sm text-label-sm text-tertiary bg-tertiary-fixed/30 border border-tertiary/20 px-2 py-0.5 rounded-full font-bold">Photo Assayed</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">गावरान लाल कांदा • Lasalgaon Mandi Yard</p>
+</div>
+</section>
+<!-- HERO NUMERIC STEPPER & LIVE UNIT CONVERTER -->
+<section class="bg-surface-container-lowest border-2 border-primary-container/40 rounded-xl p-space-md shadow-[0_4px_16px_-2px_rgba(194,65,12,0.12)]">
+<div class="text-center mb-1">
+<span class="font-label-md text-label-md text-on-surface-variant tracking-wider uppercase">Estimated Harvest Lot Size</span>
+<p class="font-headline-sm text-headline-sm text-primary font-bold">अंदाजे मालाचे प्रमाण (क्विंटल)</p>
+</div>
+<!-- Tactile Big Stepper -->
+<div class="flex items-center justify-between py-space-sm max-w-xs mx-auto">
+<!-- Decrement Button -->
+<button aria-label="Decrease Quantity" class="tactile-btn w-14 h-14 rounded-full bg-surface-container hover:bg-surface-container-high border-2 border-outline-variant/80 text-on-surface flex items-center justify-center shadow-sm" id="btn-decrement" type="button">
+<span class="material-symbols-outlined text-3xl font-bold" data-icon="remove">remove</span>
+</button>
+<!-- Big Metric Readout -->
+<div class="flex flex-col items-center justify-center px-4">
+<div class="flex items-baseline gap-1.5">
+<span class="font-display-lg text-[52px] leading-none font-extrabold text-on-surface tracking-tight" id="quintal-display">40</span>
+<span class="font-title-lg text-title-lg text-primary font-bold">Qtl</span>
+</div>
+<span class="font-label-md text-label-md text-on-surface-variant font-medium mt-0.5">४० क्विंटल</span>
+</div>
+<!-- Increment Button -->
+<button aria-label="Increase Quantity" class="tactile-btn w-14 h-14 rounded-full bg-primary-container hover:bg-primary text-on-primary flex items-center justify-center shadow-md" id="btn-increment" type="button">
+<span class="material-symbols-outlined text-3xl font-bold" data-icon="add">add</span>
+</button>
+</div>
+<!-- Stepper Quick Step Hint -->
+<div class="flex justify-center items-center gap-4 text-label-sm font-label-sm text-on-surface-variant pt-1 border-b border-outline-variant/30 pb-3">
+<span>Step: ±1 Qtl (बारीक बदल)</span>
+<span class="w-1 h-1 bg-outline rounded-full"></span>
+<button class="text-primary font-bold hover:underline" id="btn-add-five" type="button">+5 Qtl जलद जोडा</button>
+</div>
+<!-- Live Tri-Unit Real-Time Conversion Grid -->
+<div class="mt-space-sm pt-1">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm font-bold text-on-surface-variant uppercase tracking-wider">Equivalent Breakdown · सममूल्य हिशोब</span>
+<!-- Bag Configuration Toggle -->
+<button class="inline-flex items-center gap-1 text-[11px] font-label-sm text-primary font-bold bg-surface-container px-2 py-0.5 rounded-lg border border-outline-variant/50" type="button">
+<span>50 kg/Bag</span>
+<span class="material-symbols-outlined text-xs" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<!-- Total Kilograms Card -->
+<div class="bg-surface-container-low border border-outline-variant/50 rounded-lg p-2.5 flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-xl" data-icon="scale">scale</span>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Total Weight</div>
+<div class="font-numeral-data text-numeral-data text-on-surface leading-tight" id="kg-display">4,000 kg</div>
+<div class="font-label-sm text-[10px] text-on-surface-variant">४ हजार किलो</div>
+</div>
+</div>
+<!-- Total Standard Gunny Bags Card -->
+<div class="bg-surface-container-low border border-outline-variant/50 rounded-lg p-2.5 flex items-center gap-2.5">
+<div class="w-9 h-9 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary flex-shrink-0">
+<span class="material-symbols-outlined text-xl" data-icon="inventory_2">inventory_2</span>
+</div>
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Gunny Bags (५०kg)</div>
+<div class="font-numeral-data text-numeral-data text-on-surface leading-tight" id="bag-display">80 Bags</div>
+<div class="font-label-sm text-[10px] text-on-surface-variant">८० मानक पोती</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- RAPID PRESET HARVEST LOT SIZES (Maharashtra APMC Norms) -->
+<section class="space-y-2">
+<div class="flex items-center justify-between">
+<h3 class="font-title-lg text-title-lg text-on-surface">Common Lot Presets</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">वारंवार वापरले जाणारे वजन</span>
+</div>
+<div class="grid grid-cols-2 gap-2.5">
+<!-- Preset 1: Pickup / Mini Tractor -->
+<button class="preset-btn text-left p-3 rounded-xl bg-surface-container-lowest border border-outline-variant hover:border-primary transition-all active:scale-[0.98]" data-qtl="25" type="button">
+<div class="flex justify-between items-start">
+<span class="font-title-lg text-title-lg text-on-surface">25 Qtl</span>
+<span class="material-symbols-outlined text-on-surface-variant text-lg" data-icon="agriculture">agriculture</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Mini Pickup / छोटा ट्रॅक्टर</p>
+<div class="font-label-sm text-[11px] text-primary font-semibold mt-1">~50 Gunny Bags</div>
+</button>
+<!-- Preset 2: 40 Qtl Standard Trolley (Active Selected State) -->
+<button class="preset-btn active-preset text-left p-3 rounded-xl bg-surface-container-lowest border-2 border-primary-container shadow-sm bg-orange-50/20 transition-all relative overflow-hidden" data-qtl="40" type="button">
+<div class="absolute top-0 right-0 bg-primary-container text-on-primary text-[9px] font-bold font-label-sm px-1.5 py-0.5 rounded-bl">
+            POPULAR
+          </div>
+<div class="flex justify-between items-start">
+<span class="font-title-lg text-title-lg text-primary font-bold">40 Qtl</span>
+<span class="material-symbols-outlined text-primary text-lg" data-icon="rv_hookup">rv_hookup</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface font-medium mt-0.5">1 Std Trolley · १ ट्रॉली</p>
+<div class="font-label-sm text-[11px] text-primary font-bold mt-1">80 Bags (Full Load)</div>
+</button>
+<!-- Preset 3: Double Trolley -->
+<button class="preset-btn text-left p-3 rounded-xl bg-surface-container-lowest border border-outline-variant hover:border-primary transition-all active:scale-[0.98]" data-qtl="80" type="button">
+<div class="flex justify-between items-start">
+<span class="font-title-lg text-title-lg text-on-surface">80 Qtl</span>
+<span class="material-symbols-outlined text-on-surface-variant text-lg" data-icon="local_shipping">local_shipping</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">Double Trolley · २ ट्रॉल्या</p>
+<div class="font-label-sm text-[11px] text-primary font-semibold mt-1">160 Bags</div>
+</button>
+<!-- Preset 4: 6-Wheeler Eicher -->
+<button class="preset-btn text-left p-3 rounded-xl bg-surface-container-lowest border border-outline-variant hover:border-primary transition-all active:scale-[0.98]" data-qtl="120" type="button">
+<div class="flex justify-between items-start">
+<span class="font-title-lg text-title-lg text-on-surface">120 Qtl</span>
+<span class="material-symbols-outlined text-on-surface-variant text-lg" data-icon="fire_truck">fire_truck</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5">6-Wheel Eicher · आयशर</p>
+<div class="font-label-sm text-[11px] text-primary font-semibold mt-1">240 Bags</div>
+</button>
+</div>
+<!-- Custom Keypad Trigger Link -->
+<div class="text-center pt-1">
+<button class="inline-flex items-center gap-1.5 font-label-md text-label-md text-primary font-bold py-1 px-3 rounded-lg hover:bg-surface-container transition-colors" type="button">
+<span class="material-symbols-outlined text-base" data-icon="pin">pin</span>
+<span>Or enter exact custom digits · हाताने अचूक वजन टाका</span>
+</button>
+</div>
+</section>
+<!-- VEHICLE CAPACITY & FREIGHT ESTIMATOR (Tactile Modernism Master Detail) -->
+<section class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-space-md space-y-space-sm shadow-sm">
+<div class="flex items-center justify-between border-b border-outline-variant/40 pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="local_shipping">local_shipping</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">Logistics &amp; Trolley Capacity</h3>
+</div>
+<span class="font-label-sm text-label-sm bg-tertiary-fixed/30 text-tertiary font-bold px-2 py-0.5 rounded-full">
+          100% Trolley Fit
+        </span>
+</div>
+<!-- Visual Vehicle Load Meter -->
+<div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant mb-1.5">
+<span class="font-medium">Standard 14-ft Tractor Trolley Payload</span>
+<span class="text-on-surface font-bold">40 / 40 Qtl (Optimal)</span>
+</div>
+<!-- Progress Bar with segmented styling -->
+<div class="h-3 w-full bg-surface-container-high rounded-full overflow-hidden flex border border-outline-variant/40">
+<div class="bg-tertiary h-full w-[100%] rounded-full transition-all duration-300"></div>
+</div>
+<div class="flex justify-between items-center text-[11px] text-on-surface-variant font-label-sm mt-1">
+<span>0 Qtl (Empty)</span>
+<span class="text-tertiary font-bold">Safe Axle Limit (सुरक्षित मर्यादा)</span>
+<span>45 Qtl (Max Safe)</span>
+</div>
+</div>
+<!-- Real-time Mandi Freight Quotes -->
+<div class="bg-surface-container-low rounded-lg p-space-sm border border-outline-variant/50 space-y-2">
+<div class="font-label-sm text-label-sm font-bold text-on-surface-variant flex items-center justify-between">
+<span>Estimated Freight from Farm Gate</span>
+<span class="text-[10px] bg-surface-container px-1.5 py-0.5 rounded text-on-surface">1 Tractor Load</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-base" data-icon="location_on">location_on</span>
+<span class="font-medium text-on-surface">Lasalgaon Mandi Yard (18 km)</span>
+</div>
+<span class="font-bold text-on-surface font-numeral-data">~₹1,800</span>
+</div>
+<div class="flex items-center justify-between text-body-sm font-body-sm pt-1.5 border-t border-outline-variant/30">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-outline text-base" data-icon="location_on">location_on</span>
+<span class="font-medium text-on-surface">Nashik APMC Market (42 km)</span>
+</div>
+<span class="font-bold text-on-surface font-numeral-data">~₹2,650</span>
+</div>
+</div>
+</section>
+<!-- WEIGHMENT VERIFICATION METHOD (Radio Selector) -->
+<section class="bg-surface-container-lowest border border-outline-variant/60 rounded-xl p-space-md space-y-space-sm shadow-sm">
+<div class="flex items-center justify-between">
+<h3 class="font-title-lg text-title-lg text-on-surface">Weighment Method</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">काटा पावती स्थिती</span>
+</div>
+<div class="space-y-2.5">
+<!-- Radio 1: Self Estimated (Active) -->
+<label class="flex items-start gap-3 p-3 rounded-lg border-2 border-primary bg-surface-container-low cursor-pointer">
+<input checked="" class="mt-1 w-5 h-5 text-primary border-outline focus:ring-primary" name="weighment_mode" type="radio" value="estimated"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-title-lg text-title-lg text-on-surface leading-tight">Farmer's Self-Estimate</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">शेतकऱ्याचा अंदाज</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+              Based on filled gunny bags count and trolley volume. Final weighment occurs at yard scale.
+            </p>
+</div>
+</label>
+<!-- Radio 2: Weighbridge Slip Available -->
+<label class="flex items-start gap-3 p-3 rounded-lg border border-outline-variant bg-surface-container-lowest hover:bg-surface-container-low cursor-pointer">
+<input class="mt-1 w-5 h-5 text-primary border-outline focus:ring-primary" name="weighment_mode" type="radio" value="slip"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="font-title-lg text-title-lg text-on-surface leading-tight">APMC Weighbridge Slip</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">काटा पावती उपलब्ध</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+              I have an official electronic weighment slip from computerized Dharam Kanta.
+            </p>
+</div>
+</label>
+</div>
+<!-- High-Trust Reassurance Escrow Note -->
+<div class="flex items-start gap-2 bg-surface-container-high/60 border border-outline-variant/60 rounded-lg p-2.5 text-on-surface">
+<span class="material-symbols-outlined text-tertiary text-lg mt-0.5 fill-1" data-icon="verified_user" data-weight="fill">verified_user</span>
+<div class="text-[12px] font-body-sm leading-relaxed text-on-surface-variant">
+<strong class="text-on-surface">Mandatory Net Settlement Reassurance:</strong> Your trade payout is always protected by Mandi-Setu Escrow. Final settlement is made strictly on electronic weighbridge net weight slip.
+        </div>
+</div>
+</section>
+</main>
+<!-- STICKY BOTTOM DOCKED THUMB ACTION TRAY (Level 3 Elevation) -->
+<footer class="fixed bottom-0 inset-x-0 bg-surface-container-lowest/98 backdrop-blur-md border-t-2 border-outline-variant/60 shadow-[0_-6px_24px_rgba(24,24,27,0.12)] z-50 py-space-sm px-margin-mobile">
+<div class="max-w-lg mx-auto space-y-2">
+<!-- High-impact Primary Action Button -->
+<button class="tactile-btn w-full h-touch-target-hero bg-primary-container hover:bg-primary text-on-primary font-title-lg text-title-lg rounded-xl flex items-center justify-center gap-2 shadow-md" id="btn-submit" type="button">
+<span>Continue to Quality Questions · पुढे जा</span>
+<span class="material-symbols-outlined text-2xl font-bold" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<!-- Secondary Controls & Offline Safety Indicator -->
+<div class="flex items-center justify-between pt-0.5 px-1">
+<!-- Save Draft Link -->
+<button class="text-on-surface-variant hover:text-on-surface font-label-md text-label-md flex items-center gap-1 py-1" type="button">
+<span class="material-symbols-outlined text-base" data-icon="save">save</span>
+<span>Save Draft &amp; Exit (ड्राफ्ट सेव्ह करा)</span>
+</button>
+<!-- Offline Status Reassurance Pill -->
+<div class="flex items-center gap-1.5 text-tertiary font-label-sm text-label-sm font-semibold bg-tertiary-fixed/30 px-2 py-0.5 rounded-full border border-tertiary/20">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary animate-pulse"></span>
+<span>Saved locally offline</span>
+</div>
+</div>
+</div>
+</footer>
+<!-- INLINE VANILLA JS FOR TACTILE MICRO-INTERACTIONS & CONVERSIONS -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+      let quantity = 40; // Default Qtl
+      const quintalDisplay = document.getElementById('quintal-display');
+      const kgDisplay = document.getElementById('kg-display');
+      const bagDisplay = document.getElementById('bag-display');
+      const btnDec = document.getElementById('btn-decrement');
+      const btnInc = document.getElementById('btn-increment');
+      const btnAddFive = document.getElementById('btn-add-five');
+      const presetBtns = document.querySelectorAll('.preset-btn');
+
+      // Marathi numeral mapping helper
+      function toMarathiNumerals(num) {
+        const marathiDigits = ['०','१','२','३','४','५','६','७','८','९'];
+        return num.toString().split('').map(d => marathiDigits[d] || d).join('');
+      }
+
+      function updateDisplays() {
+        // Quantities
+        quintalDisplay.textContent = quantity;
+        const subMarathi = document.querySelector('#quintal-display').parentElement.nextElementSibling;
+        if(subMarathi) {
+          subMarathi.textContent = `${toMarathiNumerals(quantity)} क्विंटल`;
+        }
+
+        const totalKg = quantity * 100;
+        const totalBags = Math.round(totalKg / 50);
+
+        kgDisplay.textContent = totalKg.toLocaleString('en-IN') + ' kg';
+        bagDisplay.textContent = totalBags + ' Bags';
+
+        // Update presets state
+        presetBtns.forEach(btn => {
+          const btnQtl = parseInt(btn.getAttribute('data-qtl'), 10);
+          if (btnQtl === quantity) {
+            btn.classList.add('border-2', 'border-primary-container', 'shadow-sm', 'bg-orange-50/20');
+            btn.classList.remove('border-outline-variant');
+          } else {
+            btn.classList.remove('border-2', 'border-primary-container', 'shadow-sm', 'bg-orange-50/20');
+            btn.classList.add('border', 'border-outline-variant');
+          }
+        });
+      }
+
+      btnDec.addEventListener('click', () => {
+        if (quantity > 1) {
+          quantity -= 1;
+          updateDisplays();
+        }
+      });
+
+      btnInc.addEventListener('click', () => {
+        if (quantity < 1000) {
+          quantity += 1;
+          updateDisplays();
+        }
+      });
+
+      btnAddFive.addEventListener('click', () => {
+        quantity += 5;
+        updateDisplays();
+      });
+
+      presetBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const selectedVal = parseInt(btn.getAttribute('data-qtl'), 10);
+          if (!isNaN(selectedVal)) {
+            quantity = selectedVal;
+            updateDisplays();
+          }
+        });
+      });
+
+      // Simple submit feedback
+      const submitBtn = document.getElementById('btn-submit');
+      submitBtn.addEventListener('click', () => {
+        submitBtn.classList.add('opacity-90');
+        submitBtn.innerHTML = `
+          <span class="material-symbols-outlined animate-spin text-2xl" data-icon="sync">sync</span>
+          <span>Saving Quantity...</span>
+        `;
+        setTimeout(() => {
+          submitBtn.innerHTML = `
+            <span>Continue to Quality Questions · पुढे जा</span>
+            <span class="material-symbols-outlined text-2xl font-bold" data-icon="arrow_forward">arrow_forward</span>
+          `;
+          submitBtn.classList.remove('opacity-90');
+        }, 600);
+      });
+    });
+  </script>
+</body></html>

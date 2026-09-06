@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+
+<html class="light" lang="mr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>मंडी-सेतू सौदा ट्रॅकिंग • Deal Tracking #SD-2024-8842</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error-container": "#ffdad6",
+            "secondary-container": "#fb7b54",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "background": "#fdf9f1",
+            "on-tertiary-fixed": "#002115",
+            "surface-container-lowest": "#ffffff",
+            "on-background": "#1c1c17",
+            "on-surface-variant": "#59413a",
+            "on-secondary-fixed": "#3a0a00",
+            "on-primary-fixed-variant": "#832600",
+            "tertiary-fixed": "#97f5cc",
+            "surface-bright": "#fdf9f1",
+            "outline": "#8d7168",
+            "surface-container-low": "#f7f3eb",
+            "on-error-container": "#93000a",
+            "on-tertiary": "#ffffff",
+            "on-secondary-fixed-variant": "#842503",
+            "inverse-primary": "#ffb59d",
+            "primary": "#9b2f00",
+            "tertiary-container": "#0f7c5b",
+            "on-error": "#ffffff",
+            "inverse-on-surface": "#f4f0e8",
+            "on-tertiary-container": "#b9ffde",
+            "on-tertiary-fixed-variant": "#00513a",
+            "primary-fixed-dim": "#ffb59d",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-primary-container": "#ffece7",
+            "outline-variant": "#e1bfb5",
+            "surface-dim": "#dddad2",
+            "tertiary": "#006146",
+            "surface": "#fdf9f1",
+            "primary-fixed": "#ffdbd0",
+            "on-primary": "#ffffff",
+            "on-surface": "#1c1c17",
+            "surface-container": "#f1ede6",
+            "surface-container-highest": "#e6e2da",
+            "inverse-surface": "#31302b",
+            "error": "#ba1a1a",
+            "secondary-fixed": "#ffdbd1",
+            "secondary": "#a53c19",
+            "on-secondary-container": "#6b1a00",
+            "on-secondary": "#ffffff",
+            "surface-tint": "#ac3400",
+            "surface-container-high": "#ece8e0",
+            "surface-variant": "#e6e2da",
+            "on-primary-fixed": "#390c00",
+            "primary-container": "#c2410c"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-md": "1rem",
+            "gutter-mobile": "1rem",
+            "space-lg": "1.25rem",
+            "margin-desktop": "2rem",
+            "margin-mobile": "1rem",
+            "touch-target-hero": "3.5rem",
+            "space-3xl": "2.5rem",
+            "space-xs": "0.5rem",
+            "space-4xl": "3rem",
+            "space-2xl": "2rem",
+            "space-xl": "1.5rem",
+            "touch-target-min": "3rem",
+            "gutter-desktop": "1.5rem",
+            "space-2xs": "0.25rem",
+            "space-sm": "0.75rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-dashed-line {
+      background-image: repeating-linear-gradient(to bottom, #c2410c 0, #c2410c 6px, transparent 6px, transparent 12px);
+    }
+    .custom-dashed-line-inactive {
+      background-image: repeating-linear-gradient(to bottom, #d6c7b2 0, #d6c7b2 5px, transparent 5px, transparent 10px);
+    }
+    /* Pulse badge effect for outdoor sunlight visibility */
+    @keyframes subtle-beacon {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.15); opacity: 0.85; }
+    }
+    .beacon-pulse {
+      animation: subtle-beacon 2s ease-in-out infinite;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- TOP APP BAR -->
+<header class="bg-surface/90 backdrop-blur-md sticky top-0 z-40 w-full shadow-sm max-w-lg mx-auto">
+<div class="flex justify-between items-center w-full px-margin-mobile py-space-xs min-h-touch-min">
+<!-- Back Action and Context Title -->
+<div class="flex items-center gap-space-xs">
+<a aria-label="मागे जा" class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-primary active:scale-95 transition-transform duration-150" href="#deals-list">
+<span class="material-symbols-outlined text-primary text-[24px]">arrow_back</span>
+</a>
+<div>
+<div class="flex items-center gap-1.5">
+<h1 class="font-headline-sm text-headline-sm text-on-surface leading-tight">सौदा ट्रॅकिंग</h1>
+<span class="font-label-sm text-label-sm px-1.5 py-0.5 rounded bg-surface-container-highest text-on-surface-variant font-bold uppercase tracking-wider">Live</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">सौदा क्र: #SD-2024-8842 · पुणे ट्रेडिंग कं.</p>
+</div>
+</div>
+<!-- Outdoor Audio Read-Aloud Pill -->
+<button class="flex items-center gap-1 bg-surface-container-high hover:bg-surface-container transition-colors active:scale-95 duration-150 px-2.5 py-1.5 rounded-xl border border-outline-variant/60 shadow-xs" onclick="playMarathiAudio()" title="आवाज ऐका">
+<span class="material-symbols-outlined text-primary text-[20px]" style="font-variation-settings: 'FILL' 1;">volume_up</span>
+<span class="font-label-md text-label-md text-primary font-bold">ऐका</span>
+</button>
+</div>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS (Max-w-lg for Mobile-first Android Experience) -->
+<main class="flex-1 w-full max-w-lg mx-auto px-margin-mobile pt-space-xs pb-space-4xl space-y-space-md">
+<!-- 1. ESCROW FUND SAFETY BANNER (LOUD VISUAL ASSURANCE) -->
+<section class="bg-surface-container-lowest rounded-xl p-space-md border-2 border-tertiary-container shadow-[0_2px_8px_rgba(15,124,91,0.12)] relative overflow-hidden">
+<!-- Trust Stamp Background Watermark Accent -->
+<div class="absolute -right-3 -bottom-3 text-tertiary-fixed opacity-30 pointer-events-none select-none">
+<span class="material-symbols-outlined text-[96px]" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+</div>
+<div class="relative z-10 space-y-space-xs">
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-tertiary/10 border border-tertiary/20">
+<span class="material-symbols-outlined text-tertiary text-[18px]" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold tracking-wide">मंडी-सेतू एस्क्रो बँक गॅरंटी</span>
+</div>
+<span class="inline-flex items-center gap-1 text-tertiary font-label-sm text-label-sm font-bold bg-tertiary-fixed/30 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">check_circle</span> १००% सुरक्षित
+          </span>
+</div>
+<div class="pt-1">
+<p class="font-label-sm text-label-sm text-on-surface-variant font-medium">सध्या पैशांचे ठिकाण: मंडी-सेतू बँक एस्क्रो खात्यात सुरक्षित</p>
+<div class="flex items-baseline gap-2 mt-0.5">
+<span class="font-numeral-hero text-numeral-hero text-tertiary tracking-tight">₹७५,४००</span>
+<span class="font-label-md text-label-md text-on-surface-variant font-bold">(शेतकरी निव्वळ रक्कम लॉक)</span>
+</div>
+</div>
+<div class="bg-surface-container-low rounded-lg p-2.5 border border-outline-variant/50 text-on-surface">
+<p class="font-body-sm text-body-sm text-on-surface leading-snug">
+<strong class="font-bold text-on-surface">व्यापाऱ्याने पूर्ण रक्कम जमा केली आहे.</strong> शेतावर वजन पावती (धर्मकाटा) अपलोड होताच व आपला OTP पडताच थेट तुमच्या <strong class="font-semibold text-primary">SBI बँक खात्यात वर्ग</strong> होईल.
+          </p>
+</div>
+</div>
+</section>
+<!-- 2. PRODUCE LOT SNAPSHOT CARD -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 shadow-sm p-space-md">
+<div class="flex items-center gap-space-sm">
+<!-- Visual Crop Lot Thumbnail -->
+<div class="w-16 h-16 rounded-xl overflow-hidden relative flex-shrink-0 border border-outline-variant/60 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Burlap gunny sacks brimming with fresh Maharashtra red harvest onions stacked inside a sunlit rural Lasalgaon APMC auction godown. Natural warm sunlight beams through wooden slats casting golden earthy tones on terracotta textured jute bags and deep crimson onion skins." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ2ueRDRqemPnlaR_u9ptcngRbX_x7-KX1cGWDS0eQhR68wRgUx22XOpu9gNrqqi0VhP4nVYXChZhC9C-jBOptXCFbCAEFtLfaQY5GlXuXLt2W7L1jX8O_aqr6uQF4ZM-TsPaqaL-jtnQ8oCcLwTSeXpZgOT6P8lkLUhAd5XehczsvbqyZa_PQc9mCnflQuX6Oan6qsWhYGSqRFTHxGWBcZuOZNEQEMmZR2Jy5OjKb0in6oQF74qOm"/>
+<span class="absolute bottom-0 inset-x-0 bg-primary/90 text-on-primary font-label-sm text-[9px] text-center font-bold py-0.5">ग्रेड A</span>
+</div>
+<!-- Lot Specs -->
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between">
+<h2 class="font-title-lg text-title-lg text-on-surface truncate">४० क्विंटल गावरान लाल कांदा</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">खरेदीदार: <strong class="text-on-surface font-semibold">Pune Trading Co.</strong> (गुलटेकडी, पुणे)</p>
+<div class="flex items-center gap-2 mt-1 text-on-surface font-numeral-data text-body-sm">
+<span class="bg-surface-container px-2 py-0.5 rounded font-bold text-primary">दर: ₹१,९००/क्विं</span>
+<span class="text-outline text-[12px]">•</span>
+<span class="text-on-surface-variant text-label-sm">८० पोती (~५० किलो)</span>
+</div>
+</div>
+</div>
+<!-- Quick Math Strip -->
+<div class="mt-space-sm pt-space-xs border-t border-outline-variant/40 flex justify-between items-center text-on-surface-variant font-label-md text-label-md">
+<span>एकूण: ₹७६,००० − ₹६०० हमाली/तोलाई</span>
+<span class="text-tertiary font-bold">निव्वळ: ₹७५,४००</span>
+</div>
+</section>
+<!-- 3. LIVE LOGISTICS & TRUCK GPS TRACKING CARD -->
+<section class="bg-surface-container-lowest rounded-xl border-2 border-primary-container shadow-md overflow-hidden">
+<!-- Card Header with Real-Time ETA Status -->
+<div class="bg-primary/5 px-space-md py-space-sm border-b border-primary/10 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary-container opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-primary-container"></span>
+</span>
+<span class="font-title-md text-title-md text-primary font-bold">गाडी शेताकडे निघत आहे</span>
+</div>
+<span class="bg-primary text-on-primary font-label-sm text-label-sm px-2 py-0.5 rounded-full font-bold">थेट ट्रॅकिंग</span>
+</div>
+<!-- Stylized Interactive GPS Route Map Visual -->
+<div class="relative w-full h-44 bg-surface-container-high overflow-hidden">
+<!-- Stylized Map Canvas Graphics -->
+<svg class="w-full h-full object-cover" fill="none" viewbox="0 0 400 176" xmlns="http://www.w3.org/2000/svg">
+<!-- Background land parcel textures -->
+<rect fill="#F4EFE6" height="176" width="400"></rect>
+<path d="M-20 40 C 60 30, 120 70, 200 45 C 280 20, 340 60, 420 50 L 420 180 L -20 180 Z" fill="#ECE5D8" opacity="0.7"></path>
+<path d="M0 120 C 80 110, 160 140, 240 125 C 320 110, 360 130, 420 120" stroke="#DFD4C2" stroke-linecap="round" stroke-width="6"></path>
+<path d="M50 0 L 70 176 M220 0 L 210 176 M330 0 L 340 176" stroke="#E6DCCE" stroke-dasharray="4 6" stroke-width="3"></path>
+<!-- Green agricultural fields geometry -->
+<rect fill="#006146" fill-opacity="0.08" height="60" rx="6" stroke="#006146" stroke-opacity="0.2" stroke-width="1.5" width="110" x="260" y="24"></rect>
+<text fill="#006146" font-family="Plus Jakarta Sans" font-size="9" font-weight="700" x="270" y="44">निफाड शेत आवार</text>
+<text fill="#59413A" font-family="Plus Jakarta Sans" font-size="8" x="270" y="58">Onion Storage Shed #2</text>
+<!-- Highway route road -->
+<path d="M 45 130 C 110 135, 140 100, 210 90 C 260 82, 280 75, 315 55" id="route-path" stroke="#E1BFB5" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"></path>
+<!-- Active travelled route -->
+<path d="M 45 130 C 110 135, 140 100, 185 93" stroke="#C2410C" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path>
+<!-- Origin: APMC Yard Marker -->
+<circle cx="45" cy="130" fill="#59413A" r="5"></circle>
+<text fill="#59413A" font-family="Plus Jakarta Sans" font-size="9" font-weight="600" x="18" y="152">नाशिक/गुलटेकडी</text>
+<!-- Current Truck Location Icon Node -->
+<g transform="translate(175, 82)">
+<circle class="beacon-pulse" cx="10" cy="10" fill="#C2410C" fill-opacity="0.2" r="16"></circle>
+<circle cx="10" cy="10" fill="#9B2F00" r="10" stroke="#FFFFFF" stroke-width="2"></circle>
+<path d="M7 10 L13 10 M10 7 L10 13" stroke="#FFF" stroke-linecap="round" stroke-width="1.5"></path>
+</g>
+<!-- Destination Pin (Farmer Shed, Niphad) -->
+<g transform="translate(305, 33)">
+<path d="M10 0 C4.48 0 0 4.48 0 10 C0 17 10 26 10 26 C10 26 20 17 20 10 C20 4.48 15.52 0 10 0 Z" fill="#006146"></path>
+<circle cx="10" cy="9" fill="#FFFFFF" r="3.5"></circle>
+</g>
+</svg>
+<!-- Floating ETA Overlay Badge -->
+<div class="absolute top-2 left-2 bg-surface-container-lowest/95 backdrop-blur-sm border border-outline-variant/60 rounded-lg px-2.5 py-1.5 shadow-sm">
+<p class="font-label-sm text-[10px] text-on-surface-variant font-semibold">अपेक्षित पोहोच वेळ (ETA)</p>
+<p class="font-title-md text-title-md text-primary font-bold">उद्या स. १०:०० वाजता</p>
+<p class="font-label-sm text-[11px] text-tertiary font-bold">~५५ मिनिटे अंतर • ३२ किमी</p>
+</div>
+<button class="absolute bottom-2 right-2 bg-surface-container-lowest/90 px-2 py-1 rounded text-on-surface text-label-sm border border-outline-variant/60 flex items-center gap-1 shadow-xs hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[16px] text-primary">fullscreen</span> नकाशा मोठा करा
+        </button>
+</div>
+<!-- Driver & Vehicle Details Strip -->
+<div class="p-space-md bg-surface-container-lowest space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<!-- Driver Avatar -->
+<div class="w-12 h-12 rounded-full bg-secondary-fixed flex items-center justify-center text-primary font-bold text-headline-sm border border-outline-variant">
+              बजा
+            </div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-title-lg text-title-lg text-on-surface">बाळू जाधव (चालक)</h3>
+<span class="inline-flex items-center text-tertiary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span> ४.९
+                </span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                गाडी क्र: <strong class="text-on-surface font-semibold">MH-15-EG-4402</strong> · टाटा ११०९ (६ चाकी)
+              </p>
+</div>
+</div>
+<!-- Direct Call Button (Large 48px touch target) -->
+<a aria-label="चालकाला फोन करा" class="w-12 h-12 rounded-xl bg-tertiary text-on-tertiary flex items-center justify-center shadow-sm active:scale-95 transition-transform hover:bg-tertiary-container" href="tel:+919822012345" title="चालकाला फोन करा">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">call</span>
+</a>
+</div>
+<!-- Loading Point Confirmation -->
+<div class="bg-surface-container-low rounded-lg p-2.5 border border-outline-variant/40 flex items-start gap-2">
+<span class="material-symbols-outlined text-primary text-[20px] mt-0.5">location_on</span>
+<div class="text-body-sm text-on-surface">
+<p class="font-bold">माल भरणे ठिकाण (Pickup Point):</p>
+<p class="text-on-surface-variant">गट क्र. १४२, पिंपळगाव रोड, ता. निफाड, जि. नाशिक (कांदा चाळ शेड क्र. २)</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. 6-STAGE TACTILE ESCROW MILESTONE TIMELINE -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant/60 shadow-sm p-space-md">
+<div class="flex items-center justify-between pb-space-sm border-b border-outline-variant/40">
+<div>
+<h2 class="font-title-lg text-title-lg text-on-surface">सौदा प्रगती व टप्पे (६ टप्पे)</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">एस्क्रो पेआउट व सुरक्षित डिलिव्हरी सायकल</p>
+</div>
+<span class="font-label-sm text-label-sm bg-tertiary-fixed text-on-tertiary-fixed px-2 py-0.5 rounded-full font-bold">
+          २/६ पूर्ण
+        </span>
+</div>
+<div class="mt-space-md relative">
+<!-- STAGE 1: COMPLETED -->
+<div class="flex items-start gap-3 relative pb-6">
+<!-- Continuous vertical track -->
+<div class="absolute left-4 top-8 -bottom-1 w-0.5 bg-tertiary"></div>
+<!-- Icon Node -->
+<div class="w-8 h-8 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center flex-shrink-0 z-10 shadow-xs">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<!-- Stage Info -->
+<div class="flex-1 bg-surface-container-low p-2.5 rounded-lg border border-tertiary/20">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface font-bold">१. सौदा करार व ई-स्वाक्षरी</h3>
+<span class="font-label-sm text-[11px] text-tertiary font-bold">पूर्ण ✓</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">काल दुपारी १२:३५ वा. दोन्ही पक्षांची डिजिटल मंजुरी.</p>
+<div class="mt-1.5 flex items-center gap-1 text-primary font-label-sm text-[11px] font-bold">
+<span class="material-symbols-outlined text-[14px]">description</span> APMC फॉर्म क्र. १३ ई-करार जनरेट झाला.
+            </div>
+</div>
+</div>
+<!-- STAGE 2: COMPLETED -->
+<div class="flex items-start gap-3 relative pb-6">
+<!-- Continuous vertical track (Active transition below) -->
+<div class="absolute left-4 top-8 -bottom-1 w-0.5 bg-tertiary"></div>
+<!-- Icon Node -->
+<div class="w-8 h-8 rounded-full bg-tertiary text-on-tertiary flex items-center justify-center flex-shrink-0 z-10 shadow-xs">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<!-- Stage Info -->
+<div class="flex-1 bg-surface-container-low p-2.5 rounded-lg border border-tertiary/20">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface font-bold">२. १००% रक्कम एस्क्रोमध्ये जमा</h3>
+<span class="font-label-sm text-[11px] text-tertiary font-bold">पूर्ण ✓</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">₹७५,४०० Pune Trading Co. कडून बँक एस्क्रो खात्यात सुरक्षित लॉक.</p>
+<div class="mt-1 flex items-center gap-1 text-tertiary font-label-sm text-[11px] font-bold">
+<span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">lock</span> UTR: HDFC994829104 (सत्यापित)
+            </div>
+</div>
+</div>
+<!-- STAGE 3: ACTIVE NOW (TRUCK ARRIVAL & LOADING) -->
+<div class="flex items-start gap-3 relative pb-6">
+<!-- Dashed connector to upcoming -->
+<div class="absolute left-4 top-8 -bottom-1 w-0.5 custom-dashed-line"></div>
+<!-- Active Beacon Node -->
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary flex items-center justify-center flex-shrink-0 z-10 ring-4 ring-primary/20 shadow-md">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">local_shipping</span>
+</div>
+<!-- Active Stage Card -->
+<div class="flex-1 bg-surface-container-lowest p-3 rounded-xl border-2 border-primary shadow-sm">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-[10px] bg-primary text-on-primary px-2 py-0.5 rounded font-bold uppercase tracking-wider">सध्याचा टप्पा • चालू</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">उद्या स. १०:००</span>
+</div>
+<h3 class="font-title-lg text-title-lg text-primary font-bold mt-1">३. गाडी शेतात आगमन व लोडिंग</h3>
+<p class="font-body-sm text-body-sm text-on-surface mt-1 leading-snug">
+              गाडी आपल्या शेडवर आल्यावर ८० पोती (४० क्विंटल) लोडिंग सुरू होईल. हमाली व्यापारी देणार आहे.
+            </p>
+<div class="mt-2.5 pt-2 border-t border-outline-variant/40 flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant">गाडी ट्रॅक होत आहे</span>
+<a class="inline-flex items-center gap-1 font-label-md text-label-md text-primary font-bold" href="tel:+919822012345">
+<span class="material-symbols-outlined text-[16px]">call</span> ड्रायव्हरशी बोला
+              </a>
+</div>
+</div>
+</div>
+<!-- STAGE 4: UPCOMING (WEIGHMENT SLIP & OTP) -->
+<div class="flex items-start gap-3 relative pb-6">
+<div class="absolute left-4 top-8 -bottom-1 w-0.5 custom-dashed-line-inactive"></div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border-2 border-outline-variant text-on-surface-variant flex items-center justify-center flex-shrink-0 z-10">
+<span class="font-label-sm text-label-sm font-bold">४</span>
+</div>
+<div class="flex-1 bg-surface-container-low/70 p-2.5 rounded-lg border border-outline-variant/40 opacity-80">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">४. डिजिटल वजन पावती व OTP</h3>
+<span class="font-label-sm text-[11px] text-on-surface-variant font-medium">पुढील टप्पा</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+              जवळच्या अधिकृत धर्मकाट्यावर वजन करून पावती ॲपमध्ये अपलोड केली जाईल. आपण OTP दिल्यानंतर वजन मान्य होईल.
+            </p>
+</div>
+</div>
+<!-- STAGE 5: UPCOMING (QUALITY MATCH CONFIRMATION) -->
+<div class="flex items-start gap-3 relative pb-6">
+<div class="absolute left-4 top-8 -bottom-1 w-0.5 custom-dashed-line-inactive"></div>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border-2 border-outline-variant text-on-surface-variant flex items-center justify-center flex-shrink-0 z-10">
+<span class="font-label-sm text-label-sm font-bold">५</span>
+</div>
+<div class="flex-1 bg-surface-container-low/70 p-2.5 rounded-lg border border-outline-variant/40 opacity-80">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">५. मालाची तपासणी व डिलिव्हरी</h3>
+<span class="font-label-sm text-[11px] text-on-surface-variant font-medium">पुढील टप्पा</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+              करारानुसार ग्रेड A गावरान लाल कांदा (८५०/१००० गुणवत्ता) पुष्टीकरण.
+            </p>
+</div>
+</div>
+<!-- STAGE 6: FINAL (BANK SETTLEMENT RTGS) -->
+<div class="flex items-start gap-3 relative">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border-2 border-outline-variant text-on-surface-variant flex items-center justify-center flex-shrink-0 z-10">
+<span class="material-symbols-outlined text-[18px]">account_balance</span>
+</div>
+<div class="flex-1 bg-surface-container-low/70 p-2.5 rounded-lg border border-outline-variant/40 opacity-80">
+<div class="flex items-center justify-between">
+<h3 class="font-title-md text-title-md text-on-surface font-semibold">६. थेट बँक खात्यात पैसे जमा (RTGS)</h3>
+<span class="font-label-sm text-[11px] text-tertiary font-bold">अंतिम टप्पा</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+              डिलिव्हरीच्या २ तासांच्या आत SBI खाते क्र. ••••••4209 मध्ये थेट ₹७५,४०० वर्ग होतील.
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. CONTRACT & SAFETY ACTIONS (TACTILE BUTTON DOCK) -->
+<section class="space-y-space-xs">
+<!-- View Contract Button -->
+<a class="w-full h-12 rounded-xl bg-surface-container-lowest border-2 border-primary text-primary flex items-center justify-center gap-2 font-title-lg text-title-lg active:scale-98 transition-transform hover:bg-surface-container-low" href="#view-contract-pdf">
+<span class="material-symbols-outlined text-[20px]">picture_as_pdf</span>
+<span>डिजिटल करार पावती पहा (PDF)</span>
+</a>
+<!-- Emergency / Support Callout Grid -->
+<div class="bg-surface-container rounded-xl p-space-sm border border-outline-variant/60 flex items-center justify-between">
+<div class="flex items-center gap-2.5">
+<div class="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[24px]">support_agent</span>
+</div>
+<div>
+<p class="font-title-md text-title-md text-on-surface">काही अडचण किंवा शंका आहे?</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">गाडी उशीर किंवा तोलाई संदर्भात साहाय्य</p>
+</div>
+</div>
+<button class="px-3 py-2 bg-surface-container-highest hover:bg-surface-container-high rounded-lg text-primary font-label-md text-label-md font-bold active:scale-95 transition-transform border border-outline-variant/60" onclick="openSupportModal()">
+          मदत कक्ष
+        </button>
+</div>
+</section>
+</main>
+<!-- BOTTOM NAVIGATION BAR (Mandatory Shared Component: Semantic mapping -> Deals is active) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-gutter-mobile py-space-xs min-h-touch-target-hero pb-safe bg-surface-container-lowest shadow-[0_-4px_20px_rgba(24,24,27,0.09)] border-t-2 border-outline-variant/50 max-w-lg mx-auto inset-x-0">
+<!-- 1. Home -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95 duration-150" href="#home">
+<span class="material-symbols-outlined text-[22px]">storefront</span>
+<span class="font-label-sm text-label-sm mt-0.5">Home</span>
+</a>
+<!-- 2. Market -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95 duration-150" href="#market">
+<span class="material-symbols-outlined text-[22px]">trending_up</span>
+<span class="font-label-sm text-label-sm mt-0.5">Market</span>
+</a>
+<!-- 3. My Produce -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-3 py-1.5 hover:bg-surface-container-high transition-colors active:translate-y-0.5 active:scale-95 duration-150" href="#my-produce">
+<span class="material-symbols-outlined text-[22px]">inventory_2</span>
+<span class="font-label-sm text-label-sm mt-0.5">My Produce</span>
+</a>
+<!-- 4. Deals (ACTIVE DESTINATION: Style Active Navigation applied) -->
+<a aria-current="page" class="flex flex-col items-center justify-center bg-primary text-on-primary rounded-xl px-3 py-1.5 shadow-sm active:translate-y-0.5 active:scale-95 transition-all duration-150" href="#deals">
+<span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">handshake</span>
+<span class="font-label-sm text-label-sm mt-0.5 font-bold">Deals</span>
+</a>
+</nav>
+<!-- Interactive Help Modal (Hidden by default, triggered via inline script) -->
+<div class="fixed inset-0 z-50 hidden items-end justify-center bg-inverse-surface/60 backdrop-blur-[2px] p-4" id="support-modal">
+<div class="w-full max-w-sm bg-surface-container-lowest rounded-2xl p-5 shadow-2xl border border-outline-variant space-y-4">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[24px]">headset_mic</span>
+<h3 class="font-title-lg text-title-lg text-on-surface font-bold">मंडी मित्र सहाय्यता</h3>
+</div>
+<button class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant" onclick="closeSupportModal()">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+        सौदा क्र. <strong>#SD-2024-8842</strong> संदर्भात कोणत्याही अडचणीसाठी थेट एपीएमसी समन्वयक किंवा एस्क्रो अधिकाऱ्याशी संपर्क साधा.
+      </p>
+<div class="space-y-2 pt-2">
+<a class="w-full h-12 rounded-xl bg-primary text-on-primary flex items-center justify-center gap-2 font-title-lg font-bold shadow-sm" href="tel:18002008899">
+<span class="material-symbols-outlined">call</span> टोल-फ्री हेल्पलाइन: १८०० २०० ८८९९
+        </a>
+<button class="w-full h-11 rounded-xl bg-surface-container border border-outline-variant text-on-surface font-title-md flex items-center justify-center gap-2" onclick="reportDelay()">
+<span class="material-symbols-outlined text-secondary">report_problem</span> गाडी उशिराची तक्रार नोंदवा
+        </button>
+</div>
+</div>
+</div>
+<!-- Lightweight Audio Feedback & UI micro-interactions -->
+<script>
+    function playMarathiAudio() {
+      if ('speechSynthesis' in window) {
+        const text = "सौदा क्रमांक एस डी 2024 8842. व्यापाऱ्याने पंच्याहत्तर हजार चारशे रुपये मंडी सेतू एस्क्रो खात्यात सुरक्षित जमा केले आहेत. गाडी शेताकडे निघत असून उद्या सकाळी दहा वाजता पोहोचेल.";
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'mr-IN';
+        utterance.rate = 0.95;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("ऑडिओ: व्यापाऱ्याने ₹७५,४०० एस्क्रो खात्यात जमा केले आहेत. गाडी शेताकडे निघाली आहे.");
+      }
+    }
+
+    function openSupportModal() {
+      const modal = document.getElementById('support-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeSupportModal() {
+      const modal = document.getElementById('support-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function reportDelay() {
+      alert("गाडी उशिराची नोंद घेतली आहे. नाशिक APMC प्रतिनिधी ५ मिनिटांत चालकाशी संपर्क साधेल.");
+      closeSupportModal();
+    }
+  </script>
+</body></html>

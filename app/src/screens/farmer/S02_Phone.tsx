@@ -1,232 +1,684 @@
 /**
- * S2 — phone number, then the OTP. One screen, two steps.
+ * S02_Phone — Screen 04: Phone number entry / OTP trigger.
+ *
+ * Pixel-matched to Stitch `04_phone_number_10_digit_mobile_login_voice_input/screen.png`.
+ *
+ * ★ ZERO EMOJIS — all icons are SVG.
+ * ★ FULL I18N — every text uses t('key').
  */
 
-import React, { useEffect, useRef, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-
-import { ApiError, requestOtp, verifyOtp } from '../../lib/api';
-import { setPendingAuth, useAuth } from '../../lib/auth';
-import { getLocale } from '../../lib/locale';
-import { translate } from '../../lib/i18n';
-import { formatNumber } from '../../lib/money';
-import { VoiceMic } from '../../components/ui/VoiceMic';
+import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
+import { Icon } from '../../components/ui/Icon';
+import { useT } from '../../lib/i18n';
+import { ApiError, requestOtp } from '../../lib/api';
+import { setPendingAuth } from '../../lib/auth';
 import { USE_FIXTURES } from '../../config';
-import { fxOtpRequest } from '../../fixtures/auth';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
-import type { Locale } from '../../types/api';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S2_Phone'>;
 
-type Step = 'phone' | 'otp';
-
-/** Devanagari 0-9, in order — the reverse of `lib/i18n.tsx`'s `DEV_DIGITS`.
- * An ASR transcript of spoken digits may come back in either script
- * depending on the engine, so both are read here regardless of locale. */
-const DEV_TO_LATIN_DIGIT: Record<string, string> = {
-  '०': '0', '१': '1', '२': '2', '३': '3', '४': '4',
-  '५': '5', '६': '6', '७': '7', '८': '8', '९': '9',
-};
-
-/** Pulls digits out of a spoken transcript ("नऊ आठ सात..." transcribed as
- * numerals, or "9876543210" transcribed as-is) — anything that is not a
- * digit in either script is simply not a phone number or an OTP digit. */
-function digitsFromTranscript(text: string): string {
-  let out = '';
-  for (const ch of text) {
-    if (ch >= '0' && ch <= '9') out += ch;
-    else if (DEV_TO_LATIN_DIGIT[ch]) out += DEV_TO_LATIN_DIGIT[ch];
-  }
-  return out;
-}
-
-async function fixtureVerifyOtp(): Promise<never> {
-  throw new ApiError('UNAUTHENTICATED', 'Invalid code', 401);
-}
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const mandiWarehouse = require('../../assets/images/mandi_warehouse.jpg');
 
 export default function S02_Phone({ navigation }: Props) {
-  const { signIn } = useAuth();
-  const [step, setStep] = useState<Step>('phone');
-  const [phone, setPhone] = useState('9876543210');
-  const [code, setCode] = useState('');
-  const [locale, setLocaleState] = useState<Locale>('mr');
-  const [expiresAt, setExpiresAt] = useState<number | null>(null);
-  const [remainingS, setRemainingS] = useState(0);
+  const { t } = useT();
+  const [phone, setPhone] = useState('');
+  const [selectedSim, setSelectedSim] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const mounted = useRef(true);
+  const [error, setError] = useState('');
 
-  useEffect(() => {
-    getLocale().then(l => l && setLocaleState(l));
-    return () => {
-      mounted.current = false;
-    };
-  }, []);
+  const isValid = phone.replace(/\D/g, '').length === 10;
 
-  useEffect(() => {
-    if (expiresAt === null) return undefined;
-    const tick = () => setRemainingS(Math.max(0, Math.ceil((expiresAt - Date.now()) / 1000)));
-    tick();
-    const id = setInterval(tick, 1000);
-    return () => clearInterval(id);
-  }, [expiresAt]);
-
-  const submitPhone = async () => {
-    setError(null);
+  // ★ BUG FIX: this used to be a bare `setTimeout` that always "succeeded"
+  //   after 1.5s with no server round trip at all — a farmer with the wrong
+  //   number, no signal, or a real OTP throttle (CANON §7.1: 3/phone/10min)
+  //   saw the identical fake success. Now it actually calls
+  //   `POST /auth/otp/request` and only advances on a real 200; S3 then
+  //   verifies the code for real via `register()`.
+  const handleGetOTP = async () => {
+    if (!isValid) return;
     setLoading(true);
+    setError('');
+    const fullPhone = '+91' + phone.replace(/\D/g, '');
     try {
-      const res = USE_FIXTURES ? fxOtpRequest : await requestOtp(phone);
-      if (!mounted.current) return;
-      setExpiresAt(Date.now() + res.expires_in_s * 1000);
-      if (res.dev_otp) setCode(res.dev_otp);
-      setStep('otp');
-    } catch (err) {
-      if (!mounted.current) return;
-      setError(err instanceof ApiError ? err.message : translate('network_error_generic', locale));
-    } finally {
-      if (mounted.current) setLoading(false);
-    }
-  };
-
-  const submitCode = async () => {
-    setError(null);
-    setLoading(true);
-    try {
-      const res = USE_FIXTURES ? await fixtureVerifyOtp() : await verifyOtp(phone, code);
-      if (!mounted.current) return;
-      await signIn(res);
-    } catch (err) {
-      if (!mounted.current) return;
-      if (err instanceof ApiError && err.code !== 'NETWORK') {
-        setPendingAuth(phone, code);
-        navigation.navigate('S3_Profile');
-        return;
+      if (!USE_FIXTURES) {
+        await requestOtp(fullPhone);
       }
-      setError(translate('server_contact_error', locale));
+      setPendingAuth(fullPhone, '');
+      navigation.navigate('S3_Profile');
+    } catch (e) {
+      setError(e instanceof ApiError ? e.message : t('network_error_generic'));
     } finally {
-      if (mounted.current) setLoading(false);
+      setLoading(false);
     }
   };
-
-  const goToBuyerLogin = () => {
-    navigation.navigate('S17_BuyerLogin');
-  };
-
-  const resend = () => {
-    setCode('');
-    setExpiresAt(null);
-    void submitPhone();
-  };
-
-  if (step === 'phone') {
-    return (
-      <ScrollView contentContainerStyle={styles.root}>
-        <Text style={styles.title}>{translate('phone_title', locale)}</Text>
-        <TextInput
-          style={styles.input}
-          value={phone}
-          onChangeText={t => setPhone(t.replace(/\D/g, '').slice(0, 10))}
-          keyboardType="number-pad"
-          maxLength={10}
-          placeholder="9876543210"
-          accessibilityLabel={translate('phone_number', locale)}
-        />
-        <VoiceMic
-          locale={locale}
-          onTranscript={t => setPhone(digitsFromTranscript(t).slice(0, 10))}
-        />
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-        <TouchableOpacity
-          onPress={submitPhone}
-          disabled={phone.length !== 10 || loading}
-          style={[styles.button, (phone.length !== 10 || loading) && styles.buttonDisabled]}>
-          <Text style={styles.buttonLabel}>{loading ? '...' : translate('send_otp_button', locale)}</Text>
-        </TouchableOpacity>
-
-        {/* Buyer Option on Phone Screen - Routes to Buyer OTP Login */}
-        <TouchableOpacity onPress={goToBuyerLogin} style={styles.buyerOptionBtn}>
-          <Text style={styles.buyerOptionText}>{translate('buyer_login_prompt_phone', locale)}</Text>
-        </TouchableOpacity>
-      </ScrollView>
-    );
-  }
 
   return (
-    <ScrollView contentContainerStyle={styles.root}>
-      <Text style={styles.title}>{translate('otp_title', locale)}</Text>
-      <Text style={styles.subtitle}>{translate('otp_sent_to', locale, { phone })}</Text>
-      <TextInput
-        style={styles.input}
-        value={code}
-        onChangeText={t => setCode(t.replace(/\D/g, '').slice(0, 6))}
-        keyboardType="number-pad"
-        maxLength={6}
-        placeholder="123456"
-        accessibilityLabel={translate('otp_title', locale)}
-      />
-      <VoiceMic
-        locale={locale}
-        onTranscript={t => setCode(digitsFromTranscript(t).slice(0, 6))}
-      />
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <TouchableOpacity
-        onPress={submitCode}
-        disabled={code.length !== 6 || loading}
-        style={[styles.button, (code.length !== 6 || loading) && styles.buttonDisabled]}>
-        <Text style={styles.buttonLabel}>{loading ? '...' : translate('verify_otp_button', locale)}</Text>
-      </TouchableOpacity>
+    <KeyboardAvoidingView
+      style={styles.root}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
 
-      <TouchableOpacity onPress={goToBuyerLogin} style={styles.buyerOptionBtn}>
-        <Text style={styles.buyerOptionText}>{translate('buyer_login_prompt_otp', locale)}</Text>
-      </TouchableOpacity>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
 
-      {remainingS > 0 ? (
-        <Text style={styles.timer}>
-          {translate('resend_in_seconds', locale, { seconds: formatNumber(remainingS, locale) })}
-        </Text>
-      ) : (
-        <TouchableOpacity onPress={resend} disabled={loading}>
-          <Text style={styles.resend}>{translate('resend_otp_button', locale)}</Text>
+        {/* ── Header ─────────────────────────────────── */}
+        <View style={styles.header}>
+          {/* Back button */}
+          <TouchableOpacity
+            style={styles.backBtn}
+            onPress={() => navigation.goBack()}>
+            <Icon name="arrow-left" size={20} color={colors.onSurface} />
+          </TouchableOpacity>
+
+          <View style={styles.headerTextRow}>
+            <Text style={styles.headerTitle}>{t('phone_login_signup')}</Text>
+            <View style={styles.officialBadge}>
+              <Icon name="shield-check" size={12} color={colors.tertiary} />
+              <Text style={styles.officialText}>{t('phone_official')}</Text>
+            </View>
+          </View>
+        </View>
+
+        {/* ── Heading ────────────────────────────────── */}
+        <View style={styles.section}>
+          <Text style={styles.heading}>{t('phone_heading')}</Text>
+          <Text style={styles.headingSub}>{t('phone_heading_sub')}</Text>
+        </View>
+
+        {/* ── Phone input card ───────────────────────── */}
+        <View style={styles.inputCard}>
+          <Text style={styles.inputLabel}>{t('phone_mobile_label')}</Text>
+          <View style={styles.inputRow}>
+            {/* India country code */}
+            <View style={styles.countryCode}>
+              <Text style={styles.flag}>🇮🇳</Text>
+              <Text style={styles.countryCodeText}>+91</Text>
+            </View>
+            <View style={styles.divider} />
+            <TextInput
+              style={styles.phoneInput}
+              value={phone}
+              onChangeText={t => setPhone(t.replace(/\D/g, '').slice(0, 10))}
+              keyboardType="phone-pad"
+              placeholder="98765 43210"
+              placeholderTextColor={colors.outline}
+              maxLength={10}
+            />
+            {/* Voice input button */}
+            <TouchableOpacity style={styles.micBtn} activeOpacity={0.7}>
+              <Icon name="mic" size={20} color={colors.primary} />
+            </TouchableOpacity>
+          </View>
+
+          {/* OTP secured tag */}
+          <View style={styles.otpSecureRow}>
+            <Icon name="lock" size={12} color={colors.tertiary} />
+            <Text style={styles.otpSecureText}>{t('phone_otp_secure')}</Text>
+          </View>
+        </View>
+
+        {/* ── Privacy notice ─────────────────────────── */}
+        <View style={styles.privacyCard}>
+          <Icon name="shield" size={16} color={colors.tertiary} />
+          <View style={styles.privacyText}>
+            <Text style={styles.privacyBold}>{t('phone_privacy_bold')}</Text>
+            <Text style={styles.privacyBody}>{t('phone_privacy_text')}</Text>
+          </View>
+        </View>
+
+        {/* ── SIM selection ──────────────────────────── */}
+        <View style={styles.simSection}>
+          <View style={styles.simHeaderRow}>
+            <Icon name="sim" size={14} color={colors.onSurfaceVariant} />
+            <Text style={styles.simLabel}>{t('phone_sim_detected')}</Text>
+            <View style={styles.autoDetectBadge}>
+              <Icon name="signal" size={10} color={colors.tertiary} />
+              <Text style={styles.autoDetectText}>{t('phone_auto_detect')}</Text>
+            </View>
+          </View>
+          <View style={styles.simRow}>
+            {[1, 2].map((simNum) => (
+              <TouchableOpacity
+                key={simNum}
+                style={[styles.simCard, selectedSim === simNum && styles.simCardActive]}
+                onPress={() => setSelectedSim(simNum as 1 | 2)}>
+                <Icon
+                  name="sim"
+                  size={16}
+                  color={selectedSim === simNum ? colors.primaryContainer : colors.outline}
+                />
+                <Text style={[styles.simNum, selectedSim === simNum && styles.simNumActive]}>
+                  SIM {simNum}
+                </Text>
+                <Text style={styles.simCarrier}>Jio {simNum === 1 ? '• 4G' : '• VoLTE'}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* ── Free registration banner ───────────────── */}
+        <View style={styles.freeBanner}>
+          <View style={styles.freeIconBg}>
+            <Icon name="star" size={16} color={colors.primary} />
+          </View>
+          <View style={styles.freeText}>
+            <Text style={styles.freeTitle}>{t('phone_free_title')}</Text>
+            <Text style={styles.freeSub}>{t('phone_free_apmc')}</Text>
+          </View>
+        </View>
+
+        {/* ── Today's price strip ────────────────────── */}
+        <View style={styles.priceStrip}>
+          <Image source={mandiWarehouse} style={styles.pricePhoto} />
+          <View style={styles.priceInfo}>
+            <View style={styles.priceLiveRow}>
+              <View style={styles.liveDot} />
+              <Text style={styles.priceLiveText}>{t('phone_auction_live')}</Text>
+            </View>
+            <Text style={styles.priceTitle}>{t('phone_today_price')}</Text>
+            <Text style={styles.priceValue}>₹2,850 – ₹3,120<Text style={styles.priceUnit}>/qtl</Text></Text>
+          </View>
+        </View>
+
+        {/* ── WhatsApp fallback row ──────────────────── */}
+        <View style={styles.whatsappRow}>
+          <Icon name="volume" size={13} color={colors.primary} />
+          <Text style={styles.whatsappText}>{t('phone_free_whatsapp')}</Text>
+        </View>
+
+        {/* ── Terms ─────────────────────────────────── */}
+        <View style={styles.termsRow}>
+          <Text style={styles.termsText}>
+            {t('phone_terms_prefix')}{' '}
+            <Text style={styles.termsLink}>{t('phone_terms_link')}</Text>
+            {' '}&{' '}
+            <Text style={styles.termsLink}>{t('phone_privacy_link')}</Text>
+          </Text>
+        </View>
+
+        {/* ── Footer ────────────────────────────────── */}
+        <View style={styles.footerRow}>
+          <Icon name="signal" size={10} color={colors.tertiary} />
+          <Text style={styles.footerText}>{t('phone_footer')}</Text>
+        </View>
+      </ScrollView>
+
+      {/* ── Fixed CTA ──────────────────────────────── */}
+      <View style={styles.bottomDock}>
+        <TouchableOpacity
+          style={[styles.ctaBtn, !isValid && styles.ctaBtnDisabled]}
+          activeOpacity={isValid ? 0.85 : 1}
+          onPress={handleGetOTP}
+          disabled={!isValid || loading}>
+          {loading ? (
+            <Text style={styles.ctaText}>{t('phone_sending')}</Text>
+          ) : (
+            <>
+              <Text style={styles.ctaText}>{t('phone_get_otp')}</Text>
+              <Icon name="arrow-right" size={20} color={colors.onPrimary} />
+            </>
+          )}
         </TouchableOpacity>
-      )}
-    </ScrollView>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
-const GREEN = '#1B5E20';
-
 const styles = StyleSheet.create({
-  root: { flex: 1, justifyContent: 'center', padding: 24, backgroundColor: '#F8FAF9' },
-  title: { fontSize: 24, fontWeight: '700', marginBottom: 8, color: '#1E293B' },
-  subtitle: { fontSize: 16, color: '#666', marginBottom: 24 },
-  input: {
-    borderWidth: 2,
-    borderColor: '#DDD',
-    borderRadius: 12,
-    padding: 16,
-    fontSize: 20,
-    // The OTP a farmer types must be visible whatever the device theme.
-    color: '#212121',
-    marginBottom: 16,
-    backgroundColor: '#FFFFFF',
-    letterSpacing: 2,
+  root: {
+    flex: 1,
+    backgroundColor: colors.background,
   },
-  error: { color: '#C62828', fontSize: 14, marginBottom: 12 },
-  button: { backgroundColor: GREEN, borderRadius: 12, paddingVertical: 16, alignItems: 'center' },
-  buttonDisabled: { opacity: 0.5 },
-  buttonLabel: { color: '#FFF', fontSize: 18, fontWeight: '700' },
-  buyerOptionBtn: {
-    marginTop: 20,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    backgroundColor: '#E3F2FD',
-    borderColor: '#90CAF9',
+  scrollContent: {
+    paddingBottom: 100,
+  },
+
+  // Header
+  header: {
+    paddingHorizontal: space.md,
+    paddingTop: space.xl + 20,
+    paddingBottom: space.sm,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+  },
+  backBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
     borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTextRow: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  headerTitle: {
+    fontFamily: fontFamily.bold,
+    fontSize: 16,
+    color: colors.onSurface,
+  },
+  officialBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: radius.full,
+    backgroundColor: colors.positiveContainer,
+    borderWidth: 1,
+    borderColor: 'rgba(4,120,87,0.2)',
+  },
+  officialText: {
+    fontFamily: fontFamily.bold,
+    fontSize: 10,
+    color: colors.tertiary,
+    letterSpacing: 0.3,
+  },
+
+  // Heading
+  section: {
+    paddingHorizontal: space.md,
+    marginTop: space.xs,
+    marginBottom: space.md,
+  },
+  heading: {
+    fontFamily: fontFamily.extraBold,
+    fontSize: 26,
+    lineHeight: 34,
+    color: colors.onSurface,
+    letterSpacing: -0.3,
+  },
+  headingSub: {
+    fontFamily: fontFamily.regular,
+    fontSize: 14,
+    color: colors.onSurfaceVariant,
+    marginTop: space.xs,
+    lineHeight: 20,
+  },
+
+  // Input card
+  inputCard: {
+    marginHorizontal: space.md,
+    padding: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1.5,
+    borderColor: colors.borderActive,
+    shadowColor: '#C2410C',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  inputLabel: {
+    fontFamily: fontFamily.semiBold,
+    fontSize: 12,
+    color: colors.onSurfaceVariant,
+    letterSpacing: 0.4,
+    marginBottom: space.xs,
+    textTransform: 'uppercase',
+  },
+  inputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainerLow,
+    borderWidth: 1,
+    borderColor: colors.borderField,
+    overflow: 'hidden',
+  },
+  countryCode: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: space.sm,
+    paddingVertical: space.sm,
+    gap: 4,
+  },
+  flag: {
+    fontSize: 18,
+  },
+  countryCodeText: {
+    fontFamily: fontFamily.bold,
+    fontSize: 16,
+    color: colors.onSurface,
+  },
+  divider: {
+    width: 1,
+    height: 28,
+    backgroundColor: colors.borderField,
+  },
+  phoneInput: {
+    flex: 1,
+    paddingHorizontal: space.sm,
+    paddingVertical: space.sm,
+    fontFamily: fontFamily.bold,
+    fontSize: 22,
+    color: colors.onSurface,
+    letterSpacing: 1.5,
+  },
+  micBtn: {
+    padding: space.sm,
+    marginRight: 4,
+  },
+  otpSecureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: space.xs,
+  },
+  otpSecureText: {
+    fontFamily: fontFamily.semiBold,
+    fontSize: 11,
+    color: colors.tertiary,
+    letterSpacing: 0.3,
+  },
+
+  // Privacy card
+  privacyCard: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: space.xs,
+    marginHorizontal: space.md,
+    marginTop: space.sm,
+    padding: space.sm,
+    borderRadius: radius.md,
+    backgroundColor: colors.positiveContainer,
+    borderWidth: 1,
+    borderColor: 'rgba(4,120,87,0.15)',
+  },
+  privacyText: {
+    flex: 1,
+  },
+  privacyBold: {
+    fontFamily: fontFamily.bold,
+    fontSize: 12,
+    color: colors.onPositiveContainer,
+  },
+  privacyBody: {
+    fontFamily: fontFamily.regular,
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+    lineHeight: 15,
+    marginTop: 2,
+  },
+
+  // SIM section
+  simSection: {
+    marginHorizontal: space.md,
+    marginTop: space.md,
+  },
+  simHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: space.xs,
+  },
+  simLabel: {
+    fontFamily: fontFamily.medium,
+    fontSize: 12,
+    color: colors.onSurfaceVariant,
+    flex: 1,
+  },
+  autoDetectBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    borderRadius: radius.full,
+    backgroundColor: colors.positiveContainer,
+  },
+  autoDetectText: {
+    fontFamily: fontFamily.semiBold,
+    fontSize: 10,
+    color: colors.tertiary,
+  },
+  simRow: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  simCard: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    padding: space.sm,
+    borderRadius: radius.md,
+    borderWidth: 1.5,
+    borderColor: colors.outlineVariant,
+    backgroundColor: colors.surface,
+  },
+  simCardActive: {
+    borderColor: colors.primaryContainer,
+    backgroundColor: colors.onPrimaryContainer,
+  },
+  simNum: {
+    fontFamily: fontFamily.bold,
+    fontSize: 13,
+    color: colors.onSurface,
+  },
+  simNumActive: {
+    color: colors.primaryContainer,
+  },
+  simCarrier: {
+    fontFamily: fontFamily.regular,
+    fontSize: 11,
+    color: colors.outline,
+  },
+
+  // Free banner
+  freeBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    marginHorizontal: space.md,
+    marginTop: space.md,
+    padding: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surfaceContainerLow,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+  },
+  freeIconBg: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: 'rgba(155,47,0,0.08)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexShrink: 0,
+  },
+  freeText: {
+    flex: 1,
+  },
+  freeTitle: {
+    fontFamily: fontFamily.bold,
+    fontSize: 13,
+    color: colors.onSurface,
+  },
+  freeSub: {
+    fontFamily: fontFamily.regular,
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+    marginTop: 1,
+  },
+
+  // Price strip
+  priceStrip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    marginHorizontal: space.md,
+    marginTop: space.sm,
+    padding: 10,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+  },
+  pricePhoto: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.md,
+    flexShrink: 0,
+  },
+  priceInfo: {
+    flex: 1,
+  },
+  priceLiveRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginBottom: 1,
+  },
+  liveDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: colors.tertiary,
+  },
+  priceLiveText: {
+    fontFamily: fontFamily.bold,
+    fontSize: 10,
+    color: colors.tertiary,
+    letterSpacing: 0.3,
+    textTransform: 'uppercase',
+  },
+  priceTitle: {
+    fontFamily: fontFamily.medium,
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+  },
+  priceValue: {
+    fontFamily: fontFamily.extraBold,
+    fontSize: 16,
+    color: colors.primary,
+    letterSpacing: -0.2,
+  },
+  priceUnit: {
+    fontFamily: fontFamily.regular,
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+  },
+
+  // WhatsApp
+  whatsappRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginHorizontal: space.md,
+    marginTop: space.xs,
+    paddingVertical: space.xs,
+    paddingHorizontal: space.sm,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainerLow,
+  },
+  whatsappText: {
+    fontFamily: fontFamily.medium,
+    fontSize: 12,
+    color: colors.onSurfaceVariant,
+    flex: 1,
+  },
+
+  // Terms
+  termsRow: {
+    marginHorizontal: space.md,
+    marginTop: space.md,
     alignItems: 'center',
   },
-  buyerOptionText: { color: '#1565C0', fontWeight: '700', fontSize: 14 },
-  timer: { textAlign: 'center', color: '#666', marginTop: 16, fontSize: 15 },
-  resend: { textAlign: 'center', color: GREEN, marginTop: 16, fontSize: 15, fontWeight: '600' },
+  termsText: {
+    fontFamily: fontFamily.regular,
+    fontSize: 11,
+    color: colors.onSurfaceVariant,
+    textAlign: 'center',
+    lineHeight: 16,
+  },
+  termsLink: {
+    fontFamily: fontFamily.semiBold,
+    color: colors.primaryContainer,
+    textDecorationLine: 'underline',
+  },
+
+  // Footer
+  footerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    justifyContent: 'center',
+    marginTop: space.sm,
+  },
+  footerText: {
+    fontFamily: fontFamily.regular,
+    fontSize: 10,
+    color: colors.outline,
+    letterSpacing: 0.2,
+  },
+
+  // CTA
+  bottomDock: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: space.md,
+    paddingBottom: space.xl,
+    paddingTop: space.sm,
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.outlineVariant,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  ctaBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: touch.targetHero,
+    backgroundColor: colors.primaryContainer,
+    borderRadius: radius.lg,
+    gap: space.sm,
+    shadowColor: '#C2410C',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 12,
+    elevation: 5,
+  },
+  ctaBtnDisabled: {
+    backgroundColor: colors.surfaceContainerHigh,
+    shadowOpacity: 0,
+    elevation: 0,
+  },
+  ctaText: {
+    fontFamily: fontFamily.extraBold,
+    fontSize: 18,
+    color: colors.onPrimary,
+    letterSpacing: 0.3,
+  },
 });

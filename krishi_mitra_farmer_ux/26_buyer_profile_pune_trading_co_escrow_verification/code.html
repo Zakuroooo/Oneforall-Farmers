@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+
+<html class="light" lang="mr"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Buyer Profile - Pune Trading Co | Mandi-Setu</title>
+<!-- Google Fonts: Plus Jakarta Sans -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN with plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed-variant": "#00513a",
+            "surface-dim": "#dddad2",
+            "on-secondary-container": "#6b1a00",
+            "secondary-fixed-dim": "#ffb59f",
+            "on-error": "#ffffff",
+            "outline": "#8d7168",
+            "on-tertiary": "#ffffff",
+            "background": "#fdf9f1",
+            "surface-variant": "#e6e2da",
+            "on-secondary-fixed-variant": "#842503",
+            "on-surface": "#1c1c17",
+            "primary": "#9b2f00",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed": "#ffdbd1",
+            "surface-container": "#f1ede6",
+            "error-container": "#ffdad6",
+            "surface-container-low": "#f7f3eb",
+            "on-tertiary-container": "#b9ffde",
+            "error": "#ba1a1a",
+            "tertiary": "#006146",
+            "inverse-primary": "#ffb59d",
+            "on-error-container": "#93000a",
+            "on-background": "#1c1c17",
+            "inverse-surface": "#31302b",
+            "primary-container": "#c2410c",
+            "on-primary-fixed": "#390c00",
+            "outline-variant": "#e1bfb5",
+            "surface-container-highest": "#e6e2da",
+            "on-tertiary-fixed": "#002115",
+            "secondary-container": "#fb7b54",
+            "tertiary-fixed": "#97f5cc",
+            "surface-container-high": "#ece8e0",
+            "on-primary-fixed-variant": "#832600",
+            "inverse-on-surface": "#f4f0e8",
+            "on-primary-container": "#ffece7",
+            "surface-bright": "#fdf9f1",
+            "secondary": "#a53c19",
+            "primary-fixed": "#ffdbd0",
+            "surface": "#fdf9f1",
+            "tertiary-container": "#0f7c5b",
+            "primary-fixed-dim": "#ffb59d",
+            "on-secondary-fixed": "#3a0a00",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-primary": "#ffffff",
+            "on-secondary": "#ffffff",
+            "surface-tint": "#ac3400",
+            "on-surface-variant": "#59413a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "touch-target-hero": "3.5rem",
+            "space-xl": "1.5rem",
+            "space-lg": "1.25rem",
+            "space-4xl": "3rem",
+            "margin-desktop": "2rem",
+            "space-2xs": "0.25rem",
+            "space-2xl": "2rem",
+            "gutter-mobile": "1rem",
+            "margin-mobile": "1rem",
+            "space-3xl": "2.5rem",
+            "space-md": "1rem",
+            "space-xs": "0.5rem",
+            "space-sm": "0.75rem",
+            "touch-target-min": "3rem",
+            "gutter-desktop": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-fill {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      -webkit-font-smoothing: antialiased;
+      background-color: #fdf9f1;
+    }
+    /* Subtle jute pattern emulation */
+    .bg-tactile-mandi {
+      background-color: #fdf9f1;
+      background-image: radial-gradient(#e6e2da 0.75px, transparent 0.75px);
+      background-size: 12px 12px;
+    }
+  </style>
+</head>
+<body class="bg-tactile-mandi text-on-surface min-h-screen flex flex-col items-center selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Mobile Viewport Wrapper (Max 480px) -->
+<main class="w-full max-w-md min-h-screen bg-background relative flex flex-col pb-36 shadow-2xl">
+<!-- 1. Top Navigation Bar -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md px-margin-mobile py-space-sm border-b border-outline-variant/30 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-space-xs">
+<button aria-label="Go Back" class="w-10 h-10 rounded-xl flex items-center justify-center text-on-surface hover:bg-surface-container active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[24px]">arrow_back</span>
+</button>
+<div>
+<h1 class="font-headline-sm text-headline-sm text-on-surface leading-tight">खरेदीदार तपशील</h1>
+<p class="font-label-sm text-label-sm text-on-surface-variant font-medium">Buyer Profile · APMC Validated</p>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<!-- Lot Reference Badge -->
+<span class="inline-flex items-center px-2.5 py-1 rounded-md bg-surface-container font-label-sm text-label-sm text-primary font-bold border border-outline-variant/40">
+          #LP-403
+        </span>
+<!-- Voice Assistant Listen Button -->
+<button class="flex items-center gap-1 bg-surface-container-high text-primary px-2.5 py-1.5 rounded-lg border border-primary/20 hover:bg-primary-fixed active:scale-95 transition-all shadow-xs" type="button">
+<span class="material-symbols-outlined text-[18px]">volume_up</span>
+<span class="font-label-sm text-label-sm font-bold">ऐका</span>
+</button>
+</div>
+</header>
+<!-- Content Container -->
+<div class="px-margin-mobile pt-space-md space-y-space-md">
+<!-- 2. Buyer Header & Verified Status Card -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/40 shadow-sm relative overflow-hidden">
+<!-- Yard Accent Top Stripe -->
+<div class="absolute top-0 left-0 right-0 h-1.5 bg-primary-container"></div>
+<div class="flex items-start justify-between gap-space-sm pt-1">
+<div class="flex gap-3">
+<!-- Buyer Yard Seal Avatar -->
+<div class="w-14 h-14 rounded-xl bg-surface-container flex-shrink-0 border-2 border-outline-variant/60 flex items-center justify-center text-primary font-headline-md shadow-inner">
+<span class="material-symbols-outlined text-[32px]">storefront</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<h2 class="font-headline-md text-headline-md text-on-surface tracking-tight">Pune Trading Co.</h2>
+<span class="inline-flex items-center text-tertiary" title="APMC Verified Buyer">
+<span class="material-symbols-outlined material-symbols-fill text-[20px]">verified</span>
+</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5 font-medium">
+                Wholesale Trader &amp; Commission Agent
+              </p>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-0.5 flex items-center gap-1 text-primary">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                Gultekdi APMC Market Yard, Pune
+              </p>
+</div>
+</div>
+</div>
+<!-- Proximity & License Pill Container -->
+<div class="mt-space-sm pt-space-xs border-t border-outline-variant/30 flex flex-wrap items-center gap-2 text-on-surface-variant">
+<div class="inline-flex items-center gap-1 bg-surface-container-low px-2.5 py-1 rounded-md text-tertiary font-label-md font-bold border border-tertiary/20">
+<span class="material-symbols-outlined text-[16px]">near_me</span>
+            45 km from your Niphad farm shed
+          </div>
+<div class="inline-flex items-center gap-1 bg-surface-container-low px-2.5 py-1 rounded-md text-on-surface font-label-sm border border-outline-variant/30">
+<span class="material-symbols-outlined text-[14px] text-tertiary">verified_user</span>
+            APMC Lic: <span class="font-bold">MH-PUN-2018-84920</span>
+</div>
+</div>
+<!-- KPI 4-Metric Grid (High contrast tactile tiles) -->
+<div class="grid grid-cols-4 gap-2 mt-space-md pt-space-sm border-t border-outline-variant/40 text-center">
+<div class="bg-surface-container-low p-2 rounded-xl border border-outline-variant/30">
+<div class="flex items-center justify-center gap-0.5 text-primary">
+<span class="material-symbols-outlined material-symbols-fill text-[16px]">star</span>
+<span class="font-numeral-data text-numeral-data font-bold text-on-surface">4.7</span>
+</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant block mt-0.5">142 सौदे (Deals)</span>
+</div>
+<div class="bg-surface-container-low p-2 rounded-xl border border-outline-variant/30">
+<div class="font-numeral-data text-numeral-data font-bold text-tertiary">98.4%</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant block mt-0.5">वेळेत पेमेंट</span>
+</div>
+<div class="bg-surface-container-low p-2 rounded-xl border border-outline-variant/30">
+<div class="font-numeral-data text-numeral-data font-bold text-tertiary">0 तक्रार</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant block mt-0.5">Disputes (100% OK)</span>
+</div>
+<div class="bg-surface-container-low p-2 rounded-xl border border-outline-variant/30">
+<div class="font-numeral-data text-numeral-data font-bold text-on-surface">3 वर्ष</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant block mt-0.5">Mandi-Setu सदस्य</span>
+</div>
+</div>
+</section>
+<!-- 3. Active Bid on Rambhau's Lot Card (#LP-403 - 40 Qtl Gavran Red Onion) -->
+<section class="bg-surface-container-lowest rounded-2xl border-2 border-primary-container p-space-md shadow-md relative">
+<!-- Live Bid Status Header -->
+<div class="flex items-center justify-between mb-space-sm">
+<div class="inline-flex items-center gap-1.5 bg-primary-fixed text-on-primary-fixed px-2.5 py-1 rounded-full font-label-md font-bold">
+<span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+            सक्रिय बोली (Active Bid on #LP-403)
+          </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">25 मिनिटांपूर्वी प्राप्त</span>
+</div>
+<div class="flex items-start gap-space-sm mb-space-sm">
+<!-- Crop Image Snippet with visual reference to Maharashtrian Onion Sacks -->
+<div class="w-16 h-16 rounded-xl overflow-hidden flex-shrink-0 border border-outline-variant/50 relative">
+<img class="w-full h-full object-cover" data-alt="Close up of coarse woven jute burlap sacks overflowing with freshly harvested, high quality glossy crimson red Indian Gavran onions stored inside an authentic rustic sunlit Maharashtrian APMC grain warehouse. Warm directional daylight illuminates the rich papery skins of the onions with high textural depth and earthy tactile feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCrwnTDUFv1kalFTAwZB7x_y-rmJX8tNoppG_tok1GyfScX3s_cx2HgySsJMTg9ICDd3_7l3qny_O8KpNPb8x_fy2rWKfcl3W-Bxv9DAqpkL0mv5eIGACN9w7lG1Cf2rrXnQmx8ZI_2C2JT68t2vl2eBGLSf_5TdJuzy0O-tUGGfxQgw7oXtD1sORky7SG5A8c2ZRN71FpWuv5Sq9i3NapBiAhrosHAPH3ywk4TnRurD05wFUyooby7"/>
+</div>
+<div class="flex-1">
+<div class="flex items-baseline justify-between">
+<span class="font-label-md text-label-md text-on-surface-variant font-bold">कांदा: गावरान लाल (Gavran Red)</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">लॉट: 40 क्विंटल</span>
+</div>
+<!-- Inbound Bid Rate Hero -->
+<div class="mt-1 flex items-baseline gap-1.5">
+<span class="font-numeral-hero text-numeral-hero font-extrabold text-primary tracking-tight">₹1,850</span>
+<span class="font-title-md text-title-md text-on-surface-variant font-semibold">/ क्विंटल</span>
+</div>
+<p class="font-label-sm text-label-sm text-tertiary font-semibold mt-0.5">
+              मागणी: किमान २० क्विंटल किंवा पूर्ण ४० क्विंटल
+            </p>
+</div>
+</div>
+<!-- Net Payout Breakdown Box -->
+<div class="bg-surface-container-low rounded-xl p-space-sm border border-outline-variant/30 space-y-1.5">
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm text-body-sm">
+<span>एकूण किंमत (Gross Value 40 Qtl):</span>
+<span class="font-bold text-on-surface">₹74,000</span>
+</div>
+<div class="flex justify-between items-center text-on-surface-variant font-body-sm text-body-sm">
+<span>हमाली / लोडिंग खर्च (Loading cut):</span>
+<span class="font-medium text-error">− ₹600</span>
+</div>
+<div class="pt-1.5 border-t border-outline-variant/40 flex justify-between items-center">
+<div>
+<span class="font-title-md text-title-md font-bold text-on-surface">शेतकऱ्याला थेट जमा (Net Farmgate Payout):</span>
+<span class="block font-label-sm text-[11px] text-tertiary font-semibold">खात्यात पूर्ण रक्कम वर्ग होणार</span>
+</div>
+<span class="font-headline-md text-headline-md font-extrabold text-tertiary">₹73,400</span>
+</div>
+</div>
+<!-- Dispatch & Escrow Chips -->
+<div class="mt-space-sm space-y-2">
+<div class="flex items-center gap-2 text-on-surface font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[20px]">local_shipping</span>
+<span><strong>गाडी उपलब्धता:</strong> सौदा पक्का झाल्यावर २४ तासात शेतावर कंटेनर ट्रक.</span>
+</div>
+<div class="flex items-center gap-2 bg-tertiary-fixed/30 text-on-tertiary-fixed-variant p-2 rounded-lg border border-tertiary/30">
+<span class="material-symbols-outlined material-symbols-fill text-tertiary text-[20px]">lock</span>
+<span class="font-label-md text-label-md font-bold">
+              ₹74,000 APMC एस्क्रो खात्यात पूर्व-मंजूर (100% पेमेंट गॅरंटी)
+            </span>
+</div>
+</div>
+</section>
+<!-- 4. Detailed Trust & Payment Track Record (Mandi Algorithmic Farmer Protection Audit) -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/40 shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">shield</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">विश्वास व व्यवहार ऑडिट (Trust Audit)</h3>
+</div>
+<span class="font-label-sm text-label-sm text-tertiary font-bold bg-tertiary/10 px-2 py-0.5 rounded">Mandi Verified</span>
+</div>
+<!-- Metric Items -->
+<div class="divide-y divide-outline-variant/30">
+<!-- Item 1: Payment Speed -->
+<div class="py-2.5 flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-primary flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+</div>
+<div>
+<span class="font-label-md text-label-md font-bold text-on-surface">जलद RTGS पेमेंट वेग (1.8 Hours)</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">वजन पावती अपलोड झाल्यानंतर सरासरी १.८ तासांत थेट बँक खात्यात पैसे जमा.</p>
+</div>
+</div>
+<!-- Item 2: Weighbridge Integrity -->
+<div class="py-2.5 flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-tertiary flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">scale</span>
+</div>
+<div>
+<div class="flex items-center gap-1.5">
+<span class="font-label-md text-label-md font-bold text-on-surface">वजन काटा पारदर्शकता (99.1% अचूकता)</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">सरकारी डिजिटल काट्यानुसार वजन. शून्य अनधिकृत कपात (Zero arbitrary weight deductions).</p>
+</div>
+</div>
+<!-- Item 3: Volume Handled -->
+<div class="py-2.5 flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-secondary flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">inventory</span>
+</div>
+<div>
+<span class="font-label-md text-label-md font-bold text-on-surface">४,२००+ क्विंटल खरेदी या रब्बी हंगामात</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">कांदा, बटाटा, लसूण मालाचा नियमित व मोठा खरेदीदार.</p>
+</div>
+</div>
+<!-- Item 4: Operating Clusters -->
+<div class="py-2.5 flex items-start gap-3">
+<div class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center text-on-surface-variant flex-shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">route</span>
+</div>
+<div>
+<span class="font-label-md text-label-md font-bold text-on-surface">नियमित खरेदी क्षेत्र (Farmgate Routes)</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">नाशिक, निफाड, दिंडोरी, येवला, पुणे पट्टा.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- 5. Farmer Reviews & Feedback (Real peer testimonials) -->
+<section class="bg-surface-container-lowest rounded-2xl p-space-md border border-outline-variant/40 shadow-sm space-y-space-sm">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-[22px]">reviews</span>
+<h3 class="font-title-lg text-title-lg text-on-surface">शेतकरी अनुभव (Farmer Reviews)</h3>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">नाशिक जिल्ह्यातील शेतकरी</span>
+</div>
+<div class="space-y-space-sm">
+<!-- Review 1 -->
+<div class="p-space-sm bg-surface-container-low rounded-xl border border-outline-variant/30 space-y-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-primary-fixed flex items-center justify-center font-bold text-xs text-on-primary-fixed">
+                  द
+                </div>
+<div>
+<span class="font-label-md text-label-md font-bold text-on-surface">दत्तात्रय भोसले</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant ml-1">दिंडोरी, नाशिक</span>
+</div>
+</div>
+<div class="flex items-center text-primary font-bold text-xs">
+<span class="material-symbols-outlined material-symbols-fill text-[14px]">star</span>
+<span>5.0</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface italic">
+              "गाडी वेळेत आली, वजन काट्यावर तंतोतंत भरले आणि २ तासात पैसे खात्यात आले. विश्वासू व्यापारी."
+            </p>
+<div class="font-label-sm text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-tertiary">check_circle</span>
+              सत्यापित सौदा: ३५ क्विंटल कांदा (३ आठवड्यांपूर्वी)
+            </div>
+</div>
+<!-- Review 2 -->
+<div class="p-space-sm bg-surface-container-low rounded-xl border border-outline-variant/30 space-y-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 rounded-full bg-secondary-fixed flex items-center justify-center font-bold text-xs text-on-secondary-fixed">
+                  कि
+                </div>
+<div>
+<span class="font-label-md text-label-md font-bold text-on-surface">किसन काळे</span>
+<span class="font-label-sm text-[10px] text-on-surface-variant ml-1">पिंपळगाव बसवंत, निफाड</span>
+</div>
+</div>
+<div class="flex items-center text-primary font-bold text-xs">
+<span class="material-symbols-outlined material-symbols-fill text-[14px]">star</span>
+<span>4.8</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface italic">
+              "भाव योग्य दिला, मालाची कोणतीही अवाजवी डागी कपात केली नाही. फोनवर बोलणे सौम्य आहे."
+            </p>
+<div class="font-label-sm text-[10px] text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px] text-tertiary">check_circle</span>
+              सत्यापित सौदा: ५० क्विंटल कांदा (गेल्या महिन्यात)
+            </div>
+</div>
+</div>
+</section>
+<!-- 6. Mandi-Setu 100% Escrow & Safety Commitment Card -->
+<section class="bg-surface-container-high rounded-2xl p-space-md border border-outline-variant/50 relative overflow-hidden">
+<div class="flex items-start gap-3">
+<div class="w-10 h-10 rounded-xl bg-tertiary text-on-tertiary flex items-center justify-center flex-shrink-0 shadow-sm">
+<span class="material-symbols-outlined material-symbols-fill text-[24px]">verified</span>
+</div>
+<div>
+<h4 class="font-title-md text-title-md text-on-surface font-bold">मंडी-सेतू 100% पेमेंट सुरक्षा हमी</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 leading-relaxed">
+              व्यापारी पुण्याचे असले तरी जोवर पुण्याच्या व्यापाऱ्याचे पैसे APMC अधिकृत एस्क्रो खात्यात सुरक्षित होत नाहीत, तोवर तुमच्या शेतातून माल भरला जात नाही.
+            </p>
+<div class="mt-2 flex items-center gap-3 text-tertiary font-label-sm text-label-sm font-bold">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">lock_clock</span> शेतावर थेट वजन
+              </span>
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">account_balance</span> थेट बँक ट्रान्सफर
+              </span>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- 7. Bottom Fixed Ergonomic Action Dock -->
+<div class="fixed bottom-0 left-0 right-0 z-50 bg-surface-container-lowest/95 backdrop-blur-md border-t-2 border-outline-variant/40 shadow-[0_-6px_24px_rgba(24,24,27,0.12)] px-margin-mobile pt-3 pb-safe max-w-md mx-auto">
+<div class="space-y-2">
+<!-- Primary Hero Action Button (56dp touch-target-hero) -->
+<button class="w-full h-touch-target-hero bg-primary-container text-on-primary rounded-xl font-title-lg text-title-lg flex items-center justify-center gap-2 shadow-md hover:bg-primary active:scale-[0.98] active:translate-y-0.5 transition-all duration-150" type="button">
+<span>या खरेदीदाराशी सौदा करा (Start Sauda)</span>
+<span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+</button>
+<!-- Secondary Counter Offer & Call Row -->
+<div class="grid grid-cols-2 gap-2">
+<button class="h-11 bg-surface-container-lowest text-primary border-1.5 border-primary rounded-xl font-label-lg text-label-lg flex items-center justify-center gap-1.5 hover:bg-surface-container active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+<span>काउन्टर ऑफर पाठवा</span>
+</button>
+<button class="h-11 bg-surface-container-high text-on-surface border border-outline-variant/40 rounded-xl font-label-lg text-label-lg flex items-center justify-center gap-1.5 hover:bg-surface-container active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[18px] text-tertiary">call</span>
+<span>व्यापाऱ्याशी बोला</span>
+</button>
+</div>
+<!-- Offline & Security Assurance Micro-Text -->
+<div class="flex items-center justify-center gap-2 pt-1 text-on-surface-variant font-label-sm text-[11px]">
+<span class="material-symbols-outlined text-[14px] text-tertiary">security</span>
+<span>२५६-बिट एन्क्रिप्टेड · APMC नियम १९६३ अंतर्गत संरक्षित</span>
+</div>
+</div>
+</div>
+</main>
+<script>
+    // Lightweight audio accessibility trigger micro-interaction
+    document.addEventListener('DOMContentLoaded', () => {
+      const audioBtn = document.querySelector('header button:last-child');
+      if (audioBtn) {
+        audioBtn.addEventListener('click', () => {
+          const originalContent = audioBtn.innerHTML;
+          audioBtn.innerHTML = `
+            <span class="material-symbols-outlined text-[18px] animate-spin">sync</span>
+            <span class="font-label-sm text-label-sm font-bold">वाचत आहे...</span>
+          `;
+          setTimeout(() => {
+            audioBtn.innerHTML = originalContent;
+          }, 3500);
+        });
+      }
+    });
+  </script>
+</body></html>

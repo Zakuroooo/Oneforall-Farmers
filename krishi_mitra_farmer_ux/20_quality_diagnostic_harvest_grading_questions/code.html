@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Quality Diagnostic · Step 3 of 5 | Lasalgaon Mandi-Setu</title>
+<!-- Material Symbols Font -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Plus Jakarta Sans Font for Design System Typography Tokens -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-container": "#0f7c5b",
+            "on-background": "#1c1c17",
+            "inverse-primary": "#ffb59d",
+            "on-error-container": "#93000a",
+            "surface-dim": "#dddad2",
+            "inverse-surface": "#31302b",
+            "inverse-on-surface": "#f4f0e8",
+            "on-tertiary-fixed-variant": "#00513a",
+            "on-surface": "#1c1c17",
+            "secondary-fixed-dim": "#ffb59f",
+            "primary-fixed-dim": "#ffb59d",
+            "outline": "#8d7168",
+            "background": "#fdf9f1",
+            "error": "#ba1a1a",
+            "on-secondary-fixed": "#3a0a00",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#f7f3eb",
+            "outline-variant": "#e1bfb5",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "on-tertiary-fixed": "#002115",
+            "on-error": "#ffffff",
+            "on-secondary": "#ffffff",
+            "primary": "#9b2f00",
+            "on-secondary-fixed-variant": "#842503",
+            "surface-container-high": "#ece8e0",
+            "on-tertiary": "#ffffff",
+            "primary-container": "#c2410c",
+            "error-container": "#ffdad6",
+            "surface-variant": "#e6e2da",
+            "on-tertiary-container": "#b9ffde",
+            "surface-container": "#f1ede6",
+            "on-primary": "#ffffff",
+            "secondary": "#a53c19",
+            "tertiary": "#006146",
+            "on-primary-fixed-variant": "#832600",
+            "on-secondary-container": "#6b1a00",
+            "surface-container-highest": "#e6e2da",
+            "on-primary-container": "#ffece7",
+            "surface-bright": "#fdf9f1",
+            "secondary-fixed": "#ffdbd1",
+            "primary-fixed": "#ffdbd0",
+            "on-primary-fixed": "#390c00",
+            "secondary-container": "#fb7b54",
+            "surface": "#fdf9f1",
+            "tertiary-fixed": "#97f5cc",
+            "on-surface-variant": "#59413a",
+            "surface-tint": "#ac3400"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.75rem",
+            "space-md": "1rem",
+            "touch-target-min": "3rem",
+            "space-4xl": "3rem",
+            "space-3xl": "2.5rem",
+            "touch-target-hero": "3.5rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "1.5rem",
+            "space-2xs": "0.25rem",
+            "margin-mobile": "1rem",
+            "space-xs": "0.5rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "2rem",
+            "space-lg": "1.25rem",
+            "space-2xl": "2rem"
+          },
+          "fontFamily": {
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "label-md": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    /* Hardware-accelerated smooth transitions */
+    .tap-press:active {
+      transform: scale(0.985);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background min-h-screen antialiased flex flex-col items-center selection:bg-primary selection:text-on-primary font-body-md">
+<!-- Mobile Screen Shell Container (Strict Max-W-md for Phone Ergonomics) -->
+<div class="w-full max-w-md min-h-screen bg-background flex flex-col relative pb-36 shadow-xl">
+<!-- 1. TOP PROGRESS & NAVIGATION HEADER (Task-Focused: BottomNavBar suppressed per Semantic Shell rules) -->
+<header class="sticky top-0 z-40 bg-surface/95 backdrop-blur-md px-margin-mobile pt-space-sm pb-space-xs border-b border-outline-variant/40">
+<!-- Upper Utility Bar -->
+<div class="flex items-center justify-between mb-space-xs">
+<div class="flex items-center space-x-2">
+<button aria-label="Go back to Step 2" class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container-high text-on-surface tap-press hover:bg-surface-variant transition-colors" type="button">
+<span class="material-symbols-outlined text-[22px]">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center space-x-1.5">
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">Quality Diagnostic</h1>
+<span class="px-2 py-0.5 rounded-md bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm uppercase">#LP-403</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Step 3 of 5 · दर्जा तपासणी · 40 Qtl</p>
+</div>
+</div>
+<!-- Audio Read Aloud & Voice Accessibility -->
+<button class="flex items-center space-x-1 px-3 py-2 rounded-xl bg-primary-container text-on-primary font-label-md text-label-md tap-press shadow-sm hover:opacity-95 transition-all" id="btnAudio" type="button">
+<span class="material-symbols-outlined text-[18px]">volume_up</span>
+<span>आवाज ऐका</span>
+</button>
+</div>
+<!-- 5-Step Segmented Progress Bar -->
+<div class="space-y-1.5 pt-1">
+<div class="grid grid-cols-5 gap-1.5">
+<!-- Step 1: Completed -->
+<div class="h-2 rounded-full bg-tertiary-container relative" title="Basic Info - Done"></div>
+<!-- Step 2: Completed -->
+<div class="h-2 rounded-full bg-tertiary-container relative" title="Weight &amp; Bags - Done"></div>
+<!-- Step 3: Current Active -->
+<div class="h-2 rounded-full bg-primary-container ring-2 ring-primary-container/30 relative" title="Quality Diagnostic - Active"></div>
+<!-- Step 4: Pending -->
+<div class="h-2 rounded-full bg-surface-container-highest" title="Grade Calculation - Pending"></div>
+<!-- Step 5: Pending -->
+<div class="h-2 rounded-full bg-surface-container-highest" title="Yard Dispatch - Pending"></div>
+</div>
+<div class="flex items-center justify-between font-label-sm text-label-sm pt-0.5">
+<span class="text-primary-container font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-primary-container inline-block animate-pulse"></span>
+            Physical Assay Diagnostic (भौतिक तपासणी)
+          </span>
+<span class="text-tertiary flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[15px] fill-icon">cloud_done</span>
+            Draft Saved · ऑफलाईन सुरक्षित
+          </span>
+</div>
+</div>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<main class="flex-1 px-margin-mobile pt-space-md space-y-space-lg">
+<!-- 2. COMPACT LOT SUMMARY & AI COMPUTER VISION CARD -->
+<section class="bg-surface-container-lowest rounded-xl p-space-sm border border-[#EADEC7] shadow-sm flex items-center gap-3">
+<div class="relative w-16 h-16 rounded-lg overflow-hidden shrink-0 border border-outline-variant/50 bg-surface-container">
+<img class="w-full h-full object-cover" data-alt="Close up photograph of harvested Maharashtrian Gavran red onions resting inside rustic jute sacks on sun-baked farm soil in Lasalgaon Mandi. High contrast daylight highlighting crisp papery outer skin and deep maroon tones with natural earth textures." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBSlviyiUJtUxVy0p0lUVbE26AdwSx4S0T-tKDn9QBJhAOq_pjnmOyky0neAyhTc5pFSe2GAHpNXLHHM2-D7iO1OMCi_b289nj78SEOMhXLHrBCXRioaPXBKFDheZPnPliSNSgxzP5a2Is3866UzLrOx85bTkTAD-D7e5AREDqXUMD02Ewoj3VR37G6fEPu_pyTV06vfU9VN42_AECdIdVS_ne1MyRiw5BiqZK7RjwDWoXkIsrnn0rH"/>
+<div class="absolute bottom-0 inset-x-0 bg-inverse-surface/80 text-inverse-on-surface text-[9px] font-bold text-center py-0.5 tracking-tight">
+            3 Photos
+          </div>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center justify-between gap-1">
+<h2 class="font-title-md text-title-md text-on-surface truncate">Gavran Red Onion (उन्हाळ कांदा)</h2>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">40 Qtl · 80 Bags (५० किलो गोणी) · Niphad Farm</p>
+<div class="mt-1.5 inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold">
+<span class="material-symbols-outlined text-[14px]">auto_awesome</span>
+<span>AI Photo Score: 98% Clear (३ फोटो तपासले)</span>
+</div>
+</div>
+</section>
+<!-- 3. TACTILE DIAGNOSTIC QUESTIONS -->
+<form class="space-y-space-xl" id="diagnosticForm" onsubmit="event.preventDefault();">
+<!-- QUESTION 1: BULB UNIFORMITY -->
+<fieldset class="space-y-2.5">
+<div class="flex items-start justify-between gap-2">
+<div>
+<legend class="font-headline-sm text-headline-sm text-on-surface font-bold">
+                1. Onion Bulb Uniformity
+              </legend>
+<p class="font-label-md text-label-md text-on-surface-variant">कांद्याचा आकार आणि एकसारखेपणा</p>
+</div>
+<!-- AI Recommendation Pill -->
+<span class="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high border border-outline-variant text-primary font-label-sm text-label-sm font-bold shadow-2xs">
+<span class="material-symbols-outlined text-[14px] fill-icon">psychology</span>
+              AI Detected: 75% Medium-Large
+            </span>
+</div>
+<!-- Radio Option Cards -->
+<div class="space-y-2">
+<!-- Option 1.1 (Selected by default) -->
+<label class="relative flex items-center justify-between p-3.5 rounded-xl border-2 border-primary-container bg-surface-container-lowest shadow-sm cursor-pointer tap-press transition-all group">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-primary-container flex items-center justify-center bg-surface-container-lowest shrink-0">
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+</div>
+<div>
+<span class="font-title-lg text-title-lg text-on-surface block">Very Uniform (एकसारखा मोठा - 55mm+)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Grade A premium export standard · समान गोलाकार माल</span>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-tertiary-container/10 text-tertiary font-label-sm text-label-sm font-bold shrink-0">₹2,850+ Base</span>
+<input checked="" class="sr-only" name="uniformity" type="radio" value="uniform_large"/>
+</label>
+<!-- Option 1.2 -->
+<label class="relative flex items-center justify-between p-3.5 rounded-xl border border-[#EADEC7] bg-surface-container-lowest hover:border-outline-variant cursor-pointer tap-press transition-all">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center bg-surface-container-lowest shrink-0"></div>
+<div>
+<span class="font-title-md text-title-md text-on-surface block">Mixed Sizing (मध्यम व लहान मिसळ - 40-55mm)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Standard domestic mandi grade · मध्यम साईज</span>
+</div>
+</div>
+<input class="sr-only" name="uniformity" type="radio" value="mixed"/>
+</label>
+<!-- Option 1.3 -->
+<label class="relative flex items-center justify-between p-3.5 rounded-xl border border-[#EADEC7] bg-surface-container-lowest hover:border-outline-variant cursor-pointer tap-press transition-all">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center bg-surface-container-lowest shrink-0"></div>
+<div>
+<span class="font-title-md text-title-md text-on-surface block">Small / Gulti Sizing (गुल्टी / बारीक - &lt;40mm)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Discounted processing lot · गोल्टी माल</span>
+</div>
+</div>
+<input class="sr-only" name="uniformity" type="radio" value="small_gulti"/>
+</label>
+</div>
+</fieldset>
+<!-- QUESTION 2: SKIN RETENTION & SUN-CURING -->
+<fieldset class="space-y-2.5">
+<div class="flex items-start justify-between gap-2">
+<div>
+<legend class="font-headline-sm text-headline-sm text-on-surface font-bold">
+                2. Skin Retention &amp; Sun-Curing
+              </legend>
+<p class="font-label-md text-label-md text-on-surface-variant">पापुद्रा आणि वाळवण स्थिती</p>
+</div>
+<span class="shrink-0 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high border border-outline-variant text-tertiary font-label-sm text-label-sm font-bold shadow-2xs">
+<span class="material-symbols-outlined text-[14px] fill-icon">verified</span>
+              AI Detected: 94% Double Skin
+            </span>
+</div>
+<div class="space-y-2">
+<!-- Option 2.1 (Selected) -->
+<label class="relative flex items-center justify-between p-3.5 rounded-xl border-2 border-primary-container bg-surface-container-lowest shadow-sm cursor-pointer tap-press transition-all">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-primary-container flex items-center justify-center bg-surface-container-lowest shrink-0">
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+</div>
+<div>
+<span class="font-title-lg text-title-lg text-on-surface block">Crisp Double Papery Skin (उत्कृष्ट दुहेरी लाल पापुद्रा)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">High luster, 0% shedding during handling · 45-day storage life</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-tertiary text-[20px] fill-icon">format_image_left</span>
+<input checked="" class="sr-only" name="skin" type="radio" value="double_skin"/>
+</label>
+<!-- Option 2.2 -->
+<label class="relative flex items-center justify-between p-3.5 rounded-xl border border-[#EADEC7] bg-surface-container-lowest hover:border-outline-variant cursor-pointer tap-press transition-all">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center bg-surface-container-lowest shrink-0"></div>
+<div>
+<span class="font-title-md text-title-md text-on-surface block">Single Skin / Light Peel (एक पदरी पापुद्रा)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Minor flaking on outer layer · हलका निघालेला पापुद्रा</span>
+</div>
+</div>
+<input class="sr-only" name="skin" type="radio" value="single_skin"/>
+</label>
+<!-- Option 2.3 -->
+<label class="relative flex items-center justify-between p-3.5 rounded-xl border border-[#EADEC7] bg-surface-container-lowest hover:border-outline-variant cursor-pointer tap-press transition-all">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center bg-surface-container-lowest shrink-0"></div>
+<div>
+<span class="font-title-md text-title-md text-on-surface block">Peeled / Bald Onions Present (पापुद्रा निघालेला माल)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">White fleshy parts exposed · तात्काळ विक्री योग्य</span>
+</div>
+</div>
+<input class="sr-only" name="skin" type="radio" value="bald"/>
+</label>
+</div>
+</fieldset>
+<!-- QUESTION 3: MOISTURE & NECK TIGHTNESS -->
+<fieldset class="space-y-2.5">
+<div>
+<div class="flex items-center justify-between">
+<legend class="font-headline-sm text-headline-sm text-on-surface font-bold">
+                3. Moisture &amp; Neck Tightness
+              </legend>
+<span class="font-label-sm text-label-sm text-tertiary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">water_drop</span>
+                Safe Moisture &lt; 10%
+              </span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant">ओलावा व कांद्याची मान कोरडी असणे</p>
+</div>
+<!-- Educational Hint Callout -->
+<div class="p-2.5 rounded-lg bg-surface-container flex items-start gap-2 border border-outline-variant/30 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-primary text-[18px] shrink-0 mt-0.5">info</span>
+<span>Tight dry necks prevent fungal rot and weight loss during 30+ day warehouse storage. (बारीक व कोरडी मान कांद्याला सडण्यापासून वाचवते.)</span>
+</div>
+<!-- 2 Large Toggle Grid Cards (52dp min touch target) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+<!-- Toggle 1 (Selected) -->
+<label class="relative flex flex-col justify-between p-3.5 rounded-xl border-2 border-primary-container bg-surface-container-lowest shadow-sm cursor-pointer tap-press transition-all min-h-[96px]">
+<div class="flex items-start justify-between">
+<span class="material-symbols-outlined text-tertiary text-[24px] fill-icon">wb_sunny</span>
+<span class="w-5 h-5 rounded-full bg-primary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[14px]">check</span>
+</span>
+</div>
+<div>
+<span class="font-title-md text-title-md text-on-surface font-bold block">Fully Cured &amp; Dry Neck</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">पूर्ण वाळलेला, मान कडक कोरडी</span>
+</div>
+<input checked="" class="sr-only" name="neck" type="radio" value="dry_neck"/>
+</label>
+<!-- Toggle 2 -->
+<label class="relative flex flex-col justify-between p-3.5 rounded-xl border border-[#EADEC7] bg-surface-container-lowest hover:border-outline-variant cursor-pointer tap-press transition-all min-h-[96px]">
+<div class="flex items-start justify-between">
+<span class="material-symbols-outlined text-outline text-[24px]">humidity_mid</span>
+<span class="w-5 h-5 rounded-full border border-outline"></span>
+</div>
+<div>
+<span class="font-title-md text-title-md text-on-surface font-bold block">Slight Moisture / Thick Neck</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">किंचित ओलसर / जाड मान असणारा माल</span>
+</div>
+<input class="sr-only" name="neck" type="radio" value="moist_thick"/>
+</label>
+</div>
+</fieldset>
+<!-- QUESTION 4: SPROUTING & BLACK MOLD / DAGI -->
+<fieldset class="space-y-2.5">
+<div class="flex items-baseline justify-between">
+<div>
+<legend class="font-headline-sm text-headline-sm text-on-surface font-bold">
+                4. Sprouting &amp; Black Mold / Dagi
+              </legend>
+<p class="font-label-md text-label-md text-on-surface-variant">कोंब आणि काजळी / डागी प्रमाण</p>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold">Threshold: &lt; 2%</span>
+</div>
+<!-- Chip Selector Grid -->
+<div class="grid grid-cols-1 gap-2">
+<!-- Chip 1 (Selected: 0% Sprouts) -->
+<label class="relative flex items-center justify-between p-3 rounded-xl border-2 border-primary-container bg-surface-container-lowest shadow-sm cursor-pointer tap-press">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-primary-container flex items-center justify-center bg-surface-container-lowest shrink-0">
+<div class="w-3 h-3 rounded-full bg-primary-container"></div>
+</div>
+<div>
+<span class="font-title-md text-title-md text-on-surface font-bold">0% Zero Sprouting &amp; No Mold (पूर्ण निरोगी माल)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Clean lot, zero black mold powder on scales · निर्दोष</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold">Grade A</span>
+<input checked="" class="sr-only" name="mold" type="radio" value="zero"/>
+</label>
+<!-- Chip 2 -->
+<label class="relative flex items-center justify-between p-3 rounded-xl border border-[#EADEC7] bg-surface-container-lowest hover:border-outline-variant cursor-pointer tap-press">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center bg-surface-container-lowest shrink-0"></div>
+<div>
+<span class="font-title-md text-title-md text-on-surface font-bold">&lt; 3% Minor Surface Spots (किंचित डाग)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Superficial spots removable with outer scale · किरकोळ</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Grade B</span>
+<input class="sr-only" name="mold" type="radio" value="minor_spots"/>
+</label>
+<!-- Chip 3 -->
+<label class="relative flex items-center justify-between p-3 rounded-xl border border-[#EADEC7] bg-surface-container-lowest hover:border-outline-variant cursor-pointer tap-press">
+<div class="flex items-center gap-3">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center bg-surface-container-lowest shrink-0"></div>
+<div>
+<span class="font-title-md text-title-md text-on-surface font-bold">&gt; 5% Sprouting Visible (कोंब फुटलेला माल)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Green sprout visible at apex · तात्काळ प्रक्रियेसाठी</span>
+</div>
+</div>
+<span class="px-2.5 py-1 rounded-full bg-error-container text-on-error-container font-label-sm text-label-sm">Grade C</span>
+<input class="sr-only" name="mold" type="radio" value="sprouted"/>
+</label>
+</div>
+</fieldset>
+<!-- 4. EDUCATIONAL TRUST & ESCROW GUARANTEE BANNER -->
+<section class="p-4 rounded-xl bg-surface-container-low border border-[#EADEC7] space-y-2">
+<div class="flex items-center gap-2 text-primary font-title-md text-title-md">
+<span class="material-symbols-outlined text-[22px] fill-icon">balance</span>
+<span class="font-bold">Mandi Price Protection Guarantee</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Honest physical answers prevent re-grading disputes at the buyer's weighing bridge. <strong class="text-on-surface">100% Escrow deposit</strong> is released immediately when self-declaration matches weighment assay at Lasalgaon Mandi Yard.
+          </p>
+<div class="pt-1 flex items-center gap-2 font-label-sm text-label-sm text-tertiary">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+<span>APMC Board Verified Escrow Protocol · शेतकरी संरक्षण हमी</span>
+</div>
+</section>
+</form>
+</main>
+<!-- 5. ERGONOMIC STICKY BOTTOM ACTION DOCK (Hero Touch Target for High-Intent Commits) -->
+<footer class="fixed bottom-0 left-0 w-full z-50 flex justify-center bg-surface-container-lowest border-t-2 border-outline-variant/40 shadow-[0_-4px_20px_rgba(24,24,27,0.09)] px-margin-mobile py-space-sm pb-safe backdrop-blur-lg">
+<div class="w-full max-w-md space-y-2">
+<!-- Primary 56dp CTA Button -->
+<button class="w-full h-touch-target-hero bg-primary-container text-on-primary rounded-xl font-title-lg text-title-lg flex items-center justify-center space-x-2 shadow-md tap-press hover:bg-primary transition-all active:scale-95" id="btnSubmit" type="button">
+<span>Calculate Quality Grade · प्रतवारी काढा (Step 4)</span>
+<span class="material-symbols-outlined text-[22px]">arrow_forward</span>
+</button>
+<!-- Secondary Utility Link -->
+<div class="text-center">
+<button class="text-on-surface-variant hover:text-primary font-label-md text-label-md py-1 inline-flex items-center gap-1.5 transition-colors" id="btnSaveDraft" type="button">
+<span class="material-symbols-outlined text-[16px]">save</span>
+<span>Save Draft &amp; Continue Later · मसुदा सेव्ह करा</span>
+</button>
+</div>
+</div>
+</footer>
+</div>
+<!-- Interactive Feedback Script (Audio & Form Selection) -->
+<script>
+    // Audio Read-aloud simulation for outdoor glare usability
+    const btnAudio = document.getElementById('btnAudio');
+    let isSpeaking = false;
+    btnAudio.addEventListener('click', () => {
+      isSpeaking = !isSpeaking;
+      if (isSpeaking) {
+        btnAudio.classList.remove('bg-primary-container');
+        btnAudio.classList.add('bg-tertiary-container');
+        btnAudio.innerHTML = '<span class="material-symbols-outlined text-[18px] animate-pulse">volume_up</span><span>वाचत आहे...</span>';
+        if ('speechSynthesis' in window) {
+          const utterance = new SpeechSynthesisUtterance("कांद्याचा आकार, पापुद्रा, ओलावा आणि कोंब तपासणी. दर्जेदार मालाला लासलगाव बाजारात योग्य हमीभाव मिळेल.");
+          utterance.lang = 'mr-IN';
+          window.speechSynthesis.speak(utterance);
+          utterance.onend = () => {
+            btnAudio.classList.add('bg-primary-container');
+            btnAudio.classList.remove('bg-tertiary-container');
+            btnAudio.innerHTML = '<span class="material-symbols-outlined text-[18px]">volume_up</span><span>आवाज ऐका</span>';
+            isSpeaking = false;
+          };
+        }
+      } else {
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+        btnAudio.classList.add('bg-primary-container');
+        btnAudio.classList.remove('bg-tertiary-container');
+        btnAudio.innerHTML = '<span class="material-symbols-outlined text-[18px]">volume_up</span><span>आवाज ऐका</span>';
+      }
+    });
+
+    // Handle tactile card selection visually
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+      radio.addEventListener('change', function() {
+        const groupName = this.name;
+        document.querySelectorAll(`input[name="${groupName}"]`).forEach(sibling => {
+          const card = sibling.closest('label');
+          if (sibling.checked) {
+            card.classList.remove('border-[#EADEC7]');
+            card.classList.add('border-2', 'border-primary-container', 'shadow-sm');
+            const dotContainer = card.querySelector('.w-6');
+            if (dotContainer) {
+              dotContainer.classList.add('border-primary-container');
+              dotContainer.classList.remove('border-outline');
+              dotContainer.innerHTML = '<div class="w-3 h-3 rounded-full bg-primary-container"></div>';
+            }
+          } else {
+            card.classList.add('border-[#EADEC7]');
+            card.classList.remove('border-2', 'border-primary-container', 'shadow-sm');
+            const dotContainer = card.querySelector('.w-6');
+            if (dotContainer) {
+              dotContainer.classList.remove('border-primary-container');
+              dotContainer.classList.add('border-outline');
+              dotContainer.innerHTML = '';
+            }
+          }
+        });
+      });
+    });
+
+    // Step 4 forward transition feedback
+    document.getElementById('btnSubmit').addEventListener('click', () => {
+      const btn = document.getElementById('btnSubmit');
+      btn.innerHTML = '<span class="material-symbols-outlined animate-spin text-[22px]">progress_activity</span><span>Calculating Algorithmic Grade...</span>';
+      setTimeout(() => {
+        alert("Quality Parameters Validated! Proceeding to Step 4: Algorithmic Grade Score (प्रतवारी निकाल: Grade A Verified).");
+        btn.innerHTML = '<span>Grade A Calculated · ₹2,850/Qtl Locked ✓</span>';
+        btn.classList.remove('bg-primary-container');
+        btn.classList.add('bg-tertiary-container');
+      }, 700);
+    });
+
+    // Save Draft feedback
+    document.getElementById('btnSaveDraft').addEventListener('click', () => {
+      alert("Lot #LP-403 draft saved securely offline. You can resume anytime from 'My Produce'.");
+    });
+  </script>
+</body></html>

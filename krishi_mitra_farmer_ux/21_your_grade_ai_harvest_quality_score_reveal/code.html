@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mandi-Setu · Quality Grade Result (Step 4 of 5)</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-variant": "#e6e2da",
+            "surface-dim": "#dddad2",
+            "on-primary-fixed-variant": "#832600",
+            "error-container": "#ffdad6",
+            "tertiary-fixed": "#97f5cc",
+            "primary": "#9b2f00",
+            "on-primary-container": "#ffece7",
+            "tertiary-fixed-dim": "#7bd8b1",
+            "surface-container-lowest": "#ffffff",
+            "on-primary-fixed": "#390c00",
+            "tertiary-container": "#0f7c5b",
+            "surface-tint": "#ac3400",
+            "on-tertiary": "#ffffff",
+            "on-background": "#1c1c17",
+            "primary-fixed-dim": "#ffb59d",
+            "secondary-container": "#fb7b54",
+            "primary-fixed": "#ffdbd0",
+            "on-tertiary-fixed-variant": "#00513a",
+            "on-error": "#ffffff",
+            "on-tertiary-container": "#b9ffde",
+            "surface-container": "#f1ede6",
+            "secondary-fixed-dim": "#ffb59f",
+            "surface-container-highest": "#e6e2da",
+            "on-tertiary-fixed": "#002115",
+            "background": "#fdf9f1",
+            "inverse-on-surface": "#f4f0e8",
+            "tertiary": "#006146",
+            "surface-container-low": "#f7f3eb",
+            "surface-container-high": "#ece8e0",
+            "on-surface": "#1c1c17",
+            "on-secondary-fixed-variant": "#842503",
+            "inverse-surface": "#31302b",
+            "surface-bright": "#fdf9f1",
+            "on-primary": "#ffffff",
+            "surface": "#fdf9f1",
+            "outline-variant": "#e1bfb5",
+            "outline": "#8d7168",
+            "on-secondary": "#ffffff",
+            "on-surface-variant": "#59413a",
+            "primary-container": "#c2410c",
+            "secondary-fixed": "#ffdbd1",
+            "on-secondary-fixed": "#3a0a00",
+            "secondary": "#a53c19",
+            "on-secondary-container": "#6b1a00",
+            "error": "#ba1a1a",
+            "inverse-primary": "#ffb59d",
+            "on-error-container": "#93000a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-sm": "0.75rem",
+            "gutter-desktop": "1.5rem",
+            "space-2xs": "0.25rem",
+            "space-md": "1rem",
+            "touch-target-min": "3rem",
+            "space-lg": "1.25rem",
+            "space-xl": "1.5rem",
+            "space-xs": "0.5rem",
+            "margin-desktop": "2rem",
+            "space-2xl": "2rem",
+            "space-4xl": "3rem",
+            "gutter-mobile": "1rem",
+            "space-3xl": "2.5rem",
+            "touch-target-hero": "3.5rem",
+            "margin-mobile": "1rem"
+          },
+          "fontFamily": {
+            "label-md": ["Plus Jakarta Sans"],
+            "title-lg": ["Plus Jakarta Sans"],
+            "display-lg": ["Plus Jakarta Sans"],
+            "headline-sm": ["Plus Jakarta Sans"],
+            "title-md": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Plus Jakarta Sans"],
+            "label-sm": ["Plus Jakarta Sans"],
+            "headline-lg": ["Plus Jakarta Sans"],
+            "numeral-data": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "numeral-hero": ["Plus Jakarta Sans"],
+            "headline-lg-mobile": ["Plus Jakarta Sans"],
+            "headline-md": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.03em", "fontWeight": "600" }],
+            "title-lg": ["16px", { "lineHeight": "22px", "fontWeight": "700" }],
+            "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+            "headline-sm": ["18px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "title-md": ["15px", { "lineHeight": "20px", "fontWeight": "600" }],
+            "display-lg-mobile": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "numeral-data": ["18px", { "lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "700" }],
+            "label-lg": ["14px", { "lineHeight": "18px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "numeral-hero": ["32px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "headline-lg-mobile": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+            "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "body-sm": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }]
+          }
+        },
+      },
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .material-symbols-outlined.fill-icon {
+      font-variation-settings: 'FILL' 1, 'wght' 600, 'GRAD' 0, 'opsz' 24;
+    }
+    body {
+      background-color: #FAF6EE;
+      color: #1C1C17;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col justify-between selection:bg-primary-fixed-dim">
+<!-- TOP APP BAR (Focused Linear Sub-Page: Back Chevron, Step Details, Voice Assist) -->
+<header class="sticky top-0 z-40 w-full bg-surface/95 backdrop-blur-md border-b border-surface-variant/70 shadow-sm">
+<div class="max-w-md mx-auto px-margin-mobile py-space-xs flex items-center justify-between min-h-touch-target-min">
+<div class="flex items-center space-x-space-xs">
+<button aria-label="Go Back" class="w-10 h-10 rounded-xl bg-surface-container flex items-center justify-center text-on-surface active:scale-95 transition-transform" type="button">
+<span class="material-symbols-outlined text-primary text-xl">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center space-x-1.5">
+<h1 class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-tight">Quality Grade Result</h1>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">प्रतवारी निकाल · Lot #LP-403 · 40 Qtl</p>
+</div>
+</div>
+<!-- Audio read aloud action for rural field usability -->
+<button class="flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-surface-container-high border border-outline-variant/60 text-primary active:scale-95 transition-all shadow-sm" type="button">
+<span class="material-symbols-outlined text-primary text-lg" data-icon="volume_up">volume_up</span>
+<span class="font-label-sm text-label-sm font-bold">ऐका</span>
+</button>
+</div>
+<!-- Stepper Indicator (5 Steps: 1-4 Done, 5 Remaining) -->
+<div class="max-w-md mx-auto px-margin-mobile pb-2.5">
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm text-primary font-bold">Step 4 of 5: Quality Assay Reveal</span>
+<span class="inline-flex items-center text-tertiary font-label-sm text-label-sm font-bold bg-tertiary-fixed/30 px-2 py-0.5 rounded-full border border-tertiary-container/30">
+<span class="material-symbols-outlined text-xs mr-1 fill-icon">verified</span> APMC Standard
+        </span>
+</div>
+<div class="grid grid-cols-5 gap-1.5">
+<div class="h-1.5 rounded-full bg-primary"></div>
+<div class="h-1.5 rounded-full bg-primary"></div>
+<div class="h-1.5 rounded-full bg-primary"></div>
+<div class="h-1.5 rounded-full bg-primary-container relative overflow-hidden">
+<div class="absolute inset-0 bg-secondary-container/40 animate-pulse"></div>
+</div>
+<div class="h-1.5 rounded-full bg-surface-variant"></div>
+</div>
+</div>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<main class="max-w-md mx-auto w-full px-margin-mobile pt-3 pb-36 space-y-space-md">
+<!-- HERO QUALITY REVEAL CARD -->
+<section class="bg-surface-container-lowest rounded-2xl p-4 border border-surface-variant/80 shadow-[0_4px_16px_rgba(24,24,27,0.06)] relative overflow-hidden">
+<!-- Decorative Indian Mandi Stamp Seal Background -->
+<div class="absolute -right-6 -bottom-6 w-36 h-36 rounded-full border-4 border-primary/5 pointer-events-none flex items-center justify-center">
+<span class="material-symbols-outlined text-7xl text-primary/10">verified</span>
+</div>
+<div class="flex items-start justify-between gap-3">
+<!-- Lot Image with Assay Tag -->
+<div class="relative w-24 h-24 rounded-xl overflow-hidden border border-surface-variant shrink-0 shadow-inner">
+<img class="w-full h-full object-cover" data-alt="Close up crate of freshly harvested Gavran red onions in bright daylight at a rural Maharashtra farm yard, rich crimson papery skin, robust round bulbs, and golden dry earth textures under natural sunlight." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDRVacsErMTIQ2ZTWHaohCe8KAexMjhCLnUk10hEKyAVPeh_5QQqJ_WTtFjegeC3t4fZqfXI54iXoIgxOaf7lcO7-UkiwAp0CZS5DxUCoqWgvoIE03ciFONHQzag0fBE1-QoceyUPZ1HPZSyTouJI1iYFQz_om8IXpWyMrstlwm7tFK3Fd3rvkZr3apq9H0gGVf7NA0_Rx3xvvlbfKXj6koxZqFAdFDTXTJURahnfbOu4adzhWQuRfZ"/>
+<div class="absolute bottom-0 inset-x-0 bg-inverse-surface/85 py-0.5 text-center">
+<span class="font-label-sm text-[10px] text-inverse-on-surface font-bold">FIELD VERIFIED</span>
+</div>
+</div>
+<!-- Grade Badge & Numeric Score -->
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="inline-block bg-tertiary text-on-tertiary font-title-lg text-title-lg px-2.5 py-0.5 rounded-lg shadow-sm">
+              GRADE A
+            </span>
+<span class="font-label-md text-label-md text-tertiary font-bold bg-tertiary-fixed/30 px-2 py-0.5 rounded-md border border-tertiary-container/30">
+              मोठा / उत्तम प्रत
+            </span>
+</div>
+<div class="mt-2 flex items-baseline space-x-1.5">
+<span class="font-numeral-hero text-numeral-hero text-on-surface tracking-tight">850</span>
+<span class="font-title-md text-title-md text-on-surface-variant font-bold">/ 1000</span>
+<span class="font-label-sm text-label-sm text-tertiary font-bold ml-1">★ Verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Gavran Red Onion (उन्हाळ कांदा)</p>
+</div>
+</div>
+<!-- Lot Spec Micro Bar -->
+<div class="mt-3 pt-3 border-t border-surface-container flex items-center justify-between text-on-surface-variant font-label-md text-label-md">
+<div class="flex items-center space-x-1">
+<span class="material-symbols-outlined text-base text-primary">scale</span>
+<span class="text-on-surface font-bold">40 Quintals</span>
+<span class="text-on-surface-variant">(80 Bags)</span>
+</div>
+<div class="flex items-center space-x-1 text-tertiary font-bold">
+<span class="material-symbols-outlined text-base fill-icon">award_star</span>
+<span>Top 15% arrivals today</span>
+</div>
+</div>
+<!-- Trust Ribbon -->
+<div class="mt-2.5 bg-surface-container-low px-3 py-1.5 rounded-xl flex items-center justify-between border border-surface-variant/50">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm text-primary">location_on</span>
+<span class="font-label-sm text-label-sm text-on-surface">Lasalgaon Mandi Yard Yard 2</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Assay: AI + Coin Gauge</span>
+</div>
+</section>
+<!-- ACTIONABLE ADVICE CARD (Farmer Uplift Opportunity) -->
+<section class="bg-surface-container-lowest rounded-2xl p-4 border-2 border-primary-container/40 shadow-sm relative">
+<div class="flex items-start space-x-3">
+<div class="w-10 h-10 rounded-xl bg-primary-fixed flex items-center justify-center text-primary shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-2xl fill-icon">lightbulb</span>
+</div>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<h2 class="font-title-lg text-title-lg text-on-surface font-bold">Recommendation for Grade A+</h2>
+<span class="bg-primary text-on-primary font-label-sm text-label-sm px-2 py-0.5 rounded-full font-bold">+₹3,200 Gain</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+            Sun-dry in open shed for <span class="font-bold text-on-surface">2 more days</span> to cure neck skin moisture below 8%.
+          </p>
+</div>
+</div>
+<!-- Financial Uplift Simulation Box -->
+<div class="mt-3 bg-surface-container-low rounded-xl p-3 border border-outline-variant/40 flex items-center justify-between">
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Current Potential (Grade A)</div>
+<div class="font-numeral-data text-numeral-data text-on-surface font-bold">₹2,100<span class="text-xs font-normal text-on-surface-variant">/Qtl</span></div>
+</div>
+<div class="text-center px-2">
+<span class="material-symbols-outlined text-primary text-xl">trending_up</span>
+</div>
+<div class="text-right">
+<div class="font-label-sm text-label-sm text-tertiary font-bold">After 2 Days Curing (Grade A+)</div>
+<div class="font-numeral-data text-numeral-data text-tertiary font-bold">₹2,180<span class="text-xs font-normal text-on-surface-variant">/Qtl (+₹80)</span></div>
+</div>
+</div>
+<!-- Decision Radio / Toggle Pill -->
+<div class="mt-3 grid grid-cols-2 gap-2">
+<label class="flex items-center space-x-2 p-2 rounded-xl border border-primary-container bg-primary-container/10 cursor-pointer">
+<input checked="" class="text-primary-container focus:ring-primary h-4 w-4" name="lot_action" type="radio"/>
+<span class="font-label-md text-label-md text-on-surface font-bold leading-tight">Publish Grade A Now<br/><span class="text-[10px] text-on-surface-variant font-normal">Fast payout</span></span>
+</label>
+<label class="flex items-center space-x-2 p-2 rounded-xl border border-outline-variant/60 bg-surface-container-lowest cursor-pointer">
+<input class="text-primary focus:ring-primary h-4 w-4" name="lot_action" type="radio"/>
+<span class="font-label-md text-label-md text-on-surface font-bold leading-tight">Hold for 2-Day Curing<br/><span class="text-[10px] text-tertiary font-semibold">+₹3,200 value</span></span>
+</label>
+</div>
+</section>
+<!-- DETAILED SCORE DIAGNOSTIC BREAKDOWN -->
+<section class="bg-surface-container-lowest rounded-2xl p-4 border border-surface-variant/80 shadow-sm space-y-3">
+<div class="flex items-center justify-between border-b border-surface-container pb-2.5">
+<div>
+<h3 class="font-title-lg text-title-lg text-on-surface font-bold">Assay Diagnostic Breakdown</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">तपशीलवार गुणवत्ता तपासणी निकाल</p>
+</div>
+<span class="font-label-sm text-label-sm font-bold text-on-surface bg-surface-container px-2 py-1 rounded-md">
+          4 Parameters
+        </span>
+</div>
+<!-- Metric 1: Bulb Uniformity -->
+<div class="space-y-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-base text-primary">grain</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Bulb Uniformity &amp; Size</span>
+</div>
+<span class="font-numeral-data text-numeral-data text-on-surface font-bold">92<span class="text-xs text-on-surface-variant font-normal">/100</span></span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 92%"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>52mm – 58mm Medium Large</span>
+<span class="text-tertiary font-semibold">Optimal Mandi Size</span>
+</div>
+</div>
+<!-- Metric 2: Skin Retention & Color -->
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-base text-secondary">palette</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Skin Papery Luster &amp; Color</span>
+</div>
+<span class="font-numeral-data text-numeral-data text-on-surface font-bold">95<span class="text-xs text-on-surface-variant font-normal">/100</span></span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-secondary-container h-full rounded-full" style="width: 95%"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>Double layer intact, deep copper red</span>
+<span class="text-tertiary font-semibold">High export grade</span>
+</div>
+</div>
+<!-- Metric 3: Neck Moisture -->
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-base text-primary">water_drop</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Neck Tightness &amp; Moisture</span>
+</div>
+<span class="font-numeral-data text-numeral-data text-on-surface font-bold">88<span class="text-xs text-on-surface-variant font-normal">/100</span></span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-primary-container h-full rounded-full" style="width: 88%"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>Neck cured dry, moisture ~8.9%</span>
+<span class="text-on-surface font-semibold">Good shelf life (60d)</span>
+</div>
+</div>
+<!-- Metric 4: Sprouting & Zero Defects -->
+<div class="space-y-1 pt-1">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-base text-tertiary">check_circle</span>
+<span class="font-title-md text-title-md text-on-surface font-semibold">Sprouting, Rot &amp; Foreign Matter</span>
+</div>
+<span class="font-numeral-data text-numeral-data text-tertiary font-bold">98<span class="text-xs text-on-surface-variant font-normal">/100</span></span>
+</div>
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-tertiary h-full rounded-full" style="width: 98%"></div>
+</div>
+<div class="flex justify-between text-on-surface-variant font-label-sm text-label-sm">
+<span>0% green sprout · 0% black mold</span>
+<span class="text-tertiary font-semibold">Zero deductions</span>
+</div>
+</div>
+<!-- AI Assay Sign-Off Stamp -->
+<div class="mt-3 pt-2.5 border-t border-surface-container flex items-center justify-between bg-surface-container-low p-2 rounded-xl">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-tertiary text-lg">fact_check</span>
+<span class="font-label-sm text-label-sm text-on-surface font-bold">3 Field Images + Weight Receipt Match</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold">Hash #LP94</span>
+</div>
+</section>
+<!-- FAIR MARKET PRICE BAND ESTIMATE -->
+<section class="bg-surface-container-lowest rounded-2xl p-4 border border-surface-variant/80 shadow-sm">
+<div class="flex items-center justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-bold">FAIR VALUE ENGINE</span>
+<h3 class="font-title-lg text-title-lg text-on-surface font-bold">Recommended Price Band</h3>
+</div>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm px-2.5 py-1 rounded-full font-bold">
+          +₹100/Qtl Premium
+        </span>
+</div>
+<!-- Price Hero Display -->
+<div class="mt-3 p-3 rounded-xl bg-surface-container-low border border-surface-variant/60 flex items-center justify-between">
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Recommended Asking Price:</div>
+<div class="font-numeral-hero text-numeral-hero text-primary font-extrabold tracking-tight">
+            ₹2,050 – ₹2,150 <span class="font-title-md text-title-md text-on-surface font-normal">/ Qtl</span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-label-sm text-label-sm text-on-surface-variant">Expected Lot Value:</div>
+<div class="font-title-lg text-title-lg text-on-surface font-bold">₹82,000 – ₹86,000</div>
+<span class="font-label-sm text-[10px] text-tertiary font-bold">Instant Escrow Pay</span>
+</div>
+</div>
+<!-- Mandi Comparison Footnote -->
+<div class="mt-3 grid grid-cols-2 gap-2 text-on-surface">
+<div class="p-2 bg-surface-container rounded-lg border border-surface-variant/40">
+<div class="font-label-sm text-label-sm text-on-surface-variant">Lasalgaon Modal Average</div>
+<div class="font-title-md text-title-md font-bold mt-0.5">₹2,050 / Qtl</div>
+<span class="font-label-sm text-[10px] text-on-surface-variant">Across all standard grades</span>
+</div>
+<div class="p-2 bg-surface-container rounded-lg border border-surface-variant/40">
+<div class="font-label-sm text-label-sm text-on-surface-variant">Terminal Buyer Demand</div>
+<div class="font-title-md text-title-md font-bold text-tertiary mt-0.5">High (Grade A)</div>
+<span class="font-label-sm text-[10px] text-tertiary font-bold">5 Active Bidders in Niphad</span>
+</div>
+</div>
+</section>
+<!-- TRUST & SETTLEMENT GUARANTEE BANNER -->
+<section class="bg-surface-container-high/60 rounded-2xl p-3.5 border border-surface-variant flex items-start space-x-3">
+<div class="w-9 h-9 rounded-xl bg-tertiary text-on-tertiary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-xl fill-icon">shield</span>
+</div>
+<div class="space-y-0.5">
+<div class="flex items-center space-x-1.5">
+<h4 class="font-title-md text-title-md text-on-surface font-bold">Mandi-Setu 100% Escrow Guarantee</h4>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-snug">
+          Buyer locks payment into the Mandi Board Escrow before truck loading. Zero payment default risk for Grade A certified lots.
+        </p>
+</div>
+</section>
+<!-- SECONDARY PRODUCE IMAGE STRIP -->
+<section class="bg-surface-container-lowest rounded-2xl p-3 border border-surface-variant/80">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-md text-label-md text-on-surface font-bold">Assay Crate Inspection Stream</span>
+<span class="font-label-sm text-label-sm text-primary font-bold">2 Photos Attached</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<div class="relative h-28 rounded-xl overflow-hidden border border-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Traditional Indian jute gunny sacks filled with glistening purple and red harvest onions stacked inside a rustic stone warehouse with warm sunlight streaming from high window." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdcrPFpPTMWE-_j5fTGxAtV-YKNel2eiQ2EBCoYQpOjSLBdhCwjqWhKf_Z_VHwTY5hN00v6-OHzo8_tQT9pkA6AWufw9lipIFVJLxJtgImHdtMnRBABGtjicVaQ7TkMCAb-bVrGBdpKWxF9KH-_jGZZRQLh9rO1ATHMXloKo5qud1uPIU5x3ZCYI2oqWwkJVctheW4i-Sot_iPyyXC2PYMBHVYpnNL9yY3G5aL_VHLblV15LLacnDd"/>
+<span class="absolute bottom-1 left-1 bg-on-surface/75 text-on-primary font-label-sm text-[10px] px-1.5 py-0.5 rounded">Bagged Lot (80 Bags)</span>
+</div>
+<div class="relative h-28 rounded-xl overflow-hidden border border-surface-variant">
+<img class="w-full h-full object-cover" data-alt="Close up view of calibrated onion lot with measuring reference scale resting in a wooden farmer harvest crate under open sky in Nashik agricultural district." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHPS8HMfr1c6UMFFtWBMNXwnJzMWanLuSvEX30bZzMJuoyR8NMRIWmjsBui04AE6sWkKKTEvspegTrbqOu9f0UVvQjfoKCtfgw8HwAMrpWhSNijh2aZfkVpcfn8fRud_fIJStT0b4Wf8TES6F2UQ5NoyToLO1lUSSSc848-YbZcOEhHeN9sQT-SvtohQaA0Kkb463PXVaIYkoryvGJO78dflK68iVSR71vGvkFqNQ5Y3-yb-KqPiUz"/>
+<span class="absolute bottom-1 left-1 bg-on-surface/75 text-on-primary font-label-sm text-[10px] px-1.5 py-0.5 rounded">Uniformity Scale Check</span>
+</div>
+</div>
+</section>
+</main>
+<!-- STICKY BOTTOM ACTION DOCK (Hero Action For Step 5) -->
+<aside class="fixed bottom-0 inset-x-0 z-50 bg-surface-container-lowest border-t-2 border-surface-variant/70 shadow-[0_-4px_20px_rgba(24,24,27,0.12)] pb-safe">
+<div class="max-w-md mx-auto px-margin-mobile py-2.5 space-y-2">
+<!-- Primary 56dp CTA -->
+<button class="w-full h-14 bg-primary-container text-on-primary font-title-lg text-title-lg rounded-2xl font-bold flex items-center justify-center space-x-2 shadow-md active:translate-y-0.5 active:scale-[0.99] transition-all" type="button">
+<span>Set Asking Price &amp; Publish · भाव ठरवा</span>
+<span class="material-symbols-outlined text-2xl">arrow_forward</span>
+</button>
+<!-- Secondary Row: Certificate Download + Edit info -->
+<div class="flex items-center justify-between pt-0.5 px-1">
+<button class="inline-flex items-center space-x-1.5 text-primary font-label-md text-label-md font-bold hover:underline py-1" type="button">
+<span class="material-symbols-outlined text-base">file_download</span>
+<span>Download Grade Certificate (PDF)</span>
+</button>
+<span class="font-label-sm text-label-sm text-on-surface-variant">
+          Auto-saved draft · 3:45 PM
+        </span>
+</div>
+</div>
+</aside>
+</body></html>
