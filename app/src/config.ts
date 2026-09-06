@@ -108,6 +108,11 @@ export const DEFAULT_MARKET_ID = 'mkt_lasalgaon';
 export const DEFAULT_QTY_KG = 4000;
 export const DEFAULT_GRADE: Grade = 'B';
 
+/** S13's demo lot, matching `fxLotListed` in `fixtures/lots.ts` — the same
+ * fixture-first pattern as `DEFAULT_COMMODITY_ID`/`DEFAULT_MARKET_ID` above,
+ * until S12 (P9b, task D) exists to create a real one. */
+export const DEFAULT_LOT_ID = 'lot_listed_1';
+
 /**
  * ★ Not in CANON's wire contract — `05_AI_ARCHITECTURE.md` §6 and `NILESH.md` §2
  *   both document `NO_ADVICE_BAND_BPS=3500` (35%) as the server's refusal

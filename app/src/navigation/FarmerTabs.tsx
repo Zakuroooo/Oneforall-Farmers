@@ -23,6 +23,7 @@ import S05_History from '../screens/farmer/S05_History';
 import S06_Nearby from '../screens/farmer/S06_Nearby';
 import S07_Forecast from '../screens/farmer/S07_Forecast';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
+import S13_SelfAssay from '../screens/farmer/S13_SelfAssay';
 import PricesIndex from '../screens/farmer/PricesIndex';
 import { Soon } from '../screens/Soon';
 
@@ -82,10 +83,28 @@ function PricesStackNavigator() {
   );
 }
 
+/**
+ * The MyLots tab is a stack, same shape as HomeStack/PricesStack. S13 is the
+ * only real screen as of task C (P9a) — S12 (task D, P9b) inserts ahead of it
+ * as the initial route once it exists, and S15 (P12) after it.
+ */
+export type MyLotsStackParamList = {
+  S13_SelfAssay: undefined;
+};
+
+const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
+
+function MyLotsStackNavigator() {
+  return (
+    <MyLotsStack.Navigator screenOptions={{ headerShown: false }}>
+      <MyLotsStack.Screen name="S13_SelfAssay" component={S13_SelfAssay} />
+    </MyLotsStack.Navigator>
+  );
+}
+
 const Tab = createBottomTabNavigator<FarmerTabParamList>();
 
-// TODO(pranay): P9 → S12 create lot + S13 self-assay · P12 → S15 lots + timeline · P16 → S28 assistant.
-const MyLotsSoon = () => <Soon label="S15 · माझे लॉट" />;
+// TODO(pranay): P12 → S15 lots + timeline · P16 → S28 assistant.
 const AssistantSoon = () => <Soon label="S28 · मदत" />;
 
 export function FarmerTabs() {
@@ -103,7 +122,7 @@ export function FarmerTabs() {
       }}>
       <Tab.Screen name="Home" component={HomeStackNavigator} options={{ title: 'मुख्यपृष्ठ' }} />
       <Tab.Screen name="Prices" component={PricesStackNavigator} options={{ title: 'भाव' }} />
-      <Tab.Screen name="MyLots" component={MyLotsSoon} options={{ title: 'माझे लॉट' }} />
+      <Tab.Screen name="MyLots" component={MyLotsStackNavigator} options={{ title: 'माझे लॉट' }} />
       <Tab.Screen
         name="Assistant"
         component={AssistantSoon}
