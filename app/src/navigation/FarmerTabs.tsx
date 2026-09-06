@@ -25,6 +25,7 @@ import S07_Forecast from '../screens/farmer/S07_Forecast';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
 import S12_CreateLot from '../screens/farmer/S12_CreateLot';
 import S13_SelfAssay from '../screens/farmer/S13_SelfAssay';
+import S15_MyLots from '../screens/farmer/S15_MyLots';
 import PricesIndex from '../screens/farmer/PricesIndex';
 import { Soon } from '../screens/Soon';
 
@@ -85,18 +86,19 @@ function PricesStackNavigator() {
 }
 
 /**
- * The MyLots tab is a stack, same shape as HomeStack/PricesStack. S12 is the
- * initial route (P9b, task D) — create the lot first — then S13 (P9a, task C)
- * scores it. S15 (P12) inserts after S13 once it exists.
+ * The MyLots tab is a stack, same shape as HomeStack/PricesStack. S15 (P12)
+ * is the initial route — the list a farmer with existing lots actually lands
+ * on — with S12 (P9b) reached from its header button to create a new one,
+ * and S13 (P9a) reached from tapping a row to score one.
  */
 export type MyLotsStackParamList = {
+  S15_MyLots: undefined;
   S12_CreateLot: undefined;
   /**
    * `lot_id` is optional so S13 stays reachable directly (e.g. from a deep
-   * link or a future S15 lots list) without a lot already created in this
-   * session — it falls back to `DEFAULT_LOT_ID` from config. When S12
-   * navigates here it always passes the id of the lot it just created, so
-   * the assay actually scores that lot and not the standalone fixture.
+   * link) without a lot already created in this session — it falls back to
+   * `DEFAULT_LOT_ID` from config. Both S12 (just created) and S15 (tapped
+   * from the list) navigate here with the real id of the lot in question.
    */
   S13_SelfAssay: { lot_id?: string } | undefined;
 };
@@ -105,7 +107,8 @@ const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
 
 function MyLotsStackNavigator() {
   return (
-    <MyLotsStack.Navigator initialRouteName="S12_CreateLot" screenOptions={{ headerShown: false }}>
+    <MyLotsStack.Navigator initialRouteName="S15_MyLots" screenOptions={{ headerShown: false }}>
+      <MyLotsStack.Screen name="S15_MyLots" component={S15_MyLots} />
       <MyLotsStack.Screen name="S12_CreateLot" component={S12_CreateLot} />
       <MyLotsStack.Screen name="S13_SelfAssay" component={S13_SelfAssay} />
     </MyLotsStack.Navigator>

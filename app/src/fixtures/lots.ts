@@ -40,6 +40,38 @@ export const fxLotListed: LotDto = {
   created_at: '2026-09-01T06:00:00+05:30',
 };
 
+/**
+ * S15's third row — a graded, lower-grade lot, and deliberately not a multiple
+ * of 100 kg. `2050 kg` must render as `२० क्विंटल` (floor), never `२१`
+ * (round) — `toQuintal` floors per I2, and this is the case that would catch
+ * a screen that rounded instead.
+ */
+export const fxLotGradeC: LotDto = {
+  id: 'lot_c_1',
+  farmer_id: 'farmer_1',
+  commodity_id: 'onion',
+  market_id: 'mkt_lasalgaon',
+  qty_kg: 2050,
+  grade: 'C',
+  harvest_date: '2026-08-20',
+  photo_path: null,
+  status: 'LISTED',
+  created_at: '2026-08-20T07:00:00+05:30',
+};
+
+/** S15's data state: one of each grade this farmer can see — ungraded (S13
+ * has not run), graded A, graded C — plus the floor-quantity case above. */
+export const fxMyLots: LotDto[] = [fxLotUngraded, fxLotListed, fxLotGradeC];
+
+/**
+ * S15's empty state: zero lots. CLAUDE.md §9 — "every screen needs a real
+ * empty state" — and this is the fixture that makes S15's empty branch
+ * something rendered and checked, not just written and assumed. Swap
+ * `fxMyLots` for this one in S15's `fetchLots()` to see it locally; it is
+ * not wired in by default because the demo scenario has lots to show.
+ */
+export const fxMyLotsEmpty: LotDto[] = [];
+
 /** S13's six-question request. All 1|2|3 dims at their middle value, damage
  * at 15% — the exact case Task C's pinning test also uses. */
 export const fxAssayReq: AssayReq = {
