@@ -25,6 +25,9 @@ import type {
   AuthRes,
   ChatMessage,
   DemandDto,
+  DisputeDto,
+  DisputeReasonCode,
+  DisputeRes,
   District,
   EscrowEvent,
   ForecastRes,
@@ -300,6 +303,32 @@ export const transitionTx = (id: string, toStatus: TxStatus, idempotencyKey: str
     body: JSON.stringify({ to_status: toStatus, note }),
     headers: { 'Idempotency-Key': idempotencyKey },
   });
+
+/**
+ * CANON §7.7 documents the request body but not the response. We assume the
+ * created row, because every other `POST` in the contract returns the row it
+ * created, and because a screen that raises a dispute and then cannot show it
+ * has to guess at a stage.
+ *
+ * TODO(akash): confirm this returns `DisputeDto`. Raised in docs/BLOCKERS.md.
+ */
+export const createDispute = (body: {
+  tx_id: string;
+  reason_code: DisputeReasonCode;
+  description: string;
+  photo_path?: string;
+}) => post<DisputeDto>('/disputes', body);
+
+/**
+ * ★ CONTRACT GAP. This takes a `dispute_id`, and nothing in CANON hands one
+ * out: `TxDto` has no `dispute_id`, and there is no `GET /disputes?tx_id=`.
+ * So a buyer arriving at S25 on an already-disputed transaction cannot look
+ * up his own complaint — the screen says so rather than inventing a route.
+ *
+ * TODO(akash): either `dispute_id` on `TxDto` or `GET /disputes?tx_id=`.
+ * Raised in docs/BLOCKERS.md.
+ */
+export const getDispute = (id: string) => get<DisputeRes>(`/disputes/${id}`);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Meta and provenance — §7.8. Unblocks S24_DataProvenance.

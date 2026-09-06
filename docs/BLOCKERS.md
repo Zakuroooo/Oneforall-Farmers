@@ -315,3 +315,26 @@ These are logged because **the baseline documents changed after they were writte
 - **Also worth knowing:** the old S20 displayed a farmer name, a village, a distance in km and a warehouse name, all hardcoded literals. Three of those have no field anywhere in the contract — `LotDto` has `farmer_id` only, distance lives on the *match* row where S19 already shows it, and there is no warehouse column in the `lots` DDL at all (the one `warehouse_id` in CANON sits on `PledgeQuote`). **They are deleted rather than faked.** If a buyer is supposed to see a warehouse against a lot, that is a schema change and it needs to come from you.
 - **Raised:** H-current (2026-09-06)
 
+
+### [Pranay → Akash] CONTRACT: nothing goes from a transaction to its dispute
+- **What I need:** one of two, whichever is cheaper for you.
+  - **(a) `GET /disputes?tx_id={id}`** — a filter on the collection, returning `[]` or one row.
+  - **(b) a nullable `dispute_id` on `TxDto`** — one field, and the existing `GET /disputes/{id}` does the rest.
+- **Why:** CANON §7.7 has `POST /disputes` and `GET /disputes/{id}` and **no way to discover the id**. A buyer standing on a `DISPUTED` transaction — which is precisely the actor and the state the dispute screen exists for — cannot reach the dispute on it. He can *file* one and never read it back, because the only response that ever carries the id is the `POST` he already navigated away from.
+- **Blocking:** S25's read path against a live API. Not blocking the raise path, and not blocking any demo beat — beat 10 shows escrow and the split, and the dispute screen is the "what if it goes wrong" follow-up question rather than a scripted beat.
+- **Workaround in place:** `app/src/fixtures/disputes.ts` exports `fxDisputeByTxId`, a local map standing in for the missing lookup. Against the live API `fetchDisputeForTx()` returns `null` **unconditionally and on purpose** — it does not guess a `dispute_${tx_id}` path that would 404. When a transaction reads `DISPUTED` and no dispute can be resolved, the screen renders `dispute_exists_unreadable` ("a dispute is on record, its details cannot be read right now") instead of showing a raise form that would file a second complaint about the same shipment. Two `TODO(akash):` markers, on `getDispute` in `app/src/lib/api.ts` and in the `S25_Dispute.tsx` header.
+- **Raised:** H-current (2026-09-07)
+
+### [Pranay → Akash] CONTRACT: `POST /disputes` has no documented response body
+- **What I need:** confirmation that it returns the created `DisputeDto`. If you would rather return `DisputeRes` with the first `dispute_events` row already in it, say so and I delete a render branch.
+- **Why:** §7.7 gives the path and the request body and stops. The caller needs the new `id` at minimum, so `DisputeDto` is the only shape that lets the screen do anything after a successful file. The reason the difference is visible on screen: `dispute_events` is **append-only (I5)**, so after a raise I have a dispute row and **no event**, and the timeline section renders only when `events.length > 0`. I will not fabricate a `RAISED` event to fill it — inventing a row in an append-only table is the one thing that table exists to make impossible, and a judge who asks "where did that event come from" deserves a better answer than "the frontend made it up". If the `POST` returns the first event, the timeline is populated from the moment of filing and that branch goes away.
+- **Related:** `GET /disputes/{id}` is documented as "+ event timeline" with no body either. I have read that as a wrapper — `{dispute, events}`, matching `MatchesRes` and `ProvenanceRes` — rather than a bare DTO plus a second round trip on `GET /disputes/{id}/events`. Either is fine; the two must not disagree.
+- **Blocking:** nothing. Both readings compile and both render.
+- **Workaround in place:** `DisputeRes` in `app/src/types/api.ts`; `createDispute()` typed `→ DisputeDto` in `app/src/lib/api.ts`, both carrying `TODO(akash):`.
+- **Raised:** H-current (2026-09-07)
+
+### [Pranay → Akash] FYI, no action: the buyer cannot resolve his own dispute, and the screen now says so
+- **What changed:** S25 used to render a button labelled "accept arbitration and settle" that moved the dispute to `RESOLVED`, for the **buyer**. That is gone.
+- **Why:** CANON §7.7's FSM reaches `RELEASED` and `REFUNDED` from `DISPUTED` as *mediation outcomes*, and the diagram's own rule is "anything not on this diagram is `409`". `disputes.stage` has seven values, three of them `RESOLVED_*`; none is an action a party performs on its own complaint. The old screen was drawing a permission we do not have and should not want: the buyer holding the goods deciding whether his own short-weight claim against the farmer succeeds. The screen now renders the stage, the append-only event stream, and one sentence — a mediator decides, and the escrow amount stays held until they do.
+- **What I need from you:** nothing, unless you disagree that resolution is mediator-driven. If there is a party-initiated withdrawal path (`WITHDRAWN` is in the CHECK constraint and is plausibly the *raiser's* own action), tell me and I will add it for the raiser only.
+- **Raised:** H-current (2026-09-07)
