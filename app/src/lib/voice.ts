@@ -6,24 +6,24 @@
  * edge case.
  *
  * ★ CANON/12_STACK.md §"Voice" names `react-native-sound` as the sanctioned
- *   library for exactly this (pre-generated clips, sequenced) — not
- *   `expo-av` (this is React Native CLI, not Expo — there is no Expo runtime
- *   in this app at all) and not `react-native-tts`, which 12_STACK documents
- *   only as a *fallback*, not the primary path.
+ *   library for exactly this (pre-generated clips, sequenced), with
+ *   `react-native-tts` documented as the *fallback* — not `expo-av`, since
+ *   this is React Native CLI with no Expo runtime at all.
  *
- * ★ THE CLIP CONTENT IS NOT SHIPPED IN THIS COMMIT. This file wires up a
- *   complete, correct playback engine against a stable set of clip ids (see
- *   `assets/audio/mr/README.md`), but the actual Marathi speech files —
- *   ~123 short mp3s, one per id — are a content-generation task (pre-generate
- *   with Sarvam TTS or similar, per the original design note) that requires
- *   an actual TTS pass over real audio, which nothing in this coding session
- *   can produce. `loadClip` below fails soft: a missing file is skipped, not
- *   a crash and not a rejected promise — so this engine is inert-but-safe
- *   today and becomes real the moment the clips land in
- *   `android/app/src/main/res/raw/` (and the iOS bundle).
+ * ★ THE PRE-GENERATED CLIP CONTENT IS NOT SHIPPED IN THIS COMMIT. Generating
+ *   ~123 real Marathi speech mp3s (one per id, per `assets/audio/mr/README.md`)
+ *   is a TTS content pass over real audio, which nothing in a coding session
+ *   can produce — so `react-native-tts` is not the fallback-of-last-resort
+ *   here, it is doing the actual work: `speak()` tries the pre-generated clip
+ *   first (silent today, since none exist) and falls back to the device's
+ *   on-device TTS engine speaking the same Marathi text live. This is what
+ *   keeps beat 7 ("voice, then airplane mode") non-silent without the mp3s —
+ *   `react-native-tts` needs no network either, it speaks through whatever
+ *   TTS engine and voice data are already installed on the phone.
  */
 
 import Sound from 'react-native-sound';
+import Tts from 'react-native-tts';
 import type { WindowRes } from '../types/api';
 import type { TFn } from './i18n';
 
@@ -206,18 +206,91 @@ function playClip(sound: Sound): Promise<void> {
 }
 
 /**
+ * `Tts.setDefaultLanguage('mr-IN')` once, best-effort — plenty of Android
+ * phones ship with no Marathi voice data installed at all, and this must
+ * never block or throw on that. If it fails, `Tts.speak()` still falls back
+ * to whatever the device's default TTS language is, which beats no sound.
+ */
+let ttsLanguageReady: Promise<void> | null = null;
+function ensureTtsLanguage(): Promise<void> {
+  if (!ttsLanguageReady) {
+    ttsLanguageReady = Tts.setDefaultLanguage('mr-IN')
+      .then(() => undefined)
+      .catch(() => undefined);
+  }
+  return ttsLanguageReady;
+}
+
+/**
+ * Speaks `text` through the device's on-device TTS engine and resolves when
+ * it finishes, errors, or is cancelled — never rejects. `Tts.speak()` returns
+ * an utterance id synchronously; completion only arrives as an event, so
+ * this wraps that in a promise and always cleans its own listeners up
+ * afterward, matched on that id (more than one clip can be in flight only if
+ * something calls `speak()` concurrently with itself, which this module
+ * never does, but matching by id costs nothing and rules it out anyway).
+ */
+function speakViaTts(text: string): Promise<void> {
+  return new Promise(resolve => {
+    let utteranceId: string | number;
+    const done = (event: { utteranceId: string | number }) => {
+      if (event.utteranceId !== utteranceId) return;
+      Tts.removeEventListener('tts-finish', done);
+      Tts.removeEventListener('tts-error', done);
+      Tts.removeEventListener('tts-cancel', done);
+      resolve();
+    };
+    Tts.addEventListener('tts-finish', done);
+    Tts.addEventListener('tts-error', done);
+    Tts.addEventListener('tts-cancel', done);
+
+    try {
+      utteranceId = Tts.speak(text);
+    } catch {
+      Tts.removeEventListener('tts-finish', done);
+      Tts.removeEventListener('tts-error', done);
+      Tts.removeEventListener('tts-cancel', done);
+      resolve();
+    }
+  });
+}
+
+/** Every clip id's Marathi text, for the TTS fallback below — the same
+ * lookup `allClipTexts()` exposes, kept as one map rather than rebuilding
+ * it per call. */
+const CLIP_TEXT_BY_ID: Record<string, string> = (() => {
+  const all: Record<string, string> = { ...CLIP_TEXT_MR };
+  for (const [n, text] of Object.entries(MARATHI_NUMBER_NAMES)) {
+    all[`n${n}`] = text;
+  }
+  for (const [n, text] of Object.entries(MARATHI_HUNDREDS)) {
+    all[`h${n}`] = text;
+  }
+  return all;
+})();
+
+/**
  * Plays a sequence of clip ids, one after another, waiting for each to
  * finish before starting the next — this is speech, and a farmer needs the
- * words in order, not overlapping. A clip id with no matching file (content
- * not recorded yet, or a typo in a caller) is silently skipped, not thrown:
- * partial narration beats a hard failure on the whole sentence over one
- * missing word.
+ * words in order, not overlapping.
+ *
+ * A clip id whose pre-generated file does not exist falls back to on-device
+ * TTS speaking the same Marathi text live, rather than being silently
+ * skipped — see this file's header. Only an id with no Marathi text at all
+ * (a caller's typo — cannot happen from this module's own two decompose
+ * functions) is actually skipped.
  */
 export async function speak(clips: string[]): Promise<void> {
+  await ensureTtsLanguage();
   for (const id of clips) {
     const sound = await loadClip(id);
     if (sound) {
       await playClip(sound);
+      continue;
+    }
+    const text = CLIP_TEXT_BY_ID[id];
+    if (text) {
+      await speakViaTts(text);
     }
   }
 }
@@ -258,13 +331,6 @@ export async function speakVerdict(v: WindowRes, t?: TFn): Promise<void> {
  * `assets/audio/mr/README.md` and for anyone generating the actual clips.
  * Not used by playback itself (`speak` only ever needs the id). */
 export function allClipTexts(): Record<string, string> {
-  const all: Record<string, string> = { ...CLIP_TEXT_MR };
-  for (const [n, text] of Object.entries(MARATHI_NUMBER_NAMES)) {
-    all[`n${n}`] = text;
-  }
-  for (const [n, text] of Object.entries(MARATHI_HUNDREDS)) {
-    all[`h${n}`] = text;
-  }
-  return all;
+  return { ...CLIP_TEXT_BY_ID };
 }
 

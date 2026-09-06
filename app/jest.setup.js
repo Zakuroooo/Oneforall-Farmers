@@ -38,3 +38,20 @@ jest.mock('react-native-sound', () => {
   MockSound.CACHES = 'CACHES';
   return MockSound;
 });
+
+/**
+ * `react-native-tts` is `lib/voice.ts`'s fallback for a clip whose
+ * pre-generated file does not exist — same import-time native-module problem
+ * as `react-native-sound` above, same fix. `MockSound.play` above always
+ * succeeds, so no test in this suite actually reaches the TTS fallback path;
+ * this only needs to exist so importing `Tts` does not crash.
+ */
+jest.mock('react-native-tts', () => ({
+  __esModule: true,
+  default: {
+    setDefaultLanguage: () => Promise.resolve('success'),
+    speak: () => 'mock-utterance-id',
+    addEventListener: () => {},
+    removeEventListener: () => {},
+  },
+}));

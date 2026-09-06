@@ -4,8 +4,17 @@
 generating ~123 short Marathi speech clips is a TTS content pass (Sarvam TTS or
 similar, per the original voice design), not something produced inside a coding
 session. `src/lib/voice.ts` is the complete, working playback engine
-(`react-native-sound`, sequenced, offline — I7); it has nothing to play until
-these files exist.
+(`react-native-sound`, sequenced, offline — I7).
+
+**It is not silent while these files are missing, though.** `speak()` falls
+back to `react-native-tts` — the device's own on-device TTS engine — speaking
+the same Marathi text live for any clip whose pre-generated file is not
+found. Still fully offline (no network call either way), but it is a live
+synthesis with whatever voice quality and Marathi language support the
+phone happens to have installed, which varies a lot by device — it is a
+fallback, not a replacement for the real pre-generated clips this manifest
+is for. Once a clip's mp3 lands here, `voice.ts` prefers it over the TTS
+fallback automatically, with no code change.
 
 ## What to do with this list
 
