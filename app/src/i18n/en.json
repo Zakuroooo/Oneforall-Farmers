@@ -422,5 +422,13 @@
   "month_9": "September",
   "month_10": "October",
   "month_11": "November",
-  "month_12": "December"
+  "month_12": "December",
+  "buyer_chat_farmer_header": "Farmer: {name} ({district})",
+  "buyer_chat_lot_sub": "Lot #{id} · {commodity} {qty} quintals",
+  "chart_axis_price": "Price (per quintal)",
+  "chart_axis_today": "Today",
+  "chart_axis_days_ago": "{days} days ago",
+  "chart_axis_days_ahead": "in {days} days",
+  "chart_band_legend": "Shaded band = p10–p90 (80 times in 100 the price lands inside it)",
+  "chart_median_legend": "Middle line = p50 (the most likely price)"
 }

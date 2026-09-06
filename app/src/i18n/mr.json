@@ -422,5 +422,13 @@
   "month_9": "सप्टेंबर",
   "month_10": "ऑक्टोबर",
   "month_11": "नोव्हेंबर",
-  "month_12": "डिसेंबर"
+  "month_12": "डिसेंबर",
+  "buyer_chat_farmer_header": "शेतकरी: {name} ({district})",
+  "buyer_chat_lot_sub": "लॉट #{id} · {commodity} {qty} क्विंटल",
+  "chart_axis_price": "किंमत (प्रति क्विंटल)",
+  "chart_axis_today": "आज",
+  "chart_axis_days_ago": "{days} दिवसांपूर्वी",
+  "chart_axis_days_ahead": "{days} दिवसांनंतर",
+  "chart_band_legend": "छायांकित पट्टा = p१०–p९० (१०० पैकी ८० वेळा भाव या पट्ट्यात राहतो)",
+  "chart_median_legend": "मधली रेषा = p५० (सर्वात संभाव्य भाव)"
 }

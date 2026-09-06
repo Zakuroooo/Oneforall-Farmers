@@ -1,7 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
+import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
+import { formatNumber } from '../../lib/money';
+import type { Locale } from '../../types/api';
 
 interface Message {
   id: string;
@@ -11,6 +15,11 @@ interface Message {
 }
 
 export function S27_BuyerChat() {
+  const [locale, setLocale] = useState<Locale>('mr');
+  useEffect(() => {
+    getLocale().then(l => l && setLocale(l));
+  }, []);
+
   const [messages, setMessages] = useState<Message[]>([
     { id: '1', sender: 'FARMER', text: 'नमस्कार व्यापारी साहेब, कांदा प्रत A दर्जाचा आहे.', time: '१०:३०' },
     { id: '2', sender: 'BUYER', text: 'होय, मी फोटो आणि ग्रेड पाहिली. १९६० दर मंजूर आहे का?', time: '१०:३२' },
@@ -21,7 +30,7 @@ export function S27_BuyerChat() {
     if (!input.trim()) return;
     setMessages(prev => [
       ...prev,
-      { id: String(Date.now()), sender: 'BUYER', text: input.trim(), time: 'आत्ताच' },
+      { id: String(Date.now()), sender: 'BUYER', text: input.trim(), time: translate('time_just_now', locale) },
     ]);
     setInput('');
   };
@@ -29,8 +38,16 @@ export function S27_BuyerChat() {
   return (
     <View style={styles.container}>
       <Card style={styles.headerCard}>
-        <Text style={styles.chatTitle}>शेतकरी: रामभाऊ पाटील (नाशिक)</Text>
-        <Text style={styles.chatSub}>लॉट #LOT-401 · कांदा १०० क्विंटल</Text>
+        <Text style={styles.chatTitle}>
+          {translate('buyer_chat_farmer_header', locale, { name: 'रामभाऊ पाटील', district: 'नाशिक' })}
+        </Text>
+        <Text style={styles.chatSub}>
+          {translate('buyer_chat_lot_sub', locale, {
+            id: 'LOT-401',
+            commodity: translate('commodity_onion', locale),
+            qty: formatNumber(100, locale),
+          })}
+        </Text>
       </Card>
 
       <ScrollView style={styles.msgList} contentContainerStyle={styles.msgContent}>
@@ -51,9 +68,14 @@ export function S27_BuyerChat() {
           style={styles.textInput}
           value={input}
           onChangeText={setInput}
-          placeholder="संदेश टाका..."
+          placeholder={translate('message_placeholder', locale)}
         />
-        <Button title="पाठवा" onPress={handleSend} variant="primary" style={styles.sendBtn} />
+        <Button
+          title={translate('send_message_button', locale)}
+          onPress={handleSend}
+          variant="primary"
+          style={styles.sendBtn}
+        />
       </View>
     </View>
   );
