@@ -294,3 +294,222 @@ export interface WindowRes {
 
   data_source: DataSource;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// §7.5 Lots, grading, pools
+//
+// ★ CANON names `LotDto` and `SplitRow` and never defines either one. These are
+//   transcribed from `docs/handover/FRONTEND_NEEDS_BACKEND.md` §5, itself derived
+//   from the `lots` / `grade_assays` / `pools` / `pool_members` DDL in CANON §6.4.
+//   Treat as a proposal pending Akash's confirmation (§10 Q3 of that doc).
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Four values, not three. `Grade` (`'A'|'B'|'C'`) is the assay result; a lot
+ * before S13 is genuinely ungraded and S15 must render that state. Do not
+ * collapse the two types into one.
+ */
+export type LotGrade = Grade | 'UNGRADED';
+
+export type LotStatus =
+  | 'DRAFT'
+  | 'LISTED'
+  | 'POOLED'
+  | 'OFFERED'
+  | 'COMMITTED'
+  | 'IN_TRANSIT'
+  | 'DELIVERED'
+  | 'SETTLED'
+  | 'CANCELLED';
+
+export interface LotDto {
+  id: string;
+  farmer_id: string;
+  commodity_id: string;
+  market_id: string;
+  qty_kg: number;
+  grade: LotGrade;
+  harvest_date: string | null;
+  photo_path: string | null;
+  status: LotStatus;
+  created_at: string;
+}
+
+/** `POST /lots/{id}/assay` request body. Six integers, one per S13 question. */
+export interface AssayReq {
+  size_uniform: 1 | 2 | 3;
+  colour_uniform: 1 | 2 | 3;
+  sprouting: 1 | 2 | 3;
+  /** 0..100 integer, from a slider — not one of the 1|2|3 dims. */
+  damage_pct: number;
+  moisture_feel: 1 | 2 | 3;
+  foreign_matter: 1 | 2 | 3;
+}
+
+/**
+ * The six dimensions an assay can name as weakest. Fixed order for tie-breaks
+ * lives in `lib/grading.ts`, not here — this is only the closed set of values.
+ */
+export type AssayDimension =
+  | 'damage_pct'
+  | 'sprouting'
+  | 'size_uniform'
+  | 'colour_uniform'
+  | 'moisture_feel'
+  | 'foreign_matter';
+
+/** `POST /lots/{id}/assay` response. Fully specified by CANON §7.5 + §9. */
+export interface AssayRes {
+  /** 0..1000, integer. */
+  score: number;
+  grade: Grade;
+  weakest_dimension: AssayDimension;
+  /** Rendered verbatim. */
+  tip_mr: string;
+  tip_en: string;
+}
+
+/** One row of `PoolDto.members` — from CANON §6.4 `pool_members` + §7.5. */
+export interface SplitRow {
+  lot_id: string;
+  farmer_id: string;
+  farmer_name: string;
+  qty_kg: number;
+  /** Snapshot at pool time — a later regrade must not change an agreed split. */
+  score_at_pool: number;
+  /** qty_kg * grade_multiplier, exposed so the maths is auditable. */
+  weight: number;
+  /** Σ over members == exactly 10000. */
+  share_bps: number;
+  /** Gain vs selling alone. Can be negative — the Pareto guard (CANON §10). */
+  vs_solo_paise: number;
+  /** null = not asked yet. Three states, not two — do not default this to false. */
+  consented: boolean | null;
+}
+
+/** `GET /pools/{id}`. Named `PoolDto` here though the handover doc's own draft
+ * calls it `PoolRes` — following this task's naming, flagging the mismatch. */
+export interface PoolDto {
+  fpo: { id: string; name: string; name_mr: string };
+  total_qty_kg: number;
+  avg_score: number;
+  members: SplitRow[];
+  all_consented: boolean;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// §7.6 Demands, matching, offers
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type DemandStatus = 'OPEN' | 'FILLED' | 'EXPIRED' | 'CANCELLED';
+
+export interface DemandDto {
+  id: string;
+  buyer_id: string;
+  commodity_id: string;
+  /** Delivery point. */
+  market_id: string;
+  qty_kg: number;
+  min_grade: Grade;
+  bid_paise_per_qtl: number;
+  needed_by: string;
+  status: DemandStatus;
+  /** 'SEEDED' for demo buyers — I8 applies to buyers too. */
+  source: string;
+  created_at: string;
+}
+
+export type OfferStatus =
+  | 'OPEN'
+  | 'ACCEPTED'
+  | 'REJECTED'
+  | 'COUNTERED'
+  | 'EXPIRED'
+  | 'WITHDRAWN';
+
+export interface OfferDto {
+  id: string;
+  demand_id: string | null;
+  buyer_id: string;
+  /** Exactly one of farmer_id / pool_id is non-null. */
+  farmer_id: string | null;
+  pool_id: string | null;
+  price_paise_per_qtl: number;
+  qty_kg: number;
+  /** 1..3. The counter cap is 3 rounds; past it the server returns 409 MAX_ROUNDS. */
+  round: number;
+  parent_offer_id: string | null;
+  initiator: 'BUYER' | 'FARMER';
+  status: OfferStatus;
+  expires_at: string | null;
+  created_at: string;
+  lots: Array<{ lot_id: string; qty_allocated_kg: number }>;
+  note: string | null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// §7.7 Escrow and disputes
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type TxStatus =
+  | 'CREATED'
+  | 'ESCROW_HELD'
+  | 'DISPATCHED'
+  | 'DELIVERED'
+  | 'RELEASED'
+  | 'DISPUTED'
+  | 'REFUNDED'
+  | 'CANCELLED';
+
+export interface TxDto {
+  id: string;
+  offer_id: string;
+  buyer_id: string;
+  farmer_id: string | null;
+  pool_id: string | null;
+  qty_kg: number;
+  price_paise_per_qtl: number;
+  gross_paise: number;
+  deductions_paise: number;
+  /** gross − deductions. */
+  net_paise: number;
+  status: TxStatus;
+  created_at: string;
+}
+
+/** Append-only (I5). The timeline is rendered from this stream, never from
+ * `TxDto.status` alone — the current status is just the last event's `to_status`. */
+export interface EscrowEvent {
+  id: string;
+  tx_id: string;
+  /** null on the first event. */
+  from_status: TxStatus | null;
+  to_status: TxStatus;
+  actor_user_id: string | null;
+  note: string | null;
+  created_at: string;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// §7.8 Meta and provenance
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** S24 renders one card per row. */
+export interface ProvenanceRow {
+  commodity_id: string;
+  commodity_name_mr: string;
+  market_id: string;
+  market_name_mr: string;
+  source: DataSource;
+  row_count: number;
+  first_obs_date: string;
+  last_obs_date: string;
+  /** Tappable via `Linking.openURL`. Null is acceptable only for IMPUTED/SYNTHETIC
+   * rows, provided the row still says so plainly. */
+  source_url: string | null;
+}
+
+export interface ProvenanceRes {
+  rows: ProvenanceRow[];
+  generated_at: string;
+}

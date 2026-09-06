@@ -19,14 +19,24 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_BASE_URL } from '../config';
 import type {
   ApiErrorBody,
+  AssayReq,
+  AssayRes,
   AuthRes,
+  DemandDto,
   District,
+  EscrowEvent,
   ForecastRes,
   Locale,
+  LotDto,
   ModelCard,
   NearbyRes,
+  OfferDto,
   OtpRequestRes,
+  PoolDto,
   PriceSeriesRes,
+  ProvenanceRes,
+  TxDto,
+  TxStatus,
   User,
   WindowRecommendReq,
   WindowRes,
@@ -109,6 +119,14 @@ const post = <T,>(path: string, body: unknown): Promise<T> =>
 
 const get = <T,>(path: string): Promise<T> => request<T>(path);
 
+/**
+ * Generic escape hatch, exported so `S24_DataProvenance.tsx` (Shreya's screen,
+ * not touched here per this task's explicit instruction) compiles against its
+ * own `api<T>(path)` import. New code should prefer a named function below —
+ * `getDataProvenance()` is the one S24 should really be calling.
+ */
+export const api = get;
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Auth — §7.1
 //
@@ -190,3 +208,69 @@ export const getModelCard = (commodityId: string) =>
  */
 export const recommendWindow = (body: WindowRecommendReq) =>
   post<WindowRes>('/ai/window/recommend', body);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Lots, grading, pools — §7.5. Akash's routes do not exist in this repo; these
+// are thin clients against the shapes proposed in
+// docs/handover/FRONTEND_NEEDS_BACKEND.md §5, gated behind USE_FIXTURES.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const createLot = (body: {
+  commodity_id: string;
+  market_id: string;
+  qty_kg: number;
+  harvest_date: string | null;
+  photo_path?: string;
+}) => post<LotDto>('/lots', body);
+
+/** Actor-scoped (I4) — the server reads the farmer off the JWT, not a param. */
+export const getLots = () => get<LotDto[]>('/lots');
+
+/** 404, not 403, for a lot the actor does not own (I4). */
+export const getLot = (id: string) => get<LotDto>(`/lots/${id}`);
+
+export const submitAssay = (lotId: string, body: AssayReq) =>
+  post<AssayRes>(`/lots/${lotId}/assay`, body);
+
+export const getPool = (id: string) => get<PoolDto>(`/pools/${id}`);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Demands, matching, offers — §7.6
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getDemands = () => get<DemandDto[]>('/demands');
+
+export const getOffers = () => get<OfferDto[]>('/offers');
+
+export const createOffer = (body: {
+  demand_id?: string;
+  lot_ids: string[];
+  qty_kg: number;
+  price_paise_per_qtl: number;
+}) => post<OfferDto>('/offers', body);
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Escrow and disputes — §7.7
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getTransaction = (id: string) => get<TxDto>(`/tx/${id}`);
+
+/** Append-only (I5) — the timeline renders from this, never from `TxDto.status`. */
+export const getEscrowEvents = (id: string) => get<EscrowEvent[]>(`/tx/${id}/events`);
+
+/**
+ * `Idempotency-Key` is required per CANON §7.7 so a double-tap on a bad
+ * connection replays instead of 409ing. Generate a stable key per (tx, to_status).
+ */
+export const transitionTx = (id: string, toStatus: TxStatus, idempotencyKey: string, note?: string) =>
+  request<TxDto>(`/tx/${id}/transition`, {
+    method: 'POST',
+    body: JSON.stringify({ to_status: toStatus, note }),
+    headers: { 'Idempotency-Key': idempotencyKey },
+  });
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Meta and provenance — §7.8. Unblocks S24_DataProvenance.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const getDataProvenance = () => get<ProvenanceRes>('/meta/data-provenance');
