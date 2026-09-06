@@ -69,5 +69,15 @@
   "cost_total": "कुल",
   "see_full_details": "पूरा विवरण देखें →",
   "listen_button": "🔊 सुनें",
-  "listening_button": "🔊 ..."
+  "listening_button": "🔊 ...",
+
+  "pledge_eyebrow": "इंतजार के लिए पैसे चाहिए?",
+  "pledge_loan_heading": "आपके माल पर ऋण",
+  "pledge_loan_label": "मिल सकने वाली राशि",
+  "pledge_days_interest": "{days} दिनों का ब्याज",
+  "pledge_ltv_label": "माल की कीमत का",
+  "pledge_rate_label": "ब्याज दर (वार्षिक, अनुमानित)",
+  "pledge_compare_gain_label": "रुकने से लाभ",
+  "pledge_compare_vs": "बनाम",
+  "pledge_warehouse_label": "गोदाम"
 }

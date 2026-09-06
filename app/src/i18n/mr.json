@@ -69,5 +69,15 @@
   "cost_total": "एकूण",
   "see_full_details": "पूर्ण तपशील पहा →",
   "listen_button": "🔊 ऐका",
-  "listening_button": "🔊 ..."
+  "listening_button": "🔊 ...",
+
+  "pledge_eyebrow": "थांबण्यासाठी पैसे हवे आहेत?",
+  "pledge_loan_heading": "तुमच्या मालावर कर्ज",
+  "pledge_loan_label": "मिळू शकणारी रक्कम",
+  "pledge_days_interest": "{days} दिवसांचे व्याज",
+  "pledge_ltv_label": "मालाच्या किंमतीच्या",
+  "pledge_rate_label": "व्याज दर (वार्षिक, अंदाजे)",
+  "pledge_compare_gain_label": "थांबून फायदा",
+  "pledge_compare_vs": "विरुद्ध",
+  "pledge_warehouse_label": "गोदाम"
 }

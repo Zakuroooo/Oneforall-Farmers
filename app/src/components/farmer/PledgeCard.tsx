@@ -41,6 +41,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { formatBps, formatNumber, formatPaise } from '../../lib/money';
+import { useT } from '../../lib/i18n';
 import type { Locale, PledgeQuote } from '../../types/api';
 
 export interface PledgeCardProps {
@@ -56,33 +57,28 @@ export interface PledgeCardProps {
 }
 
 export function PledgeCard({ quote, expectedGainPaise, locale }: PledgeCardProps) {
+  const { t } = useT();
   // I13. Not a conditional inside a card — the absence of the card itself.
   if (quote === null) return null;
 
   return (
     <View style={styles.card} testID="pledge-card">
-      <Text style={styles.eyebrow}>थांबण्यासाठी पैसे हवे आहेत?</Text>
-      <Text style={styles.title}>तुमच्या मालावर कर्ज</Text>
+      <Text style={styles.eyebrow}>{t('pledge_eyebrow')}</Text>
+      <Text style={styles.title}>{t('pledge_loan_heading')}</Text>
 
-      <Text style={styles.loanLabel}>मिळू शकणारी रक्कम</Text>
+      <Text style={styles.loanLabel}>{t('pledge_loan_label')}</Text>
       <Text testID="pledge-loan" style={styles.loanValue}>
         {formatPaise(quote.loan_paise, locale)}
       </Text>
 
       <View style={styles.rows}>
         <Row
-          label={`${formatNumber(quote.days, locale)} दिवसांचे व्याज`}
+          label={t('pledge_days_interest', { days: formatNumber(quote.days, locale) })}
           value={formatPaise(quote.interest_paise, locale)}
           testID="pledge-interest"
         />
-        <Row
-          label="मालाच्या किंमतीच्या"
-          value={formatBps(quote.ltv_bps, locale)}
-        />
-        <Row
-          label="व्याज दर (वार्षिक, अंदाजे)"
-          value={formatBps(quote.rate_bps_annual, locale)}
-        />
+        <Row label={t('pledge_ltv_label')} value={formatBps(quote.ltv_bps, locale)} />
+        <Row label={t('pledge_rate_label')} value={formatBps(quote.rate_bps_annual, locale)} />
       </View>
 
       {/*
@@ -94,14 +90,14 @@ export function PledgeCard({ quote, expectedGainPaise, locale }: PledgeCardProps
       {expectedGainPaise !== null ? (
         <View style={styles.compare}>
           <View style={styles.compareCol}>
-            <Text style={styles.compareLabel}>थांबून फायदा</Text>
+            <Text style={styles.compareLabel}>{t('pledge_compare_gain_label')}</Text>
             <Text testID="pledge-compare-gain" style={[styles.compareValue, styles.gain]}>
               + {formatPaise(expectedGainPaise, locale)}
             </Text>
           </View>
-          <Text style={styles.compareVs}>विरुद्ध</Text>
+          <Text style={styles.compareVs}>{t('pledge_compare_vs')}</Text>
           <View style={styles.compareCol}>
-            <Text style={styles.compareLabel}>व्याज</Text>
+            <Text style={styles.compareLabel}>{t('interest')}</Text>
             <Text testID="pledge-compare-interest" style={[styles.compareValue, styles.cost]}>
               − {formatPaise(quote.interest_paise, locale)}
             </Text>
@@ -109,7 +105,9 @@ export function PledgeCard({ quote, expectedGainPaise, locale }: PledgeCardProps
         </View>
       ) : null}
 
-      <Text style={styles.warehouse}>गोदाम: {quote.warehouse_id}</Text>
+      <Text style={styles.warehouse}>
+        {t('pledge_warehouse_label')}: {quote.warehouse_id}
+      </Text>
 
       {/* CANON §8 rule 2. Verbatim from the server, inside the card. */}
       <Text testID="pledge-disclaimer" style={styles.disclaimer}>
