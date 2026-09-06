@@ -7,11 +7,12 @@
  * ★ FULL I18N — every text uses t('key').
  */
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Dimensions,
   Image,
   KeyboardAvoidingView,
+  PermissionsAndroid,
   Platform,
   ScrollView,
   StatusBar,
@@ -21,19 +22,42 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import AudioRecorderPlayer, {
+  AudioEncoderAndroidType,
+  AudioSourceAndroidType,
+  OutputFormatAndroidType,
+} from 'react-native-audio-recorder-player';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
-import { ApiError, requestOtp } from '../../lib/api';
+import { ApiError, requestOtp, transcribeAudio } from '../../lib/api';
 import { setPendingAuth } from '../../lib/auth';
+import { getLocale } from '../../lib/locale';
 import { USE_FIXTURES } from '../../config';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S2_Phone'>;
+type MicState = 'idle' | 'recording' | 'transcribing';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const mandiWarehouse = require('../../assets/images/mandi_warehouse.jpg');
+
+const AUDIO_SET = {
+  AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+  AudioSourceAndroid: AudioSourceAndroidType.MIC,
+  OutputFormatAndroid: OutputFormatAndroidType.MPEG_4,
+};
+
+const RECORD_AUDIO_PERMISSION = 'android.permission.RECORD_AUDIO' as const;
+
+async function ensureMicPermission(): Promise<boolean> {
+  if (Platform.OS !== 'android') return true;
+  const already = await PermissionsAndroid.check(RECORD_AUDIO_PERMISSION);
+  if (already) return true;
+  const result = await PermissionsAndroid.request(RECORD_AUDIO_PERMISSION);
+  return result === PermissionsAndroid.RESULTS.GRANTED;
+}
 
 export default function S02_Phone({ navigation }: Props) {
   const { t } = useT();
@@ -41,9 +65,49 @@ export default function S02_Phone({ navigation }: Props) {
   const [selectedSim, setSelectedSim] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [micState, setMicState] = useState<MicState>('idle');
+  const recorder = useRef(new AudioRecorderPlayer()).current;
 
   const canGoBack = navigation.canGoBack();
   const isValid = phone.replace(/\D/g, '').length === 10;
+
+  // ★ The mic used to be a bare icon with no onPress — a dead button that
+  //   looked interactive and did nothing. `/voice/transcribe` is real and
+  //   unauthenticated on the backend (deliberately, since this runs before
+  //   the farmer has a JWT — see `app/routers/voice.py`), so this records,
+  //   transcribes, and pulls the first 10 digits out of the result into the
+  //   phone field. It fails closed: a permission denial or an unreachable
+  //   server just leaves the manual keypad entry as the way in, which is
+  //   already sitting right there — no separate error UI needed for it.
+  const onMicPress = async () => {
+    if (micState === 'transcribing') return;
+    if (micState === 'idle') {
+      const granted = await ensureMicPermission();
+      if (!granted) return;
+      try {
+        await recorder.startRecorder(undefined, AUDIO_SET);
+        recorder.addRecordBackListener(() => undefined);
+        setMicState('recording');
+      } catch {
+        setMicState('idle');
+      }
+      return;
+    }
+    // micState === 'recording'
+    setMicState('transcribing');
+    try {
+      const uri = await recorder.stopRecorder();
+      recorder.removeRecordBackListener();
+      const locale = (await getLocale()) ?? 'mr';
+      const { transcript } = await transcribeAudio(uri, locale);
+      const digits = transcript.replace(/\D/g, '').slice(0, 10);
+      if (digits) setPhone(digits);
+    } catch {
+      // Network/backend unreachable — the keypad below is the fallback.
+    } finally {
+      setMicState('idle');
+    }
+  };
 
   // ★ BUG FIX: this used to be a bare `setTimeout` that always "succeeded"
   //   after 1.5s with no server round trip at all — a farmer with the wrong
@@ -91,12 +155,12 @@ export default function S02_Phone({ navigation }: Props) {
             </TouchableOpacity>
           )}
 
+          {/* ★ "Government Recognized" badge removed — this app has no
+              actual government recognition or APMC endorsement, and
+              claiming one is exactly the kind of unverifiable badge this
+              product has already been burned by once. */}
           <View style={styles.headerTextRow}>
             <Text style={styles.headerTitle}>{t('phone_login_signup')}</Text>
-            <View style={styles.officialBadge}>
-              <Icon name="shield-check" size={12} color={colors.tertiary} />
-              <Text style={styles.officialText}>{t('phone_official')}</Text>
-            </View>
           </View>
         </View>
 
@@ -126,8 +190,24 @@ export default function S02_Phone({ navigation }: Props) {
               maxLength={10}
             />
             {/* Voice input button */}
-            <TouchableOpacity style={styles.micBtn} activeOpacity={0.7}>
-              <Icon name="mic" size={20} color={colors.primary} />
+            <TouchableOpacity
+              style={styles.micBtn}
+              activeOpacity={0.7}
+              onPress={onMicPress}
+              disabled={micState === 'transcribing'}
+              accessibilityRole="button"
+              accessibilityLabel={t(
+                micState === 'recording'
+                  ? 'voice_mic_recording'
+                  : micState === 'transcribing'
+                    ? 'voice_mic_transcribing'
+                    : 'voice_mic_idle',
+              )}>
+              <Icon
+                name="mic"
+                size={20}
+                color={micState === 'recording' ? colors.critical : colors.primary}
+              />
             </TouchableOpacity>
           </View>
 
@@ -177,16 +257,8 @@ export default function S02_Phone({ navigation }: Props) {
           </View>
         </View>
 
-        {/* ── Free registration banner ───────────────── */}
-        <View style={styles.freeBanner}>
-          <View style={styles.freeIconBg}>
-            <Icon name="star" size={16} color={colors.primary} />
-          </View>
-          <View style={styles.freeText}>
-            <Text style={styles.freeTitle}>{t('phone_free_title')}</Text>
-            <Text style={styles.freeSub}>{t('phone_free_apmc')}</Text>
-          </View>
-        </View>
+        {/* ★ "Free lifetime registration" banner removed — not necessary
+            on the phone-entry screen, per explicit product direction. */}
 
         {/* ── Today's price strip ────────────────────── */}
         <View style={styles.priceStrip}>
