@@ -1,4 +1,5 @@
 {
+  "_comment": "`name` is the AppRegistry component key — it must keep matching index.js and MainActivity.getMainComponentName(). It is never shown to a user. `displayName` is the human-facing one.",
   "name": "MandiSetu",
-  "displayName": "MandiSetu"
+  "displayName": "Krishi Mitra"
 }
