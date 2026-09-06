@@ -30,6 +30,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { Permission } from 'react-native';
 
 import { createLot } from '../../lib/api';
+import { getLocale } from '../../lib/locale';
+import { formatNumber, toQuintal } from '../../lib/money';
 import {
   DEFAULT_COMMODITY_ID,
   DEFAULT_MARKET_ID,
@@ -40,7 +42,7 @@ import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { ErrorState } from '../../components/farmer/States';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
-import type { LotDto } from '../../types/api';
+import type { Locale, LotDto } from '../../types/api';
 
 type Props = NativeStackScreenProps<MyLotsStackParamList, 'S12_CreateLot'>;
 
@@ -93,6 +95,11 @@ async function submitLot(body: {
 }
 
 export default function S12_CreateLot({ navigation }: Props) {
+  const [locale, setLocale] = useState<Locale>('mr');
+  React.useEffect(() => {
+    getLocale().then(l => l && setLocale(l));
+  }, []);
+
   const [qtyKg, setQtyKg] = useState(DEFAULT_QTY_KG);
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [photoPermission, setPhotoPermission] = useState<PhotoPermissionState>('unknown');
@@ -162,7 +169,14 @@ export default function S12_CreateLot({ navigation }: Props) {
       <ScrollView contentContainerStyle={styles.root}>
         <Card variant="elevated" style={styles.successCard}>
           <Text style={styles.successTitle}>लॉट तयार झाला ✓</Text>
-          <Text style={styles.successLine}>प्रमाण: {createdLot.qty_kg} किलो</Text>
+          {/* I2 — the lot now exists, so this is a display of stored data and
+              reads in quintals like S15's list does. The stepper above is
+              deliberately still in kg: a farmer is adjusting it in 100 kg
+              steps and its own label says किलो, so the number and the unit on
+              screen agree. This line has no such reason. */}
+          <Text style={styles.successLine}>
+            प्रमाण: {formatNumber(toQuintal(createdLot.qty_kg), locale)} क्विंटल
+          </Text>
           <Text style={styles.successLine}>
             फोटो: {createdLot.photo_path ? 'जोडला' : 'नाही (नंतर जोडता येईल)'}
           </Text>

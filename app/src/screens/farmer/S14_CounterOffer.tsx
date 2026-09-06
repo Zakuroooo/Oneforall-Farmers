@@ -25,7 +25,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { acceptOffer, counterOffer, getForecast, getOffers, rejectOffer } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
-import { formatPaise } from '../../lib/money';
+import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_HORIZON_DAYS, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxForecast } from '../../fixtures/forecast';
 import { fxIncomingOffer } from '../../fixtures/offers';
@@ -168,7 +168,13 @@ export default function S14_CounterOffer({ route }: Props) {
       <Text style={styles.header}>व्यापाऱ्याची ऑफर — फेरी {offer.round}</Text>
       <Card style={styles.offerCard}>
         <Text style={styles.offerPrice}>{formatPaise(offer.price_paise_per_qtl, locale)} प्रति क्विंटल</Text>
-        <Text style={styles.offerQty}>प्रमाण: {offer.qty_kg} किलो</Text>
+        {/* I2: kg on the wire, quintals on screen, floored via `toQuintal` —
+            same rule S15 and S16 already follow. The price above is per
+            quintal, so a kg figure next to it invited a farmer to read the
+            two against each other in different units. */}
+        <Text style={styles.offerQty}>
+          प्रमाण: {formatNumber(toQuintal(offer.qty_kg), locale)} क्विंटल
+        </Text>
         {offer.note ? <Text style={styles.offerNote}>{offer.note}</Text> : null}
       </Card>
 
