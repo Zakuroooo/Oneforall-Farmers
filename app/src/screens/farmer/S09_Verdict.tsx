@@ -19,6 +19,7 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { recommendWindow } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
@@ -34,7 +35,10 @@ import { fxHold } from '../../fixtures/window';
 import { VerdictCard } from '../../components/farmer/VerdictCard';
 import { StaleBanner } from '../../components/farmer/StaleBanner';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
+import type { HomeStackParamList } from '../../navigation/FarmerTabs';
 import type { Locale } from '../../types/api';
+
+type Props = NativeStackScreenProps<HomeStackParamList, 'S9_Verdict'>;
 
 async function fetchVerdict() {
   if (USE_FIXTURES) return fxHold;
@@ -48,7 +52,7 @@ async function fetchVerdict() {
   });
 }
 
-export default function S09_Verdict() {
+export default function S09_Verdict({ navigation }: Props) {
   const [locale, setLocale] = useState<Locale>('mr');
   useEffect(() => {
     getLocale().then(l => l && setLocale(l));
@@ -87,7 +91,12 @@ export default function S09_Verdict() {
   return (
     <ScrollView contentContainerStyle={styles.root}>
       <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
-      <VerdictCard data={data} qtyKg={DEFAULT_QTY_KG} locale={locale} />
+      <VerdictCard
+        data={data}
+        qtyKg={DEFAULT_QTY_KG}
+        locale={locale}
+        onSeeCosts={() => navigation.navigate('S10_CostBreakdown')}
+      />
     </ScrollView>
   );
 }

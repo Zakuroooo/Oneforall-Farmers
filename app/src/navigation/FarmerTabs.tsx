@@ -23,6 +23,7 @@ import S05_History from '../screens/farmer/S05_History';
 import S06_Nearby from '../screens/farmer/S06_Nearby';
 import S07_Forecast from '../screens/farmer/S07_Forecast';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
+import S10_CostBreakdown from '../screens/farmer/S10_CostBreakdown';
 import S12_CreateLot from '../screens/farmer/S12_CreateLot';
 import S13_SelfAssay from '../screens/farmer/S13_SelfAssay';
 import S15_MyLots from '../screens/farmer/S15_MyLots';
@@ -43,10 +44,17 @@ export type FarmerTabParamList = {
  * return to the price he just saw, not to whichever tab he was on before Home).
  *
  * `S9_Verdict` is the real screen as of P3.
+ *
+ * S10 sits on this stack rather than getting a tab of its own — it is only ever
+ * reached from the verdict's cost row (PRANAY.md §1.7's mockup annotates that row
+ * `→ S10`), and back from it must land on the verdict, never on a tab. It takes
+ * no params: it reads S9's own query key straight out of the cache, so it holds
+ * up on a cold start and in airplane mode. See the header of the screen file.
  */
 export type HomeStackParamList = {
   S4_Home: undefined;
   S9_Verdict: undefined;
+  S10_CostBreakdown: undefined;
 };
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -56,6 +64,7 @@ function HomeStackNavigator() {
     <HomeStack.Navigator screenOptions={{ headerShown: false }}>
       <HomeStack.Screen name="S4_Home" component={S04_Home} />
       <HomeStack.Screen name="S9_Verdict" component={S09_Verdict} />
+      <HomeStack.Screen name="S10_CostBreakdown" component={S10_CostBreakdown} />
     </HomeStack.Navigator>
   );
 }

@@ -11,9 +11,17 @@
  * ★ Additive only. Every screen that uses this still renders its own
  *   loading/empty/error states first — this only ever appears inside the
  *   "data" branch, next to data that is actually on screen.
+ *
+ * ★ BUG FIXED: staleness is a function of wall-clock time, but the first draft
+ *   read `Date.now()` during render with nothing to schedule a re-render. React
+ *   does not re-render because a clock moved, so a screen left open — which is
+ *   *exactly* the airplane-mode demo beat — kept showing no banner indefinitely,
+ *   until some unrelated state change happened to repaint it. The banner would
+ *   have looked correct in every test that mounts with already-old data, and
+ *   silently absent on the one path that matters. Hence the ticker below.
  */
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { CACHE_STALE_MS } from '../../config';
@@ -35,11 +43,49 @@ function formatClockMr(epochMs: number, locale: Locale): string {
   return devNum(`${hh}:${mm}`, locale);
 }
 
-export function StaleBanner({ dataUpdatedAt, locale = 'mr' }: StaleBannerProps) {
-  if (dataUpdatedAt <= 0) return null;
+/**
+ * How often the clock is re-read. Deliberately much finer than
+ * `CACHE_STALE_MS` (5 min) — the banner should appear within half a minute of
+ * the data going stale, not up to five minutes late. The work per tick is one
+ * subtraction and, in the common case, a bail-out before any re-render.
+ */
+const TICK_MS = 30_000;
 
-  const age = Date.now() - dataUpdatedAt;
-  if (age < CACHE_STALE_MS) return null;
+export function StaleBanner({ dataUpdatedAt, locale = 'mr' }: StaleBannerProps) {
+  // ★ Hooks run unconditionally, before every early return. The stale flag is
+  //   state rather than a value computed in render, because it is time that
+  //   changes here, not props — nothing else would ever trigger the repaint.
+  const [isStale, setIsStale] = useState(
+    () => dataUpdatedAt > 0 && Date.now() - dataUpdatedAt >= CACHE_STALE_MS,
+  );
+
+  useEffect(() => {
+    if (dataUpdatedAt <= 0) {
+      setIsStale(false);
+      return;
+    }
+
+    // A successful refetch moves `dataUpdatedAt` forward, which lands here and
+    // clears the banner — this effect is the un-stale path as well as the
+    // stale one, so a reconnect mid-demo takes the banner back off screen.
+    const check = () => Date.now() - dataUpdatedAt >= CACHE_STALE_MS;
+
+    if (check()) {
+      setIsStale(true);
+      // Nothing left to watch for: the rendered text is the *timestamp*, not
+      // the age, so it never changes once shown. No timer, no idle wakeups.
+      return;
+    }
+
+    setIsStale(false);
+    const id = setInterval(() => {
+      if (check()) setIsStale(true);
+    }, TICK_MS);
+    return () => clearInterval(id);
+  }, [dataUpdatedAt]);
+
+  if (dataUpdatedAt <= 0) return null;
+  if (!isStale) return null;
 
   return (
     <View style={styles.banner}>

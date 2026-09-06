@@ -39,14 +39,27 @@ const CONFIDENCE_KEY: Record<Confidence, 'high' | 'medium' | 'low'> = {
   HIGH: 'high',
 };
 
+/**
+ * `onSeeCosts` is optional and the component stays presentational either way —
+ * it takes a callback, not a `navigation` object. That is what keeps this file
+ * renderable by `VerdictCard.test.tsx` with no navigation container around it,
+ * and it is why the prop is a callback rather than this component importing
+ * `useNavigation` itself.
+ *
+ * When it is absent (tests, and any future embed) the cost row still expands
+ * inline exactly as it did before S10 existed — the peek is not a stub for the
+ * screen, it is the first tap.
+ */
 export function VerdictCard({
   data,
   qtyKg,
   locale,
+  onSeeCosts,
 }: {
   data: WindowRes;
   qtyKg: number;
   locale: Locale;
+  onSeeCosts?: () => void;
 }) {
   const { t } = useT();
   const [costsOpen, setCostsOpen] = useState(false);
@@ -92,7 +105,23 @@ export function VerdictCard({
         </Text>
       </TouchableOpacity>
 
-      {costsOpen ? <CostLines costs={data.costs} locale={locale} /> : null}
+      {costsOpen ? (
+        <>
+          <CostLines costs={data.costs} locale={locale} />
+          {/* The route out to S10 — only offered once the farmer has already
+              opened the peek, so the deeper screen is a step he chose twice
+              rather than a tap he lands on by accident. */}
+          {onSeeCosts ? (
+            <TouchableOpacity
+              testID="verdict-costs-detail"
+              style={styles.costsDetailLink}
+              onPress={onSeeCosts}
+              accessibilityRole="button">
+              <Text style={styles.costsDetailLabel}>पूर्ण तपशील पहा →</Text>
+            </TouchableOpacity>
+          ) : null}
+        </>
+      ) : null}
 
       <View style={styles.divider} />
 
@@ -208,6 +237,8 @@ const styles = StyleSheet.create({
 
   costsToggle: { marginTop: 24, paddingVertical: 8 },
   costsToggleLabel: { fontSize: 15, color: GREEN, fontWeight: '600' },
+  costsDetailLink: { marginTop: 12, paddingVertical: 8 },
+  costsDetailLabel: { fontSize: 15, color: GREEN, fontWeight: '700' },
   costLines: { marginTop: 8 },
   costRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 6 },
   costLabel: { fontSize: 14, color: '#555' },
