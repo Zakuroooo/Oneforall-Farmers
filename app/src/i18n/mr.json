@@ -430,5 +430,7 @@
   "chart_axis_days_ago": "{days} दिवसांपूर्वी",
   "chart_axis_days_ahead": "{days} दिवसांनंतर",
   "chart_band_legend": "छायांकित पट्टा = p१०–p९० (१०० पैकी ८० वेळा भाव या पट्ट्यात राहतो)",
-  "chart_median_legend": "मधली रेषा = p५० (सर्वात संभाव्य भाव)"
+  "chart_median_legend": "मधली रेषा = p५० (सर्वात संभाव्य भाव)",
+
+  "coming_soon": "लवकरच"
 }

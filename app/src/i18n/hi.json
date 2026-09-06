@@ -430,5 +430,7 @@
   "chart_axis_days_ago": "{days} दिन पहले",
   "chart_axis_days_ahead": "{days} दिन बाद",
   "chart_band_legend": "छायांकित पट्टी = p१०–p९० (१०० में ८० बार कीमत इसी पट्टी में रहती है)",
-  "chart_median_legend": "बीच की रेखा = p५० (सबसे संभावित कीमत)"
+  "chart_median_legend": "बीच की रेखा = p५० (सबसे संभावित कीमत)",
+
+  "coming_soon": "जल्द आ रहा है"
 }
