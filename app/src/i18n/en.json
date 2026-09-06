@@ -406,5 +406,9 @@
   "counter_offer_label": "Your counter-offer rate (₹/quintal)",
   "counter_offer_send": "Send counter-offer (round {round}/{max})",
   "max_rounds_reached": "⚠️ {max} rounds are complete. Wait for the final decision.",
-  "time_just_now": "Just now"
+  "time_just_now": "Just now",
+
+  "escrow_fetch_error": "Could not fetch the transaction. Please try again.",
+  "escrow_no_timeline": "No timeline is available for this transaction yet.",
+  "escrow_timeline_header": "Escrow transaction timeline"
 }

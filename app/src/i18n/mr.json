@@ -406,5 +406,9 @@
   "counter_offer_label": "तुमची प्रति-ऑफर दर (₹/क्विंटल)",
   "counter_offer_send": "प्रति-ऑफर पाठवा (फेरी {round}/{max})",
   "max_rounds_reached": "⚠️ {max} फेऱ्या पूर्ण झाल्या आहेत. अंतिम निर्णयाची वाट पहा.",
-  "time_just_now": "आत्ताच"
+  "time_just_now": "आत्ताच",
+
+  "escrow_fetch_error": "व्यवहार आणता आला नाही. पुन्हा प्रयत्न करा.",
+  "escrow_no_timeline": "या व्यवहारासाठी अजून टाइमलाइन उपलब्ध नाही.",
+  "escrow_timeline_header": "एस्क्रॉ व्यवहार टाइमलाइन"
 }

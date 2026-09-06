@@ -16,6 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { getEscrowEvents, getTransaction } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
+import { translate } from '../../lib/i18n';
 import { USE_FIXTURES } from '../../config';
 import { fxEscrowEvents, fxTx } from '../../fixtures/escrow';
 import { EscrowTimeline } from '../../components/EscrowTimeline';
@@ -57,17 +58,17 @@ export function S22_EscrowTimeline() {
 
   if (error) {
     return (
-      <ErrorState message="व्यवहार आणता आला नाही. पुन्हा प्रयत्न करा." onRetry={() => refetch()} />
+      <ErrorState message={translate('escrow_fetch_error', locale)} onRetry={() => refetch()} />
     );
   }
 
   if (!data) {
-    return <EmptyState title="या व्यवहारासाठी अजून टाइमलाइन उपलब्ध नाही." />;
+    return <EmptyState title={translate('escrow_no_timeline', locale)} />;
   }
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.header}>एस्क्रॉ व्यवहार टाइमलाइन</Text>
+      <Text style={styles.header}>{translate('escrow_timeline_header', locale)}</Text>
       <EscrowTimeline tx={data.tx} events={data.events} locale={locale} />
     </ScrollView>
   );

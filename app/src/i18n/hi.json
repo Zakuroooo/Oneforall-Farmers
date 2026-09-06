@@ -406,5 +406,9 @@
   "counter_offer_label": "आपकी काउंटर-ऑफर दर (₹/क्विंटल)",
   "counter_offer_send": "काउंटर-ऑफर भेजें (दौर {round}/{max})",
   "max_rounds_reached": "⚠️ {max} दौर पूरे हो गए हैं। अंतिम निर्णय की प्रतीक्षा करें।",
-  "time_just_now": "अभी अभी"
+  "time_just_now": "अभी अभी",
+
+  "escrow_fetch_error": "लेनदेन नहीं लाया जा सका। कृपया पुनः प्रयास करें।",
+  "escrow_no_timeline": "इस लेनदेन के लिए अभी कोई टाइमलाइन उपलब्ध नहीं है।",
+  "escrow_timeline_header": "एस्क्रो लेनदेन टाइमलाइन"
 }
