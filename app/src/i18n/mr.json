@@ -1301,5 +1301,20 @@
   "co_narr_prices": "खरेदीदाराची बोली {bid}, तुमची मागणी {ask}.",
   "co_narr_counter": "तुमची प्रति-ऑफर प्रति क्विंटल {rate}, एकूण {gross}.",
   "co_narr_net": "कपाती वजा जाता हातात {net}.",
-  "co_range_mandi": "बाजारभाव {rate}"
+  "co_range_mandi": "बाजारभाव {rate}",
+  "chat_summary_label": "चालू ऑफरची एकूण किंमत",
+  "chat_summary_count": "{n} तुमच्या उत्तराची वाट",
+  "chat_ended_accepted": "सौदा पक्का झाला",
+  "chat_ended_rejected": "ऑफर नाकारली",
+  "chat_ended_countered": "प्रति-ऑफर दिली",
+  "chat_ended_expired": "मुदत संपली",
+  "chat_ended_withdrawn": "ऑफर मागे घेतली",
+  "dl_track_cta": "सौदा पाहा",
+  "em_escrow": "पैसे सुरक्षित",
+  "em_dispatched": "माल पाठवला",
+  "em_delivered": "माल पोहोचला",
+  "em_released": "पैसे खात्यात",
+  "em_off_disputed": "या सौद्यावर तक्रार नोंदवली आहे. मध्यस्थ निर्णय देईपर्यंत रक्कम राखून ठेवली जाते.",
+  "em_off_refunded": "रक्कम खरेदीदाराला परत केली आहे.",
+  "em_off_cancelled": "हा सौदा रद्द झाला आहे."
 }

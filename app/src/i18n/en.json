@@ -1301,5 +1301,20 @@
   "co_narr_prices": "The buyer bid {bid} and your ask is {ask}.",
   "co_narr_counter": "Your counter is {rate} per quintal, {gross} in total.",
   "co_narr_net": "After deductions that leaves {net}.",
-  "co_range_mandi": "Mandi {rate}"
+  "co_range_mandi": "Mandi {rate}",
+  "chat_summary_label": "Live offers add up to",
+  "chat_summary_count": "{n} waiting on you",
+  "chat_ended_accepted": "Deal agreed",
+  "chat_ended_rejected": "Offer declined",
+  "chat_ended_countered": "Countered",
+  "chat_ended_expired": "Expired",
+  "chat_ended_withdrawn": "Withdrawn",
+  "dl_track_cta": "Track this deal",
+  "em_escrow": "Money held",
+  "em_dispatched": "Dispatched",
+  "em_delivered": "Delivered",
+  "em_released": "Paid out",
+  "em_off_disputed": "A complaint is on record for this deal. The amount stays held until a mediator decides.",
+  "em_off_refunded": "The amount has been returned to the buyer.",
+  "em_off_cancelled": "This deal was cancelled."
 }

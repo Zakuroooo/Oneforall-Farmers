@@ -40,7 +40,9 @@ import { formatDateShort } from '../../lib/dates';
 import { getOffers } from '../../lib/api';
 import { USE_FIXTURES } from '../../config';
 import { fxMyOffers } from '../../fixtures/offers';
+import { fxTx } from '../../fixtures/escrow';
 import { ErrorState, Skeleton } from '../../components/farmer/States';
+import { EscrowMilestones } from '../../components/farmer/EscrowMilestones';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
 import type { OfferDto } from '../../types/api';
 
@@ -164,17 +166,25 @@ export default function S31_DealsList({ navigation }: Props) {
         {rows.map(o => {
           const total = quintalValuePaise(o.price_paise_per_qtl, o.qty_kg);
           const isAgreed = o.status === 'ACCEPTED';
+          /* ★ The transaction behind an accepted offer. `OfferDto` has no
+             `tx_id` and CANON has no `GET /tx` (blocker filed), so against
+             the live API this is null and the row still says so — but under
+             fixtures the deal is fully walkable, which is what the flow
+             needs to be demonstrable end to end. */
+          const tx = isAgreed && USE_FIXTURES ? fxTx : null;
           return (
             <TouchableOpacity
               key={o.id}
               style={styles.card}
-              disabled={isAgreed}
+              disabled={isAgreed && tx === null}
               onPress={
                 isAgreed
-                  ? undefined
+                  ? tx
+                    ? () => navigation.navigate('S32_DealTracking', { tx_id: tx.id })
+                    : undefined
                   : () => navigation.navigate('S27_Bargaining', { offer_id: o.id })
               }
-              accessibilityRole={isAgreed ? 'text' : 'button'}>
+              accessibilityRole={isAgreed && tx === null ? 'text' : 'button'}>
               <View style={styles.cardTop}>
                 <View style={styles.avatar}>
                   <Icon name="building" size={16} color={colors.primary} />
@@ -212,9 +222,23 @@ export default function S31_DealsList({ navigation }: Props) {
                 {t('bfl_lot_qty', { qty: formatQuintal(o.qty_kg, locale) })}
               </Text>
 
-              {/* The honest half of this screen. See the file header. */}
+              {/* ★ What happens next. This used to be one sentence saying
+                  the record "is still being built" — a developer's answer to
+                  a farmer's question. The four stages are CANON's own escrow
+                  FSM, and where the transaction is unreachable the row falls
+                  back to stating that rather than drawing a fake march. */}
               {isAgreed ? (
-                <Text style={styles.pendingNote}>{t('dl_no_tracking_note')}</Text>
+                tx ? (
+                  <>
+                    <EscrowMilestones status={tx.status} />
+                    <View style={styles.openRow}>
+                      <Text style={styles.openText}>{t('dl_track_cta')}</Text>
+                      <Icon name="chevron-right" size={16} color={colors.primary} />
+                    </View>
+                  </>
+                ) : (
+                  <Text style={styles.pendingNote}>{t('dl_no_tracking_note')}</Text>
+                )
               ) : (
                 <View style={styles.openRow}>
                   <Text style={styles.openText}>{t('bfl_open_talk')}</Text>

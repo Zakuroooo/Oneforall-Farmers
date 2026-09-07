@@ -34,27 +34,14 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
+import { EscrowMilestones } from '../../components/farmer/EscrowMilestones';
 import { ListenButton } from '../../components/ui/ListenButton';
 import { useT } from '../../lib/i18n';
 import { formatPaise, formatQuintal } from '../../lib/money';
 import { formatDateShort } from '../../lib/dates';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
-import type { TxStatus } from '../../types/api';
 
 type Props = NativeStackScreenProps<MyLotsStackParamList, 'S30_DealDone'>;
-
-/**
- * CANON §7.7's escrow FSM, in order, reduced to the four stages a farmer is
- * waiting through. A stage is done when the transaction has reached it or
- * anything after it — so the ticks come from `tx.status`, not from a
- * hardcoded `done: true`.
- */
-const STAGES: Array<{ key: string; reached: TxStatus[] }> = [
-  { key: 'dd_stage_agreed', reached: ['CREATED', 'ESCROW_HELD', 'DISPATCHED', 'DELIVERED', 'RELEASED'] },
-  { key: 'dd_stage_escrow', reached: ['ESCROW_HELD', 'DISPATCHED', 'DELIVERED', 'RELEASED'] },
-  { key: 'dd_stage_dispatch', reached: ['DISPATCHED', 'DELIVERED', 'RELEASED'] },
-  { key: 'dd_stage_paid', reached: ['RELEASED'] },
-];
 
 export default function S30_DealDone({ navigation, route }: Props) {
   const { t, locale } = useT();
@@ -130,18 +117,9 @@ export default function S30_DealDone({ navigation, route }: Props) {
         {/* ── Where the deal has actually got to ──────────────────────── */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>{t('dd_progress_title')}</Text>
-          {STAGES.map((stage, i) => {
-            const done = stage.reached.includes(tx.status);
-            return (
-              <View key={stage.key} style={styles.stageRow}>
-                <View style={[styles.stageDot, done && styles.stageDotDone]}>
-                  {done ? <Icon name="check" size={12} color={colors.onPrimary} /> : null}
-                </View>
-                <Text style={[styles.stageText, done && styles.stageTextDone]}>{t(stage.key)}</Text>
-                {i === STAGES.length - 1 ? null : <View style={styles.stageLine} />}
-              </View>
-            );
-          })}
+          {/* One progress model for the whole flow — the same strip the
+              deals list and the tracking screen render. */}
+          <EscrowMilestones status={tx.status} />
           <Text style={styles.statusNote}>{t('dd_status_note')}</Text>
         </View>
 

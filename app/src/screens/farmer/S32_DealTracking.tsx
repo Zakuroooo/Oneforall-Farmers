@@ -44,6 +44,7 @@ import { getEscrowEvents, getTransaction } from '../../lib/api';
 import { USE_FIXTURES } from '../../config';
 import { fxEscrowEvents, fxTx } from '../../fixtures/escrow';
 import { ErrorState, Skeleton } from '../../components/farmer/States';
+import { EscrowMilestones } from '../../components/farmer/EscrowMilestones';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
 import type { EscrowEvent, TxDto, TxStatus } from '../../types/api';
 
@@ -209,6 +210,16 @@ export default function S32_DealTracking({ navigation, route }: Props) {
             })}
           </Text>
         </View>
+
+        {/* ── Where it is, at a glance ────────────────────────────────
+            The ledger below is the record; this is the answer to "what am I
+            waiting for", which is what a farmer opens this screen to ask. */}
+        {current ? (
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>{t('dd_progress_title')}</Text>
+            <EscrowMilestones status={current} />
+          </View>
+        ) : null}
 
         {/* ── The ledger. Every row is a row in `escrow_events` (I5). ─── */}
         <View style={styles.card}>
