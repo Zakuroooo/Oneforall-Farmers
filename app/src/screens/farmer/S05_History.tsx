@@ -11,6 +11,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 
+import { colors, fontFamily, space, type as typography } from '../../theme/tokens';
+
 import { getPriceSeries } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
 import { translate } from '../../lib/i18n';
@@ -76,6 +78,11 @@ export default function S05_History() {
 }
 
 const styles = StyleSheet.create({
-  root: { padding: 24 },
-  title: { fontSize: 18, fontWeight: '700', color: '#212121', marginBottom: 16 },
+  root: { padding: space.md, paddingBottom: space.xxl, backgroundColor: colors.background },
+  title: {
+    ...typography.headlineSm,
+    color: colors.onSurface,
+    fontFamily: fontFamily.extraBold,
+    marginBottom: space.md,
+  },
 });
