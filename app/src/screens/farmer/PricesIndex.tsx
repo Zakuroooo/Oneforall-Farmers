@@ -7,9 +7,17 @@
  * ★ What this replaces: a four-link menu ("Price history / Forecast /
  *   Nearby markets / How reliable is the model?") that was never a Stitch
  *   screen at all — it was scaffolding invented to reach four separate
- *   pre-Stitch screens. Those four still exist and are still reachable from
- *   the "Go deeper" row at the bottom; they are simply no longer what the
- *   tab opens onto.
+ *   pre-Stitch screens.
+ *
+ *   That menu survived here for a while as a "Go deeper" row at the bottom,
+ *   and it was pure duplication: three of the four links led to older,
+ *   unstyled screens rendering the *same* query against the *same* fixture
+ *   as the history chart, the forecast corridor and the nearby list already
+ *   on this page. A farmer scrolling past the trend to find a link back to
+ *   the trend is being asked to do the app's navigation for it, so the row
+ *   and those three screens are gone. The fourth — the model card — is not
+ *   duplicated by anything here, and it keeps a link where it belongs:
+ *   directly under the accuracy figures it explains.
  *
  * ★ Every figure on this screen is read from a real response shape, never
  *   from the mockup. The Stitch HTML hardcodes ₹2,050 / 28,400 bags / "84%
@@ -588,32 +596,6 @@ export default function PricesIndex({ navigation }: Props) {
           </View>
         ) : null}
 
-        {/* ── Deep dives — the four screens this tab used to open onto ─ */}
-        <Text style={styles.deepDiveLabel}>{t('mkt_deep_dives')}</Text>
-        <View style={styles.deepDiveCard}>
-          {(
-            [
-              { route: 'S5_History', labelKey: 'prices_link_history', icon: 'trending-up' },
-              { route: 'S7_Forecast', labelKey: 'prices_link_forecast', icon: 'zap' },
-              { route: 'S6_Nearby', labelKey: 'prices_link_nearby', icon: 'map-pin' },
-              { route: 'S8_ModelCard', labelKey: 'prices_link_model_card', icon: 'info' },
-            ] as const
-          ).map((link, i) => (
-            <React.Fragment key={link.route}>
-              {i > 0 ? <View style={styles.deepDiveDivider} /> : null}
-              <TouchableOpacity
-                style={styles.deepDiveRow}
-                onPress={() => navigation.navigate(link.route)}
-                accessibilityRole="button">
-                <View style={styles.deepDiveIconBox}>
-                  <Icon name={link.icon} size={16} color={colors.primary} />
-                </View>
-                <Text style={styles.deepDiveText}>{t(link.labelKey)}</Text>
-                <Icon name="chevron-right" size={16} color={colors.outline} />
-              </TouchableOpacity>
-            </React.Fragment>
-          ))}
-        </View>
       </ScrollView>
     </View>
   );
@@ -1038,29 +1020,4 @@ const styles = StyleSheet.create({
     padding: space.xs,
   },
   behindText: { ...typography.labelSm, color: colors.onCriticalContainer, flex: 1 },
-
-  deepDiveLabel: {
-    ...typography.labelSm,
-    color: colors.onSurfaceVariant,
-    marginTop: space.sm,
-    textTransform: 'uppercase',
-  },
-  deepDiveCard: {
-    backgroundColor: colors.surface,
-    borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.borderCard,
-    overflow: 'hidden',
-  },
-  deepDiveRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: space.md },
-  deepDiveIconBox: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-    backgroundColor: colors.surfaceContainer,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  deepDiveText: { flex: 1, ...typography.titleMd, color: colors.onSurface },
-  deepDiveDivider: { height: 1, backgroundColor: colors.outlineVariant, marginLeft: 52 },
 });

@@ -48,9 +48,6 @@ const STACK_SCREEN_OPTIONS = {
 } as const;
 
 import S04_Home from '../screens/farmer/S04_Home';
-import S05_History from '../screens/farmer/S05_History';
-import S06_Nearby from '../screens/farmer/S06_Nearby';
-import S07_Forecast from '../screens/farmer/S07_Forecast';
 import S08_ModelCard from '../screens/farmer/S08_ModelCard';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
 import S10_CostBreakdown from '../screens/farmer/S10_CostBreakdown';
@@ -150,21 +147,23 @@ function HomeStackNavigator() {
 }
 
 /**
- * The Prices tab is also a stack — S5/S6/S7 are three separate P0 screens
- * (one decision per screen), reached from a small landing screen rather than
- * crowded onto one. Same shape as `HomeStackNavigator`.
+ * The Prices tab is a stack of exactly two screens.
  *
- * S8 (the model card) lives here rather than on its own tab, and behind S7 rather
- * than beside it: it answers "should I believe that fan?", which is a question
- * nobody has until they have seen the fan. It is also reachable from the Prices
- * landing screen directly, because the other reader of S8 is a judge who wants it
- * without being walked through a forecast first.
+ * ★ It used to hold five. S5 (history), S6 (nearby) and S7 (forecast) were
+ *   pre-Stitch screens, each rendering one query on its own page, reached
+ *   from a landing menu. `PricesIndex` — the Stitch market screen — renders
+ *   all three of those queries itself, so those screens had become second,
+ *   unstyled copies of sections a farmer had already scrolled past. They are
+ *   deleted rather than left unreachable, because an unreachable screen is
+ *   the kind that quietly drifts out of sync with the one people see.
+ *
+ * ★ S8 (the model card) stays. Nothing on the market screen duplicates it —
+ *   it answers "should I believe that fan?", and it is reached from under the
+ *   accuracy figures on the forecast card, and from the menu drawer for a
+ *   judge who wants it without being walked through a forecast first.
  */
 export type PricesStackParamList = {
   PricesIndex: undefined;
-  S5_History: undefined;
-  S6_Nearby: undefined;
-  S7_Forecast: undefined;
   S8_ModelCard: undefined;
 };
 
@@ -174,9 +173,6 @@ function PricesStackNavigator() {
   return (
     <PricesStack.Navigator screenOptions={STACK_SCREEN_OPTIONS}>
       <PricesStack.Screen name="PricesIndex" component={PricesIndex} />
-      <PricesStack.Screen name="S5_History" component={S05_History} />
-      <PricesStack.Screen name="S6_Nearby" component={S06_Nearby} />
-      <PricesStack.Screen name="S7_Forecast" component={S07_Forecast} />
       <PricesStack.Screen name="S8_ModelCard" component={S08_ModelCard} />
     </PricesStack.Navigator>
   );
