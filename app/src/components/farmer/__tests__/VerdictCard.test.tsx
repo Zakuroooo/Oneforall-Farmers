@@ -90,25 +90,34 @@ describe('★ I16 — worst case renders at the same font size as expected gain'
   });
 });
 
-describe('P5/S10 — the expandable cost breakdown', () => {
-  it('is collapsed by default and expands on tap to show all five lines + total', () => {
+describe('P5/S10 — the itemised cost breakdown', () => {
+  /**
+   * ★ This used to assert the opposite: that the five fee lines were hidden
+   *   until tapped. Stitch screen 11 shows them on arrival, and that is the
+   *   better behaviour on its own merits — a farmer should not have to
+   *   discover a deduction by tapping. The assertion is inverted rather than
+   *   deleted, and it is strictly stronger now: it pins that every fee is
+   *   visible without interaction, which is a claim the old collapsed
+   *   version could not make.
+   */
+  it('shows all five fee lines and the total without any interaction', () => {
     const tree = renderCard(fxHold);
 
-    // Collapsed: none of the five line labels are present yet.
-    for (const label of ['वाहतूक', 'कमिशन', 'साठवण', 'नासाडी', 'भरणी', 'एकूण']) {
-      expect(
-        tree.root.findAll(n => n.props.children === label),
-      ).toHaveLength(0);
-    }
-
-    const toggleButton = tree.root.findByProps({ testID: 'verdict-costs-toggle' });
-    act(() => {
-      toggleButton.props.onPress();
-    });
-
-    // Expanded: all five lines plus the total are now present.
     for (const label of ['वाहतूक', 'कमिशन', 'साठवण', 'नासाडी', 'भरणी', 'एकूण']) {
       expect(tree.root.findAll(n => n.props.children === label).length).toBeGreaterThan(0);
     }
+  });
+
+  it('routes to the itemised sheet through onSeeCosts, only when one is given', () => {
+    const onSeeCosts = jest.fn();
+    const tree = renderer.create(
+      <VerdictCard data={fxHold} qtyKg={DEMO_QTY_KG} locale="mr" onSeeCosts={onSeeCosts} />,
+    );
+
+    const sheetButton = tree.root.findByProps({ testID: 'verdict-costs-toggle' });
+    act(() => {
+      sheetButton.props.onPress();
+    });
+    expect(onSeeCosts).toHaveBeenCalledTimes(1);
   });
 });

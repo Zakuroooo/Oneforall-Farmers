@@ -35,6 +35,19 @@ jest.mock('../../../lib/locale', () => ({
   setLocale: () => Promise.resolve(),
 }));
 
+// S9 names the signed-in farmer in its identity pill (Stitch 11), so it calls
+// `useAuth()`, which throws without a provider — deliberately, so a missing
+// provider fails loudly rather than rendering a logged-out app to a judge.
+// This suite is about the verdict, not about auth wiring, so it stands in a
+// signed-in farmer rather than wrapping every case in a real provider.
+jest.mock('../../../lib/auth', () => ({
+  useAuth: () => ({
+    user: { id: 'farmer_demo', name: 'रामभाऊ पाटील', phone: '+919999999999', role: 'FARMER' },
+    status: 'authenticated',
+    signOut: () => {},
+  }),
+}));
+
 // See S08_ModelCard.test.tsx — `useFocusEffect` needs a `NavigationContainer`
 // ancestor this tree has no other reason to build; run it like `useEffect`.
 jest.mock('@react-navigation/native', () => ({
