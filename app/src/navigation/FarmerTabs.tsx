@@ -1,5 +1,5 @@
 /**
- * The farmer app. Four tabs: Home, Market, My Produce, Deals. Pranay.
+ * The farmer app. Five tabs: Home, Market, My Produce, Talks, Deals. Pranay.
  *
  * ★ Those four names are the Stitch footer, verbatim, and getting there took
  *   two fixes. The fourth slot used to be an "Assistant" tab (the canned
@@ -36,6 +36,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useT } from '../lib/i18n';
 import { tabIcon } from './TabIcon';
+import { TabBarButton } from './TabBarButton';
 import type { AssayReq, AssayRes } from '../types/api';
 
 /** The one background colour for every farmer scene. */
@@ -342,6 +343,9 @@ export function FarmerTabs() {
         tabBarActiveTintColor: '#C2410C',
         tabBarInactiveTintColor: '#8D7168',
         tabBarLabelStyle: { fontSize: 12, fontFamily: 'PlusJakartaSans-SemiBold' },
+        // Without this, Android draws a borderless ripple that paints outside
+        // the 64px bar. See `TabBarButton`.
+        tabBarButton: props => <TabBarButton {...props} />,
         tabBarStyle: {
           height: 64,
           paddingBottom: 8,

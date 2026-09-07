@@ -26,6 +26,7 @@ import { S25_Dispute } from '../screens/buyer/S25_Dispute';
 import { S27_BuyerChat } from '../screens/buyer/S27_BuyerChat';
 import { useT } from '../lib/i18n';
 import { tabIcon } from './TabIcon';
+import { TabBarButton } from './TabBarButton';
 
 /** The one background colour for every buyer scene. Matches `FarmerTabs`. */
 const SCREEN_BG = '#FFFFFF';
@@ -92,6 +93,9 @@ export function BuyerTabs() {
         tabBarActiveTintColor: '#1565C0',
         tabBarInactiveTintColor: '#64748B',
         tabBarLabelStyle: { fontSize: 11, fontWeight: '600' },
+        // Same reason as the farmer bar: Android's default borderless ripple
+        // paints outside the tab. See `TabBarButton`.
+        tabBarButton: props => <TabBarButton {...props} />,
         tabBarStyle: { height: 60, paddingBottom: 4, paddingTop: 4 },
       }}>
       <Tab.Screen
