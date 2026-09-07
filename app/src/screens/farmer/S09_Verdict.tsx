@@ -83,7 +83,7 @@ export default function S09_Verdict({ navigation }: Props) {
   useEffect(() => {
     if (data && !spokenRef.current) {
       spokenRef.current = true;
-      speakSaleWindow(data).catch(() => {});
+      speakSaleWindow(data, locale).catch(() => {});
     }
   }, [data]);
 

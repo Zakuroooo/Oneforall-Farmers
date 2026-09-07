@@ -24,9 +24,9 @@
 
 import Sound from 'react-native-sound';
 import Tts from 'react-native-tts';
-import type { WindowRes } from '../types/api';
+import type { Locale, WindowRes } from '../types/api';
 import type { TFn } from './i18n';
-import { buildVerdictNarration } from './verdictVoice';
+import { buildVerdictNarrationFor } from './verdictVoice';
 // ★ Upstream wrote this as `from '../api'`, which resolves to `src/api` — a
 //   file that does not exist, so the narration would have failed to bundle.
 //   `voice.ts` and `api.ts` are siblings in `lib/`.
@@ -216,14 +216,38 @@ function playClip(sound: Sound): Promise<void> {
  * never block or throw on that. If it fails, `Tts.speak()` still falls back
  * to whatever the device's default TTS language is, which beats no sound.
  */
-let ttsLanguageReady: Promise<void> | null = null;
-function ensureTtsLanguage(): Promise<void> {
-  if (!ttsLanguageReady) {
-    ttsLanguageReady = Tts.setDefaultLanguage('mr-IN')
-      .then(() => undefined)
-      .catch(() => undefined);
+/**
+ * BCP-47 tags for the three locales the app offers. The engine needs the
+ * region: bare 'hi' picks whatever Hindi voice the device defaults to, and on
+ * many Indian devices that is not an Indian one.
+ */
+const TTS_LANGUAGE: Record<Locale, string> = {
+  mr: 'mr-IN',
+  hi: 'hi-IN',
+  en: 'en-IN',
+};
+
+/** The locale the engine is currently set to, so we only pay for a change. */
+let ttsCurrentLocale: Locale | null = null;
+
+/**
+ * ★ This used to hardcode `'mr-IN'` and cache the promise forever, so the
+ *   engine was set to Marathi once at first use and never changed again. Two
+ *   reported bugs came out of that single line: the verdict spoke Marathi to
+ *   a farmer who had chosen English, and Hindi text read aloud in a Marathi
+ *   voice mispronounced even the product's own name. The engine is now set
+ *   to whichever locale the caller is speaking in, and re-set when it
+ *   changes.
+ */
+async function ensureTtsLanguage(locale: Locale = 'mr'): Promise<void> {
+  if (ttsCurrentLocale === locale) return;
+  try {
+    await Tts.setDefaultLanguage(TTS_LANGUAGE[locale]);
+    ttsCurrentLocale = locale;
+  } catch {
+    // An engine without the language installed keeps whatever it had. Better
+    // a wrong accent than silence.
   }
-  return ttsLanguageReady;
 }
 
 /**
@@ -286,7 +310,7 @@ const CLIP_TEXT_BY_ID: Record<string, string> = (() => {
  * functions) is actually skipped.
  */
 export async function speak(clips: string[]): Promise<void> {
-  await ensureTtsLanguage();
+  await ensureTtsLanguage('mr');
   for (const id of clips) {
     const sound = await loadClip(id);
     if (sound) {
@@ -307,9 +331,23 @@ export async function speak(clips: string[]): Promise<void> {
  * spoke). `speak()` above is for the fixed, decomposable vocabulary
  * (rupees, days); this is for everything else voice.ts is asked to say.
  */
-export async function speakText(text: string): Promise<void> {
-  await ensureTtsLanguage();
+export async function speakText(text: string, locale: Locale = 'mr'): Promise<void> {
+  // ★ Stop whatever is in flight before starting. Without this a second tap
+  //   either queued behind the first or was dropped by the engine, which is
+  //   why the speaker "only played once" — tapping again did nothing audible
+  //   and there was no way to replay a sentence a farmer missed.
+  await stopSpeaking();
+  await ensureTtsLanguage(locale);
   await speakViaTts(text);
+}
+
+/** Cancels any utterance in flight. Safe to call when nothing is speaking. */
+export async function stopSpeaking(): Promise<void> {
+  try {
+    await Tts.stop();
+  } catch {
+    // Nothing was speaking.
+  }
 }
 
 /**
@@ -326,12 +364,17 @@ export async function speakText(text: string): Promise<void> {
  * than the clip-sequence `speakVerdict` below, because a farmer deciding
  * whether to hold needs the whole trade in his ear, not isolated word-clips.
  */
-export async function speakSaleWindow(v: WindowRes): Promise<void> {
-  const narration = buildVerdictNarration(v);
+export async function speakSaleWindow(v: WindowRes, locale: Locale = 'mr'): Promise<void> {
+  // ★ Composed and spoken in the farmer's own language. This used to build
+  //   Marathi unconditionally and call `narrate(..., 'mr')`, so choosing
+  //   English on S1 still produced a Marathi verdict — the exact complaint
+  //   from the device.
+  const narration = buildVerdictNarrationFor(v, locale);
+  await stopSpeaking();
   try {
-    await speakSarvamVerdict(narration);
+    await speakSarvamVerdict(narration, locale);
   } catch {
-    await speakText(narration);
+    await speakText(narration, locale);
   }
 }
 
@@ -342,8 +385,8 @@ export async function speakSaleWindow(v: WindowRes): Promise<void> {
  * Throws (does not swallow) on network/fs/playback errors by design — the
  * fallback lives in `speakSaleWindow`, not here.
  */
-async function speakSarvamVerdict(narration: string): Promise<void> {
-  const { audio_base64 } = await narrate(narration, 'mr');
+async function speakSarvamVerdict(narration: string, locale: Locale = 'mr'): Promise<void> {
+  const { audio_base64 } = await narrate(narration, locale);
 
   // Decode the base64 WAV to bytes and park it in a temp cache file the
   // native player can read. CachesDirectory is sandboxed, app-owned, and

@@ -23,8 +23,9 @@
  *   voice bug this product could ship. See `REFUSAL_MR` below.
  */
 
-import type { WindowRes, PledgeQuote, RefusalReason } from '../types/api';
+import type { Locale, WindowRes, PledgeQuote, RefusalReason } from '../types/api';
 import { spokenDays, spokenNumber, spokenRupees } from './mrNumberWords';
+import { formatNumber, formatPaise } from './money';
 import { translate } from './i18n';
 
 /**
@@ -147,4 +148,53 @@ export function buildVerdictNarration(v: WindowRes): string {
     return `${main} ${pledgeSentence(v.pledge_quote)}`;
   }
   return main;
+}
+
+/**
+ * The narration in whichever language the farmer chose.
+ *
+ * ★ Everything above composes Marathi, which was correct when Marathi was the
+ *   only voice. It is not correct now: a farmer who picks English on S1 and
+ *   opens the price decision hears Marathi, which is the bug reported from
+ *   the device. Marathi keeps its hand-written prose — it is the default and
+ *   it reads well. Hindi and English are composed from the same dictionary
+ *   the screen itself renders from, so the voice cannot say something the
+ *   screen does not.
+ *
+ * ★ I16 holds in the voice too: the worst case is spoken in the same breath
+ *   as the gain, never dropped for brevity.
+ */
+export function buildVerdictNarrationFor(v: WindowRes, locale: Locale): string {
+  if (locale === 'mr') return buildVerdictNarration(v);
+
+  const parts: string[] = [];
+
+  if (v.action === 'NO_ADVICE') {
+    parts.push(translate('no_advice_label', locale));
+    if (v.explain_en) parts.push(v.explain_en);
+    return parts.join('. ');
+  }
+
+  const ACTION_KEY: Record<Exclude<WindowRes['action'], 'NO_ADVICE'>, string> = {
+    SELL_NOW: 'action_sell_now',
+    SELL_ELSEWHERE: 'action_sell_elsewhere',
+    HOLD: 'action_hold',
+    SPLIT: 'action_split',
+  };
+  parts.push(translate(ACTION_KEY[v.action], locale));
+
+  if (v.hold_days !== null && v.hold_days > 0) {
+    parts.push(`${formatNumber(v.hold_days, locale)} ${translate('days_suffix', locale)}`);
+  }
+
+  if (v.expected_gain_paise !== null) {
+    parts.push(
+      `${translate('expected_gain', locale)}: ${formatPaise(v.expected_gain_paise, locale)}`,
+    );
+  }
+  if (v.worst_case_paise !== null) {
+    parts.push(`${translate('worst_case', locale)}: ${formatPaise(v.worst_case_paise, locale)}`);
+  }
+
+  return `${parts.join('. ')}.`;
 }

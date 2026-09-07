@@ -28,17 +28,33 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { colors, fontFamily, radius, space } from '../../theme/tokens';
 import { Icon } from './Icon';
 import { useT } from '../../lib/i18n';
-import { speakText } from '../../lib/voice';
+import { speakText, stopSpeaking } from '../../lib/voice';
 
 export function ListenButton({ text, label }: { text: string; label?: string }) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const [speaking, setSpeaking] = useState(false);
 
+  /**
+   * ★ Every tap restarts the narration from the beginning.
+   *
+   *   This used to bail out early while `speaking` was true, so a farmer who
+   *   missed a sentence had no way to hear it again — the button simply did
+   *   nothing until the whole utterance finished, and if the engine's finish
+   *   event never arrived it stayed dead for good. Tapping mid-speech now
+   *   stops and replays, which is what a farmer who did not catch something
+   *   actually wants.
+   */
   const onPress = async () => {
-    if (speaking || text.trim().length === 0) return;
+    if (text.trim().length === 0) return;
+    if (speaking) {
+      await stopSpeaking();
+      setSpeaking(false);
+      return;
+    }
     setSpeaking(true);
     try {
-      await speakText(text);
+      // Spoken in the language the farmer chose, not the app's default.
+      await speakText(text, locale);
     } catch {
       // A farmer who taps listen and hears nothing has lost a nice-to-have,
       // not the screen. An error banner over a TTS glitch would outrank the

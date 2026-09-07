@@ -143,7 +143,13 @@ export default function S03_OTP({ navigation }: Props) {
 
         {/* Phone number row */}
         <View style={styles.phoneRow}>
-          <Text style={styles.phoneNum}>{phone ?? ''} {t('otp_sent_to')}</Text>
+          {/* ★ This read `{phone} {t('otp_sent_to')}` — the number prepended by
+              hand, and `t()` called with no vars. English had no placeholder
+              so it looked fine; Marathi and Hindi both contain `{phone}`, so
+              a farmer saw the literal text "{phone}" on screen next to his
+              own number. The key now carries the placeholder in all three and
+              is given the value. */}
+          <Text style={styles.phoneNum}>{t('otp_sent_to', { phone: phone ?? '' })}</Text>
           <TouchableOpacity style={styles.editBtn} onPress={() => navigation.goBack()}>
             <Icon name="edit" size={12} color={colors.primaryContainer} />
             <Text style={styles.editText}>{t('otp_edit')}</Text>

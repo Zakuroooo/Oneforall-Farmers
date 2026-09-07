@@ -90,7 +90,7 @@ export function VerdictCard({
   const handleSpeak = async () => {
     setSpeaking(true);
     try {
-      await speakSaleWindow(data);
+      await speakSaleWindow(data, locale);
     } catch {
       // see comment above
     } finally {
