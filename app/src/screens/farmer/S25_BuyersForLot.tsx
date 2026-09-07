@@ -54,7 +54,7 @@ import { formatNumber, formatPaise, formatQuintal, quintalValuePaise, toQuintal 
 import { formatDateShort } from '../../lib/dates';
 import { getLots, getOffers } from '../../lib/api';
 import { DEFAULT_LOT_ID, USE_FIXTURES } from '../../config';
-import { fxLotOffers } from '../../fixtures/offers';
+import { fxMyOffers } from '../../fixtures/offers';
 import { fxMyLots } from '../../fixtures/lots';
 import { ErrorState, Skeleton } from '../../components/farmer/States';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
@@ -63,7 +63,7 @@ import type { LotDto, OfferDto } from '../../types/api';
 type Props = NativeStackScreenProps<MyLotsStackParamList, 'S25_BuyersForLot'>;
 
 async function fetchOffers(): Promise<OfferDto[]> {
-  if (USE_FIXTURES) return fxLotOffers;
+  if (USE_FIXTURES) return fxMyOffers;
   return getOffers();
 }
 

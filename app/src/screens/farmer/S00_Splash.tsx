@@ -79,11 +79,11 @@ export default function S00_Splash({ navigation }: Props) {
               <Text style={styles.emblemSetuText}>SETU</Text>
             </View>
           </View>
-          {/* Verified badge */}
-          <View style={styles.verifiedBadge}>
-            <Icon name="check-circle" size={12} color={colors.onTertiary} />
-            <Text style={styles.verifiedText}>{t('splash_verified')}</Text>
-          </View>
+          {/* ★ A "Verified" badge used to sit here, under the emblem, on the
+              very first screen of the app. Verified by whom? Nothing issues
+              it and nothing checks it — a green tick asserting an approval
+              that does not exist, in the position a certification mark
+              occupies. Removed rather than reworded. */}
         </View>
 
         {/* ── 3. App name ───────────────────────────────────── */}
@@ -187,17 +187,13 @@ export default function S00_Splash({ navigation }: Props) {
           <Text style={styles.otpText}>{t('splash_otp_login')}</Text>
         </TouchableOpacity>
 
-        {/* Footer */}
-        <View style={styles.footer}>
-          <View style={styles.footerLeft}>
-            <View style={styles.footerDot} />
-            <Text style={styles.footerText}>{t('splash_footer_node')}</Text>
-          </View>
-          <View style={styles.footerRight}>
-            <Icon name="shield-check" size={10} color={colors.tertiary} />
-            <Text style={styles.footerText}>{t('splash_footer_encrypt')}</Text>
-          </View>
-        </View>
+        {/* ★ The footer read "लासलगाव • नाशिक नोड v2.4" beside "256-bit bank
+            encryption". There is no Nashik node and there is no bank
+            encryption: `lib/api.ts` says in its own header that Phase 1 keeps
+            a 72-hour JWT in AsyncStorage, and that we say so out loud rather
+            than implying a keystore we did not build. A footer contradicting
+            our own code, on the first screen, is exactly the claim that fails
+            the only follow-up question that matters. */}
       </View>
     </View>
   );
@@ -340,30 +336,6 @@ const styles = StyleSheet.create({
     fontSize: 10,
     letterSpacing: 2,
     color: 'rgba(255,255,255,0.9)',
-  },
-  verifiedBadge: {
-    position: 'absolute',
-    bottom: -8,
-    right: -12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.tertiary,
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: radius.full,
-    borderWidth: 2,
-    borderColor: colors.surface,
-    gap: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  verifiedText: {
-    fontFamily: fontFamily.bold,
-    fontSize: 11,
-    color: colors.onTertiary,
   },
 
   // App name
@@ -601,36 +573,4 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
   },
 
-  // Footer
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: space.md,
-    paddingTop: space.xs,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(225,191,181,0.4)',
-  },
-  footerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  footerDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.tertiary,
-  },
-  footerText: {
-    fontFamily: fontFamily.regular,
-    fontSize: 10,
-    color: colors.onSurfaceVariant,
-    letterSpacing: 0.2,
-  },
-  footerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-  },
 });

@@ -36,7 +36,7 @@ import { useT } from '../../lib/i18n';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { getOffers } from '../../lib/api';
 import { USE_FIXTURES } from '../../config';
-import { fxIncomingOffer, fxIncomingOfferLastRound } from '../../fixtures/offers';
+import { fxMyOffers } from '../../fixtures/offers';
 import { ErrorState, Skeleton } from '../../components/farmer/States';
 import type { OfferDto, OfferStatus, Role } from '../../types/api';
 
@@ -50,7 +50,7 @@ const STATUS_KEY: Record<OfferStatus, string> = {
 };
 
 async function fetchOffers(): Promise<OfferDto[]> {
-  if (USE_FIXTURES) return [fxIncomingOffer, fxIncomingOfferLastRound];
+  if (USE_FIXTURES) return fxMyOffers;
   return getOffers();
 }
 

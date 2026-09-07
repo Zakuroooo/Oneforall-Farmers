@@ -27,7 +27,7 @@ import { useT } from '../../lib/i18n';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { getOffers, getPriceSeries } from '../../lib/api';
 import { DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
-import { fxIncomingOffer, fxIncomingOfferLastRound } from '../../fixtures/offers';
+import { fxMyOffers } from '../../fixtures/offers';
 import { fxPriceHistory } from '../../fixtures/prices';
 import type { HomeStackParamList } from '../../navigation/FarmerTabs';
 import type { OfferDto } from '../../types/api';
@@ -35,7 +35,7 @@ import type { OfferDto } from '../../types/api';
 type Props = NativeStackScreenProps<HomeStackParamList, 'S38_Notifications'>;
 
 async function fetchOffers(): Promise<OfferDto[]> {
-  if (USE_FIXTURES) return [fxIncomingOffer, fxIncomingOfferLastRound];
+  if (USE_FIXTURES) return fxMyOffers;
   return getOffers();
 }
 async function fetchSeries() {

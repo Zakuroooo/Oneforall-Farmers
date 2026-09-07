@@ -39,7 +39,7 @@ import { formatNumber, formatPaise, formatQuintal, quintalValuePaise } from '../
 import { formatDateShort } from '../../lib/dates';
 import { getOffers } from '../../lib/api';
 import { USE_FIXTURES } from '../../config';
-import { fxLotOffers, fxOffer } from '../../fixtures/offers';
+import { fxMyOffers } from '../../fixtures/offers';
 import { ErrorState, Skeleton } from '../../components/farmer/States';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
 import type { OfferDto } from '../../types/api';
@@ -51,10 +51,7 @@ type Props = NativeStackScreenProps<MyLotsStackParamList, 'S31_DealsList'>;
 type Filter = 'agreed' | 'talking';
 
 async function fetchOffers(): Promise<OfferDto[]> {
-  if (USE_FIXTURES) {
-    // One accepted deal beside the live ones, so both filters have content.
-    return [{ ...fxOffer, id: 'offer_accepted_1', status: 'ACCEPTED' as const }, ...fxLotOffers];
-  }
+  if (USE_FIXTURES) return fxMyOffers;
   return getOffers();
 }
 

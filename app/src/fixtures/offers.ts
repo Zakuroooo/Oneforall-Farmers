@@ -114,3 +114,21 @@ export const fxLotOffers: OfferDto[] = [
     note: null,
   },
 ];
+
+/**
+ * Every offer this farmer has, open and settled — what `GET /offers` returns
+ * for him, actor-scoped.
+ *
+ * ★ Why one list rather than a per-screen one: Talks, the Deals tab, the
+ *   notifications screen and the buyers-for-a-lot screen all read
+ *   `queryKey: ['offers', 'talks']`, which is correct — it is one query. But
+ *   they had each been handing TanStack Query a *different* fetcher under
+ *   that one key, so whichever screen mounted first populated the cache and
+ *   the others silently rendered its data. The Deals tab showed "no deals
+ *   agreed yet" whenever Talks had loaded before it, which is exactly the
+ *   sort of bug that only appears in one navigation order.
+ */
+export const fxMyOffers: OfferDto[] = [
+  { ...fxOffer, id: 'offer_accepted_1', status: 'ACCEPTED' },
+  ...fxLotOffers,
+];

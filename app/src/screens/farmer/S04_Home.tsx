@@ -29,7 +29,7 @@ import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { useAuth } from '../../lib/auth';
 import { getPriceSeries, recommendWindow } from '../../lib/api';
-import { formatPaise } from '../../lib/money';
+import { formatNumber, formatPaise } from '../../lib/money';
 import {
   DEFAULT_COMMODITY_ID,
   DEFAULT_GRADE,
@@ -306,7 +306,7 @@ export default function S04_Home({ navigation }: Props) {
                     </View>
                   )}
                   <Text style={styles.arrivalsText}>
-                    {t('home_arrivals', { count: String(last.arrivals_qtl) })}
+                    {t('home_arrivals', { count: formatNumber(last.arrivals_qtl, locale) })}
                   </Text>
                 </View>
               </View>
