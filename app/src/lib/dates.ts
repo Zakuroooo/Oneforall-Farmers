@@ -89,3 +89,31 @@ export function formatDateShort(
   if (monthKey === undefined) return fallback;
   return `${devNum(parsed.day, locale)} ${translate(monthKey, locale)}`;
 }
+
+/**
+ * The clock time off an ISO timestamp — `2026-09-03T10:14:00+05:30` → `१०:१४`.
+ *
+ * ★ 24-hour, deliberately. The Stitch mockup writes "10:14 AM", but "AM" is
+ *   an English token and this app renders one language at a time; a Marathi
+ *   negotiation history reading "१०:१४ AM" is the same mixed-script defect
+ *   the rest of the dictionary was cleaned of. A mandi runs on a 24-hour
+ *   clock anyway.
+ *
+ * ★ Parsed off the string rather than through `Date`, for the same reason
+ *   `parseIsoDate` is: `new Date(iso)` shifts a `+05:30` timestamp into the
+ *   device's timezone, so a round struck at 10:14 in Lasalgaon would render
+ *   as a different time on a phone set to another zone. The offset in the
+ *   string is the mandi's own clock and is what the farmer means.
+ */
+export function formatTimeShort(
+  iso: string | null | undefined,
+  locale: Locale = 'mr',
+  fallback = '',
+): string {
+  if (!iso) return fallback;
+  const m = /T(\d{2}):(\d{2})/.exec(iso);
+  if (!m) return fallback;
+  const hh = m[1]!;
+  const mm = m[2]!;
+  return locale === 'en' ? `${hh}:${mm}` : `${devNum(Number(hh), locale)}:${devNum(Number(mm), locale)}`;
+}

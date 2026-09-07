@@ -70,8 +70,16 @@ export function ListenButton({ text, label }: { text: string; label?: string }) 
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={label ?? t('listen_button')}>
-      <Icon name={speaking ? 'volume-off' : 'volume'} size={14} color={colors.primary} />
-      <Text style={styles.label}>{speaking ? t('listening_button') : t('splash_listen')}</Text>
+      {/* ★ Always the speaker, never `volume-off`. A crossed-out speaker means
+          *muted* — it was showing the one icon that says "there is no sound"
+          at precisely the moment there is sound, and tapping it restarts the
+          narration rather than muting anything, so the metaphor was wrong in
+          both directions. The state is carried by the label and the filled
+          background instead. */}
+      <Icon name="volume" size={14} color={speaking ? colors.onPrimary : colors.primary} />
+      <Text style={[styles.label, speaking && styles.labelActive]}>
+        {speaking ? t('listening_button') : t('splash_listen')}
+      </Text>
     </TouchableOpacity>
   );
 }
@@ -89,6 +97,7 @@ const styles = StyleSheet.create({
     borderColor: colors.outlineVariant,
     flexShrink: 0,
   },
-  btnActive: { backgroundColor: colors.onPrimaryContainer, borderColor: colors.primaryContainer },
+  btnActive: { backgroundColor: colors.primaryContainer, borderColor: colors.primaryContainer },
   label: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
+  labelActive: { color: colors.onPrimary },
 });

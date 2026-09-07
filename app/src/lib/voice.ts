@@ -252,34 +252,86 @@ async function ensureTtsLanguage(locale: Locale = 'mr'): Promise<void> {
 
 /**
  * Speaks `text` through the device's on-device TTS engine and resolves when
- * it finishes, errors, or is cancelled — never rejects. `Tts.speak()` returns
- * an utterance id synchronously; completion only arrives as an event, so
- * this wraps that in a promise and always cleans its own listeners up
- * afterward, matched on that id (more than one clip can be in flight only if
- * something calls `speak()` concurrently with itself, which this module
- * never does, but matching by id costs nothing and rules it out anyway).
+ * it finishes, errors, or is cancelled — never rejects.
+ *
+ * ★ THE BUG THIS FIXES, because it is subtle and it wedged the UI on every
+ *   screen. The previous version did:
+ *
+ *       let utteranceId: string | number;
+ *       const done = e => { if (e.utteranceId !== utteranceId) return; ... }
+ *       utteranceId = Tts.speak(text);
+ *
+ *   `react-native-tts`'s TypeScript declaration says `speak()` returns
+ *   `string | number`. It does not. The Android native method is
+ *   `speak(String utterance, ReadableMap params, Promise promise)` — a
+ *   `Promise` parameter — so the bridge hands JavaScript back a **Promise**,
+ *   and `utteranceId` was a Promise object. `e.utteranceId !== utteranceId`
+ *   was therefore true for every event ever fired, `done` never resolved,
+ *   and this function returned a promise that never settled.
+ *
+ *   Every caller `await`s it inside a `try/finally` that flips a `speaking`
+ *   flag back off. The `finally` never ran. So the listen button changed to
+ *   the muted-speaker icon when tapped and stayed that way for the life of
+ *   the screen, on every screen, and the narration could not be replayed
+ *   because the button was already showing its "stop" state. The
+ *   `.d.ts` being wrong is why this compiled and why it survived review.
+ *
+ * ★ The id is now awaited before it is compared, completions that arrive
+ *   before the id is known are honoured rather than dropped, and a guard
+ *   timer settles the promise if the engine never reports at all. The UI
+ *   flag can no longer be left stuck on by anything the engine does.
  */
+const TTS_GUARD_MS = 60_000;
+
 function speakViaTts(text: string): Promise<void> {
   return new Promise(resolve => {
-    let utteranceId: string | number;
-    const done = (event: { utteranceId: string | number }) => {
-      if (event.utteranceId !== utteranceId) return;
-      Tts.removeEventListener('tts-finish', done);
-      Tts.removeEventListener('tts-error', done);
-      Tts.removeEventListener('tts-cancel', done);
+    let settled = false;
+    /** Known only once `Tts.speak()`'s promise resolves. */
+    let utteranceId: string | number | null = null;
+    /** A completion that arrived while the id was still unknown. */
+    let finishedEarly = false;
+
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(guard);
+      Tts.removeEventListener('tts-finish', onDone);
+      Tts.removeEventListener('tts-error', onDone);
+      Tts.removeEventListener('tts-cancel', onDone);
       resolve();
     };
-    Tts.addEventListener('tts-finish', done);
-    Tts.addEventListener('tts-error', done);
-    Tts.addEventListener('tts-cancel', done);
 
+    const onDone = (event?: { utteranceId?: string | number }) => {
+      if (utteranceId === null) {
+        // The engine beat us to it. Remember, and settle once we know the id
+        // — or, if we never learn it, the guard below still ends this.
+        finishedEarly = true;
+        return;
+      }
+      const id = event?.utteranceId;
+      if (id !== undefined && id !== utteranceId) return;
+      finish();
+    };
+
+    const guard = setTimeout(finish, TTS_GUARD_MS);
+
+    Tts.addEventListener('tts-finish', onDone);
+    Tts.addEventListener('tts-error', onDone);
+    Tts.addEventListener('tts-cancel', onDone);
+
+    // Typed as `string | number` by the library and actually a Promise on
+    // Android. `Promise.resolve` accepts either, so this handles both without
+    // depending on which one the platform gives us.
     try {
-      utteranceId = Tts.speak(text);
+      Promise.resolve(Tts.speak(text) as unknown as string | number).then(
+        id => {
+          utteranceId = id ?? '';
+          if (finishedEarly) finish();
+        },
+        () => finish(),
+      );
     } catch {
-      Tts.removeEventListener('tts-finish', done);
-      Tts.removeEventListener('tts-error', done);
-      Tts.removeEventListener('tts-cancel', done);
-      resolve();
+      finish();
     }
   });
 }

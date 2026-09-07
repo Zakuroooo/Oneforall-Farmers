@@ -4,12 +4,11 @@
  */
 
 import type { OfferDto } from '../types/api';
+import {
+  DEMO_NOTE_RAISED_FOR_TRANSPORT,
+  DEMO_NOTE_TRUCK_TOMORROW,
+} from '../lib/offerNote';
 
-/**
- * S14's starting point: a buyer's opening bid, round 1, awaiting the
- * farmer's response — the state S14 exists to act on. `initiator: 'BUYER'`
- * and `status: 'OPEN'` are the two fields that make it "waiting on me".
- */
 export const fxIncomingOffer: OfferDto = {
   id: 'offer_1',
   demand_id: 'demand_1',
@@ -59,7 +58,7 @@ export const fxOffer: OfferDto = {
   expires_at: '2026-09-08T18:00:00+05:30',
   created_at: '2026-09-03T11:15:00+05:30',
   lots: [{ lot_id: 'lot_listed_1', qty_allocated_kg: 4000 }],
-  note: 'वाहतूक खर्च जास्त आहे, म्हणून किंमत वाढवली.',
+  note: DEMO_NOTE_RAISED_FOR_TRANSPORT,
 };
 
 /**
@@ -96,7 +95,7 @@ export const fxLotOffers: OfferDto[] = [
     parent_offer_id: null,
     created_at: '2026-09-03T12:40:00+05:30',
     lots: [{ lot_id: 'lot_listed_1', qty_allocated_kg: 4000 }],
-    note: 'गाडी उद्या सकाळी शेतावर पाठवतो.',
+    note: DEMO_NOTE_TRUCK_TOMORROW,
   },
   {
     ...fxIncomingOffer,
@@ -132,3 +131,37 @@ export const fxMyOffers: OfferDto[] = [
   { ...fxOffer, id: 'offer_accepted_1', status: 'ACCEPTED' },
   ...fxLotOffers,
 ];
+
+/**
+ * One negotiation, oldest round first — the shape `GET /offers/{id}/thread`
+ * returns, and what the bargaining screen renders as its audit trail.
+ *
+ * ★ Built from the three offer fixtures that already exist rather than new
+ *   numbers, so the thread and the inbox can never tell different stories
+ *   about the same offer: buyer opens at ₹1,850, farmer counters at ₹2,000,
+ *   buyer closes at ₹1,930 on the last round the cap allows.
+ */
+export const fxOfferThread: OfferDto[] = [
+  fxIncomingOffer,
+  fxOffer,
+  fxIncomingOfferLastRound,
+];
+
+/**
+ * The thread as it stood when `offerId` was the newest round.
+ *
+ * ★ Why this is not just `fxOfferThread`: the flat list returns all three
+ *   rounds whatever you ask for, so opening the round-1 offer from Talks
+ *   showed a negotiation already at round 3 — with the counter button
+ *   disabled, which put the counter-offer sheet out of reach entirely. A
+ *   fixture that ignores its argument had made a whole screen unreachable.
+ *
+ * ★ Truncating at the requested offer is also what the real endpoint does:
+ *   `GET /offers/{id}/thread` returns the chain that offer belongs to, and
+ *   rounds struck after it did not exist when it was the live one.
+ */
+export function fxThreadFor(offerId: string): OfferDto[] {
+  const idx = fxOfferThread.findIndex(o => o.id === offerId);
+  if (idx === -1) return fxOfferThread;
+  return fxOfferThread.slice(0, idx + 1);
+}

@@ -172,7 +172,7 @@ export default function S31_DealsList({ navigation }: Props) {
               onPress={
                 isAgreed
                   ? undefined
-                  : () => navigation.navigate('S14_CounterOffer', { offer_id: o.id })
+                  : () => navigation.navigate('S27_Bargaining', { offer_id: o.id })
               }
               accessibilityRole={isAgreed ? 'text' : 'button'}>
               <View style={styles.cardTop}>

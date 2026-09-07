@@ -76,6 +76,8 @@ import S22_PricePublish from '../screens/farmer/S22_PricePublish';
 import S23_PublishedRadar from '../screens/farmer/S23_PublishedRadar';
 import S24_LotDetail from '../screens/farmer/S24_LotDetail';
 import S25_BuyersForLot from '../screens/farmer/S25_BuyersForLot';
+import S27_Bargaining from '../screens/farmer/S27_Bargaining';
+import S28_CounterOffer from '../screens/farmer/S28_CounterOffer';
 import S30_DealDone from '../screens/farmer/S30_DealDone';
 import S31_DealsList from '../screens/farmer/S31_DealsList';
 import S32_DealTracking from '../screens/farmer/S32_DealTracking';
@@ -231,13 +233,21 @@ export type MyLotsStackParamList = {
      third copy of a negotiation screen this app already has: S14 is the
      real one, wired to `getOfferThread`, `acceptOffer`, `rejectOffer` and
      `counterOffer`, with the counter button disabled on round 3 from the
-     offer itself rather than by catching the server's 409. The copies were
-     module-level constants — `const BUYER_BID = 1850; const QTL = 40;` —
-     and a buyer called "Pune Trading Co" typed straight into the JSX.
-     S26 could not be built honestly at all: there is no `GET /buyers/{id}`
-     (blocker filed), so a buyer profile screen has nothing to read.
-     The Talks tab and S25 both open S14. */
+     offer itself rather than by catching the server's 409.
+
+     ★ S27 and S28 are back, and the earlier deletion was the wrong call.
+     Their hardcoded buyers and module-level `const BUYER_BID = 1850` were
+     the problem; their Stitch design was not, and what replaced them
+     matched nothing in the design system. They are rebuilt to the mockups
+     and driven by `GET /offers/{id}/thread` plus the real accept, reject
+     and counter endpoints.
+
+     ★ S26 (buyer profile) stays gone, for a different reason: there is no
+     `GET /buyers/{id}` at all (blocker filed), so the only versions of that
+     screen that can exist are an empty page or an invented firm. */
   S25_BuyersForLot: { lot_id?: string } | undefined;
+  S27_Bargaining: { offer_id?: string } | undefined;
+  S28_CounterOffer: { offer_id?: string } | undefined;
   /** ★ The transaction rides in on the route rather than being fetched.
    *  `POST /offers/{id}/accept` returns the `TxDto` and that is the only
    *  place its id is ever visible — §7.7 has `GET /tx/{id}` but no `GET /tx`
@@ -294,6 +304,12 @@ function DealsStackNavigator() {
 export type TalksStackParamList = {
   S37_Talks: undefined;
   S14_CounterOffer: { offer_id?: string } | undefined;
+  /** The Stitch negotiation pair, registered here too — tapping a talk opens
+   *  the bargaining screen, and its counter button opens the sheet, without
+   *  either one leaving the Talks tab. */
+  S27_Bargaining: { offer_id?: string } | undefined;
+  S28_CounterOffer: { offer_id?: string } | undefined;
+  S30_DealDone: { tx: TxDto };
 };
 
 const TalksStack = createNativeStackNavigator<TalksStackParamList>();
@@ -303,6 +319,13 @@ function TalksStackNavigator() {
     <TalksStack.Navigator screenOptions={STACK_SCREEN_OPTIONS}>
       <TalksStack.Screen name="S37_Talks" component={S37_Talks} />
       <TalksStack.Screen name="S14_CounterOffer" component={S14_CounterOffer} />
+      <TalksStack.Screen name="S27_Bargaining" component={S27_Bargaining} />
+      <TalksStack.Screen
+        name="S28_CounterOffer"
+        component={S28_CounterOffer}
+        options={{ presentation: 'modal' }}
+      />
+      <TalksStack.Screen name="S30_DealDone" component={S30_DealDone} />
     </TalksStack.Navigator>
   );
 }
@@ -324,6 +347,13 @@ function MyLotsStackNavigator() {
       <MyLotsStack.Screen name="S23_PublishedRadar" component={S23_PublishedRadar} />
       <MyLotsStack.Screen name="S24_LotDetail" component={S24_LotDetail} />
       <MyLotsStack.Screen name="S25_BuyersForLot" component={S25_BuyersForLot} />
+      <MyLotsStack.Screen name="S27_Bargaining" component={S27_Bargaining} />
+      {/* Stitch 28 is a bottom sheet over the bargaining screen, not a page. */}
+      <MyLotsStack.Screen
+        name="S28_CounterOffer"
+        component={S28_CounterOffer}
+        options={{ presentation: 'modal' }}
+      />
       <MyLotsStack.Screen name="S30_DealDone" component={S30_DealDone} />
       <MyLotsStack.Screen name="S31_DealsList" component={S31_DealsList} />
       <MyLotsStack.Screen name="S32_DealTracking" component={S32_DealTracking} />

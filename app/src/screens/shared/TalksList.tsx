@@ -33,6 +33,7 @@ import { useQuery } from '@tanstack/react-query';
 import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { noteText } from '../../lib/offerNote';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { getOffers } from '../../lib/api';
 import { USE_FIXTURES } from '../../config';
@@ -177,7 +178,7 @@ export function TalksList({
                 {/* The note is the message — the only free text this channel
                     carries, and the reason a thread reads as a conversation. */}
                 <Text style={styles.note} numberOfLines={2}>
-                  {offer.note?.trim() ? offer.note : t('chat_no_note')}
+                  {noteText(offer.note, t) ?? t('chat_no_note')}
                 </Text>
 
                 <View style={styles.cardFoot}>

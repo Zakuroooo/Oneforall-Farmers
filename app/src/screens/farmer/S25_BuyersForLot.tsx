@@ -50,6 +50,7 @@ import { colors, fontFamily, radius, space, touch, type as typography } from '..
 import { Icon } from '../../components/ui/Icon';
 import { ListenButton } from '../../components/ui/ListenButton';
 import { useT } from '../../lib/i18n';
+import { noteText } from '../../lib/offerNote';
 import { formatNumber, formatPaise, formatQuintal, quintalValuePaise, toQuintal } from '../../lib/money';
 import { formatDateShort } from '../../lib/dates';
 import { getLots, getOffers } from '../../lib/api';
@@ -284,7 +285,10 @@ export default function S25_BuyersForLot({ navigation, route }: Props) {
                 </View>
               ) : null}
 
-              {o.note?.trim() ? <Text style={styles.note}>{o.note}</Text> : null}
+              {(() => {
+                const n = noteText(o.note, t);
+                return n ? <Text style={styles.note}>{n}</Text> : null;
+              })()}
 
               {o.expires_at ? (
                 <Text style={styles.expires}>
@@ -299,7 +303,7 @@ export default function S25_BuyersForLot({ navigation, route }: Props) {
                 /* Was `navigate('S30_DealCounterOffer')` — a route no
                    navigator registers, so the button did nothing. This one
                    opens the real thread for this offer. */
-                onPress={() => navigation.navigate('S14_CounterOffer', { offer_id: o.id })}
+                onPress={() => navigation.navigate('S27_Bargaining', { offer_id: o.id })}
                 accessibilityRole="button">
                 <Text style={[styles.ctaText, isBest && styles.ctaTextBest]}>
                   {t('bfl_open_talk')}

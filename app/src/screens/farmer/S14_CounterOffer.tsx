@@ -27,6 +27,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { acceptOffer, counterOffer, getForecast, getOffers, rejectOffer } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
 import { translate } from '../../lib/i18n';
+import { noteText } from '../../lib/offerNote';
 import { formatNumber, formatPaise, formatQuintal, quintalValuePaise, toQuintal } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_HORIZON_DAYS, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxForecast } from '../../fixtures/forecast';
@@ -257,7 +258,10 @@ export default function S14_CounterOffer({ navigation, route }: Props) {
         <Text style={styles.offerQty}>
           {translate('qty_label_value', locale, { qty: formatNumber(toQuintal(offer.qty_kg), locale) })}
         </Text>
-        {offer.note ? <Text style={styles.offerNote}>{offer.note}</Text> : null}
+        {(() => {
+          const n = noteText(offer.note, (k, v) => translate(k, locale, v));
+          return n ? <Text style={styles.offerNote}>{n}</Text> : null;
+        })()}
       </Card>
 
       {/* The forecast, directly above the counter-price input — PRANAY.md

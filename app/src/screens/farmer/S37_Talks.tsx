@@ -23,7 +23,10 @@ export default function S37_Talks({ navigation }: Props) {
   return (
     <TalksList
       viewerRole="FARMER"
-      onOpenThread={offer => navigation.navigate('S14_CounterOffer', { offer_id: offer.id })}
+      /* ★ Opens the Stitch bargaining screen (S27), not the plain counter
+         layout. Tapping "waiting for your reply" should land on the audit
+         trail and the three moves, which is what the design draws. */
+      onOpenThread={offer => navigation.navigate('S27_Bargaining', { offer_id: offer.id })}
     />
   );
 }
