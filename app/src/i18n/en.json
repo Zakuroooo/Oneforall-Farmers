@@ -1086,5 +1086,8 @@
   "buyer3_pickup": "45 km away · 24hr pickup",
   "buyer3_pickup_note": "Min. 20 Qtl or Full 40",
   "buyer3_net": "Net: ₹73,400",
-  "buyer3_cta": "Counter Bid"
+  "buyer3_cta": "Counter Bid",
+  "buyer_breakup_title": "Transparent Net Value",
+  "buyer_net_bank_account": "In your Bank Account",
+  "buyer_apmc_tax_footer_note": "All APMC taxes are paid by the buyer. Prices shown are your take-home amount."
 }

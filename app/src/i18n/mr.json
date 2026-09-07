@@ -1086,5 +1086,8 @@
   "buyer3_pickup": "45 km away · 24hr pickup",
   "buyer3_pickup_note": "Min. 20 Qtl or Full 40",
   "buyer3_net": "Net: ₹73,400",
-  "buyer3_cta": "काउंटर ऑफर (Counter Bid)"
+  "buyer3_cta": "काउंटर ऑफर (Counter Bid)",
+  "buyer_breakup_title": "निव्वळ नफा",
+  "buyer_net_bank_account": "तुमच्या बँक खात्यात जमा",
+  "buyer_apmc_tax_footer_note": "सर्व APMC कर खरेदीदार भरतो. दाखवलेली रक्कम तुम्हाला हातात मिळणारी अंतिम रक्कम आहे."
 }

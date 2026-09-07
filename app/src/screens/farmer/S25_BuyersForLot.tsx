@@ -13,90 +13,96 @@ import { useT } from '../../lib/i18n';
 
 const redOnions = require('../../assets/images/red_onions.jpg');
 
-const BUYERS = [
-  {
-    rank: '#1',
-    rankLabel: 'Best Net Return · शेत निर्यातदार',
-    rankBadge: '+₹2,100 vs Yard',
-    borderColor: colors.primaryContainer,
-    highlight: true,
-    name: 'Nashik Agro Exports',
-    rating: 4.9,
-    reviews: '188 deals',
-    onTime: '99.2% on-time pay',
-    escrow: '100% Escrow',
-    rate: '₹1,910',
-    rateUnit: '/Qtl',
-    pickup: '12 km (Niphad)',
-    pickupNote: 'Buyer pays transport',
-    demand: 'Demand: All 40 Qtl',
-    grossKey: 'Gross Bid (40 Qtl x ₹1,910)',
-    grossVal: '₹76,400',
-    hamali: '–₹600',
-    hamaliKey: 'Farm Hamali / Loading (शेत हमाली)',
-    platformFee: 'FREE (0%)',
-    platformFeeKey: 'Krishi Mitra Platform Fee',
-    net: '₹75,800',
-    ctaLabel: 'सौदा सुरू करा (Start Sauda)',
-    profileLabel: 'प्रोफाइल',
-  },
-  {
-    rank: '#2',
-    rankLabel: 'Fastest Pickup · शेत बांधावर आजच',
-    rankBadge: 'Ready in 1 hr',
-    borderColor: colors.outlineVariant,
-    highlight: false,
-    name: 'Sahyadri Farms FPO',
-    rating: 4.8,
-    reviews: '320 deals',
-    onTime: 'Zero default record',
-    escrow: null,
-    rate: '₹1,880',
-    rateUnit: '/Qtl',
-    pickup: 'Truck currently in Niphad',
-    pickupNote: 'Instant RTGS Weighment',
-    demand: null,
-    grossKey: null,
-    grossVal: null,
-    hamali: null,
-    hamaliKey: null,
-    platformFee: null,
-    platformFeeKey: null,
-    net: 'Net: ₹74,600',
-    ctaLabel: 'काउंटर ऑफर (Counter Bid)',
-    profileLabel: 'प्रोफाइल',
-  },
-  {
-    rank: '#3',
-    rankLabel: 'High Reliability · ९८.४% पेमेंट',
-    rankBadge: 'Gultekdi, Pune',
-    borderColor: colors.outlineVariant,
-    highlight: false,
-    name: 'Pune Trading Co.',
-    rating: 4.7,
-    reviews: '142 deals',
-    onTime: 'Escrow Verified',
-    escrow: null,
-    rate: '₹1,850',
-    rateUnit: '/Qtl',
-    pickup: '45 km away · 24hr pickup',
-    pickupNote: 'Min. 20 Qtl or Full 40',
-    demand: null,
-    grossKey: null,
-    grossVal: null,
-    hamali: null,
-    hamaliKey: null,
-    platformFee: null,
-    platformFeeKey: null,
-    net: 'Net: ₹73,400',
-    ctaLabel: 'काउंटर ऑफर (Counter Bid)',
-    profileLabel: 'प्रोफाइल',
-  },
-] as const;
-
 export default function S25_BuyersForLot({ navigation }: any) {
   const { t } = useT();
   const [sortHighest, setSortHighest] = useState(true);
+
+  const BUYERS = [
+    {
+      rank: '#1',
+      rankLabel: t('buyer1_rank_label'),
+      rankBadge: t('buyer1_rank_badge'),
+      borderColor: colors.primaryContainer,
+      highlight: true,
+      name: t('buyer1_name'),
+      rating: 4.9,
+      reviews: t('buyer1_reviews'),
+      onTime: t('buyer1_ontime'),
+      escrow: t('buyer1_escrow'),
+      rate: t('buyer1_rate'),
+      rateUnit: t('buyer1_rate_unit'),
+      pickup: t('buyer1_pickup'),
+      pickupNote: t('buyer1_pickup_note'),
+      demand: t('buyer1_demand'),
+      grossKey: t('buyer1_gross_key'),
+      grossVal: t('buyer1_gross_val'),
+      hamali: t('buyer1_hamali_val'),
+      hamaliKey: t('buyer1_hamali_key'),
+      platformFee: t('buyer1_platform_fee'),
+      platformFeeKey: t('buyer1_platform_fee_key'),
+      net: t('buyer1_net'),
+      ctaLabel: t('buyer1_cta'),
+      profileLabel: t('buyer1_profile'),
+      onCta: () => navigation.navigate('S30_DealCounterOffer'),
+      onProfile: () => navigation.navigate('S26_BuyerProfile'),
+    },
+    {
+      rank: '#2',
+      rankLabel: t('buyer2_rank_label'),
+      rankBadge: t('buyer2_rank_badge'),
+      borderColor: colors.outlineVariant,
+      highlight: false,
+      name: t('buyer2_name'),
+      rating: 4.8,
+      reviews: t('buyer2_reviews'),
+      onTime: t('buyer2_ontime'),
+      escrow: null,
+      rate: t('buyer2_rate'),
+      rateUnit: t('buyer1_rate_unit'),
+      pickup: t('buyer2_pickup'),
+      pickupNote: t('buyer2_pickup_note'),
+      demand: null,
+      grossKey: null,
+      grossVal: null,
+      hamali: null,
+      hamaliKey: null,
+      platformFee: null,
+      platformFeeKey: null,
+      net: t('buyer2_net'),
+      ctaLabel: t('buyer2_cta'),
+      profileLabel: t('buyer1_profile'),
+      onCta: () => navigation.navigate('S30_DealCounterOffer'),
+      onProfile: () => navigation.navigate('S26_BuyerProfile'),
+    },
+    {
+      rank: '#3',
+      rankLabel: t('buyer3_rank_label'),
+      rankBadge: t('buyer3_rank_badge'),
+      borderColor: colors.outlineVariant,
+      highlight: false,
+      name: t('buyer3_name'),
+      rating: 4.7,
+      reviews: t('buyer3_reviews'),
+      onTime: t('buyer3_ontime'),
+      escrow: null,
+      rate: t('buyer3_rate'),
+      rateUnit: t('buyer1_rate_unit'),
+      pickup: t('buyer3_pickup'),
+      pickupNote: t('buyer3_pickup_note'),
+      demand: null,
+      grossKey: null,
+      grossVal: null,
+      hamali: null,
+      hamaliKey: null,
+      platformFee: null,
+      platformFeeKey: null,
+      net: t('buyer3_net'),
+      ctaLabel: t('buyer3_cta'),
+      profileLabel: t('buyer1_profile'),
+      onCta: () => navigation.navigate('S30_DealCounterOffer'),
+      onProfile: () => navigation.navigate('S26_BuyerProfile'),
+    },
+  ] as const;
 
   return (
     <View style={styles.root}>
@@ -108,12 +114,12 @@ export default function S25_BuyersForLot({ navigation }: any) {
           <Icon name="arrow-left" size={20} color={colors.onSurface} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>खरेदीदार मागण्या</Text>
-          <Text style={styles.headerSub}>Inbound Buyer Offers · Lot #LP-403</Text>
+          <Text style={styles.headerTitle}>{t('lot_header_title')}</Text>
+          <Text style={styles.headerSub}>{t('lot_header_sub')}</Text>
         </View>
         <View style={styles.liveBadge}>
           <View style={styles.liveGreen} />
-          <Text style={styles.liveText}>Live · 3 Bids</Text>
+          <Text style={styles.liveText}>{t('lot_live_bids')}</Text>
         </View>
         <TouchableOpacity style={styles.listenBtn}>
           <Icon name="volume" size={13} color={colors.primary} />
@@ -126,17 +132,17 @@ export default function S25_BuyersForLot({ navigation }: any) {
         <View style={styles.lotBand}>
           <Image source={redOnions} style={styles.lotThumb} />
           <View style={styles.lotBandInfo}>
-            <Text style={styles.lotBandId}>LOT #LP-403 · निफाड (NASHIK)</Text>
-            <Text style={styles.lotVariety}>Gavran Red Onion (उन्हाळ कांदा)</Text>
+            <Text style={styles.lotBandId}>{t('lot_band_id')}</Text>
+            <Text style={styles.lotVariety}>{t('lot_variety')}</Text>
             <View style={styles.lotBandRow}>
-              <Text style={styles.lotBandSub}>Asking: ₹2,100/Qtl</Text>
+              <Text style={styles.lotBandSub}>{t('lot_asking')}</Text>
               <View style={styles.mandiBench}>
                 <Icon name="building" size={11} color={colors.onSurfaceVariant} />
-                <Text style={styles.lotBandSub}>Mandi: ₹2,055/Qtl</Text>
+                <Text style={styles.lotBandSub}>{t('lot_mandi')}</Text>
               </View>
             </View>
           </View>
-          <View style={styles.gradeBadge}><Text style={styles.gradeText}>Grade A (850/1000)</Text></View>
+          <View style={styles.gradeBadge}><Text style={styles.gradeText}>{t('lot_grade')}</Text></View>
         </View>
 
         {/* Sort tabs */}
@@ -145,171 +151,135 @@ export default function S25_BuyersForLot({ navigation }: any) {
             style={[styles.sortTab, sortHighest && styles.sortTabActive]}
             onPress={() => setSortHighest(true)}>
             <Text style={[styles.sortTabText, sortHighest && styles.sortTabTextActive]}>
-              सर्वोच्च नफा (Highest Net)
+              {t('lot_sort_highest')}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.sortTab, !sortHighest && styles.sortTabActive]}
             onPress={() => setSortHighest(false)}>
             <Text style={[styles.sortTabText, !sortHighest && styles.sortTabTextActive]}>
-              कमी अंतर (Nearest)
+              {t('lot_sort_fastest')}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Buyer cards */}
-        {BUYERS.map((b, idx) => (
-          <View key={idx} style={[styles.buyerCard, b.highlight && styles.buyerCardHighlight, { borderColor: b.borderColor }]}>
-            {/* Rank strip */}
-            <View style={[styles.rankStrip, b.highlight && styles.rankStripHighlight]}>
-              <Icon name="star" size={12} color={b.highlight ? '#F59E0B' : colors.outline} />
-              <Text style={[styles.rankLabel, b.highlight && styles.rankLabelHighlight]}>
-                {b.rank} {b.rankLabel}
-              </Text>
-              {b.rankBadge ? (
-                <View style={[styles.rankBadge, b.highlight && styles.rankBadgeHighlight]}>
-                  <Text style={[styles.rankBadgeText, b.highlight && styles.rankBadgeTextHighlight]}>
-                    {b.rankBadge}
-                  </Text>
-                </View>
-              ) : null}
+        {/* Bids */}
+        {BUYERS.map((b, i) => (
+          <View key={i} style={[styles.card, { borderColor: b.borderColor }]}>
+            {/* Rank header */}
+            <View style={[styles.cardRankRow, b.highlight && styles.cardRankRowHighlight]}>
+              <View style={styles.rankBadgeBg}>
+                <Text style={styles.rankNum}>{b.rank}</Text>
+              </View>
+              <Text style={[styles.rankLabel, b.highlight && styles.rankLabelHighlight]}>{b.rankLabel}</Text>
+              <View style={[styles.rankExtraBadge, b.highlight && styles.rankExtraBadgeHighlight]}>
+                <Icon name="trending-up" size={12} color={b.highlight ? colors.primary : colors.tertiary} />
+                <Text style={[styles.rankExtraText, b.highlight && styles.rankExtraTextHighlight]}>{b.rankBadge}</Text>
+              </View>
             </View>
 
-            {/* Buyer info row */}
-            <View style={styles.buyerInfoRow}>
-              <View style={styles.buyerLeft}>
-                <View style={styles.buyerNameRow}>
+            {/* Buyer Profile Row */}
+            <View style={styles.profileRow}>
+              <View style={styles.buyerIdentity}>
+                <View style={styles.buyerNameLine}>
                   <Text style={styles.buyerName}>{b.name}</Text>
                   <Icon name="check-circle" size={14} color={colors.tertiary} />
                 </View>
-                <View style={styles.buyerMeta}>
-                  <Icon name="star" size={11} color="#F59E0B" />
-                  <Text style={styles.buyerMetaText}>{b.rating}</Text>
-                  <Text style={styles.buyerMetaDot}> · </Text>
-                  <Text style={styles.buyerMetaText}>{b.reviews}</Text>
-                  <Text style={styles.buyerMetaDot}> · </Text>
-                  <Text style={styles.buyerMetaText}>{b.onTime}</Text>
+                <View style={styles.buyerStats}>
+                  <Icon name="star" size={12} color="#F59E0B" />
+                  <Text style={styles.buyerStatText}>{b.rating}</Text>
+                  <Text style={styles.buyerStatDot}>•</Text>
+                  <Text style={styles.buyerStatText}>{b.reviews}</Text>
+                  <Text style={styles.buyerStatDot}>•</Text>
+                  <Text style={styles.buyerStatText}>{b.onTime}</Text>
                 </View>
+                {b.escrow && (
+                  <View style={styles.escrowBadge}>
+                    <Icon name="shield" size={10} color={colors.tertiary} />
+                    <Text style={styles.escrowText}>{b.escrow}</Text>
+                  </View>
+                )}
               </View>
-              {b.escrow ? (
-                <View style={styles.escrowBadge}>
-                  <Icon name="shield-check" size={10} color={colors.tertiary} />
-                  <Text style={styles.escrowBadgeText}>{b.escrow}</Text>
-                </View>
-              ) : null}
+              
+              {/* Added profile view button with navigation hook */}
+              <TouchableOpacity style={styles.profileBtn} onPress={b.onProfile}>
+                <Text style={styles.profileBtnText}>{b.profileLabel}</Text>
+                <Icon name="arrow-right" size={14} color={colors.primary} />
+              </TouchableOpacity>
             </View>
 
-            {/* Rate & pickup */}
-            <View style={styles.rateRow}>
-              <View>
-                <Text style={styles.rateSub}>Offered Farmgate Rate</Text>
-                <View style={styles.ratePriceRow}>
-                  <Text style={styles.ratePrice}>{b.rate}</Text>
-                  <Text style={styles.rateUnit}>{b.rateUnit}</Text>
+            {/* Core Offer */}
+            <View style={styles.offerRow}>
+              <View style={styles.offerCol}>
+                <Text style={styles.offerLabel}>Gross Rate (दर)</Text>
+                <View style={styles.offerRateLine}>
+                  <Text style={styles.offerRate}>{b.rate}</Text>
+                  <Text style={styles.offerRateUnit}>{b.rateUnit}</Text>
                 </View>
-                {b.demand ? <Text style={styles.rateDetail}>{b.demand}</Text> : null}
               </View>
-              <View>
-                <Text style={styles.rateSub}>Farmgate Pickup</Text>
-                <View style={styles.pickupRow}>
-                  <Icon name="truck" size={12} color={colors.onSurface} />
-                  <Text style={styles.pickupText}>{b.pickup}</Text>
+              <View style={styles.offerDivider} />
+              <View style={styles.offerCol}>
+                <Text style={styles.offerLabel}>Logistics (वाहतूक)</Text>
+                <View style={styles.pickupLine}>
+                  <Icon name="truck" size={14} color={colors.tertiary} />
+                  <Text style={styles.pickupVal}>{b.pickup}</Text>
                 </View>
                 <Text style={styles.pickupNote}>{b.pickupNote}</Text>
               </View>
             </View>
 
-            {/* Breakdown (only for first card) */}
-            {b.grossKey ? (
-              <View style={styles.breakdown}>
-                <View style={styles.breakdownRow}>
-                  <Text style={styles.breakdownKey}>{b.grossKey}</Text>
-                  <Text style={styles.breakdownVal}>{b.grossVal}</Text>
+            {/* Breakup (only for top) */}
+            {b.highlight && b.grossKey && (
+              <View style={styles.breakupBox}>
+                <View style={styles.breakupTitleRow}>
+                  <Icon name="chart-bar" size={12} color={colors.onSurfaceVariant} />
+                  <Text style={styles.breakupTitle}>{t('buyer_breakup_title')}</Text>
                 </View>
-                <View style={styles.breakdownRow}>
-                  <Text style={styles.breakdownKey}>{b.hamaliKey}</Text>
-                  <Text style={[styles.breakdownVal, { color: colors.critical }]}>{b.hamali}</Text>
+                <View style={styles.breakupRow}>
+                  <Text style={styles.breakupKey}>{b.demand}</Text>
                 </View>
-                <View style={styles.breakdownRow}>
-                  <Text style={styles.breakdownKey}>{b.platformFeeKey}</Text>
-                  <Text style={[styles.breakdownVal, { color: colors.tertiary }]}>{b.platformFee}</Text>
+                <View style={styles.breakupRow}>
+                  <Text style={styles.breakupKey}>{b.grossKey}</Text>
+                  <Text style={styles.breakupValGross}>{b.grossVal}</Text>
                 </View>
-                <View style={styles.netRow}>
-                  <Text style={styles.netLabel}>NET BANK PAYOUT</Text>
-                  <Text style={styles.netAmount}>{b.net}</Text>
+                <View style={styles.breakupRow}>
+                  <Text style={styles.breakupKey}>{b.hamaliKey}</Text>
+                  <Text style={styles.breakupValNeg}>{b.hamali}</Text>
                 </View>
-                <Text style={styles.netSubText}>खात्यात जमा होणारी निवळ रक्कम</Text>
-              </View>
-            ) : (
-              <View style={styles.compactNet}>
-                <Text style={styles.compactNetLabel}>{b.net}</Text>
+                <View style={styles.breakupRow}>
+                  <Text style={styles.breakupKey}>{b.platformFeeKey}</Text>
+                  <Text style={styles.breakupValFree}>{b.platformFee}</Text>
+                </View>
+                <View style={styles.breakupTotalRow}>
+                  <Text style={styles.breakupTotalKey}>{t('buyer_net_bank_account')}</Text>
+                  <Text style={styles.breakupTotalVal}>{b.net}</Text>
+                </View>
               </View>
             )}
 
-            {/* CTAs */}
-            <View style={styles.cardCtas}>
-              <TouchableOpacity style={[styles.ctaMain, !b.highlight && styles.ctaMainOutline]}>
-                <Text style={[styles.ctaMainText, !b.highlight && styles.ctaMainTextOutline]}>
+            {/* CTA */}
+            <View style={styles.ctaRow}>
+              {!b.highlight && (
+                <Text style={styles.simpleNet}>{b.net}</Text>
+              )}
+              <TouchableOpacity
+                style={[styles.primaryBtn, b.highlight ? styles.primaryBtnHighlight : null]}
+                onPress={b.onCta}>
+                <Text style={[styles.primaryBtnText, b.highlight ? styles.primaryBtnTextHighlight : null]}>
                   {b.ctaLabel}
                 </Text>
-                {b.highlight && <Icon name="handshake" size={16} color={colors.onPrimary} />}
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.profileBtn} onPress={() => navigation.navigate('S26_BuyerProfile')}>
-                <Text style={styles.profileBtnText}>{b.profileLabel}</Text>
+                <Icon name="arrow-right" size={16} color={b.highlight ? colors.onPrimary : colors.primary} />
               </TouchableOpacity>
             </View>
           </View>
         ))}
-
-        {/* Net Math explainer */}
-        <View style={styles.netMathCard}>
-          <View style={styles.netMathHeader}>
-            <Icon name="chart-bar" size={16} color={colors.primary} />
-            <Text style={styles.netMathTitle}>नक्त नफ्याची पारदर्शकता (Net Math)</Text>
-          </View>
-          <Text style={styles.netMathDesc}>
-            नाशिक अँग्यांचा बाजारावरील ₹1,910 चा भाव लासलगाव मंडीच्या ₹2,055 भावापेक्षा जास्त नफा कसा देतो?
-          </Text>
-          {[
-            ['ट्रॅक्टर डिझेल व वाहतूक बचत', '+₹1,800'],
-            ['बाजार समिती सेस व आढत (1.05%)', '+₹860'],
-            ['अनधिकृत ढागी कपात ०%', '+₹650'],
-          ].map(([k, v]) => (
-            <View key={k} style={styles.netMathRow}>
-              <Icon name="check-circle" size={12} color={colors.tertiary} />
-              <Text style={styles.netMathKey}>{k}</Text>
-              <Text style={styles.netMathVal}>{v}</Text>
-            </View>
-          ))}
-          <Text style={styles.netMathNote}>
-            *शेतकऱ्याने स्वतः गाडी भाडे न भरता जागेवरच शेट रोख / RTGS पेमेंट मिळते.
-          </Text>
-        </View>
-
-        {/* Escrow guarantee */}
-        <View style={styles.escrowGuaranteeCard}>
-          <Icon name="shield-check" size={20} color={colors.tertiary} />
-          <Text style={styles.escrowGuaranteeText}>
-            100% Escrow सुरक्षित खात्री{'\n'}
-            <Text style={styles.escrowGuaranteeSub}>
-              खरेदीदाराने रक्कम मंडी बोर्ड बँकेत जमा केली आहे. वजन झाल्यावर शेट बँक खात्यात वर्ग.
-            </Text>
-          </Text>
+        
+        {/* Helper Note */}
+        <View style={styles.footerNote}>
+          <Icon name="info" size={14} color={colors.onSurfaceVariant} />
+          <Text style={styles.footerNoteText}>{t('buyer_apmc_tax_footer_note')}</Text>
         </View>
       </ScrollView>
-
-      {/* Bottom dock */}
-      <View style={styles.dock}>
-        <View style={styles.dockLeft}>
-          <View style={styles.liveGreenDot} />
-          <Text style={styles.dockBidsText}>3 Bids Active</Text>
-          <Text style={styles.dockNetText}>Top Net Payout: ₹75,800</Text>
-        </View>
-        <TouchableOpacity style={styles.dockCta} onPress={() => navigation.navigate('S27_Bargaining')}>
-          <Text style={styles.dockCtaText}>सौदा करा</Text>
-          <Icon name="arrow-right" size={18} color={colors.onPrimary} />
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -317,105 +287,84 @@ export default function S25_BuyersForLot({ navigation }: any) {
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
   header: {
-    flexDirection: 'row', alignItems: 'center', gap: space.xs,
+    flexDirection: 'row', alignItems: 'center', gap: space.sm,
     paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm,
     backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant,
   },
   backBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.surfaceContainerHigh, alignItems: 'center', justifyContent: 'center' },
   headerCenter: { flex: 1 },
-  headerTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary },
-  headerSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  liveBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  liveGreen: { width: 7, height: 7, borderRadius: 4, backgroundColor: colors.tertiary },
-  liveText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
+  headerTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onSurface },
+  headerSub: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
+  liveBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(22,163,74,0.1)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.sm },
+  liveGreen: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.positive },
+  liveText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.positive },
   listenBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.full, backgroundColor: 'rgba(155,47,0,0.08)' },
   listenText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
-  scroll: { paddingBottom: 100 },
-  lotBand: {
-    flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: space.sm,
-    backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant,
-  },
-  lotThumb: { width: 48, height: 48, borderRadius: radius.sm },
-  lotBandInfo: { flex: 1 },
-  lotBandId: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurfaceVariant },
-  lotVariety: { fontFamily: fontFamily.extraBold, fontSize: 14, color: colors.onSurface },
-  lotBandRow: { flexDirection: 'row', gap: space.md },
-  mandiBench: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  lotBandSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  gradeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
+  scroll: { paddingBottom: space.xxl },
+  lotBand: { flexDirection: 'row', backgroundColor: colors.surface, padding: space.sm, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
+  lotThumb: { width: 50, height: 50, borderRadius: radius.sm, backgroundColor: colors.surfaceContainerHigh },
+  lotBandInfo: { flex: 1, marginLeft: space.sm, justifyContent: 'center' },
+  lotBandId: { fontFamily: fontFamily.extraBold, fontSize: 11, color: colors.onSurfaceVariant, letterSpacing: 0.5 },
+  lotVariety: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
+  lotBandRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: 2 },
+  lotBandSub: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
+  mandiBench: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  gradeBadge: { position: 'absolute', right: space.sm, top: space.sm, backgroundColor: colors.positiveContainer, paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm },
   gradeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  sortRow: { flexDirection: 'row', gap: space.sm, padding: space.md },
-  sortTab: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: radius.full, borderWidth: 1, borderColor: colors.outlineVariant, backgroundColor: colors.surface },
-  sortTabActive: { backgroundColor: colors.primary, borderColor: colors.primary },
-  sortTabText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurfaceVariant },
-  sortTabTextActive: { color: colors.onPrimary },
-  buyerCard: {
-    marginHorizontal: space.md, marginBottom: space.md, borderRadius: radius.xl,
-    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden',
-  },
-  buyerCardHighlight: { borderWidth: 2 },
-  rankStrip: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: space.sm, paddingVertical: 6, backgroundColor: colors.surfaceContainerLow },
-  rankStripHighlight: { backgroundColor: colors.onPrimaryContainer },
-  rankLabel: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurfaceVariant, flex: 1 },
-  rankLabelHighlight: { color: colors.primaryContainer },
-  rankBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.surfaceContainerHigh },
-  rankBadgeHighlight: { backgroundColor: colors.primaryContainer },
-  rankBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurfaceVariant },
-  rankBadgeTextHighlight: { color: colors.onPrimary },
-  buyerInfoRow: { flexDirection: 'row', alignItems: 'center', padding: space.sm, gap: space.sm },
-  buyerLeft: { flex: 1 },
-  buyerNameRow: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  buyerName: { fontFamily: fontFamily.bold, fontSize: 15, color: colors.onSurface },
-  buyerMeta: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', marginTop: 2 },
-  buyerMetaText: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  buyerMetaDot: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.outline },
-  escrowBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  escrowBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  rateRow: { flexDirection: 'row', justifyContent: 'space-between', paddingHorizontal: space.sm, paddingBottom: space.sm },
-  rateSub: { fontFamily: fontFamily.medium, fontSize: 10, color: colors.onSurfaceVariant },
-  ratePriceRow: { flexDirection: 'row', alignItems: 'flex-end' },
-  ratePrice: { fontFamily: fontFamily.extraBold, fontSize: 22, color: colors.primary },
-  rateUnit: { fontFamily: fontFamily.medium, fontSize: 13, color: colors.onSurfaceVariant, marginBottom: 2 },
-  rateDetail: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  pickupRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  pickupText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
+  sortRow: { flexDirection: 'row', margin: space.md, backgroundColor: colors.surfaceContainerHighest, borderRadius: radius.md, padding: 4 },
+  sortTab: { flex: 1, alignItems: 'center', paddingVertical: 8, borderRadius: radius.sm },
+  sortTabActive: { backgroundColor: colors.surface, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
+  sortTabText: { fontFamily: fontFamily.medium, fontSize: 13, color: colors.onSurfaceVariant },
+  sortTabTextActive: { fontFamily: fontFamily.bold, color: colors.onSurface },
+  card: { marginHorizontal: space.md, marginBottom: space.md, backgroundColor: colors.surface, borderRadius: radius.xl, borderWidth: 1, overflow: 'hidden' },
+  cardRankRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.md, paddingVertical: space.sm, backgroundColor: colors.surfaceContainerHighest, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
+  cardRankRowHighlight: { backgroundColor: colors.primaryContainer, borderBottomColor: 'rgba(194, 65, 12, 0.2)' },
+  rankBadgeBg: { backgroundColor: colors.surface, width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
+  rankNum: { fontFamily: fontFamily.extraBold, fontSize: 12, color: colors.onSurface },
+  rankLabel: { flex: 1, fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurfaceVariant },
+  rankLabelHighlight: { color: colors.onPrimaryContainer },
+  rankExtraBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.surface, paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.full, borderWidth: 1, borderColor: colors.outlineVariant },
+  rankExtraBadgeHighlight: { borderColor: 'rgba(194, 65, 12, 0.2)' },
+  rankExtraText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
+  rankExtraTextHighlight: { color: colors.primary },
+  profileRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', paddingHorizontal: space.md, paddingTop: space.md },
+  buyerIdentity: { flex: 1 },
+  buyerNameLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  buyerName: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.onSurface },
+  buyerStats: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
+  buyerStatText: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant, marginLeft: 2 },
+  buyerStatDot: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.outline, marginHorizontal: 4 },
+  escrowBadge: { alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 6, backgroundColor: colors.positiveContainer, paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm },
+  escrowText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
+  profileBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: radius.full, backgroundColor: 'rgba(155,47,0,0.08)' },
+  profileBtnText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primary },
+  offerRow: { flexDirection: 'row', padding: space.md, marginTop: space.sm, backgroundColor: colors.surfaceContainerLowest },
+  offerCol: { flex: 1 },
+  offerDivider: { width: 1, backgroundColor: colors.outlineVariant, marginHorizontal: space.md },
+  offerLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, marginBottom: 4 },
+  offerRateLine: { flexDirection: 'row', alignItems: 'baseline', gap: 2 },
+  offerRate: { fontFamily: fontFamily.extraBold, fontSize: 24, color: colors.onSurface, letterSpacing: -0.5 },
+  offerRateUnit: { fontFamily: fontFamily.medium, fontSize: 14, color: colors.onSurfaceVariant },
+  pickupLine: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
+  pickupVal: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.tertiary },
   pickupNote: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  breakdown: {
-    marginHorizontal: space.sm, marginBottom: space.sm, borderRadius: radius.md,
-    borderWidth: 1, borderColor: colors.outlineVariant, padding: space.xs, backgroundColor: colors.surfaceContainerLow,
-  },
-  breakdownRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 3 },
-  breakdownKey: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, flex: 1, paddingRight: 4 },
-  breakdownVal: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
-  netRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 4, paddingTop: 4, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
-  netLabel: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurface },
-  netAmount: { fontFamily: fontFamily.extraBold, fontSize: 22, color: colors.tertiary },
-  netSubText: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant, marginTop: 2 },
-  compactNet: { paddingHorizontal: space.sm, paddingBottom: space.xs },
-  compactNetLabel: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primary },
-  cardCtas: { flexDirection: 'row', gap: space.xs, padding: space.sm, paddingTop: 0 },
-  ctaMain: { flex: 1, height: touch.targetMin, backgroundColor: colors.primaryContainer, borderRadius: radius.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6 },
-  ctaMainOutline: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.primaryContainer },
-  ctaMainText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onPrimary },
-  ctaMainTextOutline: { color: colors.primaryContainer },
-  profileBtn: { paddingHorizontal: 12, height: touch.targetMin, borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.outlineVariant, alignItems: 'center', justifyContent: 'center' },
-  profileBtnText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
-  netMathCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, padding: space.md },
-  netMathHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.xs },
-  netMathTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface, flex: 1 },
-  netMathDesc: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurfaceVariant, marginBottom: space.sm, lineHeight: 18 },
-  netMathRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 5 },
-  netMathKey: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurface, flex: 1 },
-  netMathVal: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.tertiary },
-  netMathNote: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.outline, marginTop: 6, fontStyle: 'italic' },
-  escrowGuaranteeCard: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginHorizontal: space.md, marginBottom: space.sm, padding: space.md, borderRadius: radius.xl, backgroundColor: colors.positiveContainer, borderWidth: 1, borderColor: 'rgba(4,120,87,0.2)' },
-  escrowGuaranteeText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onPositiveContainer, flex: 1 },
-  escrowGuaranteeSub: { fontFamily: fontFamily.regular, fontSize: 12 },
-  dock: { position: 'absolute', bottom: 0, left: 0, right: 0, flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
-  dockLeft: { flex: 1 },
-  liveGreenDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.tertiary, marginBottom: 2 },
-  dockBidsText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
-  dockNetText: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  dockCta: { flexDirection: 'row', alignItems: 'center', gap: 6, height: touch.targetMin, backgroundColor: colors.primaryContainer, borderRadius: radius.lg, paddingHorizontal: space.md, shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
-  dockCtaText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onPrimary },
+  breakupBox: { marginHorizontal: space.md, marginBottom: space.md, padding: space.md, borderRadius: radius.md, backgroundColor: '#F9FAFB', borderWidth: 1, borderColor: colors.outlineVariant },
+  breakupTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.sm },
+  breakupTitle: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: 0.5 },
+  breakupRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 },
+  breakupKey: { fontFamily: fontFamily.regular, fontSize: 13, color: colors.onSurfaceVariant },
+  breakupValGross: { fontFamily: fontFamily.medium, fontSize: 13, color: colors.onSurface },
+  breakupValNeg: { fontFamily: fontFamily.medium, fontSize: 13, color: colors.critical },
+  breakupValFree: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.positive },
+  breakupTotalRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: space.sm, paddingTop: space.sm, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
+  breakupTotalKey: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
+  breakupTotalVal: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary },
+  ctaRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: space.md, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
+  simpleNet: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary },
+  primaryBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: 'rgba(155,47,0,0.08)', paddingHorizontal: space.lg, height: 44, borderRadius: radius.lg, alignSelf: 'flex-end', marginLeft: 'auto' },
+  primaryBtnHighlight: { backgroundColor: colors.primary, shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.35, shadowRadius: 12, elevation: 5 },
+  primaryBtnText: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primary },
+  primaryBtnTextHighlight: { color: colors.onPrimary },
+  footerNote: { flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: space.md, paddingBottom: space.xl },
+  footerNoteText: { flex: 1, fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurfaceVariant, lineHeight: 16 },
 });
