@@ -219,8 +219,8 @@ export type MyLotsStackParamList = {
    *  none of these call a real endpoint (no assay submission, no real buyer
    *  list, no real offer/escrow transitions) — they're wired for tap-through
    *  review, not yet backed by the API. See the import comment above. */
-  S22_PricePublish: undefined;
-  S23_PublishedRadar: undefined;
+  S22_PricePublish: { lot_id?: string } | undefined;
+  S23_PublishedRadar: { lot_id?: string; asking_paise?: number } | undefined;
   S24_LotDetail: undefined;
   S25_BuyersForLot: undefined;
   S26_BuyerProfile: undefined;

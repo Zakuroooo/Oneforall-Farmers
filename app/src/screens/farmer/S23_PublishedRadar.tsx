@@ -1,281 +1,133 @@
 /**
- * S23_PublishedRadar — Screen 23: Published lot + real-time buyer matching radar.
- * Matched to Stitch `23_published_real_time_buyer_matching_radar/screen.png`
- * ★ ZERO EMOJIS  ★ FULL I18N
+ * S23 — the lot is published. Stitch screen 23
+ * (`23_published_real_time_buyer_matching_radar`).
+ *
+ * ★ Rebuilt, and deliberately much smaller than the mockup. The previous
+ *   version was a live-telemetry dashboard for telemetry that does not
+ *   exist: an animated buyer-matching radar with pins at named cities, a
+ *   "Verified Range within 60 km", a "Qualified Leads" count, a "First Bid
+ *   Est." timer, an auto-refreshing "Live Inbound Signals" feed, and an
+ *   "INSTANT ALERT SETTINGS" block offering WhatsApp alerts to a hardcoded
+ *   phone number (+9182204343) and "Audio Phone Call on Urgent Counter-Offer".
+ *   Nothing in this project sends an SMS, places a call, or tracks a buyer's
+ *   position, so every one of those was a promise the app cannot keep — and
+ *   a farmer who leaves the screen expecting a call would simply never get
+ *   one. Removed on explicit direction, with the alert feature named as
+ *   coming soon rather than silently dropped.
+ *
+ * ★ Also removed: "Buyer funds are locked in Mandi Board bank escrow", a
+ *   hardcoded Grade A (850/1000), and a fixed "Asking ₹2,100 · Est. Net
+ *   ₹83,400" that ignored whatever the farmer actually set on S22.
+ *
+ * ★ What is left is what is true after publishing: the lot, the price the
+ *   farmer chose, how long offers stay open, what happens next, and the two
+ *   places to go. Every string resolves in one language — the mockup rendered
+ *   English and Marathi simultaneously on almost every line.
  */
-import React, { useState } from 'react';
+
+import React from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
-import { Icon, IconName } from '../../components/ui/Icon';
+import { useQuery } from '@tanstack/react-query';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
+import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
+import { getLot } from '../../lib/api';
+import { DEFAULT_LOT_ID, USE_FIXTURES } from '../../config';
+import { fxLotListed } from '../../fixtures/lots';
+import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
 
-const INBOUND: Array<{
-  iconName: IconName;
-  iconBg: string;
-  iconColor: string;
-  title: string;
-  time: string;
-  desc: string;
-  badge1: string | null;
-  badge2: string | null;
-  badge1Color: string | undefined;
-  badge1TextColor: string | undefined;
-}> = [
-  {
-    iconName: 'eye',
-    iconBg: 'rgba(155,47,0,0.08)',
-    iconColor: colors.primary,
-    title: 'Nashik Agro Exports',
-    time: '2m ago',
-    desc: 'Assay report viewed. High purchase readiness score (98%).',
-    badge1: 'Verified Escrow Account',
-    badge2: 'Niphad cluster buyer',
-    badge1Color: colors.positiveContainer,
-    badge1TextColor: colors.tertiary,
-  },
-  {
-    iconName: 'bell',
-    iconBg: 'rgba(245,158,11,0.1)',
-    iconColor: '#F59E0B',
-    title: 'Pune Trading Co Dispatch Alert',
-    time: '4m ago',
-    desc: 'Candidate for Farmgate direct pickup. Route optimization matched.',
-    badge1: null,
-    badge2: null,
-    badge1Color: undefined,
-    badge1TextColor: undefined,
-  },
-];
+type Props = NativeStackScreenProps<MyLotsStackParamList, 'S23_PublishedRadar'>;
 
-const ALERT_SETTINGS: Array<{ icon: IconName; title: string; sub: string }> = [
-  { icon: 'message-circle', title: 'WhatsApp Alert on First Bid', sub: '+9182204343 वर मेसेज येईल' },
-  { icon: 'phone', title: 'Audio Phone Call on Urgent Counter-Offer', sub: 'तातडीच्या बोलीसाठी फोन कॉल अलर्ट' },
-];
+async function fetchLot(lotId: string) {
+  if (USE_FIXTURES) return fxLotListed;
+  return getLot(lotId);
+}
 
-export default function S23_PublishedRadar({ navigation }: any) {
-  const { t } = useT();
-  const [alertEnabled, setAlertEnabled] = useState([true, true]);
+const NEXT_STEPS = ['pub_next_1', 'pub_next_2', 'pub_next_3'];
+
+export default function S23_PublishedRadar({ route, navigation }: Props) {
+  const { t, locale } = useT();
+  const lotId = route.params?.lot_id ?? DEFAULT_LOT_ID;
+  const askingPaise = route.params?.asking_paise ?? null;
+
+  const { data: lot } = useQuery({ queryKey: ['lots', lotId], queryFn: () => fetchLot(lotId) });
+  const qtl = lot ? toQuintal(lot.qty_kg) : null;
 
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.closeBtn} onPress={() => navigation.canGoBack() && navigation.goBack()}>
-          <Icon name="x-circle" size={22} color={colors.onSurface} />
-        </TouchableOpacity>
-        <View style={styles.headerCenter}>
-          <View style={styles.publishedBadge}>
-            <View style={styles.liveGreen} />
-            <Text style={styles.publishedText}>LOT PUBLISHED</Text>
-          </View>
-          <Text style={styles.headerTitle}>माल थेट बाजारात आला</Text>
-        </View>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.primary} />
-          <Text style={styles.listenText}>{t('splash_listen')}</Text>
-        </TouchableOpacity>
-      </View>
-
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-
-        {/* Live lot card */}
-        <View style={styles.lotCard}>
-          <View style={styles.liveTag}>
-            <View style={styles.liveGreenSmall} />
-            <Text style={styles.liveTagText}>LIVE &amp; ASSAYED</Text>
-            <Text style={styles.liveTagRef}>Lot #LP-403</Text>
+        {/* ── Confirmation ──────────────────────────────────────────── */}
+        <View style={styles.heroCard}>
+          <View style={styles.tickCircle}>
+            <Icon name="check-circle" size={34} color={colors.tertiary} />
           </View>
-          <Text style={styles.lotTitle}>Lot #LP-403 is Live!</Text>
-          <Text style={styles.lotSubTitle}>तुमचा ४० क्विंटल कांदा खरेदीदारांसाठी खुला झाला आहे</Text>
-
-          <View style={styles.lotMiniCard}>
-            <View style={styles.lotMiniThumb}>
-              <Icon name="box" size={22} color={colors.primary} />
-            </View>
-            <View style={styles.lotMiniInfo}>
-              <Text style={styles.lotMiniVariety}>Gavran Red Onion</Text>
-              <Text style={styles.lotMiniMeta}>उन्हाळ कांदा · Grade A (850/1000)</Text>
-              <Text style={styles.lotMiniAsk}>Asking: ₹2,100/Qtl · Est. Net: ₹83,400</Text>
-            </View>
-            <View style={styles.lotMiniQtl}>
-              <Text style={styles.lotMiniQtlNum}>40</Text>
-              <Text style={styles.lotMiniQtlUnit}>Qtl</Text>
-            </View>
+          <View style={styles.badge}>
+            <Text style={styles.badgeText}>{t('pub_badge')}</Text>
           </View>
-
-          <View style={styles.lotMetaRow}>
-            <View style={styles.lotMetaItem}>
-              <Icon name="clock" size={11} color={colors.primaryContainer} />
-              <Text style={styles.lotMetaLabel}>Listing Active:</Text>
-              <Text style={styles.lotMetaVal}>47h 59m</Text>
-            </View>
-            <View style={styles.lotMetaItem}>
-              <Icon name="truck" size={11} color={colors.onSurfaceVariant} />
-              <Text style={styles.lotMetaLabel}>Farmgate Pickup (Niphad Yard)</Text>
-            </View>
-          </View>
+          <Text style={styles.title}>{t('pub_title')}</Text>
+          <Text style={styles.subtitle}>{t('pub_sub')}</Text>
         </View>
 
-        {/* Radar card */}
-        <View style={styles.radarCard}>
-          <View style={styles.radarHeader}>
-            <View>
-              <Text style={styles.radarTitle}>Live Buyer Matching Radar</Text>
-              <Text style={styles.radarSub}>थेट खरेदीदार शोध चालू आहे · Lasalgaon Belt</Text>
-            </View>
-            <View style={styles.biddersOnlineBadge}>
-              <View style={styles.liveGreenSmall} />
-              <Text style={styles.biddersOnlineText}>6 Bidders Online</Text>
-            </View>
-          </View>
-
-          {/* Radar map visualization */}
-          <View style={styles.radarMap}>
-            <View style={styles.radarRing3} />
-            <View style={styles.radarRing2} />
-            <View style={styles.radarRing1} />
-            <View style={styles.radarCenter}>
-              <Icon name="map-pin" size={20} color={colors.onPrimary} />
-            </View>
-            <Text style={styles.radarCenterLabel}>Niphad Farm</Text>
-
-            {/* Buyer pins */}
-            <View style={[styles.buyerPin, { top: '15%', right: '20%' }]}>
-              <Text style={styles.buyerPinText}>Nashik Agro (12 km){'\n'}Matching Grade A</Text>
-            </View>
-            <View style={[styles.buyerPin, { top: '35%', left: '5%' }]}>
-              <Text style={styles.buyerPinText}>Pune Traders (45 km){'\n'}Assay downloaded</Text>
-            </View>
-            <View style={[styles.buyerPin, { bottom: '20%', left: '10%' }]}>
-              <Text style={styles.buyerPinText}>Sahyadri FPO (28 km){'\n'}Truck in area</Text>
-            </View>
-            <View style={[styles.buyerPin, { bottom: '25%', right: '5%' }]}>
-              <Text style={styles.buyerPinText}>Vashi (160 km)</Text>
-            </View>
-          </View>
-
-          {/* Stats row */}
-          <View style={styles.radarStatsRow}>
-            <View style={styles.radarStat}>
-              <Text style={styles.radarStatVal}>14 Buyers</Text>
-              <Text style={styles.radarStatLabel}>Verified Range</Text>
-              <Text style={styles.radarStatSub}>within 60 km</Text>
-            </View>
-            <View style={styles.radarStatDivider} />
-            <View style={styles.radarStat}>
-              <Text style={[styles.radarStatVal, { color: colors.tertiary }]}>3 Matched</Text>
-              <Text style={styles.radarStatLabel}>Qualified Leads</Text>
-              <Text style={styles.radarStatSub}>Immediate pickup</Text>
-            </View>
-            <View style={styles.radarStatDivider} />
-            <View style={styles.radarStat}>
-              <Text style={styles.radarStatVal}>8 – 15 min</Text>
-              <Text style={styles.radarStatLabel}>First Bid Est.</Text>
-              <Text style={styles.radarStatSub}>Lasalgaon speed</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Live inbound signals */}
-        <View style={styles.inboundHeader}>
-          <Icon name="signal" size={13} color={colors.primary} />
-          <Text style={styles.inboundTitle}>Live Inbound Signals · थेट घडामोडी</Text>
-          <Text style={styles.inboundRefresh}>Auto-refreshes</Text>
-        </View>
-
-        {INBOUND.map((s, i) => (
-          <View key={i} style={styles.signalCard}>
-            <View style={[styles.signalIcon, { backgroundColor: s.iconBg }]}>
-              <Icon name={s.iconName} size={18} color={s.iconColor} />
-            </View>
-            <View style={styles.signalInfo}>
-              <View style={styles.signalTitleRow}>
-                <Text style={styles.signalTitle}>{s.title}</Text>
-                <Text style={styles.signalTime}>{s.time}</Text>
-              </View>
-              <Text style={styles.signalDesc}>{s.desc}</Text>
-              {s.badge1 || s.badge2 ? (
-                <View style={styles.signalBadgeRow}>
-                  {s.badge1 ? (
-                    <View style={[styles.signalBadge, { backgroundColor: s.badge1Color }]}>
-                      <Text style={[styles.signalBadgeText, { color: s.badge1TextColor }]}>{s.badge1}</Text>
-                    </View>
-                  ) : null}
-                  {s.badge2 ? <Text style={styles.signalBadge2Text}>{s.badge2}</Text> : null}
-                </View>
-              ) : null}
-            </View>
-          </View>
-        ))}
-
-        {/* APMC benchmark */}
-        <View style={styles.benchmarkCard}>
-          <Icon name="trending-up" size={14} color={colors.primary} />
-          <View style={styles.benchmarkInfo}>
-            <Text style={styles.benchmarkTitle}>APMC Lasalgaon Benchmark</Text>
-            <Text style={styles.benchmarkSub}>उन्हाळ कांदा सरासरी दर</Text>
-          </View>
-          <View>
-            <Text style={styles.benchmarkPrice}>₹2,055/Qtl</Text>
-            <Text style={styles.benchmarkChange}>+₹45 today</Text>
-          </View>
-        </View>
-
-        {/* Escrow guarantee */}
-        <View style={styles.escrowCard}>
-          <View style={styles.escrowIconBg}><Icon name="shield-check" size={22} color={colors.tertiary} /></View>
-          <View style={styles.escrowContent}>
-            <Text style={styles.escrowTitle}>100% Krishi Mitra Escrow Guarantee</Text>
-            <Text style={styles.escrowDesc}>
-              शेतकऱ्याचे पैसे सुरक्षित. Buyer funds are locked in Mandi Board bank escrow before any transport truck enters your gate. No forced distress selling.
+        {/* ── The lot, as published ─────────────────────────────────── */}
+        <View style={styles.card}>
+          {qtl !== null && lot ? (
+            <Text style={styles.lotLine}>
+              {t('pub_lot_line', { qty: formatNumber(qtl, locale), grade: lot.grade })}
             </Text>
-            <View style={styles.escrowCheck}><Icon name="check-circle" size={12} color={colors.tertiary} /></View>
+          ) : null}
+
+          {askingPaise !== null ? (
+            <View style={styles.row}>
+              <Text style={styles.rowKey}>{t('pub_asking_label')}</Text>
+              <Text style={styles.rowValueStrong}>{formatPaise(askingPaise, locale)}</Text>
+            </View>
+          ) : null}
+
+          <View style={styles.row}>
+            <Text style={styles.rowKey}>{t('pub_window_label')}</Text>
+            <Text style={styles.rowValue}>{t('pub_window_value')}</Text>
           </View>
         </View>
 
-        {/* Alert settings */}
-        <Text style={styles.alertSettingsLabel}>INSTANT ALERT SETTINGS</Text>
-        <View style={styles.alertCard}>
-          {ALERT_SETTINGS.map((a, i) => (
-            <React.Fragment key={i}>
-              <View style={styles.alertRow}>
-                <View style={[styles.alertIconBg, { backgroundColor: 'rgba(155,47,0,0.08)' }]}>
-                  <Icon name={a.icon} size={16} color={colors.primary} />
-                </View>
-                <View style={styles.alertInfo}>
-                  <Text style={styles.alertTitle}>{a.title}</Text>
-                  <Text style={styles.alertSub}>{a.sub}</Text>
-                </View>
-                <TouchableOpacity
-                  style={[styles.checkbox, alertEnabled[i] && styles.checkboxChecked]}
-                  onPress={() => setAlertEnabled(prev => prev.map((v, idx) => idx === i ? !v : v))}>
-                  {alertEnabled[i] && <Icon name="check" size={13} color={colors.onPrimary} />}
-                </TouchableOpacity>
+        {/* ── What happens next ─────────────────────────────────────── */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{t('pub_next_title')}</Text>
+          {NEXT_STEPS.map((key, i) => (
+            <View key={key} style={styles.stepRow}>
+              <View style={styles.stepNum}>
+                <Text style={styles.stepNumText}>{formatNumber(i + 1, locale)}</Text>
               </View>
-              {i < ALERT_SETTINGS.length - 1 && <View style={styles.alertDivider} />}
-            </React.Fragment>
+              <Text style={styles.stepText}>{t(key)}</Text>
+            </View>
           ))}
         </View>
 
-        <Text style={styles.footerNote}>Auto-refreshes every 30s · Offline safe encrypted state</Text>
+        {/* The one alert promise, marked honestly rather than offered. */}
+        <View style={styles.soonRow}>
+          <Icon name="bell" size={14} color={colors.outline} />
+          <Text style={styles.soonText}>{t('pub_alerts_soon')}</Text>
+        </View>
       </ScrollView>
 
-      {/* CTA dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.viewBuyersBtn} onPress={() => navigation.navigate('S24_LotDetail')}>
-          <Text style={styles.viewBuyersBtnText}>खरेदीदार पहा · View Buyers</Text>
+        <TouchableOpacity
+          style={styles.primaryBtn}
+          onPress={() => navigation.navigate('S25_BuyersForLot')}
+          accessibilityRole="button">
+          <Text style={styles.primaryBtnText}>{t('pub_view_buyers')}</Text>
           <Icon name="arrow-right" size={18} color={colors.onPrimary} />
         </TouchableOpacity>
-        {/* ★ "Share on WhatsApp" removed — no share integration exists anywhere
-            in this app; it was a button that would have opened nothing. */}
-        <View style={styles.dockSecondRow}>
-          <TouchableOpacity style={styles.myLotsBtn} onPress={() => navigation.navigate('S15_MyLots')}>
-            <Icon name="box" size={14} color={colors.onSurface} />
-            <Text style={styles.myLotsBtnText}>माझे माल (My Lots)</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={styles.secondaryBtn}
+          onPress={() => navigation.navigate('S15_MyLots')}
+          accessibilityRole="button">
+          <Text style={styles.secondaryBtnText}>{t('pub_my_produce')}</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -283,99 +135,114 @@ export default function S23_PublishedRadar({ navigation }: any) {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  header: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  closeBtn: { width: 36, height: 36, alignItems: 'center', justifyContent: 'center' },
-  headerCenter: { flex: 1 },
-  publishedBadge: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  publishedText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary, letterSpacing: 0.5 },
-  headerTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onSurface },
-  listenBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.full, backgroundColor: 'rgba(155,47,0,0.08)' },
-  listenText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
-  liveGreen: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.tertiary },
-  liveGreenSmall: { width: 7, height: 7, borderRadius: 4, backgroundColor: colors.tertiary },
-  scroll: { paddingBottom: 140 },
-  lotCard: { margin: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, padding: space.md },
-  liveTag: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: space.xs },
-  liveTagText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary, flex: 1 },
-  liveTagRef: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  lotTitle: { fontFamily: fontFamily.extraBold, fontSize: 20, color: colors.onSurface },
-  lotSubTitle: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurfaceVariant, marginBottom: space.sm },
-  lotMiniCard: { flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: space.sm, borderRadius: radius.lg, backgroundColor: colors.surfaceContainerLow, borderWidth: 1, borderColor: colors.outlineVariant, marginBottom: space.sm },
-  lotMiniThumb: { width: 48, height: 48, borderRadius: radius.md, backgroundColor: 'rgba(155,47,0,0.08)', alignItems: 'center', justifyContent: 'center' },
-  lotMiniInfo: { flex: 1 },
-  lotMiniVariety: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
-  lotMiniMeta: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  lotMiniAsk: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primary, marginTop: 1 },
-  lotMiniQtl: { alignItems: 'center' },
-  lotMiniQtlNum: { fontFamily: fontFamily.extraBold, fontSize: 20, color: colors.primary },
-  lotMiniQtlUnit: { fontFamily: fontFamily.medium, fontSize: 10, color: colors.onSurfaceVariant },
-  lotMetaRow: { flexDirection: 'row', gap: space.md },
-  lotMetaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  lotMetaLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  lotMetaVal: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primaryContainer },
-  radarCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden' },
-  radarHeader: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', padding: space.sm },
-  radarTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
-  radarSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  biddersOnlineBadge: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  biddersOnlineText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.tertiary },
-  radarMap: { height: 200, backgroundColor: '#1C2B1A', position: 'relative', alignItems: 'center', justifyContent: 'center', marginBottom: space.sm },
-  radarRing3: { position: 'absolute', width: 180, height: 180, borderRadius: 90, borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
-  radarRing2: { position: 'absolute', width: 120, height: 120, borderRadius: 60, borderWidth: 1, borderColor: 'rgba(255,255,255,0.15)' },
-  radarRing1: { position: 'absolute', width: 60, height: 60, borderRadius: 30, borderWidth: 1, borderColor: 'rgba(255,255,255,0.2)' },
-  radarCenter: { width: 44, height: 44, borderRadius: 22, backgroundColor: colors.primary, alignItems: 'center', justifyContent: 'center', zIndex: 2 },
-  radarCenterLabel: { position: 'absolute', bottom: 35, fontFamily: fontFamily.bold, fontSize: 11, color: '#fff' },
-  buyerPin: { position: 'absolute', backgroundColor: 'rgba(0,0,0,0.7)', borderRadius: radius.sm, paddingHorizontal: 6, paddingVertical: 4, maxWidth: 140 },
-  buyerPinText: { fontFamily: fontFamily.regular, fontSize: 9, color: '#fff', lineHeight: 13 },
-  radarStatsRow: { flexDirection: 'row', padding: space.sm, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
-  radarStat: { flex: 1, alignItems: 'center' },
-  radarStatVal: { fontFamily: fontFamily.extraBold, fontSize: 15, color: colors.onSurface },
-  radarStatLabel: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurfaceVariant },
-  radarStatSub: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.outline },
-  radarStatDivider: { width: 1, backgroundColor: colors.outlineVariant },
-  inboundHeader: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: space.md, marginBottom: space.xs },
-  inboundTitle: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, flex: 1 },
-  inboundRefresh: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant },
-  signalCard: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginHorizontal: space.md, marginBottom: space.xs, padding: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant },
-  signalIcon: { width: 40, height: 40, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  signalInfo: { flex: 1 },
-  signalTitleRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  signalTitle: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, flex: 1 },
-  signalTime: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  signalDesc: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurface, lineHeight: 17, marginTop: 2 },
-  signalBadgeRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
-  signalBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: radius.full },
-  signalBadgeText: { fontFamily: fontFamily.bold, fontSize: 10 },
-  signalBadge2Text: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  benchmarkCard: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginHorizontal: space.md, marginBottom: space.sm, padding: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant },
-  benchmarkInfo: { flex: 1 },
-  benchmarkTitle: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
-  benchmarkSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  benchmarkPrice: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary, textAlign: 'right' },
-  benchmarkChange: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary, textAlign: 'right' },
-  escrowCard: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginHorizontal: space.md, marginBottom: space.sm, padding: space.md, borderRadius: radius.xl, backgroundColor: colors.positiveContainer, borderWidth: 1, borderColor: 'rgba(4,120,87,0.2)' },
-  escrowIconBg: { width: 44, height: 44, borderRadius: 12, backgroundColor: 'rgba(4,120,87,0.1)', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  escrowContent: { flex: 1 },
-  escrowTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.tertiary, marginBottom: 4 },
-  escrowDesc: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onPositiveContainer, lineHeight: 17 },
-  escrowCheck: { marginTop: 4 },
-  alertSettingsLabel: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurfaceVariant, paddingHorizontal: space.md, letterSpacing: 0.6, marginBottom: space.xs },
-  alertCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden' },
-  alertRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: space.sm },
-  alertIconBg: { width: 36, height: 36, borderRadius: 10, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  alertInfo: { flex: 1 },
-  alertTitle: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
-  alertSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  alertDivider: { height: 1, backgroundColor: colors.outlineVariant },
-  checkbox: { width: 24, height: 24, borderRadius: 6, borderWidth: 2, borderColor: colors.outlineVariant, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  checkboxChecked: { backgroundColor: colors.tertiary, borderColor: colors.tertiary },
-  footerNote: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.outline, textAlign: 'center', paddingHorizontal: space.md, marginBottom: space.sm },
-  dock: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant, gap: 8 },
-  viewBuyersBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: touch.targetHero, backgroundColor: colors.primaryContainer, borderRadius: radius.lg, shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
-  viewBuyersBtnText: { fontFamily: fontFamily.extraBold, fontSize: 14, color: colors.onPrimary },
-  dockSecondRow: { flexDirection: 'row', gap: space.sm },
-  myLotsBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: touch.targetMin, borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.outlineVariant },
-  myLotsBtnText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
-  shareBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: touch.targetMin, borderRadius: radius.lg, backgroundColor: colors.positiveContainer },
-  shareBtnText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.tertiary },
+  scroll: { padding: space.md, paddingTop: space.xxl, paddingBottom: 170, gap: space.sm },
+
+  heroCard: { alignItems: 'center', paddingVertical: space.lg, gap: 6 },
+  tickCircle: {
+    width: 76,
+    height: 76,
+    borderRadius: 38,
+    backgroundColor: colors.positiveContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: space.xs,
+  },
+  badge: {
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: radius.full,
+    backgroundColor: colors.positiveContainer,
+  },
+  badgeText: { ...typography.labelSm, color: colors.onPositiveContainer, textTransform: 'uppercase' },
+  title: {
+    ...typography.displayLg,
+    color: colors.onSurface,
+    textAlign: 'center',
+    marginTop: 2,
+  },
+  subtitle: {
+    ...typography.bodyMd,
+    color: colors.onSurfaceVariant,
+    textAlign: 'center',
+    lineHeight: 21,
+  },
+
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+    padding: space.md,
+  },
+  cardTitle: { ...typography.titleMd, color: colors.onSurface, marginBottom: space.xs },
+  lotLine: { ...typography.titleMd, color: colors.onSurface, marginBottom: space.xs },
+
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: space.sm,
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.outlineVariant,
+  },
+  rowKey: { ...typography.bodySm, color: colors.onSurfaceVariant, flex: 1 },
+  rowValue: { ...typography.titleMd, color: colors.onSurface },
+  rowValueStrong: {
+    ...typography.titleLg,
+    color: colors.primary,
+    fontFamily: fontFamily.extraBold,
+  },
+
+  stepRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginTop: space.xs },
+  stepNum: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: colors.surfaceContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepNumText: { ...typography.labelSm, color: colors.primary },
+  stepText: { ...typography.bodySm, color: colors.onSurface, flex: 1, lineHeight: 19 },
+
+  soonRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: space.xs,
+  },
+  soonText: { ...typography.labelSm, color: colors.outline, fontFamily: fontFamily.medium },
+
+  dock: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: space.md,
+    paddingBottom: space.xl,
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.outlineVariant,
+    gap: space.xs,
+  },
+  primaryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    height: touch.targetHero,
+    borderRadius: radius.md,
+    backgroundColor: colors.primaryContainer,
+    paddingHorizontal: space.sm,
+  },
+  primaryBtnText: {
+    ...typography.titleLg,
+    color: colors.onPrimary,
+    fontFamily: fontFamily.extraBold,
+    flexShrink: 1,
+  },
+  secondaryBtn: { alignItems: 'center', justifyContent: 'center', paddingVertical: space.sm },
+  secondaryBtnText: { ...typography.titleMd, color: colors.primary },
 });

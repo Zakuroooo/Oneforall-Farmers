@@ -201,7 +201,15 @@ export default function S21_GradeReveal({ route, navigation }: Props) {
       <View style={styles.dock}>
         <TouchableOpacity
           style={styles.cta}
-          onPress={() => navigation.navigate('S22_PricePublish')}
+          onPress={() =>
+            navigation.navigate(
+              'S22_PricePublish',
+              // `lot_id` is optional on both screens; forward it only when
+              // this reveal actually carries one, rather than passing an
+              // explicit undefined through the param type.
+              route.params.lot_id ? { lot_id: route.params.lot_id } : undefined,
+            )
+          }
           accessibilityRole="button">
           <Text style={styles.ctaText}>{t('gr_cta_publish')}</Text>
           <Icon name="arrow-right" size={18} color={colors.onPrimary} />
