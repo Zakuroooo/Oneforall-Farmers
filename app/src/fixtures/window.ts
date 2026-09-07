@@ -147,9 +147,9 @@ export const fxSellElsewhere: WindowRes = {
   worst_case_paise: 0,
   alt_market: {
     market_id: 'mkt_pune',
-    name_mr: 'पुणे',
-    net_paise_per_qtl: 195730,
     distance_km: 168,
+    gross_price_paise: 203730,
+    net_price_paise: 195730,
   },
   pledge_quote: null,
   explain_mr: 'पुण्यात नेल्यास खर्च वजा जाता ₹७२२ जास्त मिळतील.',

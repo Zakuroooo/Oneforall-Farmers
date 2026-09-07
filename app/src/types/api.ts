@@ -209,11 +209,20 @@ export interface PledgeQuote {
  * verdict; blocker filed. Do not read a field from this that is not listed here
  * until the contract is pinned.
  */
+/**
+ * ★ CONTRACT UPDATE (2026-09-07): the live backend's `AltMarket` (see
+ *   `Neolithic-Backend/app/schemas/ai.py`) carries `gross_price_paise` /
+ *   `net_price_paise` and no `name_mr` at all — this used to declare
+ *   `net_paise_per_qtl` / `name_mr`, which the real response never sends.
+ *   Nothing in this app reads `alt_market` yet (grepped clean), so this was
+ *   a silent type lie rather than a live bug — fixed now, before the day
+ *   something does read it and gets `undefined`.
+ */
 export interface AltMarket {
   market_id: string;
-  name_mr: string;
-  net_paise_per_qtl: number;
   distance_km: number;
+  gross_price_paise: number;
+  net_price_paise: number;
 }
 
 export type WindowAction =
