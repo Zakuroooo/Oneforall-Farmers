@@ -20,6 +20,7 @@
 
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
+import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -238,30 +239,30 @@ export default function S14_CounterOffer({ route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  root: { padding: 20 },
-  header: { fontSize: 18, fontWeight: '700', color: '#1E293B', marginBottom: 12 },
+  root: { padding: space.md, paddingBottom: space.xxl, backgroundColor: colors.background },
+  header: { ...typography.headlineSm, color: colors.onSurface, fontFamily: fontFamily.extraBold, marginBottom: space.sm },
   offerCard: { padding: 16, marginBottom: 20 },
-  offerPrice: { fontSize: 24, fontWeight: '800', color: '#1B5E20' },
-  offerQty: { fontSize: 14, color: '#64748B', marginTop: 4 },
-  offerNote: { fontSize: 13, color: '#334155', marginTop: 8, fontStyle: 'italic' },
-  sectionLabel: { fontSize: 15, fontWeight: '700', color: '#1E293B', marginTop: 8, marginBottom: 8 },
+  offerPrice: { ...typography.headlineMd, color: colors.tertiary, fontFamily: fontFamily.extraBold },
+  offerQty: { ...typography.bodySm, color: colors.onSurfaceVariant, marginTop: 4 },
+  offerNote: { ...typography.bodySm, color: colors.onSurface, marginTop: space.xs },
+  sectionLabel: { ...typography.titleMd, color: colors.onSurface, marginTop: space.xs, marginBottom: space.xs },
   input: {
     borderWidth: 1.5,
-    borderColor: '#CBD5E1',
-    borderRadius: 10,
-    paddingHorizontal: 16,
+    borderColor: colors.borderField,
+    borderRadius: radius.md,
+    paddingHorizontal: space.md,
     paddingVertical: 14,
     fontSize: 18,
     // Beat 9 is a farmer typing a counter-price. Without this the digits
     // he types are the platform default colour — white on a dark-mode phone.
-    color: '#1E293B',
-    marginBottom: 8,
-    backgroundColor: '#FFFFFF',
+    color: colors.onSurface,
+    marginBottom: space.xs,
+    backgroundColor: colors.surface,
   },
-  lastRoundNote: { fontSize: 13, color: '#C53030', marginBottom: 12 },
+  lastRoundNote: { ...typography.bodySm, color: colors.critical, marginBottom: space.sm },
   actionRow: { flexDirection: 'row', gap: 12, marginTop: 16 },
   actionButton: { flex: 1 },
   rejectButton: { marginTop: 12 },
   resultCard: { padding: 24, alignItems: 'center' },
-  resultText: { fontSize: 16, color: '#1E293B', textAlign: 'center', lineHeight: 24 },
+  resultText: { ...typography.bodyLg, color: colors.onSurface, textAlign: 'center' },
 });

@@ -25,6 +25,7 @@
 import React, { useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
 import { useQuery } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -159,26 +160,26 @@ export default function S16_PoolSplit({ route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  root: { padding: 20, paddingBottom: 32 },
-  header: { fontSize: 20, fontWeight: '700', color: '#1E293B', marginBottom: 12 },
+  root: { padding: space.md, paddingBottom: space.xxl, backgroundColor: colors.background },
+  header: { ...typography.headlineMd, color: colors.onSurface, fontFamily: fontFamily.extraBold, marginBottom: space.sm },
   summaryCard: { padding: 16, marginBottom: 16 },
-  summaryLine: { fontSize: 14, color: '#334155', marginTop: 2 },
+  summaryLine: { ...typography.bodySm, color: colors.onSurfaceVariant, marginTop: 2 },
   paretoBanner: {
     padding: 16,
     marginBottom: 16,
-    backgroundColor: '#FFF5F5',
+    backgroundColor: colors.criticalContainer,
     borderWidth: 1,
-    borderColor: '#FEB2B2',
+    borderColor: colors.critical,
   },
-  paretoTitle: { fontSize: 16, fontWeight: '800', color: '#C53030' },
-  paretoBody: { fontSize: 13, color: '#742A2A', marginTop: 6, lineHeight: 19 },
+  paretoTitle: { ...typography.titleLg, color: colors.onCriticalContainer, fontFamily: fontFamily.extraBold },
+  paretoBody: { ...typography.bodySm, color: colors.onCriticalContainer, marginTop: 6, lineHeight: 19 },
   memberCard: { padding: 16, marginBottom: 12 },
-  memberCardViolation: { borderWidth: 1.5, borderColor: '#FEB2B2' },
+  memberCardViolation: { borderWidth: 1.5, borderColor: colors.critical },
   memberHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  memberName: { fontSize: 16, fontWeight: '700', color: '#1E293B' },
-  memberShare: { fontSize: 16, fontWeight: '800', color: '#1B5E20' },
-  memberLine: { fontSize: 13, color: '#64748B', marginTop: 2 },
-  memberVsSolo: { fontSize: 14, fontWeight: '700', color: '#1B5E20', marginTop: 8 },
-  memberVsSoloNegative: { color: '#C53030' },
-  memberConsent: { fontSize: 12, color: '#94A3B8', marginTop: 4, fontWeight: '600' },
+  memberName: { ...typography.titleLg, color: colors.onSurface },
+  memberShare: { ...typography.titleLg, color: colors.tertiary, fontFamily: fontFamily.extraBold },
+  memberLine: { ...typography.bodySm, color: colors.onSurfaceVariant, marginTop: 2 },
+  memberVsSolo: { ...typography.titleMd, color: colors.tertiary, marginTop: space.xs },
+  memberVsSoloNegative: { color: colors.critical },
+  memberConsent: { ...typography.labelSm, color: colors.outline, marginTop: 4 },
 });

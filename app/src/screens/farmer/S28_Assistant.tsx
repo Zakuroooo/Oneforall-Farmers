@@ -13,6 +13,7 @@
  */
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
 
 import { useT } from '../../lib/i18n';
 import { Icon } from '../../components/ui/Icon';
@@ -53,7 +54,7 @@ export default function S28_Assistant() {
               activeOpacity={0.8}
               accessibilityRole="button">
               <View style={styles.qRow}>
-                <Icon name={open ? 'chevron-down' : 'chevron-right'} size={18} color={open ? '#9a3412' : '#8b716a'} />
+                <Icon name={open ? 'chevron-down' : 'chevron-right'} size={18} color={open ? colors.primary : colors.outline} />
                 <Text style={[styles.question, open && styles.questionOpen]}>{t(qa.qKey)}</Text>
               </View>
               {open ? (
@@ -70,27 +71,27 @@ export default function S28_Assistant() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: '#f7f9fe' },
+  root: { flex: 1, backgroundColor: colors.background },
   headerBox: {
     paddingHorizontal: 20,
     paddingTop: 52,
     paddingBottom: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
     borderBottomWidth: 1,
-    borderBottomColor: '#dec0b7',
+    borderBottomColor: colors.outlineVariant,
   },
-  header: { fontFamily: 'NotoSans-Bold', fontSize: 22, fontWeight: '700', color: '#181c1f', marginBottom: 4 },
-  subheader: { fontFamily: 'NotoSans-Regular', fontSize: 14, color: '#57423c' },
+  header: { fontFamily: fontFamily.bold, fontSize: 22, fontWeight: '700', color: colors.onSurface, marginBottom: 4 },
+  subheader: { fontFamily: fontFamily.regular, fontSize: 14, color: colors.onSurfaceVariant },
   scroll: { padding: 16, paddingBottom: 40, gap: 8 },
   card: {
-    backgroundColor: '#ffffff',
+    backgroundColor: colors.surface,
     borderRadius: 8,
     borderWidth: 1.5,
-    borderColor: '#dec0b7',
+    borderColor: colors.outlineVariant,
     padding: 14,
   },
   cardOpen: {
-    borderColor: '#9a3412',
+    borderColor: colors.primary,
     backgroundColor: '#fffaf9',
   },
   qRow: {
@@ -100,13 +101,13 @@ const styles = StyleSheet.create({
   },
   question: {
     flex: 1,
-    fontFamily: 'NotoSans-SemiBold',
+    fontFamily: fontFamily.semiBold,
     fontSize: 15,
     fontWeight: '600',
-    color: '#181c1f',
+    color: colors.onSurface,
     lineHeight: 22,
   },
-  questionOpen: { color: '#9a3412' },
+  questionOpen: { color: colors.primary },
   answerBox: {
     marginTop: 12,
     marginLeft: 30,
@@ -115,9 +116,9 @@ const styles = StyleSheet.create({
     borderTopColor: '#f1e2df',
   },
   answer: {
-    fontFamily: 'NotoSans-Regular',
+    fontFamily: fontFamily.regular,
     fontSize: 14,
-    color: '#57423c',
+    color: colors.onSurfaceVariant,
     lineHeight: 22,
   },
 });

@@ -13,6 +13,7 @@
 import React, { useCallback, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
 import { useQuery } from '@tanstack/react-query';
 
 import { getNearbyMarkets } from '../../lib/api';
@@ -111,21 +112,23 @@ function NearbyRow({ row, locale }: { row: NearbyMarketRow; locale: Locale }) {
 const GREEN = '#1B5E20';
 
 const styles = StyleSheet.create({
-  root: { padding: 24 },
-  title: { fontSize: 18, fontWeight: '700', color: '#212121', marginBottom: 16 },
+  root: { padding: space.md, paddingBottom: space.xxl, backgroundColor: colors.background },
+  title: { ...typography.headlineSm, color: colors.onSurface, fontFamily: fontFamily.extraBold, marginBottom: space.md },
   card: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+    padding: space.md,
+    marginBottom: space.sm,
   },
-  headerRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  marketName: { fontSize: 17, fontWeight: '700', color: '#212121' },
-  distance: { fontSize: 13, color: '#888' },
+  headerRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: space.xs },
+  marketName: { ...typography.titleLg, color: colors.onSurface },
+  distance: { ...typography.labelSm, color: colors.outline, fontFamily: fontFamily.medium },
   lineRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 2 },
-  lineLabel: { fontSize: 14, color: '#666' },
-  lineValue: { fontSize: 14, color: '#666' },
-  netRow: { borderTopWidth: 1, borderTopColor: '#DDD', marginTop: 6, paddingTop: 8 },
-  netLabel: { fontSize: 16, fontWeight: '700', color: GREEN },
-  netValue: { fontSize: 18, fontWeight: '800', color: GREEN },
+  lineLabel: { ...typography.bodySm, color: colors.onSurfaceVariant },
+  lineValue: { ...typography.bodySm, color: colors.onSurfaceVariant },
+  netRow: { borderTopWidth: 1, borderTopColor: colors.outlineVariant, marginTop: 6, paddingTop: space.xs },
+  netLabel: { ...typography.titleMd, color: colors.tertiary },
+  netValue: { ...typography.numeralData, color: colors.tertiary },
 });
