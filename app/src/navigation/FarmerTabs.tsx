@@ -37,7 +37,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useT } from '../lib/i18n';
 import { tabIcon } from './TabIcon';
 import { TabBarButton } from './TabBarButton';
-import type { AssayReq, AssayRes } from '../types/api';
+import type { AssayReq, AssayRes, TxDto } from '../types/api';
 
 /** The one background colour for every farmer scene. */
 const SCREEN_BG = '#FAF6EE';
@@ -76,7 +76,6 @@ import S22_PricePublish from '../screens/farmer/S22_PricePublish';
 import S23_PublishedRadar from '../screens/farmer/S23_PublishedRadar';
 import S24_LotDetail from '../screens/farmer/S24_LotDetail';
 import S25_BuyersForLot from '../screens/farmer/S25_BuyersForLot';
-import S29_ConfirmAcceptance from '../screens/farmer/S29_ConfirmAcceptance';
 import S30_DealDone from '../screens/farmer/S30_DealDone';
 import S31_DealsList from '../screens/farmer/S31_DealsList';
 import S32_DealTracking from '../screens/farmer/S32_DealTracking';
@@ -239,11 +238,15 @@ export type MyLotsStackParamList = {
      (blocker filed), so a buyer profile screen has nothing to read.
      The Talks tab and S25 both open S14. */
   S25_BuyersForLot: { lot_id?: string } | undefined;
-  S29_ConfirmAcceptance: { offer_id?: string } | undefined;
-  S30_DealDone: undefined;
+  /** ★ The transaction rides in on the route rather than being fetched.
+   *  `POST /offers/{id}/accept` returns the `TxDto` and that is the only
+   *  place its id is ever visible — §7.7 has `GET /tx/{id}` but no `GET /tx`
+   *  and no `tx_id` on `OfferDto` (blocker filed). Passing the object keeps
+   *  the deal reachable from the moment it exists. */
+  S30_DealDone: { tx: TxDto };
   S31_DealsList: undefined;
-  S32_DealTracking: undefined;
-  S33_Settled: undefined;
+  S32_DealTracking: { tx_id?: string } | undefined;
+  S33_Settled: { tx_id?: string } | undefined;
   S35_FarmerProfile: undefined;
 };
 
@@ -321,7 +324,6 @@ function MyLotsStackNavigator() {
       <MyLotsStack.Screen name="S23_PublishedRadar" component={S23_PublishedRadar} />
       <MyLotsStack.Screen name="S24_LotDetail" component={S24_LotDetail} />
       <MyLotsStack.Screen name="S25_BuyersForLot" component={S25_BuyersForLot} />
-      <MyLotsStack.Screen name="S29_ConfirmAcceptance" component={S29_ConfirmAcceptance} />
       <MyLotsStack.Screen name="S30_DealDone" component={S30_DealDone} />
       <MyLotsStack.Screen name="S31_DealsList" component={S31_DealsList} />
       <MyLotsStack.Screen name="S32_DealTracking" component={S32_DealTracking} />

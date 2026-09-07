@@ -1,212 +1,264 @@
 /**
- * S30_DealDone — Screen 30: Deal confirmed celebration + sauda locked.
- * Matched to Stitch `30_deal_done_confetti_celebration_sauda_locked/screen.png`
- * ★ ZERO EMOJIS  ★ FULL I18N
+ * S30 — the deal you just agreed to. Stitch
+ * `30_deal_done_confetti_celebration_sauda_locked`.
+ *
+ * ★ What this screen used to assert, none of it from a deal: a four-step
+ *   timeline with baked-in timestamps ("आज १२:३९ PM", "उद्या सकाळी १०:००"),
+ *   a "₹75,400" payout, and a reference number. It ran no query and took no
+ *   params — it could not have known any of it. The steps were shown with two
+ *   of them already ticked.
+ *
+ * ★ Every figure here is off the `TxDto` the accept returned. That object
+ *   arrives on the route rather than being fetched, and the reason is worth
+ *   stating: `POST /offers/{id}/accept` is the **only** place a transaction
+ *   id is ever visible to this app. CANON §7.7 has `GET /tx/{id}` and no
+ *   `GET /tx`, and `OfferDto` carries no `tx_id`, so an id dropped at the
+ *   moment of accepting is an id the farmer can never navigate back to.
+ *   Blocker filed. TODO(akash): fetch by id once `GET /tx` exists.
+ *
+ * ★ The status shown is `tx.status`, and the four-step progress is derived
+ *   from it against CANON's own FSM order — not a fixed list with the first
+ *   two ticked. A step is complete when the transaction has actually reached
+ *   it.
+ *
+ * ★ No confetti. The old screen drew seven coloured dots to celebrate; what
+ *   a farmer needs at this moment is the number he agreed to and what happens
+ *   next, both of which are now on screen and both of which are real.
+ *
+ * ★ ZERO EMOJIS.
  */
+
 import React from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
-import { useT } from '../../lib/i18n';
-import { useAuth } from '../../lib/auth';
 import { ListenButton } from '../../components/ui/ListenButton';
+import { useT } from '../../lib/i18n';
+import { formatPaise, formatQuintal } from '../../lib/money';
+import { formatDateShort } from '../../lib/dates';
+import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
+import type { TxStatus } from '../../types/api';
 
-/** Keys, not sentences — the old array held strings like "सौदा करार अधिकृत
- * झाला (Contract Signed & Locked)", so both languages rendered at once no
- * matter which one the farmer had chosen. Timestamps ("आज १२:३९ PM",
- * "उद्या सकाळी १०:००") and a "₹75,400" figure were baked in here too; none
- * of them came from the deal. */
-const NEXT_STEPS = [
-  { num: 1, done: true, titleKey: 'dd_step1_title', detailKey: 'dd_step1_detail', badgeKey: 'dd_step1_badge', badgeDone: true },
-  { num: 2, done: false, titleKey: 'dd_step2_title', detailKey: 'dd_step2_detail', badgeKey: 'dd_step2_badge', badgeDone: false },
-  { num: 3, done: false, titleKey: 'dd_step3_title', detailKey: 'dd_step3_detail', badgeKey: null, badgeDone: false },
-  { num: 4, done: false, titleKey: 'dd_step4_title', detailKey: 'dd_step4_detail', badgeKey: null, badgeDone: false },
-] as const;
+type Props = NativeStackScreenProps<MyLotsStackParamList, 'S30_DealDone'>;
 
-export default function S30_DealDone({ navigation }: any) {
-  const { t } = useT();
-  const { user } = useAuth();
+/**
+ * CANON §7.7's escrow FSM, in order, reduced to the four stages a farmer is
+ * waiting through. A stage is done when the transaction has reached it or
+ * anything after it — so the ticks come from `tx.status`, not from a
+ * hardcoded `done: true`.
+ */
+const STAGES: Array<{ key: string; reached: TxStatus[] }> = [
+  { key: 'dd_stage_agreed', reached: ['CREATED', 'ESCROW_HELD', 'DISPATCHED', 'DELIVERED', 'RELEASED'] },
+  { key: 'dd_stage_escrow', reached: ['ESCROW_HELD', 'DISPATCHED', 'DELIVERED', 'RELEASED'] },
+  { key: 'dd_stage_dispatch', reached: ['DISPATCHED', 'DELIVERED', 'RELEASED'] },
+  { key: 'dd_stage_paid', reached: ['RELEASED'] },
+];
+
+export default function S30_DealDone({ navigation, route }: Props) {
+  const { t, locale } = useT();
+  const tx = route.params.tx;
+
+  const qty = formatQuintal(tx.qty_kg, locale);
+
+  const narration = [
+    t('dd_narr_agreed', {
+      rate: formatPaise(tx.price_paise_per_qtl, locale),
+      qty,
+    }),
+    t('dd_narr_net', {
+      gross: formatPaise(tx.gross_paise, locale),
+      deductions: formatPaise(tx.deductions_paise, locale),
+      net: formatPaise(tx.net_paise, locale),
+    }),
+  ].join(' ');
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
 
-      {/* Farmer header row */}
       <View style={styles.header}>
-        <View style={styles.farmerAvatar}>
-          <Icon name="leaf" size={16} color={colors.onPrimary} />
-        </View>
+        <TouchableOpacity
+          style={styles.backBtn}
+          onPress={() => navigation.canGoBack() && navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel={t('back_button')}>
+          <Icon name="arrow-left" size={20} color={colors.onSurface} />
+        </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerFarmer}>{user?.name ?? ''}</Text>
-          <Text style={styles.headerMandi}>{t('home_market_name')}</Text>
+          <Text style={styles.headerTitle}>{t('dd_title')}</Text>
+          <Text style={styles.headerSub}>
+            {t('dd_agreed_on', {
+              date: formatDateShort(tx.created_at.slice(0, 10), locale, ''),
+            })}
+          </Text>
         </View>
-        <ListenButton text={t('deal_done_title')} />
-      </View>
-
-      {/* Deal locked banner */}
-      <View style={styles.dealLockedBanner}>
-        <Icon name="check-circle" size={14} color={colors.onPrimary} />
-        <Text style={styles.dealLockedText}>{t('deal_done_title')}</Text>
+        <ListenButton text={narration} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-
-        {/* Celebration hero */}
-        <View style={styles.celebrationCard}>
-          {/* Confetti visual dots */}
-          <View style={styles.confettiRow}>
-            {[colors.primaryContainer, colors.tertiary, '#F59E0B', colors.primaryContainer, colors.tertiary, '#F59E0B', colors.primaryContainer].map((c, i) => (
-              <View key={i} style={[styles.confettiDot, { backgroundColor: c, width: 6 + (i % 3) * 3, height: 6 + (i % 3) * 3, borderRadius: 3 + (i % 3) }]} />
-            ))}
-          </View>
-
-          <View style={styles.heroCheckCircle}>
-            <Icon name="check-circle" size={44} color={colors.onPrimary} />
-          </View>
-
-          <Text style={styles.celebTitle}>{t('deal_done_title')}</Text>
-          <Text style={styles.celebSubTitle}>{t('dd_subtitle')}</Text>
+        {/* ── What was agreed ─────────────────────────────────────────── */}
+        <View style={styles.heroCard}>
+          <Text style={styles.heroLabel}>{t('dd_net_label')}</Text>
+          <Text style={styles.heroValue}>{formatPaise(tx.net_paise, locale)}</Text>
+          <Text style={styles.heroSub}>
+            {t('dd_rate_and_qty', { rate: formatPaise(tx.price_paise_per_qtl, locale), qty })}
+          </Text>
         </View>
-        {/* ★ A "NET SETTLEMENT ₹75,400" card and a full deal summary — buyer
-            "Pune Trading Co.", farmer "रामभाऊ पाटील", "40 क्विंटल · 80 पोती",
-            "₹1,900 / क्विंटल", gross ₹76,000, hamali ₹600, net ₹75,400,
-            "Grade A (850/1000)" — used to sit here. Not one of those figures
-            came from the deal that was just accepted: nothing is passed to
-            this screen and no accepted-offer object is read. A farmer would
-            have been shown someone else's numbers as his own settlement.
-            Removed until there is a real deal to render. */}
 
-        {/* Next steps */}
-        <View style={styles.nextStepsCard}>
-          <Text style={styles.nextStepsTitle}>{t('dd_steps_title')}</Text>
-
-          {NEXT_STEPS.map((step, i) => (
-            <View key={i} style={styles.stepRow}>
-              <View style={[styles.stepCircle, step.done && styles.stepCircleDone]}>
-                {step.done
-                  ? <Icon name="check" size={14} color={colors.onPrimary} />
-                  : <Text style={styles.stepNumText}>{step.num}</Text>
-                }
-              </View>
-              <View style={styles.stepContent}>
-                <Text style={[styles.stepTitle, step.done && styles.stepTitleDone]}>{t(step.titleKey)}</Text>
-                <Text style={styles.stepDetail}>{t(step.detailKey)}</Text>
-                {step.badgeKey ? (
-                  <View style={[styles.stepBadge, step.badgeDone && styles.stepBadgeDone]}>
-                    <Text style={[styles.stepBadgeText, step.badgeDone && styles.stepBadgeTextDone]}>{step.badgeKey ? t(step.badgeKey) : ''}</Text>
-                  </View>
-                ) : null}
-              </View>
-              {i < NEXT_STEPS.length - 1 && <View style={styles.stepLine} />}
-            </View>
-          ))}
+        {/* ── How the net was reached. Both halves at one size: a farmer
+             should not have to hunt for the deduction. ────────────────── */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{t('dd_breakdown_title')}</Text>
+          <View style={styles.row}>
+            <Text style={styles.rowKey}>{t('dd_gross')}</Text>
+            <Text style={styles.rowVal}>{formatPaise(tx.gross_paise, locale)}</Text>
+          </View>
+          <View style={styles.row}>
+            <Text style={styles.rowKey}>{t('dd_deductions')}</Text>
+            <Text style={[styles.rowVal, styles.rowValNeg]}>
+              −{formatPaise(tx.deductions_paise, locale)}
+            </Text>
+          </View>
+          <View style={styles.rowTotal}>
+            <Text style={styles.rowTotalKey}>{t('dd_net_label')}</Text>
+            <Text style={styles.rowTotalVal}>{formatPaise(tx.net_paise, locale)}</Text>
+          </View>
         </View>
-      </ScrollView>
 
-      {/* CTA dock */}
-      <View style={styles.dock}>
-        <TouchableOpacity style={styles.trackBtn} onPress={() => navigation.navigate('S32_DealTracking')}>
-          <Text style={styles.trackBtnText}>{t('dd_track_cta')}</Text>
-          <Icon name="arrow-right" size={16} color={colors.onPrimary} />
+        {/* ── Where the deal has actually got to ──────────────────────── */}
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>{t('dd_progress_title')}</Text>
+          {STAGES.map((stage, i) => {
+            const done = stage.reached.includes(tx.status);
+            return (
+              <View key={stage.key} style={styles.stageRow}>
+                <View style={[styles.stageDot, done && styles.stageDotDone]}>
+                  {done ? <Icon name="check" size={12} color={colors.onPrimary} /> : null}
+                </View>
+                <Text style={[styles.stageText, done && styles.stageTextDone]}>{t(stage.key)}</Text>
+                {i === STAGES.length - 1 ? null : <View style={styles.stageLine} />}
+              </View>
+            );
+          })}
+          <Text style={styles.statusNote}>{t('dd_status_note')}</Text>
+        </View>
+
+        <TouchableOpacity
+          style={styles.cta}
+          onPress={() => navigation.navigate('S32_DealTracking', { tx_id: tx.id })}
+          accessibilityRole="button">
+          <Text style={styles.ctaText}>{t('dd_track_cta')}</Text>
+          <Icon name="arrow-right" size={18} color={colors.onPrimary} />
         </TouchableOpacity>
-        {/* ★ "Download Official Signed PDF" and "Share on WhatsApp" removed —
-            no PDF generation or share integration exists anywhere in this
-            app; both buttons would have opened nothing. */}
-      </View>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  header: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  farmerAvatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: colors.primaryContainer, alignItems: 'center', justifyContent: 'center' },
-  headerCenter: { flex: 1 },
-  headerFarmer: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
-  headerMandi: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  listenBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.full, backgroundColor: 'rgba(155,47,0,0.08)' },
-  listenText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
-  dealLockedBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, paddingVertical: 8, backgroundColor: colors.tertiary },
-  dealLockedText: { fontFamily: fontFamily.bold, fontSize: 12, color: '#fff', letterSpacing: 0.3 },
-  scroll: { paddingBottom: 220 },
-  celebrationCard: { alignItems: 'center', paddingVertical: space.xl, paddingHorizontal: space.md, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  confettiRow: { flexDirection: 'row', gap: 8, marginBottom: space.md, flexWrap: 'wrap', justifyContent: 'center' },
-  confettiDot: {},
-  heroCheckCircle: { width: 80, height: 80, borderRadius: 40, backgroundColor: colors.tertiary, alignItems: 'center', justifyContent: 'center', marginBottom: space.md, shadowColor: colors.tertiary, shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.35, shadowRadius: 12, elevation: 8 },
-  celebTitle: { fontFamily: fontFamily.extraBold, fontSize: 28, color: colors.onSurface, letterSpacing: -0.5 },
-  celebSubTitle: { fontFamily: fontFamily.bold, fontSize: 16, color: colors.primaryContainer, marginBottom: space.sm },
-  saudaRefRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: space.sm },
-  saudaRef: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
-  saleTagBadge: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: 14, paddingVertical: 8, borderRadius: radius.full, backgroundColor: colors.onPrimaryContainer, borderWidth: 1, borderColor: colors.primaryContainer },
-  saleTagText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.primaryContainer },
-  settlementCard: { margin: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, padding: space.md },
-  settlementHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.xs },
-  settlementLabel: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurfaceVariant, letterSpacing: 0.3 },
-  rtgsBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  rtgsText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  settlementAmt: { fontFamily: fontFamily.extraBold, fontSize: 32, color: colors.tertiary, letterSpacing: -0.5 },
-  settlementAmtSub: { fontFamily: fontFamily.medium, fontSize: 14, color: colors.onSurfaceVariant },
-  bankRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 4, marginBottom: space.sm },
-  bankLabel: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurface },
-  bankIfsc: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
-  escrowGuaranteeRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 5, padding: space.xs, borderRadius: radius.md, backgroundColor: colors.positiveContainer },
-  escrowGuaranteeText: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onPositiveContainer, flex: 1, lineHeight: 16 },
-  dealSummaryCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden' },
-  dealSummaryRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', padding: space.sm },
-  dealSummaryKey: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurfaceVariant },
-  apmc: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  apmcText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
-  dealSummaryBuyerName: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.onSurface, paddingHorizontal: space.sm },
-  dealSummaryBuyerSub: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurfaceVariant, paddingHorizontal: space.sm, marginBottom: 4 },
-  dealSummaryRow2: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.sm, marginBottom: space.xs },
-  dealSummaryLic: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  ratingRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  ratingText: { fontFamily: fontFamily.bold, fontSize: 11, color: '#F59E0B' },
-  dealSummaryDivider: { height: 1, backgroundColor: colors.outlineVariant },
-  farmerDealRow: { flexDirection: 'row', alignItems: 'center', gap: 6, padding: space.sm },
-  farmerDealLabel: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
-  farmerDealName: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, flex: 1 },
-  farmgateBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.surfaceContainerHigh },
-  farmgateBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurface },
-  produceSummary: { padding: space.sm },
-  produceSummaryLeft: {},
-  produceSummaryKey: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurfaceVariant, marginBottom: 4 },
-  gradeABadge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.positiveContainer, marginBottom: 6 },
-  gradeAText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
-  produceRow: { flexDirection: 'row', gap: space.sm, marginBottom: 3 },
-  produceLabel: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant, width: 110 },
-  produceVal: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface, flex: 1 },
-  financeSummary: { borderTopWidth: 1, borderTopColor: colors.outlineVariant, padding: space.sm },
-  financeRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
-  financeKey: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurface, flex: 1 },
-  financeVal: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
-  financeNetRow: { borderTopWidth: 1, borderTopColor: colors.outlineVariant, paddingTop: 6, marginTop: 4 },
-  financeNetKey: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.tertiary, flex: 1 },
-  financeNetVal: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.tertiary },
-  nextStepsCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, padding: space.md },
-  nextStepsTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface, marginBottom: space.sm },
-  stepTimeBadge: { alignSelf: 'flex-start', paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.primaryContainer, marginBottom: space.sm },
-  stepTimeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onPrimary },
-  stepRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, position: 'relative', paddingBottom: space.sm },
-  stepCircle: { width: 32, height: 32, borderRadius: 16, borderWidth: 2, borderColor: colors.outlineVariant, alignItems: 'center', justifyContent: 'center', flexShrink: 0, backgroundColor: colors.surface },
-  stepCircleDone: { backgroundColor: colors.tertiary, borderColor: colors.tertiary },
-  stepNumText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurfaceVariant },
-  stepContent: { flex: 1 },
-  stepTitle: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
-  stepTitleDone: { color: colors.tertiary },
-  stepDetail: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurfaceVariant, lineHeight: 17, marginTop: 2 },
-  stepBadge: { alignSelf: 'flex-start', marginTop: 4, paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.surfaceContainerHigh },
-  stepBadgeDone: { backgroundColor: colors.positiveContainer },
-  stepBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurface },
-  stepBadgeTextDone: { color: colors.tertiary },
-  stepLine: { position: 'absolute', left: 15, top: 34, width: 2, height: 24, backgroundColor: colors.outlineVariant },
-  dock: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant, gap: 8 },
-  trackBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: touch.targetHero, backgroundColor: colors.primaryContainer, borderRadius: radius.lg, shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
-  trackBtnText: { fontFamily: fontFamily.extraBold, fontSize: 13, color: colors.onPrimary, flex: 1, textAlign: 'center' },
-  pdfBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: touch.targetMin, borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.outlineVariant },
-  pdfBtnText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.primary },
-  shareBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: touch.targetMin, borderRadius: radius.lg, backgroundColor: colors.positiveContainer },
-  shareBtnText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.tertiary },
-  helpRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 4 },
-  helpText: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.outline, flex: 1, lineHeight: 15 },
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingHorizontal: space.md,
+    paddingTop: space.xl + 8,
+    paddingBottom: space.sm,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.outlineVariant,
+  },
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainerHigh,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerCenter: { flex: 1, minWidth: 0 },
+  headerTitle: { ...typography.titleLg, color: colors.onSurface, fontFamily: fontFamily.extraBold },
+  headerSub: { ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
+
+  scroll: { padding: space.md, paddingBottom: space.xxl, gap: space.sm },
+
+  heroCard: {
+    alignItems: 'center',
+    gap: 2,
+    padding: space.lg,
+    borderRadius: radius.lg,
+    backgroundColor: colors.positiveContainer,
+    borderWidth: 1,
+    borderColor: colors.tertiary,
+  },
+  heroLabel: { ...typography.labelMd, color: colors.onPositiveContainer },
+  heroValue: {
+    ...typography.displayLg,
+    color: colors.onPositiveContainer,
+    fontFamily: fontFamily.extraBold,
+  },
+  heroSub: { ...typography.labelSm, color: colors.onPositiveContainer },
+
+  card: {
+    padding: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+    gap: space.xs,
+  },
+  cardTitle: { ...typography.titleMd, color: colors.onSurface },
+
+  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.sm },
+  rowKey: { ...typography.bodySm, color: colors.onSurfaceVariant, flex: 1 },
+  rowVal: { ...typography.titleMd, color: colors.onSurface },
+  rowValNeg: { color: colors.critical },
+  rowTotal: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: space.sm,
+    marginTop: 2,
+    paddingTop: space.xs,
+    borderTopWidth: 1,
+    borderTopColor: colors.outlineVariant,
+  },
+  rowTotalKey: { ...typography.titleMd, color: colors.onSurface, flex: 1 },
+  rowTotalVal: { ...typography.titleLg, color: colors.primary, fontFamily: fontFamily.extraBold },
+
+  stageRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  stageDot: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: colors.surfaceContainerHigh,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stageDotDone: { backgroundColor: colors.primaryContainer, borderColor: colors.primaryContainer },
+  stageText: { ...typography.bodySm, color: colors.onSurfaceVariant, flex: 1 },
+  stageTextDone: { color: colors.onSurface, fontFamily: fontFamily.bold },
+  stageLine: { width: 0 },
+  statusNote: {
+    ...typography.labelSm,
+    color: colors.onSurfaceVariant,
+    marginTop: 2,
+    lineHeight: 16,
+  },
+
+  cta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    height: touch.targetHero,
+    borderRadius: radius.md,
+    backgroundColor: colors.primaryContainer,
+  },
+  ctaText: { ...typography.titleLg, color: colors.onPrimary, fontFamily: fontFamily.extraBold },
 });
