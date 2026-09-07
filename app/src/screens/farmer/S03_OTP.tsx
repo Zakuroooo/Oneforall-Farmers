@@ -12,6 +12,9 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ApiError, requestOtp, verifyOtp } from '../../lib/api';
+import { getPendingAuth, setPendingAuth, useAuth } from '../../lib/auth';
+import { USE_FIXTURES } from '../../config';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S3_OTP'>;
@@ -20,10 +23,21 @@ const RESEND_SECONDS = 30;
 
 export default function S03_OTP({ navigation }: Props) {
   const { t } = useT();
+  const { signIn } = useAuth();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [countdown, setCountdown] = useState(RESEND_SECONDS);
   const [verifying, setVerifying] = useState(false);
+  const [error, setError] = useState('');
   const inputs = useRef<(TextInput | null)[]>([]);
+
+  // S2 stores the phone the moment it requests an OTP (`setPendingAuth`,
+  // code left blank until this screen collects it) — there is nothing to
+  // verify without it, so a farmer who somehow lands here directly goes
+  // back rather than crashing on a null phone.
+  const phone = getPendingAuth()?.phone ?? null;
+  useEffect(() => {
+    if (!phone) navigation.replace('S2_Phone');
+  }, [phone, navigation]);
 
   // Countdown timer
   useEffect(() => {
@@ -41,12 +55,45 @@ export default function S03_OTP({ navigation }: Props) {
     if (!digit && idx > 0) inputs.current[idx - 1]?.focus();
   };
 
-  const handleVerify = () => {
+  // ★ BUG FIX: this used to be a bare `setTimeout` — any 6 digits "verified"
+  //   after 1.2s with no server round trip. Now it calls the real
+  //   `/auth/otp/verify`; success signs the farmer in directly (existing
+  //   account), and — per CANON §7.1's "identical error for wrong code and
+  //   unknown phone" — any failure is treated as "never registered" and
+  //   carries the same {phone, code} to S3_Profile, which verifies it for
+  //   real via `register()`.
+  const handleVerify = async () => {
+    if (!phone) return;
+    const code = otp.join('');
     setVerifying(true);
-    setTimeout(() => {
-      setVerifying(false);
+    setError('');
+    try {
+      if (USE_FIXTURES) {
+        setPendingAuth(phone, code);
+        navigation.navigate('S3_Profile');
+        return;
+      }
+      const res = await verifyOtp(phone, code);
+      await signIn(res);
+    } catch {
+      setPendingAuth(phone, code);
       navigation.navigate('S3_Profile');
-    }, 1200);
+    } finally {
+      setVerifying(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!phone) return;
+    setCountdown(RESEND_SECONDS);
+    setError('');
+    if (!USE_FIXTURES) {
+      try {
+        await requestOtp(phone);
+      } catch (e) {
+        setError(e instanceof ApiError ? e.message : t('network_error_generic'));
+      }
+    }
   };
 
   const filled = otp.filter(Boolean).length;
@@ -88,12 +135,14 @@ export default function S03_OTP({ navigation }: Props) {
 
         {/* Phone number row */}
         <View style={styles.phoneRow}>
-          <Text style={styles.phoneNum}>+91 98220 41209 {t('otp_sent_to')}</Text>
+          <Text style={styles.phoneNum}>{phone ?? ''} {t('otp_sent_to')}</Text>
           <TouchableOpacity style={styles.editBtn} onPress={() => navigation.goBack()}>
             <Icon name="edit" size={12} color={colors.primaryContainer} />
             <Text style={styles.editText}>{t('otp_edit')}</Text>
           </TouchableOpacity>
         </View>
+
+        {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
         {/* OTP boxes */}
         <Text style={styles.boxHint}>{t('otp_box_hint')}</Text>
@@ -138,40 +187,16 @@ export default function S03_OTP({ navigation }: Props) {
           <TouchableOpacity
             style={[styles.resendBtn, countdown > 0 && styles.resendBtnDisabled]}
             disabled={countdown > 0}
-            onPress={() => setCountdown(RESEND_SECONDS)}>
+            onPress={handleResend}>
             <Text style={[styles.resendBtnText, countdown > 0 && { color: colors.outline }]}>
               {t('otp_resend_btn')}
             </Text>
           </TouchableOpacity>
         </View>
 
-        {/* Alternative methods */}
-        <Text style={styles.altLabel}>{t('otp_alt_label')}</Text>
-        <View style={styles.altList}>
-          <TouchableOpacity style={styles.altCard}>
-            <View style={[styles.altIconBg, { backgroundColor: 'rgba(4,120,87,0.08)' }]}>
-              <Icon name="message-circle" size={18} color={colors.tertiary} />
-            </View>
-            <View style={styles.altInfo}>
-              <View style={styles.altTitleRow}>
-                <Text style={styles.altTitle}>{t('otp_whatsapp_title')}</Text>
-                <View style={styles.instantBadge}><Text style={styles.instantText}>{t('otp_instant')}</Text></View>
-              </View>
-              <Text style={styles.altSub}>{t('otp_whatsapp_sub')}</Text>
-            </View>
-            <Icon name="chevron-right" size={16} color={colors.outline} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.altCard}>
-            <View style={[styles.altIconBg, { backgroundColor: 'rgba(155,47,0,0.08)' }]}>
-              <Icon name="phone" size={18} color={colors.primary} />
-            </View>
-            <View style={styles.altInfo}>
-              <Text style={styles.altTitle}>{t('otp_call_title')}</Text>
-              <Text style={styles.altSub}>{t('otp_call_sub')}</Text>
-            </View>
-            <Icon name="chevron-right" size={16} color={colors.outline} />
-          </TouchableOpacity>
-        </View>
+        {/* ★ "Get OTP on WhatsApp" and "Receive by Phone Call" removed —
+            neither channel exists; SMS via `/auth/otp/request` is the only
+            delivery path this product actually has. */}
 
         {/* Footer trust */}
         <View style={styles.footerRow}>
@@ -248,6 +273,10 @@ const styles = StyleSheet.create({
     backgroundColor: colors.onPrimaryContainer,
   },
   editText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primaryContainer },
+  errorText: {
+    fontFamily: fontFamily.semiBold, fontSize: 13, color: colors.critical,
+    textAlign: 'center', marginHorizontal: space.md, marginTop: space.xs,
+  },
   boxHint: {
     fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant,
     textAlign: 'center', marginTop: space.lg, marginBottom: space.sm,

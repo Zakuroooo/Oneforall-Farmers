@@ -1,26 +1,45 @@
 /**
- * S3 — name, district, village. The `register` call.
+ * S3_Profile — Screen 06: name, district, village. The `register` call.
+ *
+ * Restyled to match the Stitch "Mandi Tactile Modern" system already used on
+ * S2_Phone/S3_OTP — this screen had been left on its pre-redesign green/white
+ * bank-form look, which is exactly the "your details section is completely
+ * different" mismatch flagged against the rest of the onboarding flow.
  *
  * ★ I9. There is no Aadhaar field on this screen, there is no Aadhaar field
  *   anywhere, and there is no "optional" version of one. Phone is the identifier.
  *
- * ★ Reads `{phone, code}` from `getPendingAuth()` (`lib/auth.tsx`) — set by S2,
+ * ★ Reads `{phone, code}` from `getPendingAuth()` (`lib/auth.tsx`) — set by S2/S3_OTP,
  *   never carried as a navigation param (I14). If it is missing — a Metro reload
  *   wiped the module-level holder, or someone reached this screen without going
  *   through S2 — there is nothing to register, so this screen sends the farmer
  *   back to S2 instead of crashing on a null phone at submit time.
  *
  * ★ `role: 'FARMER'` is fixed, not a picker. This is the farmer app's own
- *   registration screen; a buyer registers through Shreya's S17 equivalent, which
+ *   registration screen; a buyer registers through the buyer login screen, which
  *   sends `role: 'BUYER'`. One binary, but each onboarding path only ever writes
  *   its own role.
+ *
+ * ★ No default name. A placeholder value in a "your name" field is exactly the
+ *   kind of fabricated identity this app has been burned by before — the field
+ *   starts empty and stays empty until the farmer types or speaks into it.
  *
  * District comes from `GET /ref/districts` (Kartik's K5), which does not exist
  * yet — this reads `fixtures/auth.ts`'s `fxDistricts` until it does.
  */
 
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { ApiError, getDistricts, register } from '../../lib/api';
@@ -31,6 +50,8 @@ import { speakText } from '../../lib/voice';
 import { RegistrationAgent } from '../../lib/registrationAgent';
 import type { AgentAction } from '../../lib/registrationAgent';
 import { VoiceMic } from '../../components/ui/VoiceMic';
+import { Icon } from '../../components/ui/Icon';
+import { colors, fontFamily, radius, space, touch } from '../../theme/tokens';
 import { USE_FIXTURES } from '../../config';
 import { fxAuthRegistered, fxDistricts } from '../../fixtures/auth';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
@@ -40,7 +61,7 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'S3_Profile'>;
 
 export default function S03_Profile({ navigation }: Props) {
   const { signIn } = useAuth();
-  const [name, setName] = useState('रामभाऊ पाटील');
+  const [name, setName] = useState('');
   const [village, setVillage] = useState('');
   const [districts, setDistricts] = useState<District[]>([]);
   const [districtId, setDistrictId] = useState<string | null>(null);
@@ -49,6 +70,8 @@ export default function S03_Profile({ navigation }: Props) {
   const [error, setError] = useState<string | null>(null);
   const [districtsLoading, setDistrictsLoading] = useState(true);
   const [districtsError, setDistrictsError] = useState(false);
+
+  const canGoBack = navigation.canGoBack();
 
   // ★ Registration by voice — `RegistrationAgent` owns the name/district/
   // village slot logic; this screen only renders whatever action it hands
@@ -75,7 +98,7 @@ export default function S03_Profile({ navigation }: Props) {
 
   // Speaks whatever the agent is currently asking or confirming — every
   // `ask`/`retry`/`prefill` transition gets its own utterance; `done` is
-  // silent (the "पुढे" button lighting up is feedback enough).
+  // silent (the CTA lighting up is feedback enough).
   useEffect(() => {
     if (!agentAction) return;
     if (agentAction.type === 'ask') void speakText(agentAction.question_mr);
@@ -162,169 +185,277 @@ export default function S03_Profile({ navigation }: Props) {
   const canSubmit = name.trim().length > 0 && districtId !== null && !loading;
 
   return (
-    <ScrollView contentContainerStyle={styles.root}>
-      <Text style={styles.title}>{translate('profile_title', locale)}</Text>
+    <KeyboardAvoidingView style={styles.root} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
 
-      {agent && agentAction && agentAction.type !== 'done' ? (
-        <View style={styles.voiceCard}>
-          <Text style={styles.voicePrompt}>
-            {agentAction.type === 'ask'
-              ? agentAction.question_mr
-              : agentAction.type === 'retry'
-                ? agentAction.message_mr
-                : agentAction.confirm_mr}
-          </Text>
+      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        {/* ── Header ─────────────────────────────────── */}
+        <View style={styles.header}>
+          {canGoBack && (
+            <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+              <Icon name="arrow-left" size={20} color={colors.onSurface} />
+            </TouchableOpacity>
+          )}
+          <Text style={styles.headerTitle}>{translate('profile_title', locale)}</Text>
+        </View>
 
-          {agentAction.type === 'prefill' ? (
-            <View style={styles.confirmRow}>
-              <TouchableOpacity style={styles.confirmYes} onPress={onVoiceConfirm}>
-                <Text style={styles.confirmYesText}>{translate('voice_confirm_yes', locale)}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.confirmNo} onPress={onVoiceDeny}>
-                <Text style={styles.confirmNoText}>{translate('voice_confirm_no', locale)}</Text>
+        {/* ── Voice registration agent ────────────────── */}
+        {agent && agentAction && agentAction.type !== 'done' ? (
+          <View style={styles.voiceCard}>
+            <View style={styles.voiceIconRow}>
+              <Icon name="mic" size={16} color={colors.primary} />
+              <Text style={styles.voicePrompt}>
+                {agentAction.type === 'ask'
+                  ? agentAction.question_mr
+                  : agentAction.type === 'retry'
+                    ? agentAction.message_mr
+                    : agentAction.confirm_mr}
+              </Text>
+            </View>
+
+            {agentAction.type === 'prefill' ? (
+              <View style={styles.confirmRow}>
+                <TouchableOpacity style={styles.confirmYes} onPress={onVoiceConfirm}>
+                  <Icon name="check" size={16} color={colors.onPrimary} />
+                  <Text style={styles.confirmYesText}>{translate('voice_confirm_yes', locale)}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.confirmNo} onPress={onVoiceDeny}>
+                  <Text style={styles.confirmNoText}>{translate('voice_confirm_no', locale)}</Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <VoiceMic locale={locale} onTranscript={onVoiceTranscript} />
+            )}
+          </View>
+        ) : null}
+
+        {/* ── Name ─────────────────────────────────────── */}
+        <View style={styles.fieldCard}>
+          <Text style={styles.fieldLabel}>{translate('name', locale)}</Text>
+          <TextInput
+            style={styles.input}
+            value={name}
+            onChangeText={setName}
+            placeholder={translate('name_placeholder', locale)}
+            placeholderTextColor={colors.outline}
+            accessibilityLabel={translate('name', locale)}
+          />
+        </View>
+
+        {/* ── District ─────────────────────────────────── */}
+        <View style={styles.fieldCard}>
+          <Text style={styles.fieldLabel}>{translate('district', locale)}</Text>
+          {districtsLoading ? (
+            <Text style={styles.statusText}>{translate('district_loading', locale)}</Text>
+          ) : districtsError ? (
+            <View style={styles.statusRow}>
+              <Text style={styles.statusErrorText}>{translate('district_error', locale)}</Text>
+              <TouchableOpacity onPress={loadDistricts}>
+                <Text style={styles.retryLink}>{translate('retry_button', locale)}</Text>
               </TouchableOpacity>
             </View>
+          ) : districts.length === 0 ? (
+            <Text style={styles.statusText}>{translate('district_empty', locale)}</Text>
           ) : (
-            <VoiceMic locale={locale} onTranscript={onVoiceTranscript} />
+            <View style={styles.districtRow}>
+              {districts.map(d => {
+                const isSelected = d.id === districtId;
+                return (
+                  <TouchableOpacity
+                    key={d.id}
+                    onPress={() => setDistrictId(d.id)}
+                    style={[styles.districtChip, isSelected && styles.districtChipSelected]}>
+                    <Text style={[styles.districtLabel, isSelected && styles.districtLabelSelected]}>
+                      {d.name_mr}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
           )}
         </View>
-      ) : null}
 
-      <Text style={styles.label}>{translate('name', locale)}</Text>
-      <TextInput
-        style={styles.input}
-        value={name}
-        onChangeText={setName}
-        placeholder={translate('name_placeholder', locale)}
-        accessibilityLabel={translate('name', locale)}
-      />
-
-      <Text style={styles.label}>{translate('district', locale)}</Text>
-      {districtsLoading ? (
-        <Text style={styles.districtStatus}>{translate('district_loading', locale)}</Text>
-      ) : districtsError ? (
-        <View style={styles.districtStatusRow}>
-          <Text style={styles.districtStatusError}>{translate('district_error', locale)}</Text>
-          <TouchableOpacity onPress={loadDistricts}>
-            <Text style={styles.restart}>{translate('retry_button', locale)}</Text>
-          </TouchableOpacity>
+        {/* ── Village (optional) ──────────────────────── */}
+        <View style={styles.fieldCard}>
+          <Text style={styles.fieldLabel}>{translate('village_label_optional', locale)}</Text>
+          <TextInput
+            style={styles.input}
+            value={village}
+            onChangeText={setVillage}
+            placeholder={translate('village_placeholder', locale)}
+            placeholderTextColor={colors.outline}
+            accessibilityLabel={translate('village', locale)}
+          />
         </View>
-      ) : districts.length === 0 ? (
-        <Text style={styles.districtStatus}>{translate('district_empty', locale)}</Text>
-      ) : (
-        <View style={styles.districtRow}>
-          {districts.map(d => {
-            const isSelected = d.id === districtId;
-            return (
-              <TouchableOpacity
-                key={d.id}
-                onPress={() => setDistrictId(d.id)}
-                style={[styles.districtChip, isSelected && styles.districtChipSelected]}>
-                <Text style={[styles.districtLabel, isSelected && styles.districtLabelSelected]}>
-                  {d.name_mr}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      )}
 
-      <Text style={styles.label}>{translate('village_label_optional', locale)}</Text>
-      <TextInput
-        style={styles.input}
-        value={village}
-        onChangeText={setVillage}
-        placeholder={translate('village_placeholder', locale)}
-        accessibilityLabel={translate('village', locale)}
-      />
+        {error ? (
+          <View style={styles.errorCard}>
+            <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity onPress={restart}>
+              <Text style={styles.retryLink}>{translate('restart_otp_link', locale)}</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
+      </ScrollView>
 
-      {error ? (
-        <View style={styles.errorBox}>
-          <Text style={styles.error}>{error}</Text>
-          <TouchableOpacity onPress={restart}>
-            <Text style={styles.restart}>{translate('restart_otp_link', locale)}</Text>
-          </TouchableOpacity>
-        </View>
-      ) : null}
-
-      <TouchableOpacity
-        onPress={submit}
-        disabled={!canSubmit}
-        style={[styles.button, !canSubmit && styles.buttonDisabled]}>
-        <Text style={styles.buttonLabel}>{loading ? '...' : translate('next', locale)}</Text>
-      </TouchableOpacity>
-    </ScrollView>
+      {/* ── Fixed CTA ────────────────────────────────── */}
+      <View style={styles.dock}>
+        <TouchableOpacity
+          style={[styles.ctaBtn, !canSubmit && styles.ctaBtnDisabled]}
+          disabled={!canSubmit}
+          onPress={submit}>
+          {loading ? (
+            <Text style={styles.ctaText}>{translate('lot_creating', locale)}</Text>
+          ) : (
+            <>
+              <Text style={styles.ctaText}>{translate('next', locale)}</Text>
+              <Icon name="arrow-right" size={20} color={colors.onPrimary} />
+            </>
+          )}
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
-const GREEN = '#1B5E20';
-
 const styles = StyleSheet.create({
-  root: { flex: 1, padding: 24, justifyContent: 'center' },
-  title: { fontSize: 24, fontWeight: '700', color: '#212121', marginBottom: 24 },
-  label: { fontSize: 15, color: '#555', marginBottom: 6, marginTop: 4 },
-  input: {
-    borderWidth: 2,
-    borderColor: '#DDD',
-    borderRadius: 12,
-    padding: 14,
-    fontSize: 18,
-    // A TextInput with no `color` renders what the farmer types in the
-    // platform default — invisible on a dark-mode device.
-    color: '#212121',
-    marginBottom: 16,
-  },
-  districtRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 10, marginBottom: 16 },
-  districtStatus: { fontSize: 14, color: '#888', marginBottom: 16 },
-  districtStatusRow: { marginBottom: 16, gap: 6 },
-  districtStatusError: { fontSize: 14, color: '#C62828' },
-  districtChip: {
-    borderWidth: 2,
-    borderColor: '#DDD',
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  districtChipSelected: { borderColor: GREEN, backgroundColor: '#E8F5E9' },
-  districtLabel: { fontSize: 16, color: '#333' },
-  districtLabelSelected: { color: GREEN, fontWeight: '700' },
-  errorBox: { marginBottom: 16 },
-  error: { color: '#C62828', fontSize: 14, marginBottom: 6 },
-  restart: { color: GREEN, fontSize: 14, fontWeight: '600' },
-  button: {
-    marginTop: 8,
-    backgroundColor: GREEN,
-    borderRadius: 12,
-    paddingVertical: 16,
+  root: { flex: 1, backgroundColor: colors.background },
+  scrollContent: { paddingBottom: 100 },
+
+  header: {
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: space.sm,
+    paddingHorizontal: space.md,
+    paddingTop: space.xl + 20,
+    paddingBottom: space.sm,
   },
-  buttonDisabled: { opacity: 0.5 },
-  buttonLabel: { color: '#FFF', fontSize: 18, fontWeight: '700' },
+  backBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: { fontFamily: fontFamily.bold, fontSize: 20, color: colors.onSurface },
+
   voiceCard: {
-    backgroundColor: '#F0FDF4',
-    borderWidth: 1.5,
-    borderColor: '#BBF7D0',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 20,
+    marginHorizontal: space.md,
+    marginTop: space.sm,
+    padding: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.positiveContainer,
+    borderWidth: 1,
+    borderColor: 'rgba(4,120,87,0.2)',
   },
-  voicePrompt: { fontSize: 16, fontWeight: '700', color: '#1B5E20', marginBottom: 8, textAlign: 'center' },
-  confirmRow: { flexDirection: 'row', gap: 12, marginTop: 8 },
+  voiceIconRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.xs, marginBottom: space.sm },
+  voicePrompt: { flex: 1, fontFamily: fontFamily.bold, fontSize: 15, color: colors.onPositiveContainer },
+  confirmRow: { flexDirection: 'row', gap: space.sm },
   confirmYes: {
     flex: 1,
-    backgroundColor: GREEN,
-    borderRadius: 12,
-    paddingVertical: 14,
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    backgroundColor: colors.primary,
+    borderRadius: radius.md,
+    paddingVertical: 12,
   },
-  confirmYesText: { color: '#FFFFFF', fontSize: 16, fontWeight: '700' },
+  confirmYesText: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onPrimary },
   confirmNo: {
     flex: 1,
-    borderWidth: 1.5,
-    borderColor: GREEN,
-    borderRadius: 12,
-    paddingVertical: 14,
     alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1.5,
+    borderColor: colors.primary,
+    borderRadius: radius.md,
+    paddingVertical: 12,
   },
-  confirmNoText: { color: GREEN, fontSize: 16, fontWeight: '700' },
+  confirmNoText: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primary },
+
+  fieldCard: {
+    marginHorizontal: space.md,
+    marginTop: space.md,
+    padding: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+  },
+  fieldLabel: {
+    fontFamily: fontFamily.semiBold,
+    fontSize: 12,
+    color: colors.onSurfaceVariant,
+    letterSpacing: 0.4,
+    marginBottom: space.xs,
+    textTransform: 'uppercase',
+  },
+  input: {
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainerLow,
+    borderWidth: 1,
+    borderColor: colors.borderField,
+    paddingHorizontal: space.sm,
+    paddingVertical: 12,
+    fontFamily: fontFamily.bold,
+    fontSize: 16,
+    color: colors.onSurface,
+  },
+  statusText: { fontFamily: fontFamily.regular, fontSize: 13, color: colors.onSurfaceVariant },
+  statusRow: { gap: 6 },
+  statusErrorText: { fontFamily: fontFamily.semiBold, fontSize: 13, color: colors.critical },
+  retryLink: { fontFamily: fontFamily.semiBold, fontSize: 13, color: colors.primaryContainer },
+
+  districtRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  districtChip: {
+    borderWidth: 1.5,
+    borderColor: colors.outlineVariant,
+    borderRadius: radius.full,
+    paddingVertical: 8,
+    paddingHorizontal: space.sm,
+    backgroundColor: colors.surface,
+  },
+  districtChipSelected: {
+    borderColor: colors.primaryContainer,
+    backgroundColor: colors.onPrimaryContainer,
+  },
+  districtLabel: { fontFamily: fontFamily.medium, fontSize: 14, color: colors.onSurface },
+  districtLabelSelected: { fontFamily: fontFamily.bold, color: colors.primaryContainer },
+
+  errorCard: {
+    marginHorizontal: space.md,
+    marginTop: space.md,
+    padding: space.md,
+    borderRadius: radius.md,
+    backgroundColor: colors.criticalContainer,
+    gap: 6,
+  },
+  errorText: { fontFamily: fontFamily.semiBold, fontSize: 13, color: colors.critical },
+
+  dock: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: space.md,
+    paddingBottom: space.xl,
+    paddingTop: space.sm,
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.outlineVariant,
+  },
+  ctaBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: touch.targetHero,
+    backgroundColor: colors.primaryContainer,
+    borderRadius: radius.lg,
+    gap: space.sm,
+  },
+  ctaBtnDisabled: { backgroundColor: colors.surfaceContainerHigh },
+  ctaText: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.onPrimary, letterSpacing: 0.3 },
 });

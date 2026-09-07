@@ -143,7 +143,16 @@ export default function S04_Home({ navigation }: Props) {
              redundant second header. This row now shows page context
              (who's signed in, which market) instead of the app name. */}
         <View style={styles.topBar}>
-          <View>
+          <TouchableOpacity
+            style={styles.menuBtn}
+            onPress={() => navigation.getParent()?.getParent()?.navigate('Menu' as never)}
+            accessibilityRole="button"
+            accessibilityLabel={t('app_name')}>
+            <View style={styles.hamburgerLine} />
+            <View style={styles.hamburgerLine} />
+            <View style={styles.hamburgerLine} />
+          </TouchableOpacity>
+          <View style={styles.topBarText}>
             <Text style={styles.topGreeting} numberOfLines={1}>
               {user?.name ?? t('app_name')}
             </Text>
@@ -363,6 +372,22 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.outlineVariant,
   },
+  menuBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    marginRight: space.sm,
+  },
+  hamburgerLine: {
+    width: 20,
+    height: 2,
+    borderRadius: 1,
+    backgroundColor: colors.onSurface,
+  },
+  topBarText: { flex: 1 },
   topGreeting: {
     fontFamily: fontFamily.extraBold,
     fontSize: 20,

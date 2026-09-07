@@ -62,7 +62,6 @@ async function ensureMicPermission(): Promise<boolean> {
 export default function S02_Phone({ navigation }: Props) {
   const { t } = useT();
   const [phone, setPhone] = useState('');
-  const [selectedSim, setSelectedSim] = useState<1 | 2>(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [micState, setMicState] = useState<MicState>('idle');
@@ -189,9 +188,14 @@ export default function S02_Phone({ navigation }: Props) {
               placeholderTextColor={colors.outline}
               maxLength={10}
             />
-            {/* Voice input button */}
+            {/* Voice input button — tap starts listening, tap again stops
+                and transcribes. The filled red circle while recording is
+                the "tapping this again will stop it" affordance; the
+                colour-only version of this button gave no visible signal
+                that it was mid-recording at all. */}
             <TouchableOpacity
-              style={styles.micBtn}
+              style={micState === 'recording' ? [styles.micBtn, styles.micBtnRecording] : styles.micBtn}
+
               activeOpacity={0.7}
               onPress={onMicPress}
               disabled={micState === 'transcribing'}
@@ -206,7 +210,7 @@ export default function S02_Phone({ navigation }: Props) {
               <Icon
                 name="mic"
                 size={20}
-                color={micState === 'recording' ? colors.critical : colors.primary}
+                color={micState === 'recording' ? colors.onCritical : colors.primary}
               />
             </TouchableOpacity>
           </View>
@@ -227,38 +231,13 @@ export default function S02_Phone({ navigation }: Props) {
           </View>
         </View>
 
-        {/* ── SIM selection ──────────────────────────── */}
-        <View style={styles.simSection}>
-          <View style={styles.simHeaderRow}>
-            <Icon name="sim" size={14} color={colors.onSurfaceVariant} />
-            <Text style={styles.simLabel}>{t('phone_sim_detected')}</Text>
-            <View style={styles.autoDetectBadge}>
-              <Icon name="signal" size={10} color={colors.tertiary} />
-              <Text style={styles.autoDetectText}>{t('phone_auto_detect')}</Text>
-            </View>
-          </View>
-          <View style={styles.simRow}>
-            {[1, 2].map((simNum) => (
-              <TouchableOpacity
-                key={simNum}
-                style={[styles.simCard, selectedSim === simNum && styles.simCardActive]}
-                onPress={() => setSelectedSim(simNum as 1 | 2)}>
-                <Icon
-                  name="sim"
-                  size={16}
-                  color={selectedSim === simNum ? colors.primaryContainer : colors.outline}
-                />
-                <Text style={[styles.simNum, selectedSim === simNum && styles.simNumActive]}>
-                  SIM {simNum}
-                </Text>
-                <Text style={styles.simCarrier}>Jio {simNum === 1 ? '• 4G' : '• VoLTE'}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
-        {/* ★ "Free lifetime registration" banner removed — not necessary
-            on the phone-entry screen, per explicit product direction. */}
+        {/* ★ SIM 1 / SIM 2 detection removed — this app has no runtime
+            permission to read a device's actual SIM slots, so the picker
+            was cosmetic local state pretending to be a real device reading.
+            The farmer types the number they want, once, above.
+            "Free lifetime registration" banner also removed — not
+            necessary on the phone-entry screen, per explicit product
+            direction. */}
 
         {/* ── Today's price strip ────────────────────── */}
         <View style={styles.priceStrip}>
@@ -273,11 +252,9 @@ export default function S02_Phone({ navigation }: Props) {
           </View>
         </View>
 
-        {/* ── WhatsApp fallback row ──────────────────── */}
-        <View style={styles.whatsappRow}>
-          <Icon name="volume" size={13} color={colors.primary} />
-          <Text style={styles.whatsappText}>{t('phone_free_whatsapp')}</Text>
-        </View>
+        {/* ★ "Get instant OTP via WhatsApp" row removed — there is no
+            WhatsApp delivery channel wired anywhere in this product; SMS
+            via `/auth/otp/request` is the only real path. */}
 
         {/* ── Terms ─────────────────────────────────── */}
         <View style={styles.termsRow}>
@@ -289,11 +266,10 @@ export default function S02_Phone({ navigation }: Props) {
           </Text>
         </View>
 
-        {/* ── Footer ────────────────────────────────── */}
-        <View style={styles.footerRow}>
-          <Icon name="signal" size={10} color={colors.tertiary} />
-          <Text style={styles.footerText}>{t('phone_footer')}</Text>
-        </View>
+        {/* ★ The "Lasalgaon Node v2.4 · 99.9% uptime" footer was a hardcoded
+            infrastructure claim with no real node, version, or uptime
+            metric behind it — removed rather than fixed, since there is
+            nothing true to put in its place yet. */}
       </ScrollView>
 
       {/* ── Fixed CTA ──────────────────────────────── */}
@@ -458,6 +434,10 @@ const styles = StyleSheet.create({
   micBtn: {
     padding: space.sm,
     marginRight: 4,
+    borderRadius: radius.full,
+  },
+  micBtnRecording: {
+    backgroundColor: colors.critical,
   },
   otpSecureRow: {
     flexDirection: 'row',
