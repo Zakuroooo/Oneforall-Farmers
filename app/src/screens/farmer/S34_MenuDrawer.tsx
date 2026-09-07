@@ -42,7 +42,7 @@ const LANGUAGES: { code: Locale; label: string }[] = [
 
 export default function S34_MenuDrawer({ navigation }: Props) {
   const { user, signOut } = useAuth();
-  const { t, locale, setLocale } = useT();
+  const { t, locale } = useT();
 
   // ★ Closing the menu with `navigate` used to just push the target screen on
   //   top of whatever the MyLots tab's stack already had piled up (the whole
@@ -145,25 +145,14 @@ export default function S34_MenuDrawer({ navigation }: Props) {
           </TouchableOpacity>
         </View>
 
-        {/* Language. The three chips switch instantly and stay — they are the
-            fast path. The row beneath opens Stitch 36, which is the same
-            choice with the per-language voice and preview detail the chips
-            have no room for. */}
+        {/* Language. One selector, not two — the three inline chips and a
+            row opening the same choice as a full screen were both here, so
+            the menu offered the language picker twice in the same card. The
+            full screen wins: it carries the per-language voice and preview
+            detail the chips have no room for, and the active language is
+            already shown here as its value. */}
         <Text style={styles.sectionLabel}>{t('select_language')}</Text>
         <View style={styles.menuCard}>
-          <View style={styles.langRow}>
-            {LANGUAGES.map(l => (
-              <TouchableOpacity
-                key={l.code}
-                onPress={() => setLocale(l.code)}
-                style={[styles.langChip, locale === l.code && styles.langChipActive]}>
-                <Text style={[styles.langChipText, locale === l.code && styles.langChipTextActive]}>
-                  {l.label}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-          <View style={styles.menuDivider} />
           <TouchableOpacity
             style={styles.menuRow}
             onPress={() => navigation.navigate('LanguageSwitcher')}
@@ -172,6 +161,9 @@ export default function S34_MenuDrawer({ navigation }: Props) {
               <Icon name="globe" size={16} color={colors.primary} />
             </View>
             <Text style={styles.menuTitle}>{t('select_language')}</Text>
+            <Text style={styles.menuValue}>
+              {LANGUAGES.find(l => l.code === locale)?.label ?? ''}
+            </Text>
             <Icon name="chevron-right" size={16} color={colors.outline} />
           </TouchableOpacity>
         </View>
@@ -226,6 +218,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   menuTitle: { flex: 1, fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
+  menuValue: { fontFamily: fontFamily.medium, fontSize: 13, color: colors.onSurfaceVariant },
   menuDivider: { height: 1, backgroundColor: colors.outlineVariant, marginLeft: 52 },
 
   langRow: { flexDirection: 'row', gap: space.xs, padding: space.md },

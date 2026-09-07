@@ -221,7 +221,7 @@ export type MyLotsStackParamList = {
    *  review, not yet backed by the API. See the import comment above. */
   S22_PricePublish: { lot_id?: string } | undefined;
   S23_PublishedRadar: { lot_id?: string; asking_paise?: number } | undefined;
-  S24_LotDetail: undefined;
+  S24_LotDetail: { lot_id?: string; asking_paise?: number } | undefined;
   S25_BuyersForLot: undefined;
   S26_BuyerProfile: undefined;
   S27_Bargaining: undefined;
