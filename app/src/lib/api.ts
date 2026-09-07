@@ -48,6 +48,7 @@ import type {
 } from '../types/api';
 
 const TOKEN_KEY = 'auth.token';
+const USER_KEY = 'auth.user';
 
 /**
  * Phase 1 stores the JWT in AsyncStorage, and we say so out loud rather than
@@ -68,6 +69,32 @@ export async function setToken(token: string): Promise<void> {
 
 export async function clearToken(): Promise<void> {
   await AsyncStorage.removeItem(TOKEN_KEY);
+  await AsyncStorage.removeItem(USER_KEY);
+}
+
+/**
+ * The last signed-in user, cached beside the token.
+ *
+ * ★ Why cache the user at all when `GET /auth/me` exists: because that call
+ *   needs a network, and a cold start without one used to drop the farmer at
+ *   the language picker — re-entering phone, OTP, name and district every
+ *   time. A 72-hour token that the device already holds is enough to know who
+ *   he is; the server still re-derives the actor on every read (I4), so this
+ *   cache is a convenience for rendering, never an authorization claim.
+ */
+export async function getCachedUser(): Promise<User | null> {
+  const raw = await AsyncStorage.getItem(USER_KEY);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as User;
+  } catch {
+    // A corrupt cache is not worth a crash on launch — treat it as absent.
+    return null;
+  }
+}
+
+export async function setCachedUser(user: User): Promise<void> {
+  await AsyncStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
 /**
