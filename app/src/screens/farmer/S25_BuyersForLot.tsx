@@ -299,7 +299,7 @@ export default function S25_BuyersForLot({ navigation, route }: Props) {
                 /* Was `navigate('S30_DealCounterOffer')` — a route no
                    navigator registers, so the button did nothing. This one
                    opens the real thread for this offer. */
-                onPress={() => navigation.navigate('S27_Bargaining', { offer_id: o.id })}
+                onPress={() => navigation.navigate('S14_CounterOffer', { offer_id: o.id })}
                 accessibilityRole="button">
                 <Text style={[styles.ctaText, isBest && styles.ctaTextBest]}>
                   {t('bfl_open_talk')}
