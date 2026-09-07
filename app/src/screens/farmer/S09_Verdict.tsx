@@ -160,6 +160,7 @@ export default function S09_Verdict({ navigation }: Props) {
           quote={data.pledge_quote}
           expectedGainPaise={data.expected_gain_paise}
           locale={locale}
+          onSeeLoanDetails={() => navigation.navigate('S13_CropLoan')}
         />
 
         {/* The one CTA with something real behind it. */}

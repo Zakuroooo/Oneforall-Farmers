@@ -38,7 +38,7 @@
  */
 
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { formatBps, formatNumber, formatPaise } from '../../lib/money';
 import { useT } from '../../lib/i18n';
@@ -54,9 +54,16 @@ export interface PledgeCardProps {
    */
   expectedGainPaise: number | null;
   locale: Locale;
+  /**
+   * Route out to Stitch 13, the full loan screen. A callback rather than a
+   * `navigation` object, for the same reason `VerdictCard.onSeeCosts` is:
+   * this component stays presentational and its suite can render it with no
+   * navigation container. Absent in tests, so the link simply is not offered.
+   */
+  onSeeLoanDetails?: () => void;
 }
 
-export function PledgeCard({ quote, expectedGainPaise, locale }: PledgeCardProps) {
+export function PledgeCard({ quote, expectedGainPaise, locale, onSeeLoanDetails }: PledgeCardProps) {
   const { t } = useT();
   // I13. Not a conditional inside a card — the absence of the card itself.
   if (quote === null) return null;
@@ -113,6 +120,16 @@ export function PledgeCard({ quote, expectedGainPaise, locale }: PledgeCardProps
       <Text testID="pledge-disclaimer" style={styles.disclaimer}>
         {quote.disclaimer}
       </Text>
+
+      {onSeeLoanDetails ? (
+        <TouchableOpacity
+          testID="pledge-see-details"
+          style={styles.detailsLink}
+          onPress={onSeeLoanDetails}
+          accessibilityRole="button">
+          <Text style={styles.detailsLinkText}>{t('loan_see_details')}</Text>
+        </TouchableOpacity>
+      ) : null}
     </View>
   );
 }
@@ -170,4 +187,6 @@ const styles = StyleSheet.create({
 
   warehouse: { fontSize: 13, color: '#666', marginTop: 16 },
   disclaimer: { fontSize: 12, color: '#8A6D3B', marginTop: 8, fontStyle: 'italic' },
+  detailsLink: { marginTop: 12, paddingVertical: 8 },
+  detailsLinkText: { fontSize: 15, fontWeight: '700', color: '#9B2F00' },
 });
