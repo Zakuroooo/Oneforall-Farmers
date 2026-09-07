@@ -1,171 +1,354 @@
 /**
- * S20_QualityDiagnostic — Screen 20: Physical assay / harvest grading questions.
- * Matched to Stitch `20_quality_diagnostic_harvest_grading_questions/screen.png`
- * ★ ZERO EMOJIS  ★ FULL I18N
+ * S20 — the six-question self-assay. Stitch screen 20
+ * (`20_quality_diagnostic_harvest_grading_questions`).
+ *
+ * ★ This screen carries the grading logic that used to live in
+ *   `S13_SelfAssay`. There is now one grading flow, not two: S20 collects
+ *   the six CANON §9 answers, `lib/grading.ts` scores them in exactly one
+ *   place, and S21 reveals the result. The previous S20 was a visual shell —
+ *   four questions, no submit, no navigation forward, and no way for an
+ *   answer to reach a grade.
+ *
+ * ★ CANON §9 + FRONTEND_NEEDS_AI.md §8.2: the photo is evidence, not input.
+ *   This screen produces a grade with **no photo at all** — a farmer with a
+ *   cracked camera still gets one. There is no camera permission and no
+ *   image picker here; that risk belongs to S12.
+ *
+ * ★ What the Stitch mockup asserts and this screen does not, because none of
+ *   it is real: "AI Detected: 75% Medium-Large" and "AI Photo Score: 98%
+ *   Clear" (no computer-vision model exists anywhere in this project — the
+ *   grade comes from the farmer's own six answers, and badging them as AI
+ *   detections would claim a capability we do not have), a "Mandi Price
+ *   Protection Guarantee", and an "APMC Board Verified Escrow Protocol"
+ *   stamp. In their place is the one thing that is true and worth saying:
+ *   answer honestly, because the buyer re-checks at the weighbridge.
  */
+
 import React, { useState } from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
-import { useT } from '../../lib/i18n';
+import { getLot, submitAssay } from '../../lib/api';
+import { translate, useT } from '../../lib/i18n';
+import { formatNumber, toQuintal } from '../../lib/money';
+import { computeGrade } from '../../lib/grading';
+import { DEFAULT_LOT_ID, USE_FIXTURES } from '../../config';
+import { fxLotListed } from '../../fixtures/lots';
+import { ErrorState, Skeleton } from '../../components/farmer/States';
+import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
+import type { AssayDimension, AssayReq, AssayRes } from '../../types/api';
 
-type Option = { label: string; sublabel?: string; badge?: string; badgeColor?: string };
+type Props = NativeStackScreenProps<MyLotsStackParamList, 'S20_QualityDiagnostic'>;
 
-export default function S20_QualityDiagnostic({ navigation }: any) {
-  const { t } = useT();
-  const [selected, setSelected] = useState<Record<string, number>>({});
+type Rating = 1 | 2 | 3;
 
-  const QUESTIONS: Array<{
-    num: string;
-    title: string;
-    badge?: string;
-    badgeColor?: string;
-    options: Option[];
-  }> = [
-    {
-      num: '1.',
-      title: t('quality_q1_title'),
-      badge: t('quality_q1_ai_badge'),
-      badgeColor: colors.positiveContainer,
-      options: [
-        { label: t('quality_q1_opt1'), sublabel: t('quality_q1_opt1_sub'), badge: t('quality_q1_opt1_badge') },
-        { label: t('quality_q1_opt2'), sublabel: t('quality_q1_opt2_sub') },
-        { label: t('quality_q1_opt3'), sublabel: t('quality_q1_opt3_sub') },
-      ],
+interface Answers {
+  size_uniform: Rating | null;
+  colour_uniform: Rating | null;
+  sprouting: Rating | null;
+  damage_pct: number | null;
+  moisture_feel: Rating | null;
+  foreign_matter: Rating | null;
+}
+
+const EMPTY_ANSWERS: Answers = {
+  size_uniform: null,
+  colour_uniform: null,
+  sprouting: null,
+  damage_pct: null,
+  moisture_feel: null,
+  foreign_matter: null,
+};
+
+const DAMAGE_STEP = 5;
+/** Five rating questions plus the damage stepper. */
+const TOTAL_QUESTIONS = 6;
+
+/** One row per CANON §9 dimension — dictionary keys, not text. */
+const RATING_QUESTIONS: Array<{
+  key: keyof Omit<Answers, 'damage_pct'>;
+  labelKey: string;
+  choices: Array<{ value: Rating; labelKey: string }>;
+}> = [
+  {
+    key: 'size_uniform',
+    labelKey: 'assay_q_size_uniform',
+    choices: [
+      { value: 3, labelKey: 'assay_size_uniform_3' },
+      { value: 2, labelKey: 'assay_size_uniform_2' },
+      { value: 1, labelKey: 'assay_size_uniform_1' },
+    ],
+  },
+  {
+    key: 'colour_uniform',
+    labelKey: 'assay_q_colour_uniform',
+    choices: [
+      { value: 3, labelKey: 'assay_colour_uniform_3' },
+      { value: 2, labelKey: 'assay_colour_uniform_2' },
+      { value: 1, labelKey: 'assay_colour_uniform_1' },
+    ],
+  },
+  {
+    key: 'sprouting',
+    labelKey: 'assay_q_sprouting',
+    choices: [
+      { value: 3, labelKey: 'assay_sprouting_3' },
+      { value: 2, labelKey: 'assay_sprouting_2' },
+      { value: 1, labelKey: 'assay_sprouting_1' },
+    ],
+  },
+  {
+    key: 'moisture_feel',
+    labelKey: 'assay_q_moisture_feel',
+    choices: [
+      { value: 3, labelKey: 'assay_moisture_feel_3' },
+      { value: 2, labelKey: 'assay_moisture_feel_2' },
+      { value: 1, labelKey: 'assay_moisture_feel_1' },
+    ],
+  },
+  {
+    key: 'foreign_matter',
+    labelKey: 'assay_q_foreign_matter',
+    choices: [
+      { value: 3, labelKey: 'assay_foreign_matter_3' },
+      { value: 2, labelKey: 'assay_foreign_matter_2' },
+      { value: 1, labelKey: 'assay_foreign_matter_1' },
+    ],
+  },
+];
+
+/** §8.2 — the improvement tip, named per `weakest_dimension`. */
+const TIP_KEY: Record<AssayDimension, string> = {
+  damage_pct: 'tip_damage_pct',
+  sprouting: 'tip_sprouting',
+  size_uniform: 'tip_size_uniform',
+  colour_uniform: 'tip_colour_uniform',
+  moisture_feel: 'tip_moisture_feel',
+  foreign_matter: 'tip_foreign_matter',
+};
+
+async function fetchLot(lotId: string) {
+  if (USE_FIXTURES) return fxLotListed;
+  return getLot(lotId);
+}
+
+/**
+ * `POST /lots/{id}/assay` — CANON §7.5. Under `USE_FIXTURES` the response is
+ * built the same way it would be graded server-side: `lib/grading.ts`'s
+ * formula, plus the tip text for the weakest dimension.
+ */
+async function persistAssay(lotId: string, body: AssayReq): Promise<AssayRes> {
+  if (USE_FIXTURES) {
+    const graded = computeGrade(body);
+    return {
+      score: graded.score,
+      grade: graded.grade,
+      weakest_dimension: graded.weakest_dimension,
+      // `AssayRes.tip_mr`/`tip_en` are fixed wire-shape fields (CANON §7.5),
+      // not UI text — always Marathi and always English respectively,
+      // regardless of the app's selected display locale.
+      tip_mr: translate(TIP_KEY[graded.weakest_dimension], 'mr'),
+      tip_en: translate(TIP_KEY[graded.weakest_dimension], 'en'),
+    };
+  }
+  return submitAssay(lotId, body);
+}
+
+export default function S20_QualityDiagnostic({ route, navigation }: Props) {
+  const { t, locale } = useT();
+  const lotId = route.params?.lot_id ?? DEFAULT_LOT_ID;
+
+  const { data: lot, isLoading, error, refetch } = useQuery({
+    queryKey: ['lots', lotId],
+    queryFn: () => fetchLot(lotId),
+  });
+
+  const [answers, setAnswers] = useState<Answers>(EMPTY_ANSWERS);
+
+  const { mutate: submit, isPending: submitting, isError: submitFailed } = useMutation({
+    mutationFn: (body: AssayReq) => persistAssay(lotId, body),
+    onSuccess: (result, body) => {
+      navigation.navigate('S21_GradeReveal', { result, answers: body, lot_id: lotId });
     },
-    {
-      num: '2.',
-      title: t('quality_q2_title'),
-      badge: t('quality_q2_ai_badge'),
-      badgeColor: colors.positiveContainer,
-      options: [
-        { label: t('quality_q2_opt1'), sublabel: t('quality_q2_opt1_sub') },
-        { label: t('quality_q2_opt2'), sublabel: t('quality_q2_opt2_sub') },
-        { label: t('quality_q2_opt3'), sublabel: t('quality_q2_opt3_sub') },
-      ],
-    },
-    {
-      num: '3.',
-      title: t('quality_q3_title'),
-      badge: t('quality_q3_ai_badge'),
-      badgeColor: colors.positiveContainer,
-      options: [
-        { label: t('quality_q3_opt1'), sublabel: t('quality_q3_opt1_sub') },
-        { label: t('quality_q3_opt2'), sublabel: t('quality_q3_opt2_sub') },
-      ],
-    },
-    {
-      num: '4.',
-      title: t('quality_q4_title'),
-      badge: t('quality_q4_ai_badge'),
-      badgeColor: colors.surfaceContainerHigh,
-      options: [
-        { label: t('quality_q4_opt1'), sublabel: t('quality_q4_opt1_sub'), badge: t('quality_q4_opt1_badge'), badgeColor: colors.positiveContainer },
-        { label: t('quality_q4_opt2'), sublabel: t('quality_q4_opt2_sub'), badge: t('quality_q4_opt2_badge'), badgeColor: '#FEF3C7' },
-        { label: t('quality_q4_opt3'), sublabel: t('quality_q4_opt3_sub'), badge: t('quality_q4_opt3_badge'), badgeColor: colors.surfaceContainerHigh },
-      ],
-    },
-  ];
+  });
+
+  const answeredCount = Object.values(answers).filter(v => v !== null).length;
+  const allAnswered = answeredCount === TOTAL_QUESTIONS;
+
+  const setRating = (key: keyof Omit<Answers, 'damage_pct'>, value: Rating) =>
+    setAnswers(prev => ({ ...prev, [key]: value }));
+
+  const adjustDamage = (delta: number) =>
+    setAnswers(prev => {
+      const current = prev.damage_pct ?? 0;
+      return { ...prev, damage_pct: Math.min(100, Math.max(0, current + delta)) };
+    });
+
+  const buildAssayReq = (): AssayReq | null => {
+    const { size_uniform, colour_uniform, sprouting, moisture_feel, foreign_matter, damage_pct } =
+      answers;
+    if (
+      size_uniform === null ||
+      colour_uniform === null ||
+      sprouting === null ||
+      moisture_feel === null ||
+      foreign_matter === null ||
+      damage_pct === null
+    ) {
+      return null;
+    }
+    return { size_uniform, colour_uniform, sprouting, damage_pct, moisture_feel, foreign_matter };
+  };
+
+  const onSubmit = () => {
+    const body = buildAssayReq();
+    if (body) submit(body);
+  };
+
+  const header = (
+    <View style={styles.header}>
+      <TouchableOpacity
+        style={styles.backBtn}
+        onPress={() => navigation.canGoBack() && navigation.goBack()}
+        accessibilityRole="button"
+        accessibilityLabel={t('back_button')}>
+        <Icon name="arrow-left" size={20} color={colors.onSurface} />
+      </TouchableOpacity>
+      <View style={styles.headerText}>
+        <Text style={styles.headerTitle}>{t('qd_title')}</Text>
+        {lot ? (
+          <Text style={styles.headerSub}>
+            {t('qd_subtitle', {
+              qty: formatNumber(toQuintal(lot.qty_kg), locale),
+              commodity: t('demo_commodity_name'),
+            })}
+          </Text>
+        ) : null}
+      </View>
+    </View>
+  );
+
+  if (isLoading) {
+    return (
+      <View style={styles.root}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+        {header}
+        <View style={styles.scroll}>
+          <Skeleton height={120} />
+          <View style={{ height: space.sm }} />
+          <Skeleton height={220} />
+        </View>
+      </View>
+    );
+  }
+
+  if (error && !lot) {
+    return <ErrorState message={t('self_assay_error')} onRetry={() => refetch()} />;
+  }
+
+  if (submitFailed) {
+    return <ErrorState message={t('self_assay_save_error')} onRetry={onSubmit} />;
+  }
+
+  const progress = Math.round((answeredCount / TOTAL_QUESTIONS) * 100);
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+      {header}
 
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.canGoBack() && navigation.goBack()}>
-          <Icon name="arrow-left" size={20} color={colors.onSurface} />
-        </TouchableOpacity>
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>{t('quality_header_title')}</Text>
-          <Text style={styles.headerSub}>{t('quality_header_sub')}</Text>
-        </View>
-        <Text style={styles.headerRef}>#LP-403</Text>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.primary} />
-          <Text style={styles.listenText}>{t('splash_listen')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Progress bar */}
-      <View style={styles.progressBg}>
-        <View style={[styles.progressFill, { width: '60%' }]} />
+      {/* Progress — real: how many of the six are answered, nothing else. */}
+      <View style={styles.progressTrack}>
+        <View style={[styles.progressFill, { width: `${progress}%` }]} />
       </View>
       <View style={styles.progressLabels}>
-        <Text style={styles.progressLabelActive}>{t('quality_progress_label')}</Text>
-        <View style={styles.draftBadge}>
-          <Icon name="check" size={10} color={colors.tertiary} />
-          <Text style={styles.draftText}>{t('quality_draft_badge')}</Text>
-        </View>
+        <Text style={styles.progressLabel}>{t('qd_progress_label')}</Text>
+        <Text style={styles.progressCount}>
+          {t('qd_answered', {
+            done: formatNumber(answeredCount, locale),
+            total: formatNumber(TOTAL_QUESTIONS, locale),
+          })}
+        </Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Lot summary */}
-        <View style={styles.lotCard}>
-          <View style={styles.lotThumbPlaceholder}>
-            <Icon name="camera" size={18} color={colors.onSurfaceVariant} />
-            <Text style={styles.lotThumbText}>3 Photos</Text>
-          </View>
-          <View style={styles.lotInfo}>
-            <Text style={styles.lotVariety}>{t('quality_lot_variety')}</Text>
-            <Text style={styles.lotSub}>{t('quality_lot_sub')}</Text>
-            <View style={styles.aiPhotoRow}>
-              <Icon name="star" size={11} color={colors.tertiary} />
-              <Text style={styles.aiPhotoText}>{t('quality_ai_photo')}</Text>
-            </View>
-          </View>
-        </View>
+        <Text style={styles.introText}>{t('self_assay_subheader')}</Text>
 
-        {/* Question sections */}
-        {QUESTIONS.map((q, qi) => (
-          <View key={qi} style={styles.section}>
+        {RATING_QUESTIONS.map((q, qi) => (
+          <View key={q.key} style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionNum}>{q.num}</Text>
-              <View style={styles.sectionTitles}>
-                <Text style={styles.sectionTitle}>{q.title}</Text>
-              </View>
-              {q.badge ? (
-                <View style={[styles.sectionBadge, { backgroundColor: q.badgeColor }]}>
-                  <Icon name="star" size={10} color={colors.tertiary} />
-                  <Text style={styles.sectionBadgeText}>{q.badge}</Text>
-                </View>
-              ) : null}
+              <Text style={styles.sectionNum}>{formatNumber(qi + 1, locale)}</Text>
+              <Text style={styles.sectionTitle}>{t(q.labelKey)}</Text>
             </View>
-
-            {q.options.map((opt, oi) => {
-              const active = selected[q.num] === oi;
+            {q.choices.map(c => {
+              const active = answers[q.key] === c.value;
               return (
                 <TouchableOpacity
-                  key={oi}
+                  key={c.value}
                   style={[styles.optionCard, active && styles.optionCardActive]}
-                  onPress={() => setSelected(s => ({ ...s, [q.num]: oi }))}
-                  activeOpacity={0.85}>
+                  onPress={() => setRating(q.key, c.value)}
+                  activeOpacity={0.85}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: active }}>
                   <View style={[styles.radio, active && styles.radioActive]}>
-                    {active && <View style={styles.radioFill} />}
+                    {active ? <View style={styles.radioFill} /> : null}
                   </View>
-                  <View style={styles.optionContent}>
-                    <View style={styles.optionTitleRow}>
-                      <Text style={[styles.optionLabel, active && styles.optionLabelActive]}>{opt.label}</Text>
-                      {opt.badge && (
-                        <View style={[styles.optBadge, { backgroundColor: opt.badgeColor || colors.surfaceContainerHighest }]}>
-                          <Text style={styles.optBadgeText}>{opt.badge}</Text>
-                        </View>
-                      )}
-                    </View>
-                    {opt.sublabel && <Text style={styles.optionSub}>{opt.sublabel}</Text>}
-                  </View>
+                  <Text style={[styles.optionLabel, active && styles.optionLabelActive]}>
+                    {t(c.labelKey)}
+                  </Text>
                 </TouchableOpacity>
               );
             })}
           </View>
         ))}
+
+        {/* Damage — a stepper, not a rating. */}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionNum}>{formatNumber(TOTAL_QUESTIONS, locale)}</Text>
+            <Text style={styles.sectionTitle}>{t('assay_damage_question')}</Text>
+          </View>
+          <View style={styles.stepperRow}>
+            <TouchableOpacity
+              style={styles.stepperBtn}
+              onPress={() => adjustDamage(-DAMAGE_STEP)}
+              accessibilityRole="button">
+              <Text style={styles.stepperBtnText}>−</Text>
+            </TouchableOpacity>
+            <Text style={styles.stepperValue}>
+              {formatNumber(answers.damage_pct ?? 0, locale)}%
+            </Text>
+            <TouchableOpacity
+              style={styles.stepperBtn}
+              onPress={() => adjustDamage(DAMAGE_STEP)}
+              accessibilityRole="button">
+              <Text style={styles.stepperBtnText}>+</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* The honest replacement for the mockup's guarantee stamps. */}
+        <View style={styles.honestNote}>
+          <Icon name="shield-check" size={17} color={colors.primary} />
+          <Text style={styles.honestNoteText}>{t('qd_honest_note')}</Text>
+        </View>
       </ScrollView>
 
-      {/* Action Dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.dockBtn} onPress={() => navigation.navigate('S21_PriceDiscovery')}>
-          <Text style={styles.dockBtnText}>{t('quality_btn_save')}</Text>
-          <Icon name="arrow-right" size={18} color={colors.onPrimary} />
+        <TouchableOpacity
+          style={[styles.cta, (!allAnswered || submitting) && styles.ctaDisabled]}
+          onPress={onSubmit}
+          disabled={!allAnswered || submitting}
+          accessibilityRole="button">
+          <Text style={styles.ctaText}>
+            {allAnswered
+              ? t('qd_cta')
+              : t('qd_cta_incomplete', { total: formatNumber(TOTAL_QUESTIONS, locale) })}
+          </Text>
+          {allAnswered ? <Icon name="arrow-right" size={18} color={colors.onPrimary} /> : null}
         </TouchableOpacity>
       </View>
     </View>
@@ -174,49 +357,146 @@ export default function S20_QualityDiagnostic({ navigation }: any) {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  header: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  backBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.surfaceContainerHigh, alignItems: 'center', justifyContent: 'center' },
-  headerCenter: { flex: 1 },
-  headerTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onSurface },
-  headerSub: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  headerRef: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primaryContainer },
-  listenBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.full, backgroundColor: 'rgba(155,47,0,0.08)' },
-  listenText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
-  progressBg: { height: 4, backgroundColor: colors.surfaceContainerHigh },
-  progressFill: { height: '100%', backgroundColor: colors.primary },
-  progressLabels: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.md, paddingVertical: space.sm, backgroundColor: colors.surface },
-  progressLabelActive: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primary },
-  draftBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.positiveContainer, paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm },
-  draftText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  scroll: { paddingBottom: 100 },
-  lotCard: { flexDirection: 'row', margin: space.md, padding: space.sm, borderRadius: radius.lg, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant },
-  lotThumbPlaceholder: { width: 48, height: 48, borderRadius: radius.md, backgroundColor: colors.surfaceContainerHighest, alignItems: 'center', justifyContent: 'center' },
-  lotThumbText: { fontFamily: fontFamily.bold, fontSize: 9, color: colors.onSurfaceVariant, marginTop: 2 },
-  lotInfo: { flex: 1, marginLeft: space.md, justifyContent: 'center' },
-  lotVariety: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, marginBottom: 2 },
-  lotSub: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, marginBottom: 6 },
-  aiPhotoRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  aiPhotoText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
-  section: { marginHorizontal: space.md, marginBottom: space.lg },
-  sectionHeader: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: space.sm },
-  sectionNum: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary, marginRight: 8, marginTop: 2 },
-  sectionTitles: { flex: 1 },
-  sectionTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onSurface },
-  sectionBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 6, paddingVertical: 3, borderRadius: radius.sm, marginLeft: 8, alignSelf: 'flex-start' },
-  sectionBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurface },
-  optionCard: { flexDirection: 'row', padding: space.md, marginBottom: space.sm, borderRadius: radius.lg, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant },
-  optionCardActive: { borderColor: colors.primaryContainer, backgroundColor: colors.onPrimaryContainer, borderWidth: 2 },
-  radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: colors.outlineVariant, alignItems: 'center', justifyContent: 'center', marginRight: space.md, marginTop: 2 },
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingHorizontal: space.md,
+    paddingTop: space.xl + 8,
+    paddingBottom: space.xs,
+    backgroundColor: colors.surface,
+  },
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainerHigh,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerText: { flex: 1 },
+  headerTitle: { ...typography.titleLg, color: colors.primary, fontFamily: fontFamily.extraBold },
+  headerSub: { ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
+
+  progressTrack: { height: 5, backgroundColor: colors.outlineVariant },
+  progressFill: { height: 5, backgroundColor: colors.primary },
+  progressLabels: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: space.md,
+    paddingVertical: 6,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.outlineVariant,
+  },
+  progressLabel: { ...typography.labelSm, color: colors.primary },
+  progressCount: { ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
+
+  scroll: { padding: space.md, paddingBottom: 140, gap: space.sm },
+  introText: { ...typography.bodySm, color: colors.onSurfaceVariant },
+
+  section: { gap: 6 },
+  sectionHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: space.xs, marginTop: space.xs },
+  sectionNum: {
+    ...typography.titleLg,
+    color: colors.primary,
+    fontFamily: fontFamily.extraBold,
+    minWidth: 22,
+  },
+  sectionTitle: { ...typography.titleMd, color: colors.onSurface, flex: 1 },
+
+  optionCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    padding: space.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    backgroundColor: colors.surface,
+    minHeight: touch.targetMin,
+  },
+  optionCardActive: {
+    borderWidth: 2,
+    borderColor: colors.primaryContainer,
+    backgroundColor: colors.onPrimaryContainer,
+  },
+  radio: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: colors.outlineVariant,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   radioActive: { borderColor: colors.primary },
   radioFill: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.primary },
-  optionContent: { flex: 1 },
-  optionTitleRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4 },
-  optionLabel: { flex: 1, fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface, lineHeight: 20 },
-  optionLabelActive: { color: colors.primary },
-  optBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm, marginLeft: space.sm },
-  optBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurface },
-  optionSub: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant, lineHeight: 17 },
-  dock: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
-  dockBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: touch.targetHero, backgroundColor: colors.primary, borderRadius: radius.lg },
-  dockBtnText: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onPrimary },
+  optionLabel: { ...typography.bodyMd, color: colors.onSurface, flex: 1 },
+  optionLabelActive: { color: colors.primary, fontFamily: fontFamily.semiBold },
+
+  stepperRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: space.lg,
+    paddingVertical: space.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    backgroundColor: colors.surface,
+  },
+  stepperBtn: {
+    width: touch.targetMin,
+    height: touch.targetMin,
+    borderRadius: touch.targetMin / 2,
+    backgroundColor: colors.surfaceContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  stepperBtnText: { fontSize: 24, fontFamily: fontFamily.bold, color: colors.primary },
+  stepperValue: {
+    ...typography.headlineMd,
+    color: colors.onSurface,
+    minWidth: 78,
+    textAlign: 'center',
+  },
+
+  honestNote: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 8,
+    marginTop: space.sm,
+    padding: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surfaceContainerLow,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+  },
+  honestNoteText: { ...typography.bodySm, color: colors.onSurface, flex: 1, lineHeight: 18 },
+
+  dock: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: space.md,
+    paddingBottom: space.xl,
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.outlineVariant,
+  },
+  cta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    height: touch.targetHero,
+    borderRadius: radius.md,
+    backgroundColor: colors.primaryContainer,
+  },
+  ctaDisabled: { backgroundColor: colors.surfaceContainerHighest },
+  ctaText: { ...typography.titleLg, color: colors.onPrimary, fontFamily: fontFamily.extraBold },
 });

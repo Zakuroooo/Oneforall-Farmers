@@ -36,6 +36,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { useT } from '../lib/i18n';
 import { tabIcon } from './TabIcon';
+import type { AssayReq, AssayRes } from '../types/api';
 
 /** The one background colour for every farmer scene. */
 const SCREEN_BG = '#FAF6EE';
@@ -54,7 +55,6 @@ import S08_ModelCard from '../screens/farmer/S08_ModelCard';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
 import S10_CostBreakdown from '../screens/farmer/S10_CostBreakdown';
 import S12_CreateLot from '../screens/farmer/S12_CreateLot';
-import S13_SelfAssay from '../screens/farmer/S13_SelfAssay';
 import S14_CounterOffer from '../screens/farmer/S14_CounterOffer';
 import S15_MyLots from '../screens/farmer/S15_MyLots';
 import S16_PoolSplit from '../screens/farmer/S16_PoolSplit';
@@ -64,10 +64,12 @@ import PricesIndex from '../screens/farmer/PricesIndex';
 //   with zero navigation between them or to anything else — every one was
 //   unreachable from a running app, which is why "S12 is built" and "I
 //   cannot see anything except Home" were both true at once. Registered
-//   here and wired below; S15_MyLots/S13_SelfAssay/S14_CounterOffer/
+//   here and wired below; S15_MyLots/S14_CounterOffer/
 //   S16_PoolSplit stay as the primary, backend-wired path (real getLots(),
 //   real self-assay scoring, real offer negotiation) — none of that was
 //   replaced, since none of these new screens call a real endpoint yet.
+import S20_QualityDiagnostic from '../screens/farmer/S20_QualityDiagnostic';
+import S21_GradeReveal from '../screens/farmer/S21_GradeReveal';
 import S22_PricePublish from '../screens/farmer/S22_PricePublish';
 import S23_PublishedRadar from '../screens/farmer/S23_PublishedRadar';
 import S24_LotDetail from '../screens/farmer/S24_LotDetail';
@@ -176,12 +178,20 @@ export type MyLotsStackParamList = {
   S15_MyLots: undefined;
   S12_CreateLot: undefined;
   /**
-   * `lot_id` is optional so S13 stays reachable directly (e.g. from a deep
-   * link) without a lot already created in this session — it falls back to
-   * `DEFAULT_LOT_ID` from config. Both S12 (just created) and S15 (tapped
-   * from the list) navigate here with the real id of the lot in question.
+   * `lot_id` is optional so the assay stays reachable directly (e.g. from a
+   * deep link) without a lot created in this session — it falls back to
+   * `DEFAULT_LOT_ID`. Both S12 (just created) and S15 (tapped from the list)
+   * navigate here with the real id of the lot in question.
    */
-  S13_SelfAssay: { lot_id?: string } | undefined;
+  S20_QualityDiagnostic: { lot_id?: string } | undefined;
+  /**
+   * S21 is a pure reveal: it renders what S20's own submission returned and
+   * fetches nothing. `answers` rides along so the screen can echo the six
+   * answers behind the grade — CANON's `AssayRecord` header notes that
+   * `AssayRes` throws them away, and that a grade nobody can audit is the
+   * same non-answer CANON rejects for match scores.
+   */
+  S21_GradeReveal: { result: AssayRes; answers: AssayReq; lot_id?: string };
   /** `offer_id` optional for the same reason as S13's `lot_id` — falls back
    * to the fixture incoming offer. S15's offers-awaiting-response section
    * navigates here with the real id. */
@@ -252,7 +262,8 @@ function MyLotsStackNavigator() {
     <MyLotsStack.Navigator initialRouteName="S15_MyLots" screenOptions={STACK_SCREEN_OPTIONS}>
       <MyLotsStack.Screen name="S15_MyLots" component={S15_MyLots} />
       <MyLotsStack.Screen name="S12_CreateLot" component={S12_CreateLot} />
-      <MyLotsStack.Screen name="S13_SelfAssay" component={S13_SelfAssay} />
+      <MyLotsStack.Screen name="S20_QualityDiagnostic" component={S20_QualityDiagnostic} />
+      <MyLotsStack.Screen name="S21_GradeReveal" component={S21_GradeReveal} />
       <MyLotsStack.Screen name="S14_CounterOffer" component={S14_CounterOffer} />
       <MyLotsStack.Screen name="S16_PoolSplit" component={S16_PoolSplit} />
       <MyLotsStack.Screen name="S22_PricePublish" component={S22_PricePublish} />

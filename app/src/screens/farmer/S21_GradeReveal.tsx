@@ -1,232 +1,217 @@
 /**
- * S21_GradeReveal — Screen 21: AI harvest quality score reveal (Grade A).
- * Matched to Stitch `21_your_grade_ai_harvest_quality_score_reveal/screen.png`
- * ★ ZERO EMOJIS  ★ FULL I18N
+ * S21 — the grade reveal. Stitch screen 21
+ * (`21_your_grade_ai_harvest_quality_score_reveal`).
+ *
+ * ★ Every number here arrives in `route.params` from S20's own assay
+ *   submission: the score, the grade and the weakest dimension are what
+ *   `lib/grading.ts` returned for the six answers the farmer just gave. The
+ *   previous version of this screen hardcoded a Grade A at 850/1000 with a
+ *   fixed four-row "breakdown" (92/95/88/98), which meant it showed the same
+ *   celebration no matter what anyone answered — including to a farmer whose
+ *   lot actually graded C.
+ *
+ * ★ The mockup's "Assay Diagnostic Breakdown" invents a per-parameter score
+ *   the assay does not produce. What the assay *does* have — and what CANON's
+ *   own `AssayRecord` comment says a buyer wants — is the six answers behind
+ *   the grade. So the breakdown here is those answers, echoed back verbatim.
+ *
+ * ★ Not reproduced, for the usual reason: the "Fair Value Engine" price band
+ *   with "5 Active Bidders in Niphad" (no field carries a bidder count, and
+ *   the price band would be a forecast this screen never fetched), "Hash
+ *   #LP94" (nothing is hashed), "Krishi Mitra 100% Escrow Guarantee" and
+ *   "Mandi Board Escrow" (no such guarantee), "Top 15% arrivals today" (not
+ *   computed anywhere), "Download Grade Certificate (PDF)" (no PDF is
+ *   generated), and the "+₹3,200 Gain" from a two-day curing recommendation
+ *   that no model in this project makes.
  */
+
 import React from 'react';
-import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { formatNumber } from '../../lib/money';
+import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
+import type { AssayDimension, Grade } from '../../types/api';
 
-const redOnions = require('../../assets/images/red_onions.jpg');
-const mandiWarehouse = require('../../assets/images/mandi_warehouse.jpg');
+type Props = NativeStackScreenProps<MyLotsStackParamList, 'S21_GradeReveal'>;
 
-const PARAMS = [
-  { label: 'Bulb Uniformity & Size', labelMr: '52mm – 58mm Medium Large · Optimal Mandi Size', score: 92, max: 100 },
-  { label: 'Skin Papery Luster & Color', labelMr: 'Double layer intact, deep copper red · High export grade', score: 95, max: 100 },
-  { label: 'Neck Tightness & Moisture', labelMr: 'Neck cured dry, moisture ~8.9% · Good shelf life (60d)', score: 88, max: 100 },
-  { label: 'Sprouting, Rot & Foreign Matter', labelMr: '0% green sprout · 0% black mold · Zero deductions', score: 98, max: 100 },
-] as const;
+/** Grade → the palette it reads in. C is not painted as a failure: it is a
+ * real, sellable grade, and a farmer who gets one should not be shown red. */
+const GRADE_TONE: Record<Grade, { fg: string; bg: string }> = {
+  A: { fg: colors.tertiary, bg: colors.positiveContainer },
+  B: { fg: colors.primary, bg: colors.onPrimaryContainer },
+  C: { fg: colors.warning, bg: colors.warningContainer },
+};
 
-export default function S21_GradeReveal({ navigation }: any) {
-  const { t } = useT();
+const TIP_KEY: Record<AssayDimension, string> = {
+  damage_pct: 'tip_damage_pct',
+  sprouting: 'tip_sprouting',
+  size_uniform: 'tip_size_uniform',
+  colour_uniform: 'tip_colour_uniform',
+  moisture_feel: 'tip_moisture_feel',
+  foreign_matter: 'tip_foreign_matter',
+};
+
+/** The five rating dimensions, with the label for each of the three answers.
+ * Same keys S20 asked the questions with, so the echo cannot drift from the
+ * question. */
+const ANSWER_LABEL: Record<
+  Exclude<AssayDimension, 'damage_pct'>,
+  { questionKey: string; choices: Record<1 | 2 | 3, string> }
+> = {
+  size_uniform: {
+    questionKey: 'assay_q_size_uniform',
+    choices: { 3: 'assay_size_uniform_3', 2: 'assay_size_uniform_2', 1: 'assay_size_uniform_1' },
+  },
+  colour_uniform: {
+    questionKey: 'assay_q_colour_uniform',
+    choices: { 3: 'assay_colour_uniform_3', 2: 'assay_colour_uniform_2', 1: 'assay_colour_uniform_1' },
+  },
+  sprouting: {
+    questionKey: 'assay_q_sprouting',
+    choices: { 3: 'assay_sprouting_3', 2: 'assay_sprouting_2', 1: 'assay_sprouting_1' },
+  },
+  moisture_feel: {
+    questionKey: 'assay_q_moisture_feel',
+    choices: { 3: 'assay_moisture_feel_3', 2: 'assay_moisture_feel_2', 1: 'assay_moisture_feel_1' },
+  },
+  foreign_matter: {
+    questionKey: 'assay_q_foreign_matter',
+    choices: { 3: 'assay_foreign_matter_3', 2: 'assay_foreign_matter_2', 1: 'assay_foreign_matter_1' },
+  },
+};
+
+const ORDER: Array<Exclude<AssayDimension, 'damage_pct'>> = [
+  'size_uniform',
+  'colour_uniform',
+  'sprouting',
+  'moisture_feel',
+  'foreign_matter',
+];
+
+export default function S21_GradeReveal({ route, navigation }: Props) {
+  const { t, locale } = useT();
+  const { result, answers } = route.params;
+  const tone = GRADE_TONE[result.grade];
+
+  /** 0..1000 → a bar width. The score is the only figure the assay produces,
+   * so it is the only one drawn. */
+  const scorePct = Math.max(0, Math.min(100, Math.round((result.score / 1000) * 100)));
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
+      <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
 
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.canGoBack() && navigation.goBack()}>
+        <TouchableOpacity
+          style={styles.backBtn}
+          onPress={() => navigation.canGoBack() && navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel={t('back_button')}>
           <Icon name="arrow-left" size={20} color={colors.onSurface} />
         </TouchableOpacity>
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>Quality Grade Result</Text>
-          <Text style={styles.headerSub}>प्रतवारी निकाल · Lot #LP-403 · 40 Qtl</Text>
-        </View>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.primary} />
-          <Text style={styles.listenText}>{t('splash_listen')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Progress */}
-      <View style={styles.progressBg}>
-        <View style={[styles.progressFill, { width: '80%' }]} />
-      </View>
-      <View style={styles.progressRow}>
-        <Text style={styles.progressLabel}>Step 4 of 5: Quality Assay Reveal</Text>
-        <View style={styles.apmcBadge}>
-          <Icon name="check-circle" size={11} color={colors.tertiary} />
-          <Text style={styles.apmcBadgeText}>APMC Standard</Text>
-        </View>
+        <Text style={styles.headerTitle}>{t('gr_title')}</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-
-        {/* Grade hero card */}
-        <View style={styles.gradeHeroCard}>
-          <Image source={redOnions} style={styles.gradeHeroImage} />
-          <View style={styles.gradeHeroOverlay}>
-            <View style={styles.fieldVerifiedBadge}>
-              <Icon name="check-circle" size={10} color={colors.onPrimary} />
-              <Text style={styles.fieldVerifiedText}>FIELD VERIFIED</Text>
-            </View>
+        {/* ── The grade ─────────────────────────────────────────────── */}
+        <View style={[styles.gradeCard, { borderColor: tone.fg }]}>
+          <View style={[styles.gradeBadge, { backgroundColor: tone.bg }]}>
+            <Text style={[styles.gradeBadgeText, { color: tone.fg }]}>
+              {t('grade_label_prefix', { grade: result.grade })}
+            </Text>
           </View>
-          <View style={styles.gradeHeroRight}>
-            <View style={styles.gradeABadge}><Text style={styles.gradeAText}>GRADE A</Text></View>
-            <View style={styles.gradeScoreRow}>
-              <Text style={styles.gradeScoreBig}>850</Text>
-              <Text style={styles.gradeScoreMax}> / 1000</Text>
-              <Icon name="check-circle" size={14} color={colors.tertiary} />
-              <Text style={styles.gradeScoreVerified}>Verified</Text>
-            </View>
-            <Text style={styles.gradeVariety}>Gavran Red Onion (उन्हाळ कांदा)</Text>
 
-            <View style={styles.gradeMetaRow}>
-              <View style={styles.gradeMetaItem}>
-                <Icon name="box" size={11} color={colors.onSurfaceVariant} />
-                <Text style={styles.gradeMetaText}>40 Quintals (80 Bags)</Text>
-              </View>
-              <View style={styles.gradeMetaItem}>
-                <Icon name="trending-up" size={11} color={colors.tertiary} />
-                <Text style={[styles.gradeMetaText, { color: colors.tertiary }]}>Top 15% arrivals today</Text>
-              </View>
-            </View>
-            <View style={styles.gradeYardRow}>
-              <Icon name="map-pin" size={11} color={colors.onSurfaceVariant} />
-              <Text style={styles.gradeYardText}>Lasalgaon Mandi Yard · Assay: AI + Coin Gauge 2</Text>
-            </View>
+          <View style={styles.scoreRow}>
+            <Text style={styles.scoreBig}>{formatNumber(result.score, locale)}</Text>
+            <Text style={styles.scoreSuffix}>{t('gr_score_suffix')}</Text>
+          </View>
+
+          <View style={styles.scoreTrack}>
+            <View style={[styles.scoreFill, { width: `${scorePct}%`, backgroundColor: tone.fg }]} />
           </View>
         </View>
 
-        {/* Grade A+ recommendation */}
-        <View style={styles.recommendCard}>
-          <View style={styles.recommendHeader}>
-            <Icon name="trending-up" size={18} color={colors.primary} />
-            <Text style={styles.recommendTitle}>Recommendation for Grade A+</Text>
-            <View style={styles.gainBadge}><Text style={styles.gainBadgeText}>+₹3,200 Gain</Text></View>
+        {/* ── How to do better ──────────────────────────────────────── */}
+        <View style={styles.tipCard}>
+          <View style={styles.tipHead}>
+            <Icon name="zap" size={17} color={colors.primary} />
+            <Text style={styles.tipTitle}>{t('gr_tip_title')}</Text>
           </View>
-          <Text style={styles.recommendDesc}>
-            Sun-dry in open shed for 2 more days to cure neck skin moisture below 8%.
-          </Text>
-          <View style={styles.recommendPriceRow}>
-            <View style={styles.recommendPriceItem}>
-              <Text style={styles.recommendPriceLabel}>Current Potential (Grade A)</Text>
-              <View style={styles.trendRow}>
-                <Icon name="trending-up" size={12} color={colors.primary} />
-                <Text style={styles.recommendPrice}>₹2,100<Text style={styles.recommendPriceUnit}>/Qtl</Text></Text>
-              </View>
-            </View>
-            <View style={styles.recommendPriceItem}>
-              <Text style={styles.recommendPriceLabel}>After 2 Days Curing (Grade A+)</Text>
-              <Text style={[styles.recommendPrice, { color: colors.tertiary }]}>₹2,180<Text style={styles.recommendPriceUnit}>/Qtl (+₹80)</Text></Text>
-            </View>
+          <View style={styles.weakestRow}>
+            <Text style={styles.weakestLabel}>{t('gr_weakest_label')}</Text>
+            <Text style={styles.weakestValue}>
+              {result.weakest_dimension === 'damage_pct'
+                ? t('assay_damage_question')
+                : t(ANSWER_LABEL[result.weakest_dimension].questionKey)}
+            </Text>
           </View>
-          <View style={styles.recommendCtas}>
-            <TouchableOpacity style={styles.publishNowBtn}>
-              <View style={styles.radioFilled} />
-              <Text style={styles.publishNowText}>Publish Grade A Now</Text>
-              <Text style={styles.publishNowSub}>Fast payout</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.holdBtn}>
-              <View style={styles.radioEmpty} />
-              <View>
-                <Text style={styles.holdBtnText}>Hold for 2-Day Curing</Text>
-                <Text style={styles.holdBtnSub}>+₹3,200 value</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
+          {/* The dictionary tip for the weakest dimension, in the farmer's own
+              locale — `tip_mr`/`tip_en` are fixed wire fields with no Hindi,
+              so rendering those directly would drop a Hindi farmer into
+              Marathi. */}
+          <Text style={styles.tipText}>{t(TIP_KEY[result.weakest_dimension])}</Text>
         </View>
 
-        {/* Assay breakdown */}
-        <View style={styles.breakdownCard}>
-          <View style={styles.breakdownHeader}>
-            <Text style={styles.breakdownTitle}>Assay Diagnostic Breakdown</Text>
-            <Text style={styles.breakdownSubTitle}>तपशीलवार गुणवत्ता तासणी निकाल</Text>
-            <View style={styles.paramCountBadge}><Text style={styles.paramCountText}>4 Parameters</Text></View>
-          </View>
-
-          {PARAMS.map((p, i) => {
-            const pct = (p.score / p.max) * 100;
+        {/* ── The answers behind the grade ──────────────────────────── */}
+        <Text style={styles.sectionTitle}>{t('gr_answers_title')}</Text>
+        <View style={styles.answersCard}>
+          {ORDER.map((dim, i) => {
+            const value = answers[dim];
+            const isWeakest = result.weakest_dimension === dim;
             return (
-              <View key={i} style={styles.paramRow}>
-                <View style={styles.paramMeta}>
-                  <Text style={styles.paramLabel}>{p.label}</Text>
-                  <Text style={styles.paramScore}>{p.score}/{p.max}</Text>
+              <View key={dim} style={[styles.answerRow, i > 0 && styles.answerRowDivider]}>
+                <View style={styles.answerText}>
+                  <Text style={styles.answerQuestion}>{t(ANSWER_LABEL[dim].questionKey)}</Text>
+                  <Text style={[styles.answerValue, isWeakest && styles.answerValueWeak]}>
+                    {t(ANSWER_LABEL[dim].choices[value])}
+                  </Text>
                 </View>
-                <View style={styles.paramBarBg}>
-                  <View style={[styles.paramBarFill, { width: `${pct}%` as any }]} />
-                </View>
-                <Text style={styles.paramSubLabel}>{p.labelMr}</Text>
-                {i < PARAMS.length - 1 && <View style={styles.paramDivider} />}
+                {isWeakest ? (
+                  <View style={styles.weakChip}>
+                    <Icon name="info" size={12} color={colors.warning} />
+                  </View>
+                ) : null}
               </View>
             );
           })}
-
-          <View style={styles.hashRow}>
-            <Icon name="clipboard" size={13} color={colors.onSurfaceVariant} />
-            <Text style={styles.hashText}>3 Field Images + Weight Receipt Match</Text>
-            <Text style={styles.hashCode}>Hash #LP94</Text>
-          </View>
-        </View>
-
-        {/* Fair Value Engine */}
-        <View style={styles.fairValueCard}>
-          <Text style={styles.fairValueLabel}>FAIR VALUE ENGINE</Text>
-          <View style={styles.fairValueHeader}>
-            <Text style={styles.fairValueTitle}>Recommended Price Band</Text>
-            <View style={styles.premiumBadge}>
-              <Text style={styles.premiumBadgeText}>+₹100/Qtl Premium</Text>
+          <View style={[styles.answerRow, styles.answerRowDivider]}>
+            <View style={styles.answerText}>
+              <Text style={styles.answerQuestion}>{t('assay_damage_question')}</Text>
+              <Text
+                style={[
+                  styles.answerValue,
+                  result.weakest_dimension === 'damage_pct' && styles.answerValueWeak,
+                ]}>
+                {t('gr_answer_damage', { pct: formatNumber(answers.damage_pct, locale) })}
+              </Text>
             </View>
+            {result.weakest_dimension === 'damage_pct' ? (
+              <View style={styles.weakChip}>
+                <Icon name="info" size={12} color={colors.warning} />
+              </View>
+            ) : null}
           </View>
-          <View style={styles.fairValuePriceRow}>
-            <Text style={styles.fairValuePrice}>₹2,050 – ₹2,150</Text>
-            <Text style={styles.fairValueUnit}>/Qtl</Text>
-          </View>
-          <View style={styles.fairValueMetaGrid}>
-            <View style={styles.fairValueMetaItem}>
-              <Text style={styles.fairValueMetaKey}>Expected Lot Value:</Text>
-              <Text style={styles.fairValueMetaVal}>₹82,000 – ₹86,000</Text>
-              <Text style={styles.fairValueMetaSub}>Instant Escrow Pay</Text>
-            </View>
-            <View style={styles.fairValueMetaItem}>
-              <Text style={styles.fairValueMetaKey}>Lasalgaon Modal Average</Text>
-              <Text style={styles.fairValueMetaVal}>₹2,050 / Qtl</Text>
-              <Text style={styles.fairValueMetaSub}>Across all standard grades</Text>
-            </View>
-            <View style={styles.fairValueMetaItem}>
-              <Text style={styles.fairValueMetaKey}>Terminal Buyer Demand</Text>
-              <View style={styles.highDemandBadge}><Text style={styles.highDemandText}>High (Grade A)</Text></View>
-              <Text style={styles.fairValueMetaSub}>5 Active Bidders in Niphad</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Escrow guarantee */}
-        <View style={styles.escrowCard}>
-          <View style={styles.escrowIconBg}><Icon name="shield-check" size={22} color={colors.tertiary} /></View>
-          <Text style={styles.escrowTitle}>Krishi Mitra 100% Escrow Guarantee</Text>
-          <Text style={styles.escrowDesc}>
-            Buyer locks payment into the Mandi Board Escrow before truck loading. Zero payment default risk for Grade A certified lots.
-          </Text>
-        </View>
-
-        {/* Photo thumbnails */}
-        <View style={styles.photoRow}>
-          <Text style={styles.photoRowLabel}>Assay Crate Inspection Stream</Text>
-          <Text style={styles.photoRowCount}>2 Photos Attached</Text>
-        </View>
-        <View style={styles.photoThumbs}>
-          <Image source={redOnions} style={styles.photoThumb} />
-          <Image source={mandiWarehouse} style={styles.photoThumb} />
         </View>
       </ScrollView>
 
-      {/* CTA dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.ctaBtn}>
-          <Text style={styles.ctaBtnText}>Set Asking Price &amp; Publish · भाव ठरवा</Text>
+        <TouchableOpacity
+          style={styles.cta}
+          onPress={() => navigation.navigate('S22_PricePublish')}
+          accessibilityRole="button">
+          <Text style={styles.ctaText}>{t('gr_cta_publish')}</Text>
           <Icon name="arrow-right" size={18} color={colors.onPrimary} />
         </TouchableOpacity>
-        <View style={styles.dockLinks}>
-          <TouchableOpacity style={styles.dockLink}>
-            <Icon name="clipboard" size={12} color={colors.onSurfaceVariant} />
-            <Text style={styles.dockLinkText}>Download Grade Certificate (PDF)</Text>
-          </TouchableOpacity>
-          <Text style={styles.dockSave}>Auto-saved draft · 3:45 PM</Text>
-        </View>
+        <TouchableOpacity
+          style={styles.secondaryBtn}
+          onPress={() => navigation.canGoBack() && navigation.goBack()}
+          accessibilityRole="button">
+          <Text style={styles.secondaryBtnText}>{t('recheck_button')}</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -234,106 +219,120 @@ export default function S21_GradeReveal({ navigation }: any) {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  header: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  backBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.surfaceContainerHigh, alignItems: 'center', justifyContent: 'center' },
-  headerCenter: { flex: 1 },
-  headerTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary },
-  headerSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  listenBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.full, backgroundColor: 'rgba(155,47,0,0.08)' },
-  listenText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
-  progressBg: { height: 5, backgroundColor: colors.outlineVariant },
-  progressFill: { height: 5, backgroundColor: colors.primary },
-  progressRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.md, paddingVertical: 5, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  progressLabel: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
-  apmcBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  apmcBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  scroll: { paddingBottom: 130 },
-  gradeHeroCard: { flexDirection: 'row', margin: space.md, borderRadius: radius.xl, overflow: 'hidden', backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant },
-  gradeHeroImage: { width: 90, height: '100%' as any, minHeight: 120 },
-  gradeHeroOverlay: { position: 'absolute', bottom: 0, left: 0, width: 90, padding: 4 },
-  fieldVerifiedBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, backgroundColor: colors.primary, borderRadius: radius.sm, paddingHorizontal: 4, paddingVertical: 2 },
-  fieldVerifiedText: { fontFamily: fontFamily.bold, fontSize: 8, color: colors.onPrimary },
-  gradeHeroRight: { flex: 1, padding: space.sm },
-  gradeABadge: { alignSelf: 'flex-start', paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.full, backgroundColor: colors.positiveContainer, marginBottom: 4 },
-  gradeAText: { fontFamily: fontFamily.extraBold, fontSize: 12, color: colors.tertiary },
-  gradeScoreRow: { flexDirection: 'row', alignItems: 'baseline', gap: 4 },
-  gradeScoreBig: { fontFamily: fontFamily.extraBold, fontSize: 32, color: colors.onSurface, letterSpacing: -1 },
-  gradeScoreMax: { fontFamily: fontFamily.medium, fontSize: 14, color: colors.onSurfaceVariant },
-  gradeScoreVerified: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
-  gradeVariety: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface, marginBottom: 4 },
-  gradeMetaRow: { flexDirection: 'row', flexWrap: 'wrap', gap: space.xs, marginBottom: 3 },
-  gradeMetaItem: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  gradeMetaText: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant },
-  gradeYardRow: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  gradeYardText: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant, flex: 1 },
-  recommendCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.onPrimaryContainer, borderWidth: 1, borderColor: colors.primaryContainer, padding: space.md },
-  recommendHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.xs },
-  recommendTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primary, flex: 1 },
-  gainBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.primaryContainer },
-  gainBadgeText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onPrimary },
-  recommendDesc: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurface, marginBottom: space.sm, lineHeight: 17 },
-  recommendPriceRow: { flexDirection: 'row', gap: space.sm, marginBottom: space.sm },
-  recommendPriceItem: { flex: 1 },
-  recommendPriceLabel: { fontFamily: fontFamily.medium, fontSize: 10, color: colors.onSurfaceVariant },
-  trendRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  recommendPrice: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.primary },
-  recommendPriceUnit: { fontFamily: fontFamily.medium, fontSize: 11 },
-  recommendCtas: { flexDirection: 'row', gap: space.sm },
-  publishNowBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, padding: space.sm, borderRadius: radius.lg, backgroundColor: colors.primaryContainer },
-  radioFilled: { width: 16, height: 16, borderRadius: 8, backgroundColor: colors.onPrimary, flexShrink: 0 },
-  publishNowText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onPrimary, flex: 1 },
-  publishNowSub: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onPrimary },
-  holdBtn: { flex: 1, flexDirection: 'row', alignItems: 'center', gap: 6, padding: space.sm, borderRadius: radius.lg, borderWidth: 1.5, borderColor: colors.outlineVariant, backgroundColor: colors.surface },
-  radioEmpty: { width: 16, height: 16, borderRadius: 8, borderWidth: 2, borderColor: colors.outline, flexShrink: 0 },
-  holdBtnText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
-  holdBtnSub: { fontFamily: fontFamily.medium, fontSize: 10, color: colors.tertiary },
-  breakdownCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden' },
-  breakdownHeader: { flexDirection: 'row', alignItems: 'center', gap: space.xs, padding: space.sm, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  breakdownTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
-  breakdownSubTitle: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant, flex: 1 },
-  paramCountBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.surfaceContainerHigh },
-  paramCountText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurfaceVariant },
-  paramRow: { padding: space.sm },
-  paramMeta: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 },
-  paramLabel: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, flex: 1 },
-  paramScore: { fontFamily: fontFamily.extraBold, fontSize: 14, color: colors.primary },
-  paramBarBg: { height: 6, backgroundColor: colors.outlineVariant, borderRadius: radius.full, marginBottom: 4, overflow: 'hidden' },
-  paramBarFill: { height: 6, backgroundColor: colors.primary, borderRadius: radius.full },
-  paramSubLabel: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant },
-  paramDivider: { height: 1, backgroundColor: colors.outlineVariant, marginTop: space.xs },
-  hashRow: { flexDirection: 'row', alignItems: 'center', gap: 5, padding: space.sm, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
-  hashText: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, flex: 1 },
-  hashCode: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primary },
-  fairValueCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, padding: space.md },
-  fairValueLabel: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurfaceVariant, letterSpacing: 0.8 },
-  fairValueHeader: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginVertical: space.xs },
-  fairValueTitle: { fontFamily: fontFamily.bold, fontSize: 16, color: colors.onSurface, flex: 1 },
-  premiumBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  premiumBadgeText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
-  fairValuePriceRow: { flexDirection: 'row', alignItems: 'baseline', marginBottom: space.sm },
-  fairValuePrice: { fontFamily: fontFamily.extraBold, fontSize: 26, color: colors.primary, letterSpacing: -0.5 },
-  fairValueUnit: { fontFamily: fontFamily.medium, fontSize: 14, color: colors.onSurfaceVariant, marginLeft: 3 },
-  fairValueMetaGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  fairValueMetaItem: { flex: 1, minWidth: 100 },
-  fairValueMetaKey: { fontFamily: fontFamily.medium, fontSize: 10, color: colors.onSurfaceVariant },
-  fairValueMetaVal: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
-  fairValueMetaSub: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant },
-  highDemandBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.positiveContainer, alignSelf: 'flex-start', marginTop: 2 },
-  highDemandText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  escrowCard: { marginHorizontal: space.md, marginBottom: space.sm, flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, padding: space.md, borderRadius: radius.xl, backgroundColor: colors.positiveContainer, borderWidth: 1, borderColor: 'rgba(4,120,87,0.2)' },
-  escrowIconBg: { width: 44, height: 44, borderRadius: 12, backgroundColor: 'rgba(4,120,87,0.1)', alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
-  escrowTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.tertiary, flex: 1 },
-  escrowDesc: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onPositiveContainer, flex: 1, lineHeight: 17 },
-  photoRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: space.md, marginBottom: space.xs },
-  photoRowLabel: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
-  photoRowCount: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  photoThumbs: { flexDirection: 'row', gap: space.sm, paddingHorizontal: space.md, marginBottom: space.md },
-  photoThumb: { flex: 1, height: 80, borderRadius: radius.md },
-  dock: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant, gap: 6 },
-  ctaBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: touch.targetHero, backgroundColor: colors.primaryContainer, borderRadius: radius.lg, shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
-  ctaBtnText: { fontFamily: fontFamily.extraBold, fontSize: 14, color: colors.onPrimary },
-  dockLinks: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  dockLink: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  dockLinkText: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
-  dockSave: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.outline },
+
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingHorizontal: space.md,
+    paddingTop: space.xl + 8,
+    paddingBottom: space.xs,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.outlineVariant,
+  },
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainerHigh,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTitle: { ...typography.titleLg, color: colors.primary, fontFamily: fontFamily.extraBold, flex: 1 },
+
+  scroll: { padding: space.md, paddingBottom: 150, gap: space.sm },
+
+  gradeCard: {
+    alignItems: 'center',
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    padding: space.lg,
+  },
+  gradeBadge: { borderRadius: radius.full, paddingHorizontal: space.md, paddingVertical: 6 },
+  gradeBadgeText: { ...typography.titleLg, fontFamily: fontFamily.extraBold },
+  scoreRow: { flexDirection: 'row', alignItems: 'baseline', gap: 6, marginTop: space.sm },
+  scoreBig: { fontSize: 48, lineHeight: 54, fontFamily: fontFamily.extraBold, color: colors.onSurface },
+  scoreSuffix: { ...typography.titleMd, color: colors.onSurfaceVariant },
+  scoreTrack: {
+    width: '100%',
+    height: 8,
+    borderRadius: radius.full,
+    backgroundColor: colors.surfaceContainerHighest,
+    marginTop: space.sm,
+    overflow: 'hidden',
+  },
+  scoreFill: { height: 8, borderRadius: radius.full },
+
+  tipCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+    padding: space.md,
+  },
+  tipHead: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  tipTitle: { ...typography.titleMd, color: colors.onSurface, flex: 1 },
+  weakestRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: space.xs,
+    marginTop: space.xs,
+    paddingTop: space.xs,
+    borderTopWidth: 1,
+    borderTopColor: colors.outlineVariant,
+  },
+  weakestLabel: { ...typography.labelSm, color: colors.onSurfaceVariant },
+  weakestValue: { ...typography.labelMd, color: colors.onSurface, flex: 1, textAlign: 'right' },
+  tipText: { ...typography.bodyMd, color: colors.onSurface, marginTop: space.xs, lineHeight: 21 },
+
+  sectionTitle: { ...typography.titleMd, color: colors.onSurface, marginTop: space.xs },
+  answersCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+    overflow: 'hidden',
+  },
+  answerRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, padding: space.sm },
+  answerRowDivider: { borderTopWidth: 1, borderTopColor: colors.outlineVariant },
+  answerText: { flex: 1 },
+  answerQuestion: { ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
+  answerValue: { ...typography.titleMd, color: colors.onSurface, marginTop: 2 },
+  answerValueWeak: { color: colors.warning },
+  weakChip: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    backgroundColor: colors.warningContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  dock: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    padding: space.md,
+    paddingBottom: space.xl,
+    backgroundColor: colors.surface,
+    borderTopWidth: 1,
+    borderTopColor: colors.outlineVariant,
+    gap: space.xs,
+  },
+  cta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    height: touch.targetHero,
+    borderRadius: radius.md,
+    backgroundColor: colors.primaryContainer,
+  },
+  ctaText: { ...typography.titleLg, color: colors.onPrimary, fontFamily: fontFamily.extraBold },
+  secondaryBtn: { alignItems: 'center', justifyContent: 'center', paddingVertical: space.sm },
+  secondaryBtnText: { ...typography.titleMd, color: colors.primary },
 });

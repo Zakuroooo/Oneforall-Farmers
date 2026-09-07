@@ -1303,5 +1303,20 @@
   "mp_add_another_sub": "सहा प्रश्न, मग प्रतवारी",
   "mp_offers_header": "तुमच्या उत्तराची वाट पाहणाऱ्या ऑफर",
   "mp_pools_header": "तुमचे गट",
-  "mp_no_price_yet": "अजून प्रकाशित नाही"
+  "mp_no_price_yet": "अजून प्रकाशित नाही",
+  "qd_title": "दर्जा तपासणी",
+  "qd_subtitle": "{qty} क्विंटल · {commodity}",
+  "qd_progress_label": "प्रत्यक्ष तपासणी",
+  "qd_answered": "{total} पैकी {done} उत्तरे",
+  "qd_cta": "प्रतवारी काढा",
+  "qd_cta_incomplete": "पुढे जाण्यासाठी सर्व {total} उत्तरे द्या",
+  "qd_honest_note": "ही उत्तरे प्रामाणिकपणे द्या. वजनकाट्यावर खरेदीदार जी प्रतवारी पुन्हा तपासतो, तीच पैसे ठरवते — स्वतःला उदार प्रतवारी दिली तर गेटवर वादच होतो.",
+  "gr_title": "तुमची प्रतवारी",
+  "gr_subtitle": "{qty} क्विंटल · {commodity}",
+  "gr_score_suffix": "/ १०००",
+  "gr_answers_title": "या प्रतवारीमागची तुमची उत्तरे",
+  "gr_tip_title": "प्रतवारी कशी वाढवाल",
+  "gr_cta_publish": "भाव ठरवा व प्रकाशित करा",
+  "gr_weakest_label": "सर्वात कमकुवत बाजू",
+  "gr_answer_damage": "{pct}% खराब"
 }

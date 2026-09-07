@@ -1303,5 +1303,20 @@
   "mp_add_another_sub": "छह सवाल, फिर प्रतवारी",
   "mp_offers_header": "आपके जवाब का इंतज़ार करती पेशकश",
   "mp_pools_header": "आपके समूह",
-  "mp_no_price_yet": "अभी प्रकाशित नहीं"
+  "mp_no_price_yet": "अभी प्रकाशित नहीं",
+  "qd_title": "गुणवत्ता जाँच",
+  "qd_subtitle": "{qty} क्विंटल · {commodity}",
+  "qd_progress_label": "प्रत्यक्ष जाँच",
+  "qd_answered": "{total} में से {done} उत्तर",
+  "qd_cta": "प्रतवारी निकालें",
+  "qd_cta_incomplete": "आगे बढ़ने के लिए सभी {total} उत्तर दें",
+  "qd_honest_note": "ये उत्तर ईमानदारी से दें। तौल कांटे पर खरीदार जो प्रतवारी दोबारा जाँचता है, वही पैसा तय करती है — खुद को उदार प्रतवारी देने से गेट पर विवाद ही होता है।",
+  "gr_title": "आपकी प्रतवारी",
+  "gr_subtitle": "{qty} क्विंटल · {commodity}",
+  "gr_score_suffix": "/ 1000",
+  "gr_answers_title": "इस प्रतवारी के पीछे आपके उत्तर",
+  "gr_tip_title": "प्रतवारी कैसे बढ़ाएँ",
+  "gr_cta_publish": "भाव तय करें और प्रकाशित करें",
+  "gr_weakest_label": "सबसे कमज़ोर पक्ष",
+  "gr_answer_damage": "{pct}% खराब"
 }

@@ -1303,5 +1303,20 @@
   "mp_add_another_sub": "Six questions, then a grade",
   "mp_offers_header": "Offers waiting on you",
   "mp_pools_header": "Your pools",
-  "mp_no_price_yet": "Not published yet"
+  "mp_no_price_yet": "Not published yet",
+  "qd_title": "Quality diagnostic",
+  "qd_subtitle": "{qty} quintals · {commodity}",
+  "qd_progress_label": "Physical assay",
+  "qd_answered": "{done} of {total} answered",
+  "qd_cta": "Calculate quality grade",
+  "qd_cta_incomplete": "Answer all {total} to continue",
+  "qd_honest_note": "Answer these honestly. The grade a buyer re-checks at the weighbridge is the one that gets paid — a generous self-assay only turns into a dispute at the gate.",
+  "gr_title": "Your grade",
+  "gr_subtitle": "{qty} quintals · {commodity}",
+  "gr_score_suffix": "/ 1000",
+  "gr_answers_title": "The answers behind this grade",
+  "gr_tip_title": "How to grade higher",
+  "gr_cta_publish": "Set asking price & publish",
+  "gr_weakest_label": "Weakest point",
+  "gr_answer_damage": "{pct}% damaged"
 }

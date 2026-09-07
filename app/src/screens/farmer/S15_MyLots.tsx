@@ -341,7 +341,7 @@ export default function S15_MyLots({ navigation }: Props) {
             key={item.id}
             style={styles.lotCard}
             activeOpacity={0.8}
-            onPress={() => navigation.navigate('S13_SelfAssay', { lot_id: item.id })}>
+            onPress={() => navigation.navigate('S20_QualityDiagnostic', { lot_id: item.id })}>
             <View style={styles.lotCardHead}>
               <View style={styles.lotRefChip}>
                 <Text style={styles.lotRefChipText}>{t('mp_lot_ref', { id: item.id })}</Text>

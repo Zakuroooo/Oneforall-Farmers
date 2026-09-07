@@ -190,7 +190,7 @@ export default function S12_CreateLot({ navigation }: Props) {
         </Card>
         <Button
           title={translate('check_grade_now_button', locale)}
-          onPress={() => navigation.navigate('S13_SelfAssay', { lot_id: createdLot.id })}
+          onPress={() => navigation.navigate('S20_QualityDiagnostic', { lot_id: createdLot.id })}
           style={styles.submitButton}
         />
       </ScrollView>
