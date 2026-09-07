@@ -46,6 +46,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 
+import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
+
 import { getModelCard } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
 import { devNum, translate } from '../../lib/i18n';
@@ -290,41 +292,78 @@ export default function S08_ModelCard() {
   );
 }
 
-const GREEN = '#1B5E20';
-const RED = '#C62828';
-
+const GREEN = colors.tertiary;
+const RED = colors.critical;
 const styles = StyleSheet.create({
-  root: { padding: 24, paddingBottom: 40 },
+  root: { padding: space.md, paddingBottom: space.xxl, backgroundColor: colors.background },
 
-  title: { fontSize: 24, fontWeight: '800', color: '#212121' },
-  subtitle: { fontSize: 15, color: '#666', marginTop: 4, marginBottom: 20 },
+  title: { ...typography.headlineMd, color: colors.onSurface, fontFamily: fontFamily.extraBold },
+  subtitle: {
+    ...typography.bodySm,
+    color: colors.onSurfaceVariant,
+    marginTop: 4,
+    marginBottom: space.md,
+  },
 
   heroCard: {
-    backgroundColor: '#FFF',
-    borderRadius: 16,
-    padding: 20,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    borderColor: colors.outlineVariant,
+    padding: space.lg,
     alignItems: 'center',
   },
-  heroLabel: { fontSize: 15, color: '#666' },
-  heroValue: { fontSize: 44, fontWeight: '800', marginTop: 4 },
+  heroLabel: { ...typography.labelMd, color: colors.onSurfaceVariant, textAlign: 'center' },
+  heroValue: { fontSize: 44, lineHeight: 50, fontFamily: fontFamily.extraBold, marginTop: 4 },
   // Deliberately the same size in both branches — see the hero comment.
-  heroVerdict: { fontSize: 17, fontWeight: '700', marginTop: 4, textAlign: 'center' },
-  heroNote: { fontSize: 13, color: '#666', lineHeight: 20, marginTop: 10, textAlign: 'center' },
+  heroVerdict: {
+    fontSize: 17,
+    lineHeight: 23,
+    fontFamily: fontFamily.bold,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  heroNote: {
+    ...typography.bodySm,
+    color: colors.onSurfaceVariant,
+    lineHeight: 20,
+    marginTop: 10,
+    textAlign: 'center',
+  },
 
-  card: { backgroundColor: '#FFF', borderRadius: 16, padding: 20, marginTop: 16 },
-  cardTitle: { fontSize: 17, fontWeight: '700', color: '#212121', marginBottom: 8 },
-  cardNote: { fontSize: 13, color: '#666', lineHeight: 20, marginTop: 8 },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+    padding: space.md,
+    marginTop: space.sm,
+  },
+  cardTitle: { ...typography.titleMd, color: colors.onSurface, marginBottom: 8 },
+  cardNote: {
+    ...typography.bodySm,
+    color: colors.onSurfaceVariant,
+    lineHeight: 19,
+    marginTop: 8,
+  },
 
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: colors.outlineVariant,
   },
-  rowLabel: { fontSize: 15, color: '#666', flexShrink: 1, paddingRight: 12 },
-  rowValue: { fontSize: 15, color: '#212121', fontWeight: '600', flexShrink: 1, textAlign: 'right' },
+  rowLabel: {
+    ...typography.bodySm,
+    color: colors.onSurfaceVariant,
+    flexShrink: 1,
+    paddingRight: space.sm,
+  },
+  rowValue: { ...typography.titleMd, color: colors.onSurface, flexShrink: 1, textAlign: 'right' },
 
-  bulletRow: { flexDirection: 'row', marginTop: 8 },
-  bullet: { fontSize: 15, color: '#888', width: 14 },
-  bulletText: { fontSize: 14, color: '#444', lineHeight: 21, flex: 1 },
+  bulletRow: { flexDirection: 'row', marginTop: 8, gap: 4 },
+  bullet: { ...typography.bodySm, color: colors.outline, width: 14 },
+  bulletText: { ...typography.bodySm, color: colors.onSurface, lineHeight: 20, flex: 1 },
 });
