@@ -309,7 +309,15 @@ export type TalksStackParamList = {
    *  either one leaving the Talks tab. */
   S27_Bargaining: { offer_id?: string } | undefined;
   S28_CounterOffer: { offer_id?: string } | undefined;
+  /** ★ Accepting an offer from Talks lands on S30, and S30's "keep watching
+   *  this deal" pushes to S32, which pushes to S33. All three have to exist
+   *  on *this* stack: registering only S30 meant that button looked up a
+   *  route the Talks navigator had never heard of and React Navigation threw
+   *  over the screen. A screen reachable from a stack must be registered on
+   *  that stack, not merely somewhere in the app. */
   S30_DealDone: { tx: TxDto };
+  S32_DealTracking: { tx_id?: string } | undefined;
+  S33_Settled: { tx_id?: string } | undefined;
 };
 
 const TalksStack = createNativeStackNavigator<TalksStackParamList>();
@@ -326,6 +334,8 @@ function TalksStackNavigator() {
         options={{ presentation: 'modal' }}
       />
       <TalksStack.Screen name="S30_DealDone" component={S30_DealDone} />
+      <TalksStack.Screen name="S32_DealTracking" component={S32_DealTracking} />
+      <TalksStack.Screen name="S33_Settled" component={S33_Settled} />
     </TalksStack.Navigator>
   );
 }

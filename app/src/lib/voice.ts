@@ -437,6 +437,17 @@ export async function speakText(text: string, locale: Locale = 'mr'): Promise<vo
 export async function speakSmart(text: string, locale: Locale = 'mr'): Promise<void> {
   await stopSpeaking();
   const generation = speechGeneration;
+
+  // ★ Straight to the device engine when this build cannot play a Sarvam
+  //   clip. Trying anyway costs a full network round trip and ends in the
+  //   same place, which is precisely the delay farmers were feeling.
+  if (!canPlaySarvam()) {
+    await ensureTtsLanguage(locale);
+    if (generation !== speechGeneration) return;
+    await speakViaTts(text);
+    return;
+  }
+
   try {
     await speakViaSarvam(text, locale, generation);
   } catch {
@@ -511,6 +522,12 @@ export async function speakSaleWindow(v: WindowRes, locale: Locale = 'mr'): Prom
   //   from the device.
   const narration = buildVerdictNarrationFor(v, locale);
   await stopSpeaking();
+  // Same probe as `speakSmart` — no point paying for audio this build has no
+  // way to play. See `canPlaySarvam`.
+  if (!canPlaySarvam()) {
+    await speakText(narration, locale);
+    return;
+  }
   try {
     await speakViaSarvam(narration, locale);
   } catch {
@@ -525,6 +542,41 @@ export async function speakSaleWindow(v: WindowRes, locale: Locale = 'mr'): Prom
  * Throws (does not swallow) on network/fs/playback errors by design — the
  * fallback lives in `speakSaleWindow`, not here.
  */
+/**
+ * Whether the Sarvam path can run at all on this build.
+ *
+ * ★ Why this exists: `react-native-fs` is a *native* module. It was added to
+ *   package.json at 09:48; the APK on the test device was built at 09:06, so
+ *   its native side is simply not in the binary. `require()` still returns a
+ *   JS object, but every property read goes through `NativeModules.RNFSManager`
+ *   — which is null — and throws
+ *   "cannot read property 'RNFSFileTypeRegular' of null".
+ *
+ * ★ Why it is checked *before* the network call and not caught after: the
+ *   throw used to happen only once `narrate()` had already come back, so
+ *   every Listen tap paid the full Sarvam round trip, threw, and only then
+ *   started on-device TTS. That is the four-to-five second delay — the app
+ *   was waiting for audio it had no way to play. Probing first turns an
+ *   unusable Sarvam path into an instant fallback.
+ *
+ * ★ Memoised, because the answer cannot change within a run: a native module
+ *   is either linked into this binary or it is not.
+ */
+let sarvamPlayable: boolean | null = null;
+
+function canPlaySarvam(): boolean {
+  if (sarvamPlayable !== null) return sarvamPlayable;
+  try {
+    const RNFS = require('react-native-fs');
+    // Touch the property that actually crosses the bridge. A missing native
+    // module throws here rather than returning undefined.
+    sarvamPlayable = typeof RNFS?.CachesDirectoryPath === 'string';
+  } catch {
+    sarvamPlayable = false;
+  }
+  return sarvamPlayable;
+}
+
 async function speakViaSarvam(
   narration: string,
   locale: Locale = 'mr',
