@@ -30,7 +30,7 @@ export default function S31_DealsList({ navigation }: any) {
         </View>
         <View style={styles.headerCenter}>
           <View style={styles.headerTitleRow}>
-            <Text style={styles.headerMandi}>Lasalgaon Mandi</Text>
+            <Text style={styles.headerMandi}>{t('deals_header_mandi')}</Text>
             <View style={styles.apmcBadge}><Text style={styles.apmcBadgeText}>APMC</Text></View>
           </View>
           <Text style={styles.headerFarmer}>{user?.name ?? ''}</Text>
@@ -43,10 +43,10 @@ export default function S31_DealsList({ navigation }: any) {
 
       {/* Title */}
       <View style={styles.titleSection}>
-        <Text style={styles.pageTitle}>माझे सौदे · My Deals</Text>
+        <Text style={styles.pageTitle}>{t('deals_page_title')}</Text>
         <View style={styles.escrowGuaranteeRow}>
           <Icon name="shield-check" size={13} color={colors.tertiary} />
-          <Text style={styles.escrowGuaranteeText}>APMC Escrow Guaranteed Trades</Text>
+          <Text style={styles.escrowGuaranteeText}>{t('deals_escrow_guaranteed')}</Text>
         </View>
       </View>
 
@@ -55,21 +55,21 @@ export default function S31_DealsList({ navigation }: any) {
         <View style={styles.summaryLeft}>
           <View style={styles.summaryIconBg}><Icon name="building" size={18} color={colors.primary} /></View>
           <View>
-            <Text style={styles.summaryLabel}>एकूण व्यवहार मूल्य · 3 DEALS</Text>
-            <Text style={styles.summaryAmt}>₹1,80,600 सुरक्षित निधी</Text>
+            <Text style={styles.summaryLabel}>{t('deals_summary_label', { count: '3' })}</Text>
+            <Text style={styles.summaryAmt}>{t('deals_summary_amount', { amount: '₹1,80,600' })}</Text>
           </View>
         </View>
         <View style={styles.activeBadge}>
-          <Text style={styles.activeText}>3 सौदे सक्रिय</Text>
+          <Text style={styles.activeText}>{t('deals_active_badge', { count: '3' })}</Text>
         </View>
       </View>
 
       {/* Tabs */}
       <View style={styles.tabs}>
         {([
-          { key: 'escrow', label: 'एस्को सुरक्षित', sub: 'Active Escrow' },
-          { key: 'transit', label: 'वाहतुकीत', sub: 'In Transit' },
-          { key: 'settled', label: 'पूर्ण झाले', sub: 'Settled' },
+          { key: 'escrow', label: t('deals_tab_escrow_label'), sub: t('deals_tab_escrow_sub') },
+          { key: 'transit', label: t('deals_tab_transit_label'), sub: t('deals_tab_transit_sub') },
+          { key: 'settled', label: t('deals_tab_settled_label'), sub: t('deals_tab_settled_sub') },
         ] as { key: Tab; label: string; sub: string }[]).map(tab => (
           <TouchableOpacity
             key={tab.key}
@@ -86,29 +86,26 @@ export default function S31_DealsList({ navigation }: any) {
         {/* Escrow guarantee banner */}
         <View style={styles.escrowBanner}>
           <View style={styles.escrowBannerIcon}><Icon name="shield-check" size={16} color={colors.tertiary} /></View>
-          <Text style={styles.escrowBannerText}>
-            कृषी मित्र 100% पेमेंट हमी. वजन पावती येताच २ तासांत बँक खात्यात थेट RTGS. कोणतीही अडचण आल्यास APMC लवाद संरक्षण.
-            <Icon name="check-circle" size={11} color={colors.tertiary} />
-          </Text>
+          <Text style={styles.escrowBannerText}>{t('deals_escrow_banner_text')}</Text>
         </View>
 
         {/* Active deal card — SD-2024-8842 */}
         <View style={styles.dealCard}>
           <View style={styles.dealCardHeader}>
-            <Text style={styles.dealRef}>सौदा क्र: #SD-2024-8842</Text>
+            <Text style={styles.dealRef}>{t('deals_ref_label', { id: 'SD-2024-8842' })}</Text>
             <View style={styles.escrowActiveBadge}>
               <View style={styles.liveGreen} />
-              <Text style={styles.escrowActiveBadgeText}>एस्को सुरक्षित · गाडी नियोजित</Text>
+              <Text style={styles.escrowActiveBadgeText}>{t('deals_status_escrow_planned')}</Text>
             </View>
           </View>
 
           <View style={styles.dealProductRow}>
             <View style={styles.dealProductInfo}>
               <View style={styles.dealTitleRow}>
-                <Text style={styles.dealProductName}>गावरान लाल कांदा</Text>
-                <View style={styles.gradeABadge}><Text style={styles.gradeAText}>Grade A</Text></View>
+                <Text style={styles.dealProductName}>{t('deals_demo_commodity_1')}</Text>
+                <View style={styles.gradeABadge}><Text style={styles.gradeAText}>{t('lot_grade_a')}</Text></View>
               </View>
-              <Text style={styles.dealProductSub}>Gavran Red Onion · क्वालिटी स्कोअर: 840/1000</Text>
+              <Text style={styles.dealProductSub}>{t('deals_quality_score', { score: '840' })}</Text>
             </View>
             <Image source={redOnions} style={styles.dealThumb} />
           </View>
@@ -116,47 +113,47 @@ export default function S31_DealsList({ navigation }: any) {
           <View style={styles.dealMetaRow}>
             <View style={styles.dealMetaItem}>
               <Icon name="box" size={11} color={colors.onSurfaceVariant} />
-              <Text style={styles.dealMetaLabel}>वजन व पोती</Text>
-              <Text style={styles.dealMetaVal}>40 क्विंटल (80 पोती)</Text>
+              <Text style={styles.dealMetaLabel}>{t('deals_weight_bags_label')}</Text>
+              <Text style={styles.dealMetaVal}>{t('deals_weight_bags_value', { qty: '40', bags: '80' })}</Text>
             </View>
             <View style={styles.dealMetaItem}>
               <Icon name="lock" size={11} color={colors.tertiary} />
-              <Text style={styles.dealMetaLabel}>100% एस्क्रो जमा</Text>
+              <Text style={styles.dealMetaLabel}>{t('deals_escrow_held_label')}</Text>
               <Text style={[styles.dealMetaVal, { color: colors.tertiary }]}>₹75,400</Text>
             </View>
           </View>
           <View style={styles.dealMetaRow2}>
-            <Text style={styles.dealRateText}>दर: ₹1,900 / क्विंटल</Text>
-            <Text style={styles.dealNetLabel}>नक्त देय रक्कम (NET)</Text>
+            <Text style={styles.dealRateText}>{t('deals_rate_label', { rate: '₹1,900' })}</Text>
+            <Text style={styles.dealNetLabel}>{t('deals_net_label')}</Text>
           </View>
 
           <View style={styles.dealBuyerRow}>
             <Icon name="building" size={13} color={colors.onSurfaceVariant} />
-            <Text style={styles.dealBuyerName}>Pune Trading Co.</Text>
-            <Text style={styles.dealBuyerSub}>गुलटेकडी APMC, पुणे</Text>
+            <Text style={styles.dealBuyerName}>{t('demo_buyer_company_name')}</Text>
+            <Text style={styles.dealBuyerSub}>{t('deals_buyer_location_1')}</Text>
             <View style={styles.dealBuyerRating}>
               <Icon name="star" size={10} color="#F59E0B" />
-              <Text style={styles.dealBuyerRatingText}>4.9 (120+ सौदे)</Text>
+              <Text style={styles.dealBuyerRatingText}>{t('deals_buyer_rating', { rating: '4.9', count: '120' })}</Text>
             </View>
           </View>
 
           <View style={styles.nextStepRow}>
             <Icon name="truck" size={13} color={colors.primaryContainer} />
             <View>
-              <Text style={styles.nextStepLabel}>पुढील टप्पा · लॉजिस्टिक्स</Text>
-              <Text style={styles.nextStepText}>उद्या सकाळी: १०:०० · गाडी शेतावर येईल</Text>
+              <Text style={styles.nextStepLabel}>{t('deals_next_step_label')}</Text>
+              <Text style={styles.nextStepText}>{t('deals_next_step_text')}</Text>
             </View>
           </View>
 
           <View style={styles.dealCtaRow}>
             <TouchableOpacity style={styles.trackBtn} onPress={() => navigation.navigate('S32_DealTracking')}>
               <View style={styles.liveGreen} />
-              <Text style={styles.trackBtnText}>सौदा ट्रॅक करा · Live</Text>
+              <Text style={styles.trackBtnText}>{t('deals_track_btn')}</Text>
               <Icon name="arrow-right" size={13} color={colors.onPrimary} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.receiptBtn} onPress={() => navigation.navigate('S33_Settled')}>
               <Icon name="clipboard" size={14} color={colors.primary} />
-              <Text style={styles.receiptBtnText}>पावती</Text>
+              <Text style={styles.receiptBtnText}>{t('deals_receipt_btn')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -164,28 +161,35 @@ export default function S31_DealsList({ navigation }: any) {
         {/* In-transit deal — SD-2024-8715 */}
         <View style={[styles.dealCard, styles.dealCardTransit]}>
           <View style={styles.dealCardHeader}>
-            <Text style={styles.dealRef}>सौदा: #SD-2024-8715</Text>
+            <Text style={styles.dealRef}>{t('deals_ref_label', { id: 'SD-2024-8715' })}</Text>
             <View style={styles.transitBadge}>
               <Icon name="truck" size={11} color={colors.primaryContainer} />
-              <Text style={styles.transitBadgeText}>वाहतुकीत · काटा वजन पूर्ण</Text>
+              <Text style={styles.transitBadgeText}>{t('deals_transit_status')}</Text>
             </View>
           </View>
 
           <View style={styles.transitProductRow}>
-            <Text style={styles.transitProductName}>सोयाबीन (Soybean JS-335)</Text>
+            <Text style={styles.transitProductName}>{t('deals_demo_commodity_2')}</Text>
             <Text style={styles.transitAmt}>₹1,12,500</Text>
           </View>
-          <Text style={styles.transitSubText}>२५ क्विंटल · ओलावा ८.4% (मानक)</Text>
+          <Text style={styles.transitSubText}>{t('deals_transit_subtext', { qty: '25', pct: '8.4' })}</Text>
           <View style={styles.transitBuyerRow}>
             <Icon name="map-pin" size={10} color={colors.onSurfaceVariant} />
-            <Text style={styles.transitBuyerText}>Sahyadri Farmers FPO, Mohadi · रवानगी: आजदु. १२:३०</Text>
+            <Text style={styles.transitBuyerText}>
+              {t('deals_transit_buyer', { fpo: 'Sahyadri Farmers FPO, Mohadi', time: '12:30' })}
+            </Text>
           </View>
           <View style={styles.transitSbiRow}>
-            <Text style={styles.transitSbiText}>SBI वर्ग प्रक्रिया सुरु</Text>
+            <Text style={styles.transitSbiText}>{t('deals_transit_bank_status')}</Text>
           </View>
 
           <View style={styles.progressSteps}>
-            {['एस्क्रो', 'शेत वजन', 'गाडी रवाना', 'बँक वर्ग (1 तास)'].map((s, i) => (
+            {[
+              t('deals_progress_escrow'),
+              t('deals_progress_weight'),
+              t('deals_progress_dispatch'),
+              t('deals_progress_bank'),
+            ].map((s, i) => (
               <View key={i} style={styles.progressStep}>
                 <View style={[styles.progressStepDot, i < 3 && styles.progressStepDotDone]} />
                 <Text style={[styles.progressStepText, i < 3 && styles.progressStepTextDone]}>{s}</Text>
@@ -194,13 +198,13 @@ export default function S31_DealsList({ navigation }: any) {
           </View>
 
           <View style={styles.transitCtaRow}>
-            <TouchableOpacity style={styles.trackingBtn}>
+            <TouchableOpacity style={styles.trackingBtn} onPress={() => navigation.navigate('S32_DealTracking')}>
               <Icon name="map-pin" size={13} color={colors.primary} />
-              <Text style={styles.trackingBtnText}>ट्रॅकिंग पहा</Text>
+              <Text style={styles.trackingBtnText}>{t('deals_view_tracking_btn')}</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.scaleBtn}>
               <Icon name="scale" size={13} color={colors.primary} />
-              <Text style={styles.scaleBtnText}>काटा पावती</Text>
+              <Text style={styles.scaleBtnText}>{t('deals_weigh_receipt_btn')}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -208,51 +212,42 @@ export default function S31_DealsList({ navigation }: any) {
         {/* Settled deal — SD-2024-8502 */}
         <View style={[styles.dealCard, styles.dealCardSettled]}>
           <View style={styles.dealCardHeader}>
-            <Text style={styles.dealRef}>सौदा: #SD-2024-8502 · १२ मार्च २०२४</Text>
+            <Text style={styles.dealRef}>{t('deals_settled_ref', { id: 'SD-2024-8502', date: '12 Mar 2024' })}</Text>
             <View style={styles.settledBadge}>
               <Icon name="check-circle" size={11} color={colors.tertiary} />
-              <Text style={styles.settledBadgeText}>पूर्णवर्ग (Settled)</Text>
+              <Text style={styles.settledBadgeText}>{t('deals_settled_badge')}</Text>
             </View>
           </View>
 
           <View style={styles.settledProductRow}>
-            <Text style={styles.settledProductName}>उन्हाळ कांदा (Summer Onion)</Text>
+            <Text style={styles.settledProductName}>{t('deals_demo_commodity_3')}</Text>
             <Text style={styles.settledAmt}>₹51,000</Text>
           </View>
-          <Text style={styles.settledSubText}>३० क्विंटल @ ₹1,820/क्विंटल</Text>
+          <Text style={styles.settledSubText}>{t('deals_settled_subtext', { qty: '30', rate: '₹1,820' })}</Text>
 
           <View style={styles.settledFooterRow}>
             <View>
-              <Text style={styles.settledUtLabel}>युटीआर:</Text>
+              <Text style={styles.settledUtLabel}>{t('deals_utr_label')}</Text>
               <Text style={styles.settledUtr}>APMC2024031298412</Text>
             </View>
-            <TouchableOpacity style={styles.invoiceBtn}>
+            <TouchableOpacity style={styles.invoiceBtn} onPress={() => navigation.navigate('S33_Settled')}>
               <Icon name="clipboard" size={12} color={colors.primary} />
-              <Text style={styles.invoiceBtnText}>अंतिम कर पावती (Invoice)</Text>
+              <Text style={styles.invoiceBtnText}>{t('deals_invoice_btn')}</Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.helpRow}>
           <Icon name="phone" size={11} color={colors.onSurfaceVariant} />
-          <Text style={styles.helpText}>काही प्रश्न आहेत? लासलगाव मंडी साहाय्य: 1800-233-8900 (Toll free)</Text>
+          <Text style={styles.helpText}>{t('deals_help_text')}</Text>
         </View>
       </ScrollView>
-
-      {/* Bottom tab bar */}
-      <View style={styles.tabBar}>
-        {[
-          { icon: 'home', label: 'Home' },
-          { icon: 'trending-up', label: 'Market' },
-          { icon: 'box', label: 'My Produce' },
-          { icon: 'building', label: 'Deals', active: true },
-        ].map((item, i) => (
-          <TouchableOpacity key={i} style={styles.tabBarItem}>
-            <Icon name={item.icon as any} size={22} color={item.active ? colors.primary : colors.outline} />
-            <Text style={[styles.tabBarLabel, item.active && styles.tabBarLabelActive]}>{item.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {/* ★ A second, fake bottom tab bar (Home/Market/My Produce/Deals,
+          none of it wired to navigation) was baked directly into this
+          screen's own content — a literal copy of the Stitch mockup's tab
+          bar artwork, sitting on top of the real one the navigator already
+          renders below every screen. Removed; the real tab bar underneath
+          is the only one that should ever show. */}
     </View>
   );
 }

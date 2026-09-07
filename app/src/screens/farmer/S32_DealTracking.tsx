@@ -9,65 +9,65 @@ import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 
-const MILESTONES = [
-  {
-    done: true,
-    active: false,
-    icon: 'lock',
-    title: 'Payment in Escrow (₹76,000 Locked)',
-    time: 'Completed today 09:30 AM',
-    sub: '',
-    subGreen: true,
-  },
-  {
-    done: true,
-    active: false,
-    icon: 'check-circle',
-    title: 'Dispatch Scheduled',
-    time: 'Niphad Warehouse pickup arranged',
-    sub: 'Inspected & weighed at loading ramp at 11:15 AM',
-    subGreen: false,
-  },
-  {
-    done: false,
-    active: true,
-    icon: 'truck',
-    title: 'In Transit (Truck MH-15-EG-4412)',
-    time: 'LIVE GPS',
-    sub: '',
-    subGreen: false,
-  },
-  {
-    done: false,
-    active: false,
-    icon: 'scale',
-    title: 'Arrival at Lasalgaon Weighbridge',
-    time: 'Automated gross weight printout will sync here',
-    sub: '',
-    subGreen: false,
-  },
-  {
-    done: false,
-    active: false,
-    icon: 'clipboard',
-    title: 'Quality Inspection & Weighment Slip Upload',
-    time: 'Mandi grader verifies moisture threshold (<10%)',
-    sub: '',
-    subGreen: false,
-  },
-  {
-    done: false,
-    active: false,
-    icon: 'zap',
-    title: 'Instant Payment Release',
-    time: 'Released to your bank account',
-    sub: '',
-    subGreen: true,
-  },
-] as const;
-
 export default function S32_DealTracking({ navigation }: any) {
   const { t } = useT();
+
+  const MILESTONES = [
+    {
+      done: true,
+      active: false,
+      icon: 'lock',
+      title: t('tracking_milestone1_title', { amount: '₹76,000' }),
+      time: t('tracking_milestone1_time'),
+      sub: '',
+      subGreen: true,
+    },
+    {
+      done: true,
+      active: false,
+      icon: 'check-circle',
+      title: t('tracking_milestone2_title'),
+      time: t('tracking_milestone2_time'),
+      sub: t('tracking_milestone2_sub'),
+      subGreen: false,
+    },
+    {
+      done: false,
+      active: true,
+      icon: 'truck',
+      title: t('tracking_milestone3_title'),
+      time: t('tracking_milestone3_time'),
+      sub: '',
+      subGreen: false,
+    },
+    {
+      done: false,
+      active: false,
+      icon: 'scale',
+      title: t('tracking_milestone4_title'),
+      time: t('tracking_milestone4_time'),
+      sub: '',
+      subGreen: false,
+    },
+    {
+      done: false,
+      active: false,
+      icon: 'clipboard',
+      title: t('tracking_milestone5_title'),
+      time: t('tracking_milestone5_time'),
+      sub: '',
+      subGreen: false,
+    },
+    {
+      done: false,
+      active: false,
+      icon: 'zap',
+      title: t('tracking_milestone6_title'),
+      time: t('tracking_milestone6_time'),
+      sub: '',
+      subGreen: true,
+    },
+  ] as const;
 
   return (
     <View style={styles.root}>
@@ -81,9 +81,11 @@ export default function S32_DealTracking({ navigation }: any) {
         <View style={styles.headerCenter}>
           <View style={styles.liveRow}>
             <View style={styles.liveGreen} />
-            <Text style={styles.headerRef}>Sauda #MS-8492 Tracking</Text>
+            <Text style={styles.headerRef}>{t('tracking_header_ref', { id: 'MS-8492' })}</Text>
           </View>
-          <Text style={styles.headerSub}>Rambhau Patil · Lasalgaon Yard</Text>
+          <Text style={styles.headerSub}>
+            {t('tracking_header_sub', { farmer: 'Rambhau Patil', market: 'Lasalgaon' })}
+          </Text>
         </View>
         <TouchableOpacity style={styles.listenBtn}>
           <Icon name="volume" size={13} color={colors.onPrimary} />
@@ -96,14 +98,12 @@ export default function S32_DealTracking({ navigation }: any) {
         <View style={styles.escrowHero}>
           <View style={styles.escrowHeroTop}>
             <Icon name="lock" size={13} color={colors.onPrimary} />
-            <Text style={styles.escrowHeroTopText}>CURRENT MONEY LOCATION</Text>
-            <View style={styles.securedBadge}><Text style={styles.securedText}>100% SECURED</Text></View>
+            <Text style={styles.escrowHeroTopText}>{t('tracking_money_location')}</Text>
+            <View style={styles.securedBadge}><Text style={styles.securedText}>{t('tracking_secured_badge')}</Text></View>
           </View>
-          <Text style={styles.escrowHeroAmt}>₹76,000 SAFE IN</Text>
-          <Text style={styles.escrowHeroAmtLine2}>KRISHI MITRA ESCROW</Text>
-          <Text style={styles.escrowHeroDesc}>
-            Buyer deposited full funds. Money will be released to your bank upon delivery inspection.
-          </Text>
+          <Text style={styles.escrowHeroAmt}>{t('tracking_amt_safe_in', { amount: '₹76,000' })}</Text>
+          <Text style={styles.escrowHeroAmtLine2}>{t('tracking_escrow_line')}</Text>
+          <Text style={styles.escrowHeroDesc}>{t('tracking_escrow_desc')}</Text>
           {/* ★ "APMC Regulated Escrow Trust" and a fabricated trust ID were
               removed — there is no regulated third-party escrow trust
               behind this feature, only this app's own transaction FSM. */}
@@ -113,42 +113,44 @@ export default function S32_DealTracking({ navigation }: any) {
         <View style={styles.snapshotCard}>
           <View style={styles.snapshotHeader}>
             <Icon name="clipboard" size={13} color={colors.primary} />
-            <Text style={styles.snapshotTitle}>Deal Snapshot</Text>
-            <Text style={styles.snapshotLot}>Lot #ON-841</Text>
+            <Text style={styles.snapshotTitle}>{t('tracking_snapshot_title')}</Text>
+            <Text style={styles.snapshotLot}>{t('tracking_lot_label', { id: 'ON-841' })}</Text>
           </View>
 
           <View style={styles.snapshotBuyerRow}>
-            <Text style={styles.snapshotKey}>BUYER</Text>
-            <Text style={styles.snapshotBuyerName}>Pune Trading Co</Text>
+            <Text style={styles.snapshotKey}>{t('tracking_buyer_label')}</Text>
+            <Text style={styles.snapshotBuyerName}>{t('demo_buyer_company_name')}</Text>
             <View style={styles.verifiedRow}>
               <Icon name="check-circle" size={11} color={colors.tertiary} />
-              <Text style={styles.verifiedText}>Verified Escrow Trader</Text>
+              <Text style={styles.verifiedText}>{t('tracking_verified_trader')}</Text>
             </View>
           </View>
 
           <View style={styles.snapshotSettlementRow}>
             <View>
-              <Text style={styles.snapshotKey}>TOTAL SETTLEMENT</Text>
+              <Text style={styles.snapshotKey}>{t('tracking_total_settlement')}</Text>
               <Text style={styles.snapshotSettlementAmt}>₹76,000</Text>
               <View style={styles.zeroDeductRow}>
                 <Icon name="check" size={11} color={colors.tertiary} />
-                <Text style={styles.zeroDeductText}>Zero Deduction Assured</Text>
+                <Text style={styles.zeroDeductText}>{t('tracking_zero_deduction')}</Text>
               </View>
             </View>
           </View>
 
           <View style={styles.snapshotProduceRow}>
             <Icon name="truck" size={13} color={colors.onSurfaceVariant} />
-            <Text style={styles.snapshotProduceText}>40 Quintals Grade A Onion · Agreed Mandi Rate @ ₹1,900/q</Text>
-            <View style={styles.gavranBadge}><Text style={styles.gavranText}>Gavran Red</Text></View>
+            <Text style={styles.snapshotProduceText}>
+              {t('tracking_produce_line', { qty: '40', grade: t('lot_grade_a'), commodity: t('commodity_onion'), rate: '₹1,900' })}
+            </Text>
+            <View style={styles.gavranBadge}><Text style={styles.gavranText}>{t('tracking_variety_badge')}</Text></View>
           </View>
         </View>
 
         {/* Milestone timeline */}
         <View style={styles.timelineCard}>
           <View style={styles.timelineHeader}>
-            <Text style={styles.timelineTitle}>Live Delivery &amp; Payout Lifecycle</Text>
-            <View style={styles.stageBadge}><Text style={styles.stageText}>STAGE 3 OF 6</Text></View>
+            <Text style={styles.timelineTitle}>{t('tracking_lifecycle_title')}</Text>
+            <View style={styles.stageBadge}><Text style={styles.stageText}>{t('tracking_stage_badge', { n: '3', total: '6' })}</Text></View>
           </View>
 
           {MILESTONES.map((m, i) => (
@@ -175,7 +177,7 @@ export default function S32_DealTracking({ navigation }: any) {
                 {m.active && (
                   <View style={styles.liveGpsBadge}>
                     <View style={styles.liveGpsDot} />
-                    <Text style={styles.liveGpsText}>LIVE GPS</Text>
+                    <Text style={styles.liveGpsText}>{t('tracking_live_gps_badge')}</Text>
                   </View>
                 )}
                 <Text style={[styles.stepTitle, m.done && styles.stepTitleDone, m.active && styles.stepTitleActive]}>
@@ -196,20 +198,20 @@ export default function S32_DealTracking({ navigation }: any) {
                       <Text style={styles.driverAvatarText}>RS</Text>
                     </View>
                     <View style={styles.driverInfo}>
-                      <Text style={styles.driverName}>Driver Ramesh Shinde</Text>
-                      <Text style={styles.driverTruck}>Tata 407 (14-Tyre)</Text>
+                      <Text style={styles.driverName}>Ramesh Shinde</Text>
+                      <Text style={styles.driverTruck}>{t('tracking_driver_truck', { model: 'Tata 407', tyres: '14' })}</Text>
                     </View>
                     <TouchableOpacity style={styles.callDriverBtn}>
                       <Icon name="phone" size={13} color={colors.onPrimary} />
-                      <Text style={styles.callDriverText}>Call Driver</Text>
+                      <Text style={styles.callDriverText}>{t('tracking_call_driver')}</Text>
                     </TouchableOpacity>
                   </View>
                 )}
                 {m.active && (
                   <View style={styles.etaRow}>
                     <Icon name="clock" size={11} color={colors.onSurface} />
-                    <Text style={styles.etaText}>ETA: 2 hours (approx. 02:45 PM)</Text>
-                    <Text style={styles.routeText}>Route: Niphad-Lasalgaon Rd</Text>
+                    <Text style={styles.etaText}>{t('tracking_eta', { duration: '2h', time: '02:45 PM' })}</Text>
+                    <Text style={styles.routeText}>{t('tracking_route', { route: 'Niphad-Lasalgaon Rd' })}</Text>
                   </View>
                 )}
               </View>
@@ -226,25 +228,13 @@ export default function S32_DealTracking({ navigation }: any) {
             is unrecoverable in front of a government panel. */}
         <TouchableOpacity style={styles.docRow} onPress={() => navigation.navigate('S33_Settled')}>
           <View style={styles.docIcon}><Icon name="check-circle" size={16} color={colors.tertiary} /></View>
-          <Text style={styles.docText}>View Settlement Receipt</Text>
+          <Text style={styles.docText}>{t('tracking_view_receipt')}</Text>
           <Icon name="arrow-right" size={16} color={colors.onSurfaceVariant} />
         </TouchableOpacity>
       </ScrollView>
-
-      {/* Bottom tab bar */}
-      <View style={styles.tabBar}>
-        {[
-          { icon: 'home', label: 'Home' },
-          { icon: 'trending-up', label: 'Market' },
-          { icon: 'box', label: 'My Produce' },
-          { icon: 'building', label: 'Deals', active: true },
-        ].map((item, i) => (
-          <TouchableOpacity key={i} style={styles.tabBarItem}>
-            <Icon name={item.icon as any} size={22} color={item.active ? colors.primary : colors.outline} />
-            <Text style={[styles.tabBarLabel, item.active && styles.tabBarLabelActive]}>{item.label}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
+      {/* ★ A second, fake bottom tab bar was baked into this screen's own
+          content, duplicating the real one the navigator renders below
+          every screen — see the identical fix on S31_DealsList. Removed. */}
     </View>
   );
 }
