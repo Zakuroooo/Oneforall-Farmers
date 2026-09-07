@@ -1,5 +1,11 @@
 /**
- * The farmer app. Four tabs. Pranay.
+ * The farmer app. Four tabs: Home, Prices, My Lots, Deals. Pranay.
+ *
+ * ★ Deals replaced what used to be a fourth "Assistant" tab (the canned
+ *   Q&A/FAQ screen, S28) — the actual Stitch design's footer is Home /
+ *   Market / My Produce / Deals, and Deals had no tab at all before this,
+ *   reachable only by going Menu → Deals, several taps deep. The FAQ
+ *   assistant moved to the hamburger menu instead (`S34_MenuDrawer`).
  *
  * ★ Four, not seven. This is a phone held by someone who may not read fluently, in
  *   a mandi, in sunlight, possibly one-handed. Every tab past the fourth is a tab
@@ -48,7 +54,6 @@ import S13_SelfAssay from '../screens/farmer/S13_SelfAssay';
 import S14_CounterOffer from '../screens/farmer/S14_CounterOffer';
 import S15_MyLots from '../screens/farmer/S15_MyLots';
 import S16_PoolSplit from '../screens/farmer/S16_PoolSplit';
-import S28_Assistant from '../screens/farmer/S28_Assistant';
 import PricesIndex from '../screens/farmer/PricesIndex';
 // ★ The post-listing selling journey (list → grade → publish → buyers →
 //   bargain → deal done → settled) was built as 11 Stitch-matched screens
@@ -77,7 +82,7 @@ export type FarmerTabParamList = {
   Home: undefined;
   Prices: undefined;
   MyLots: undefined;
-  Assistant: undefined;
+  Deals: undefined;
 };
 
 /**
@@ -197,6 +202,40 @@ export type MyLotsStackParamList = {
   S35_FarmerProfile: undefined;
 };
 
+/**
+ * ★ Deals is its own tab, not a hamburger-menu-only screen. It used to be
+ *   reachable only via the menu, pushing on top of whatever the MyLots tab's
+ *   own stack already had piled up from a prior sell-flow run — the exact
+ *   "why did going to My Deals open ten unrelated back-presses" bug. This
+ *   stack is its own tab with its own independent history, starting fresh
+ *   at S31 every time the tab is pressed, same shape as Home/Prices/MyLots.
+ *
+ *   S31/S32/S33 stay registered on MyLotsStack too (deliberately, not a
+ *   mistake) for the in-flow "just closed a deal" path — S29's confirm
+ *   button and S30's celebration screen still push straight into a
+ *   MyLots-stack copy of S31/S32 rather than jumping tabs, so completing a
+ *   sale reads as one continuous flow, not a tab switch. Same components,
+ *   two stack instances, each with the history that makes sense for how it
+ *   was reached.
+ */
+export type DealsStackParamList = {
+  S31_DealsList: undefined;
+  S32_DealTracking: undefined;
+  S33_Settled: undefined;
+};
+
+const DealsStack = createNativeStackNavigator<DealsStackParamList>();
+
+function DealsStackNavigator() {
+  return (
+    <DealsStack.Navigator initialRouteName="S31_DealsList" screenOptions={STACK_SCREEN_OPTIONS}>
+      <DealsStack.Screen name="S31_DealsList" component={S31_DealsList} />
+      <DealsStack.Screen name="S32_DealTracking" component={S32_DealTracking} />
+      <DealsStack.Screen name="S33_Settled" component={S33_Settled} />
+    </DealsStack.Navigator>
+  );
+}
+
 const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
 
 function MyLotsStackNavigator() {
@@ -268,9 +307,9 @@ export function FarmerTabs() {
         options={{ title: t('tab_my_lots'), tabBarIcon: tabIcon('lots') }}
       />
       <Tab.Screen
-        name="Assistant"
-        component={S28_Assistant}
-        options={{ title: t('tab_assistant'), tabBarIcon: tabIcon('assistant') }}
+        name="Deals"
+        component={DealsStackNavigator}
+        options={{ title: t('deals_page_title'), tabBarIcon: tabIcon('deals') }}
       />
     </Tab.Navigator>
   );

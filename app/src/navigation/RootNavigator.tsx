@@ -31,6 +31,7 @@ import { AuthStack } from './AuthStack';
 import { BuyerTabs } from './BuyerTabs';
 import { FarmerTabs } from './FarmerTabs';
 import S34_MenuDrawer from '../screens/farmer/S34_MenuDrawer';
+import S28_Assistant from '../screens/farmer/S28_Assistant';
 
 function Splash() {
   return (
@@ -49,6 +50,7 @@ function Splash() {
 export type FarmerRootStackParamList = {
   FarmerTabs: undefined;
   Menu: undefined;
+  Assistant: undefined;
 };
 const FarmerRootStack = createNativeStackNavigator<FarmerRootStackParamList>();
 
@@ -60,6 +62,17 @@ function FarmerRoot() {
         name="Menu"
         component={S34_MenuDrawer}
         options={{ animation: 'slide_from_left' }}
+      />
+      {/* ★ Was the 4th tab; Deals took that slot (see FarmerTabs.tsx header).
+          Still reachable, one tap from the menu instead. Needs its own
+          header — this screen has no back affordance of its own (it never
+          needed one as a tab root, where the tab bar is the way back), and
+          the stack's own `headerShown: false` above would otherwise strand
+          a farmer here with no way out. */}
+      <FarmerRootStack.Screen
+        name="Assistant"
+        component={S28_Assistant}
+        options={{ headerShown: true, title: '' }}
       />
     </FarmerRootStack.Navigator>
   );

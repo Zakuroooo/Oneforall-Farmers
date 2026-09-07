@@ -52,7 +52,7 @@ export default function S34_MenuDrawer({ navigation }: Props) {
   //   presses. `reset` on the root stack instead throws away that leftover
   //   history and lands on exactly [My Lots, target] — closing the menu and
   //   giving a clean two-deep stack in one move.
-  const goToTab = (tab: 'Home' | 'Prices' | 'MyLots', screen: string) => {
+  const goToTab = (tab: 'Home' | 'Prices' | 'MyLots' | 'Deals', screen: string) => {
     const action = CommonActions.reset({
       index: 0,
       routes: [
@@ -77,8 +77,8 @@ export default function S34_MenuDrawer({ navigation }: Props) {
 
   const goToMyLots = () => goToTab('MyLots', 'S15_MyLots');
   const goToModelCard = () => goToTab('Prices', 'S8_ModelCard');
-  const goToDeals = () => goToTab('MyLots', 'S31_DealsList');
   const goToProfile = () => goToTab('MyLots', 'S35_FarmerProfile');
+  const goToAssistant = () => navigation.navigate('Assistant');
 
   return (
     <View style={styles.root}>
@@ -123,21 +123,9 @@ export default function S34_MenuDrawer({ navigation }: Props) {
           </TouchableOpacity>
         </View>
 
-        {/* Deals — its own section: escrow, tracking, settlement. This is a
-            different concept from "My Lots" (unsold produce) and used to be
-            grouped in the same card, reading as if it were a sub-item of it. */}
-        <Text style={styles.sectionLabel}>{t('deals_page_title')}</Text>
-        <View style={styles.menuCard}>
-          <TouchableOpacity style={styles.menuRow} onPress={goToDeals}>
-            <View style={styles.menuIconBg}>
-              <Icon name="handshake" size={16} color={colors.primary} />
-            </View>
-            <Text style={styles.menuTitle}>{t('deals_page_title')}</Text>
-            <Icon name="chevron-right" size={16} color={colors.outline} />
-          </TouchableOpacity>
-        </View>
-
-        {/* Data & AI */}
+        {/* Data & AI. Deals used to have its own menu section here — it is
+            now its own bottom tab (see FarmerTabs.tsx), so a menu entry for
+            it would just be a second, stale path to the same place. */}
         <Text style={styles.sectionLabel}>{t('model_card_title')}</Text>
         <View style={styles.menuCard}>
           <TouchableOpacity style={styles.menuRow} onPress={goToModelCard}>
@@ -145,6 +133,14 @@ export default function S34_MenuDrawer({ navigation }: Props) {
               <Icon name="trending-up" size={16} color={colors.tertiary} />
             </View>
             <Text style={styles.menuTitle}>{t('model_card_title')}</Text>
+            <Icon name="chevron-right" size={16} color={colors.outline} />
+          </TouchableOpacity>
+          <View style={styles.menuDivider} />
+          <TouchableOpacity style={styles.menuRow} onPress={goToAssistant}>
+            <View style={[styles.menuIconBg, { backgroundColor: colors.positiveContainer }]}>
+              <Icon name="message-circle" size={16} color={colors.tertiary} />
+            </View>
+            <Text style={styles.menuTitle}>{t('tab_assistant')}</Text>
             <Icon name="chevron-right" size={16} color={colors.outline} />
           </TouchableOpacity>
         </View>

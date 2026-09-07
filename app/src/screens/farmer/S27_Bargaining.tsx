@@ -27,15 +27,15 @@ export default function S27_Bargaining({ navigation }: any) {
             <Icon name="check-circle" size={14} color={colors.tertiary} />
           </View>
           <View style={styles.headerMetaRow}>
-            <Text style={styles.headerMeta}>45km away</Text>
+            <Text style={styles.headerMeta}>{t('bargain_buyer_dist')}</Text>
             <View style={styles.headerDot} />
             <Icon name="check" size={10} color={colors.tertiary} />
-            <Text style={styles.headerMeta}>98.4% On-Time</Text>
+            <Text style={styles.headerMeta}>{t('bargain_buyer_ontime')}</Text>
           </View>
         </View>
         <View style={styles.roundBadge}>
-          <Text style={styles.roundBadgeText}>Round 3 of 3 (Final Round)</Text>
-          <Text style={styles.expiryText}>Expires in 18:42</Text>
+          <Text style={styles.roundBadgeText}>{t('bargain_round_badge')}</Text>
+          <Text style={styles.expiryText}>{t('bargain_round_expiry')}</Text>
         </View>
       </View>
 
@@ -44,19 +44,19 @@ export default function S27_Bargaining({ navigation }: any) {
         {/* Lot info band */}
         <View style={styles.lotBand}>
           <Icon name="box" size={14} color={colors.primary} />
-          <Text style={styles.lotBandText}>40 Quintals · Grade A Onion</Text>
-          <Text style={styles.lotBandSub}>Lasalgaon Mandi Yard · Lot #LS-8842</Text>
+          <Text style={styles.lotBandText}>{t('bargain_lot_text')}</Text>
+          <Text style={styles.lotBandSub}>{t('bargain_lot_sub')}</Text>
         </View>
 
         {/* Price benchmarks */}
         <View style={styles.benchmarkRow}>
           <View style={styles.benchmarkCard}>
-            <Text style={styles.benchmarkLabel}>Asking Price</Text>
-            <Text style={styles.benchmarkVal}>₹1,950<Text style={styles.benchmarkUnit}>/q</Text></Text>
+            <Text style={styles.benchmarkLabel}>{t('bargain_ask_label')}</Text>
+            <Text style={styles.benchmarkVal}>{t('bargain_ask_val')}<Text style={styles.benchmarkUnit}>/q</Text></Text>
           </View>
           <View style={styles.benchmarkCard}>
-            <Text style={styles.benchmarkLabel}>Current Mandi Avg</Text>
-            <Text style={[styles.benchmarkVal, { color: colors.tertiary }]}>₹2,050<Text style={styles.benchmarkUnit}>/q</Text></Text>
+            <Text style={styles.benchmarkLabel}>{t('bargain_mandi_label')}</Text>
+            <Text style={[styles.benchmarkVal, { color: colors.tertiary }]}>{t('bargain_mandi_val')}<Text style={styles.benchmarkUnit}>/q</Text></Text>
           </View>
         </View>
 
@@ -64,10 +64,10 @@ export default function S27_Bargaining({ navigation }: any) {
         <View style={styles.auditHeader}>
           <View style={styles.auditLeft}>
             <Icon name="clipboard" size={13} color={colors.onSurfaceVariant} />
-            <Text style={styles.auditLabel}>Audit Trail & Offer History</Text>
+            <Text style={styles.auditLabel}>{t('bargain_audit_label')}</Text>
           </View>
           <View style={styles.auditBadge}>
-            <Text style={styles.auditBadgeText}>Rambhau Patil vs. Pune Trading Co</Text>
+            <Text style={styles.auditBadgeText}>{t('bargain_audit_badge')}</Text>
           </View>
         </View>
 
@@ -76,24 +76,24 @@ export default function S27_Bargaining({ navigation }: any) {
           <View style={styles.offerCardHeader}>
             <View style={styles.buyerAvatar}><Text style={styles.buyerAvatarText}>B1</Text></View>
             <View style={styles.offerMeta}>
-              <Text style={styles.offerParty}>Pune Trading Co</Text>
-              <Text style={styles.offerRound}>Round 1 • 10:14 AM</Text>
+              <Text style={styles.offerParty}>{t('bargain_r1_role')}</Text>
+              <Text style={styles.offerRound}>{t('bargain_r1_time')}</Text>
             </View>
-            <View style={styles.counteredBadge}><Text style={styles.counteredText}>Countered</Text></View>
+            <View style={styles.counteredBadge}><Text style={styles.counteredText}>{t('bargain_r1_badge')}</Text></View>
           </View>
           <View style={styles.offerAmounts}>
             <View>
-              <Text style={styles.offerAmtLabel}>Initial Buyer Bid</Text>
-              <Text style={styles.offerAmtBig}>₹1,850<Text style={styles.offerAmtUnit}>/q</Text></Text>
+              <Text style={styles.offerAmtLabel}>{t('bargain_r1_bid_label')}</Text>
+              <Text style={styles.offerAmtBig}>{t('bargain_r1_bid_val')}<Text style={styles.offerAmtUnit}>/q</Text></Text>
             </View>
             <View>
-              <Text style={styles.offerAmtLabel}>Total Lot Value</Text>
-              <Text style={styles.offerAmtRight}>₹74,000</Text>
+              <Text style={styles.offerAmtLabel}>{t('bargain_r1_total_label')}</Text>
+              <Text style={styles.offerAmtRight}>{t('bargain_r1_total_val')}</Text>
             </View>
           </View>
           <View style={styles.quoteBox}>
             <Icon name="message-circle" size={12} color={colors.outline} />
-            <Text style={styles.quoteText}>"Prompt payment via escrow upon Lasalgaon weighment."</Text>
+            <Text style={styles.quoteText}>{t('bargain_r1_quote')}</Text>
           </View>
         </View>
 
@@ -104,24 +104,24 @@ export default function S27_Bargaining({ navigation }: any) {
               <Text style={styles.buyerAvatarText}>RP</Text>
             </View>
             <View style={styles.offerMeta}>
-              <Text style={styles.offerParty}>Rambhau Patil (You)</Text>
-              <Text style={styles.offerRound}>Round 2 • 10:22 AM</Text>
+              <Text style={styles.offerParty}>{t('bargain_r2_role')}</Text>
+              <Text style={styles.offerRound}>{t('bargain_r2_time')}</Text>
             </View>
-            <View style={styles.farmerCounterBadge}><Text style={styles.farmerCounterText}>Farmer Counter</Text></View>
+            <View style={styles.farmerCounterBadge}><Text style={styles.farmerCounterText}>{t('bargain_r2_badge')}</Text></View>
           </View>
           <View style={styles.offerAmounts}>
             <View>
-              <Text style={styles.offerAmtLabel}>Your Counter-Offer</Text>
-              <Text style={[styles.offerAmtBig, { color: colors.primary }]}>₹1,950<Text style={styles.offerAmtUnit}>/q</Text></Text>
+              <Text style={styles.offerAmtLabel}>{t('bargain_r2_bid_label')}</Text>
+              <Text style={[styles.offerAmtBig, { color: colors.primary }]}>{t('bargain_r2_bid_val')}<Text style={styles.offerAmtUnit}>/q</Text></Text>
             </View>
             <View>
-              <Text style={styles.offerAmtLabel}>Total Lot Value</Text>
-              <Text style={styles.offerAmtRight}>₹78,000</Text>
+              <Text style={styles.offerAmtLabel}>{t('bargain_r2_total_label')}</Text>
+              <Text style={styles.offerAmtRight}>{t('bargain_r2_total_val')}</Text>
             </View>
           </View>
           <View style={styles.quoteBox}>
             <Icon name="info" size={12} color={colors.outline} />
-            <Text style={styles.quoteText}>"Grade A sorted, well-cured onions, low moisture."</Text>
+            <Text style={styles.quoteText}>{t('bargain_r2_quote')}</Text>
           </View>
         </View>
 
@@ -129,92 +129,53 @@ export default function S27_Bargaining({ navigation }: any) {
         <View style={[styles.offerCard, styles.finalCard]}>
           <View style={styles.awaitingBanner}>
             <Icon name="zap" size={11} color="#F59E0B" />
-            <Text style={styles.awaitingText}>Awaiting Your Action</Text>
+            <Text style={styles.awaitingText}>{t('bargain_r3_banner')}</Text>
           </View>
           <View style={styles.offerCardHeader}>
             <View style={[styles.buyerAvatar, { backgroundColor: '#B45309' }]}>
               <Text style={styles.buyerAvatarText}>B3</Text>
             </View>
             <View style={styles.offerMeta}>
-              <Text style={styles.offerParty}>Pune Trading Co</Text>
-              <Text style={styles.offerRound}>Round 3 of 3 • Received 3 minutes ago</Text>
+              <Text style={styles.offerParty}>{t('bargain_r3_role')}</Text>
+              <Text style={styles.offerRound}>{t('bargain_r3_time')}</Text>
             </View>
           </View>
 
           <View style={styles.finalBidSection}>
             <View>
-              <Text style={[styles.offerAmtLabel, { color: colors.primaryContainer }]}>FINAL BUYER BID</Text>
-              <Text style={[styles.offerAmtBig, { fontSize: 32 }]}>₹1,900<Text style={styles.offerAmtUnit}>/quintal</Text></Text>
+              <Text style={[styles.offerAmtLabel, { color: colors.primaryContainer }]}>{t('bargain_r3_bid_label')}</Text>
+              <Text style={[styles.offerAmtBig, { fontSize: 32 }]}>{t('bargain_r3_bid_val')}<Text style={styles.offerAmtUnit}>{t('bargain_r3_unit')}</Text></Text>
             </View>
             <View>
-              <Text style={styles.offerAmtLabel}>Payout Total</Text>
-              <Text style={[styles.offerAmtRight, { fontSize: 22, color: colors.tertiary }]}>₹76,000</Text>
+              <Text style={styles.offerAmtLabel}>{t('bargain_r3_total_label')}</Text>
+              <Text style={[styles.offerAmtRight, { fontSize: 20 }]}>{t('bargain_r3_total_val')}</Text>
             </View>
           </View>
-
-          <View style={styles.commitmentCard}>
-            <Icon name="handshake" size={13} color={colors.primaryContainer} />
-            <View>
-              <Text style={styles.commitmentTitle}>Buyer Logistics Commitment</Text>
-              <Text style={styles.commitmentText}>"Will arrange own pickup from Niphad warehouse today. Final offer."</Text>
-            </View>
+          <View style={[styles.quoteBox, styles.finalQuoteBox]}>
+            <Icon name="message-circle" size={12} color={colors.primaryContainer} />
+            <Text style={[styles.quoteText, { color: colors.primaryContainer, fontWeight: '600' }]}>
+              {t('bargain_r3_quote')}
+            </Text>
           </View>
         </View>
 
-        {/* Decision matrix */}
-        <View style={styles.matrixCard}>
-          <View style={styles.matrixHeader}>
-            <Icon name="chart-bar" size={14} color={colors.primary} />
-            <Text style={styles.matrixTitle}>Decision Matrix</Text>
-            <View style={styles.guaranteedBadge}><Text style={styles.guaranteedText}>Guaranteed Payout</Text></View>
-          </View>
-          <View style={styles.matrixRow}>
-            <View style={styles.matrixItem}>
-              <Text style={styles.matrixItemLabel}>Instant Escrow Lock</Text>
-              <Text style={styles.matrixItemVal}>₹76,000</Text>
-              <Text style={styles.matrixItemSub}>40 Qtl @ ₹1,900</Text>
-            </View>
-            <View style={[styles.matrixItem, { backgroundColor: colors.positiveContainer, borderColor: 'rgba(4,120,87,0.2)' }]}>
-              <Text style={[styles.matrixItemLabel, { color: colors.tertiary }]}>Net Farmer Gain</Text>
-              <Text style={[styles.matrixItemVal, { color: colors.tertiary }]}>+₹7,200</Text>
-              <Text style={styles.matrixItemSub}>vs. Farmgate baseline</Text>
-            </View>
-          </View>
-          <Text style={styles.matrixNote}>
-            You gain ₹7,200 more than today's harvest-day farmgate trader rate of ₹1,720/q, with zero cartage expense.
-          </Text>
-          <View style={styles.matrixFooter}>
-            <View style={styles.matrixFooterItem}>
-              <Icon name="scale" size={12} color={colors.tertiary} />
-              <Text style={styles.matrixFooterText}>Weighbridge: Electronic Slip Verified</Text>
-            </View>
-            <View style={styles.matrixFooterItem}>
-              <Icon name="check-circle" size={12} color={colors.tertiary} />
-              <Text style={styles.matrixFooterText}>Moisture 9.2% (Pass)</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Escrow note */}
-        <View style={styles.escrowNote}>
-          <Icon name="lock" size={12} color={colors.onSurfaceVariant} />
-          <Text style={styles.escrowNoteText}>Protected by Krishi Mitra Verified Escrow · Payment locked before dispatch</Text>
-        </View>
       </ScrollView>
 
-      {/* CTA dock */}
+      {/* Footer CTA */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.acceptBtn} onPress={() => navigation.navigate('S29_ConfirmAcceptance')}>
-          <Icon name="check-circle" size={18} color={colors.onPrimary} />
-          <Text style={styles.acceptBtnText}>Accept ₹1,900/q (₹76,000)</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.counterBtn} onPress={() => navigation.navigate('S28_CounterOffer')}>
-          <Icon name="edit" size={16} color={colors.primaryContainer} />
-          <Text style={styles.counterBtnText}>Make Final Counter-Offer</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.declineLink}>
-          <Text style={styles.declineLinkText}>Decline Offer & Return Lot to Open Auction</Text>
-        </TouchableOpacity>
+        <View style={styles.dockWarning}>
+          <Icon name="info" size={12} color={colors.critical} />
+          <Text style={styles.dockWarningText}>{t('bargain_note')}</Text>
+        </View>
+        <View style={styles.dockBtns}>
+          <TouchableOpacity style={styles.rejectBtn}>
+            <Text style={styles.rejectBtnText}>{t('bargain_btn_reject')}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.acceptBtn} onPress={() => navigation.navigate('S29_ConfirmAcceptance')}>
+            <Icon name="check-circle" size={18} color={colors.onPrimary} />
+            <Text style={styles.acceptBtnText}>{t('bargain_btn_accept')}</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -222,133 +183,61 @@ export default function S27_Bargaining({ navigation }: any) {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  header: {
-    flexDirection: 'row', alignItems: 'center', gap: space.sm,
-    paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm,
-    backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant,
-  },
-  backBtn: {
-    width: 36, height: 36, borderRadius: 10, backgroundColor: colors.surfaceContainerHigh,
-    alignItems: 'center', justifyContent: 'center',
-  },
+  header: { flexDirection: 'row', alignItems: 'center', gap: space.xs, paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
+  backBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.surfaceContainerHigh, alignItems: 'center', justifyContent: 'center' },
   headerCenter: { flex: 1 },
-  headerNameRow: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  buyerName: { fontFamily: fontFamily.bold, fontSize: 16, color: colors.onSurface },
-  headerMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 1 },
-  headerMeta: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  headerDot: { width: 3, height: 3, borderRadius: 2, backgroundColor: colors.outline },
+  headerNameRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  buyerName: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onSurface },
+  headerMetaRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 2 },
+  headerMeta: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
+  headerDot: { width: 3, height: 3, borderRadius: 1.5, backgroundColor: colors.outline },
   roundBadge: { alignItems: 'flex-end' },
   roundBadgeText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primaryContainer },
-  expiryText: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant, marginTop: 1 },
-  scroll: { paddingBottom: 170 },
-  lotBand: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    paddingHorizontal: space.md, paddingVertical: space.sm,
-    borderBottomWidth: 1, borderBottomColor: colors.outlineVariant,
-    backgroundColor: colors.surface,
-  },
-  lotBandText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, flex: 1 },
-  lotBandSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  benchmarkRow: { flexDirection: 'row', gap: space.sm, padding: space.md },
-  benchmarkCard: {
-    flex: 1, padding: space.sm, borderRadius: radius.lg,
-    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant,
-  },
-  benchmarkLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  benchmarkVal: { fontFamily: fontFamily.extraBold, fontSize: 22, color: colors.onSurface, marginTop: 2 },
-  benchmarkUnit: { fontSize: 13, fontFamily: fontFamily.regular, color: colors.onSurfaceVariant },
-  auditHeader: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: space.md, marginBottom: space.xs,
-  },
-  auditLeft: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  auditLabel: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurfaceVariant },
-  auditBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  auditBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  offerCard: {
-    marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl,
-    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, padding: space.md,
-  },
-  farmerCard: { backgroundColor: colors.onPrimaryContainer, borderColor: colors.primaryContainer },
-  finalCard: { borderColor: colors.primaryContainer, borderWidth: 2, backgroundColor: colors.surface },
-  offerCardHeader: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  buyerAvatar: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: '#B45309',
-    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-  buyerAvatarText: { fontFamily: fontFamily.extraBold, fontSize: 12, color: '#fff' },
+  expiryText: { fontFamily: fontFamily.extraBold, fontSize: 12, color: colors.critical, marginTop: 2 },
+  scroll: { paddingBottom: 160 },
+  lotBand: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.md, paddingVertical: space.sm, backgroundColor: '#FFFBEB', borderBottomWidth: 1, borderBottomColor: '#FEF3C7' },
+  lotBandText: { fontFamily: fontFamily.bold, fontSize: 13, color: '#92400E' },
+  lotBandSub: { fontFamily: fontFamily.medium, fontSize: 11, color: '#B45309', marginLeft: 'auto' },
+  benchmarkRow: { flexDirection: 'row', gap: space.md, padding: space.md },
+  benchmarkCard: { flex: 1, padding: space.md, borderRadius: radius.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant },
+  benchmarkLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, marginBottom: 4 },
+  benchmarkVal: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.onSurface },
+  benchmarkUnit: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
+  auditHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.md, marginBottom: space.sm },
+  auditLeft: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  auditLabel: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: 0.5 },
+  auditBadge: { backgroundColor: colors.surfaceContainerHigh, paddingHorizontal: 8, paddingVertical: 2, borderRadius: radius.sm },
+  auditBadgeText: { fontFamily: fontFamily.medium, fontSize: 10, color: colors.onSurfaceVariant },
+  offerCard: { marginHorizontal: space.md, marginBottom: space.md, padding: space.md, borderRadius: radius.lg, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant },
+  farmerCard: { backgroundColor: '#F8FAFC', borderColor: '#E2E8F0', alignSelf: 'flex-end', width: '90%' },
+  finalCard: { borderColor: colors.primaryContainer, borderWidth: 2, backgroundColor: colors.onPrimaryContainer },
+  offerCardHeader: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md },
+  buyerAvatar: { width: 32, height: 32, borderRadius: 16, backgroundColor: colors.surfaceContainerHighest, alignItems: 'center', justifyContent: 'center' },
+  buyerAvatarText: { fontFamily: fontFamily.extraBold, fontSize: 12, color: colors.onSurface },
   offerMeta: { flex: 1 },
   offerParty: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
-  offerRound: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  counteredBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.surfaceContainerHigh },
-  counteredText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurfaceVariant },
-  farmerCounterBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.onPrimaryContainer },
-  farmerCounterText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.primary },
+  offerRound: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
+  counteredBadge: { backgroundColor: colors.surfaceContainerHigh, paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm },
+  counteredText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.outline },
+  farmerCounterBadge: { backgroundColor: 'rgba(2,132,199,0.1)', paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm },
+  farmerCounterText: { fontFamily: fontFamily.bold, fontSize: 10, color: '#0284C7' },
   offerAmounts: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: space.sm },
-  offerAmtLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  offerAmtBig: { fontFamily: fontFamily.extraBold, fontSize: 26, color: colors.onSurface, letterSpacing: -0.3 },
-  offerAmtUnit: { fontFamily: fontFamily.regular, fontSize: 13, color: colors.onSurfaceVariant },
+  offerAmtLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, marginBottom: 4 },
+  offerAmtBig: { fontFamily: fontFamily.extraBold, fontSize: 24, color: colors.onSurface, letterSpacing: -0.5 },
+  offerAmtUnit: { fontFamily: fontFamily.medium, fontSize: 14 },
   offerAmtRight: { fontFamily: fontFamily.bold, fontSize: 16, color: colors.onSurface },
-  quoteBox: {
-    flexDirection: 'row', alignItems: 'flex-start', gap: 6, padding: space.xs,
-    borderRadius: radius.sm, backgroundColor: colors.surfaceContainerLow,
-  },
-  quoteText: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant, flex: 1, fontStyle: 'italic' },
-  awaitingBanner: {
-    flexDirection: 'row', alignItems: 'center', gap: 4,
-    paddingHorizontal: space.sm, paddingVertical: 4, borderRadius: radius.full,
-    backgroundColor: '#FEF3C7', borderWidth: 1, borderColor: '#F59E0B',
-    alignSelf: 'flex-end', marginBottom: space.sm,
-  },
-  awaitingText: { fontFamily: fontFamily.bold, fontSize: 11, color: '#92400E' },
-  finalBidSection: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: space.sm },
-  commitmentCard: {
-    flexDirection: 'row', alignItems: 'flex-start', gap: 6, padding: space.xs,
-    borderRadius: radius.md, backgroundColor: colors.onPrimaryContainer,
-  },
-  commitmentTitle: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primaryContainer },
-  commitmentText: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurface, fontStyle: 'italic' },
-  matrixCard: {
-    marginHorizontal: space.md, marginBottom: space.sm, padding: space.md,
-    borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant,
-  },
-  matrixHeader: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  matrixTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface, flex: 1 },
-  guaranteedBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  guaranteedText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  matrixRow: { flexDirection: 'row', gap: space.sm, marginBottom: space.sm },
-  matrixItem: {
-    flex: 1, padding: space.sm, borderRadius: radius.md,
-    backgroundColor: colors.surfaceContainerLow, borderWidth: 1, borderColor: colors.outlineVariant,
-  },
-  matrixItemLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  matrixItemVal: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.onSurface },
-  matrixItemSub: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant },
-  matrixNote: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurface, lineHeight: 18, marginBottom: space.sm },
-  matrixFooter: { flexDirection: 'row', gap: space.md },
-  matrixFooterItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  matrixFooterText: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  escrowNote: {
-    flexDirection: 'row', alignItems: 'center', gap: 5,
-    marginHorizontal: space.md, marginBottom: space.sm, justifyContent: 'center',
-  },
-  escrowNoteText: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant, textAlign: 'center', flex: 1 },
-  dock: {
-    position: 'absolute', bottom: 0, left: 0, right: 0,
-    paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm,
-    backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant, gap: 8,
-  },
-  acceptBtn: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm,
-    height: touch.targetHero, backgroundColor: colors.primaryContainer, borderRadius: radius.lg,
-    shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.35, shadowRadius: 12, elevation: 5,
-  },
-  acceptBtnText: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onPrimary },
-  counterBtn: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
-    height: 44, borderWidth: 1.5, borderColor: colors.primaryContainer, borderRadius: radius.lg,
-  },
-  counterBtnText: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primaryContainer },
-  declineLink: { alignItems: 'center', paddingVertical: 4 },
-  declineLinkText: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.primaryContainer },
+  quoteBox: { flexDirection: 'row', gap: 6, backgroundColor: colors.surfaceContainerLowest, padding: space.sm, borderRadius: radius.md, borderWidth: 1, borderColor: colors.outlineVariant },
+  finalQuoteBox: { backgroundColor: 'rgba(194, 65, 12, 0.05)', borderColor: 'rgba(194, 65, 12, 0.2)' },
+  quoteText: { flex: 1, fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurfaceVariant, fontStyle: 'italic', lineHeight: 16 },
+  awaitingBanner: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, backgroundColor: '#FFFBEB', margin: -space.md, marginBottom: space.md, paddingVertical: 6, borderTopLeftRadius: radius.lg - 1, borderTopRightRadius: radius.lg - 1, borderBottomWidth: 1, borderBottomColor: '#FEF3C7' },
+  awaitingText: { fontFamily: fontFamily.bold, fontSize: 11, color: '#B45309', textTransform: 'uppercase', letterSpacing: 0.5 },
+  finalBidSection: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', backgroundColor: colors.surface, padding: space.md, borderRadius: radius.md, marginBottom: space.sm },
+  dock: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
+  dockWarning: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 4, marginBottom: space.sm },
+  dockWarningText: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.critical },
+  dockBtns: { flexDirection: 'row', gap: space.sm },
+  rejectBtn: { flex: 1, height: touch.targetHero, alignItems: 'center', justifyContent: 'center', borderRadius: radius.lg, backgroundColor: colors.surfaceContainerHigh },
+  rejectBtnText: { fontFamily: fontFamily.bold, fontSize: 15, color: colors.critical },
+  acceptBtn: { flex: 2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: touch.targetHero, backgroundColor: colors.primaryContainer, borderRadius: radius.lg, shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.35, shadowRadius: 12, elevation: 5 },
+  acceptBtnText: { fontFamily: fontFamily.extraBold, fontSize: 15, color: colors.onPrimary },
 });
