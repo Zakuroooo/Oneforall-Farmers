@@ -787,9 +787,21 @@ const styles = StyleSheet.create({
     color: colors.onPrimary,
     letterSpacing: 0.3,
   },
-  roleRow: { flexDirection: 'row', gap: space.xs, marginBottom: space.md },
+  // ★ `scrollContent` carries no horizontal padding — every sibling on this
+  //   screen insets itself (`section` with paddingHorizontal, `inputCard`
+  //   with marginHorizontal). This row did not, so the two cards ran edge to
+  //   edge past the screen while the number card below sat properly inset.
+  roleRow: {
+    flexDirection: 'row',
+    gap: space.xs,
+    marginHorizontal: space.md,
+    marginBottom: space.md,
+  },
   roleCard: {
     flex: 1,
+    // `minWidth: 0` lets a flex child shrink below its content width instead
+    // of forcing the row wider than its container.
+    minWidth: 0,
     alignItems: 'flex-start',
     gap: 2,
     padding: space.sm,
