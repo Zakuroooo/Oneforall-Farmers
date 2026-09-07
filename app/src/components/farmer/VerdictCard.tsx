@@ -33,14 +33,15 @@
  *     line `vd_no_hold_persist` says what is actually true instead.
  */
 
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
 import { Icon } from '../ui/Icon';
 import { formatBps, formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { useT } from '../../lib/i18n';
-import { speakSaleWindow } from '../../lib/voice';
+import { buildVerdictNarrationFor } from '../../lib/verdictVoice';
+import { ListenButton } from '../ui/ListenButton';
 import { NO_ADVICE_BAND_THRESHOLD_BPS } from '../../config';
 import { SourceBadge } from './SourceBadge';
 import type { Confidence, Locale, WindowAction, WindowRes } from '../../types/api';
@@ -79,30 +80,11 @@ export function VerdictCard({
   onSeeCosts?: () => void;
 }) {
   const { t } = useT();
-  const [speaking, setSpeaking] = useState(false);
-
-  // P13 (PRANAY.md:439) — the rest of voice (offline playback verified in
-  // airplane mode, per SH3) is still to come; this is the wiring, not the full
-  // task. Silently swallowing a playback failure is deliberate: a farmer who
-  // taps listen and hears nothing has lost a nice-to-have, not the verdict
-  // itself, and an error banner over a voice glitch would outrank the actual
-  // recommendation on screen.
-  /* ★ Every tap replays from the first word. There is no `disabled` here:
-     it used to carry `disabled={speaking}`, which made the control inert for
-     the whole utterance — exactly the window in which a farmer who missed
-     the worst-case number reaches for it. `speakSaleWindow` stops any
-     current speech before it starts. Same bug, and same fix, as
-     `components/ui/ListenButton`; this was the second copy. */
-  const handleSpeak = async () => {
-    setSpeaking(true);
-    try {
-      await speakSaleWindow(data, locale);
-    } catch {
-      // see comment above
-    } finally {
-      setSpeaking(false);
-    }
-  };
+  /* ★ The verdict's own speaker used to live here — its own `useState`, its
+     own handler, and its own `disabled={speaking}` bug. It is the shared
+     `ListenButton` now, so the stop-and-replay behaviour, the Sarvam
+     preference and the on-device fallback are defined once for the whole app
+     rather than drifting between two copies. */
 
   return (
     <View style={styles.wrap}>
@@ -162,16 +144,9 @@ export function VerdictCard({
       </View>
 
       {/* ── Listen ─────────────────────────────────────────────────── */}
-      <TouchableOpacity
-        style={styles.voiceButton}
-        onPress={handleSpeak}
-        accessibilityRole="button"
-        accessibilityLabel={t('listen_button')}>
-        <Icon name="volume" size={18} color={colors.primary} />
-        <Text style={styles.voiceLabel}>
-          {speaking ? t('listening_button') : t('listen_button')}
-        </Text>
-      </TouchableOpacity>
+      <View style={styles.voiceRow}>
+        <ListenButton text={buildVerdictNarrationFor(data, locale)} />
+      </View>
     </View>
   );
 }
@@ -494,12 +469,5 @@ const styles = StyleSheet.create({
   },
   costSheetBtnText: { ...typography.labelMd, color: colors.primary },
 
-  voiceButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    paddingVertical: space.sm,
-  },
-  voiceLabel: { ...typography.titleMd, color: colors.primary },
+  voiceRow: { alignItems: 'center', paddingVertical: space.xs },
 });

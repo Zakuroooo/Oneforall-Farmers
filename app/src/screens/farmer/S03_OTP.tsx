@@ -18,13 +18,15 @@ import { USE_FIXTURES } from '../../config';
 import { fxAuthRegisteredBuyer } from '../../fixtures/auth';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { ListenButton } from '../../components/ui/ListenButton';
+import { VoiceMic } from '../../components/ui/VoiceMic';
+import { digitsFromSpeech } from '../../lib/spokenDigits';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S3_OTP'>;
 
 const RESEND_SECONDS = 30;
 
 export default function S03_OTP({ navigation }: Props) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const { signIn } = useAuth();
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [countdown, setCountdown] = useState(RESEND_SECONDS);
@@ -48,6 +50,25 @@ export default function S03_OTP({ navigation }: Props) {
     const id = setTimeout(() => setCountdown(c => c - 1), 1000);
     return () => clearTimeout(id);
   }, [countdown]);
+
+  /**
+   * ★ Voice entry for the code. A farmer who has just dictated his phone
+   *   number then had to stop, find the keypad and type six digits — the one
+   *   step in registration that still assumed reading. `VoiceMic` records and
+   *   sends the clip to the same `POST /voice/transcribe` the phone screen
+   *   uses; `digitsFromSpeech` reads the answer whether it comes back as
+   *   words, Devanagari numerals or ASCII.
+   */
+  const onVoiceCode = (transcript: string) => {
+    const digits = digitsFromSpeech(transcript, 6);
+    if (!digits) return;
+    const next = Array.from({ length: 6 }, (_, i) => digits[i] ?? '');
+    setOtp(next);
+    // Land the cursor after the last digit heard, so a partial reading is
+    // finished by hand rather than restarting.
+    const at = Math.min(digits.length, 5);
+    inputs.current[at]?.focus();
+  };
 
   const handleDigit = (val: string, idx: number) => {
     const digit = val.replace(/\D/g, '').slice(-1);
@@ -175,6 +196,11 @@ export default function S03_OTP({ navigation }: Props) {
           ))}
         </View>
 
+        {/* ── Say the code instead of typing it ────────────────────── */}
+        <View style={styles.voiceRow}>
+          <VoiceMic locale={locale} onTranscript={onVoiceCode} />
+        </View>
+
         {/* Auto-detect banner */}
         <View style={styles.autoBanner}>
           <View style={styles.autoIconBg}>
@@ -296,6 +322,7 @@ const styles = StyleSheet.create({
     textAlign: 'center', marginTop: space.lg, marginBottom: space.sm,
   },
   otpRow: { flexDirection: 'row', justifyContent: 'center', gap: 10, paddingHorizontal: space.md },
+  voiceRow: { alignItems: 'center', marginTop: space.sm },
   otpBox: {
     width: 48, height: 60, borderRadius: radius.md, borderWidth: 1.5,
     borderColor: colors.outlineVariant, backgroundColor: colors.surface,

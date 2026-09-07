@@ -372,7 +372,10 @@ export default function S15_MyLots({ navigation }: Props) {
                 style={styles.rowCard}
                 onPress={() => navigation.navigate('S16_PoolSplit', { pool_id: pool.fpo.id })}>
                 <View style={styles.featureText}>
-                  <Text style={styles.rowCardTitle}>{pool.fpo.name_mr}</Text>
+                  {/* ★ `name_mr` is a fixed wire field, not a localised one, so rendering
+                      it directly put Devanagari inside an English screen. Same rule the
+                      market and district names already follow: pick by locale. */}
+                  <Text style={styles.rowCardTitle}>{locale === 'en' ? pool.fpo.name : pool.fpo.name_mr}</Text>
                   <Text style={styles.lotMeta}>
                     {t('pool_summary_line', {
                       qty: formatQuintal(pool.total_qty_kg, locale),

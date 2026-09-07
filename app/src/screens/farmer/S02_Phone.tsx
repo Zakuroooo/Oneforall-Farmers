@@ -32,6 +32,7 @@ import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { ApiError, requestOtp, transcribeAudio } from '../../lib/api';
+import { digitsFromSpeech } from '../../lib/spokenDigits';
 import { setPendingAuth } from '../../lib/auth';
 import type { Role } from '../../types/api';
 import { getLocale } from '../../lib/locale';
@@ -107,7 +108,11 @@ export default function S02_Phone({ navigation }: Props) {
       recorder.removeRecordBackListener();
       const locale = (await getLocale()) ?? 'mr';
       const { transcript } = await transcribeAudio(uri, locale);
-      const digits = transcript.replace(/\D/g, '').slice(0, 10);
+      /* ★ Was `transcript.replace(/\D/g, '')`, which keeps only ASCII — so
+         a farmer who said "नऊ आठ सात..." or whose transcript came back as
+         Devanagari numerals got an empty string and a blank field. He had
+         spoken his number correctly and the app had not listened. */
+      const digits = digitsFromSpeech(transcript, 10);
       if (digits) setPhone(digits);
     } catch {
       // Network/backend unreachable — the keypad below is the fallback.

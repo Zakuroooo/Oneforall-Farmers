@@ -1334,5 +1334,6 @@
   "chat_time_left": "{time} left",
   "time_left_days": "{days}d {hours}h",
   "time_left_hours": "{hours}h {minutes}m",
-  "time_left_minutes": "{minutes}m"
+  "time_left_minutes": "{minutes}m",
+  "listen_stop_a11y": "Stop playing"
 }

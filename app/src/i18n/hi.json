@@ -1334,5 +1334,6 @@
   "chat_time_left": "समय बाकी: {time}",
   "time_left_days": "{days} दिन {hours} घंटे",
   "time_left_hours": "{hours} घंटे {minutes} मिनट",
-  "time_left_minutes": "{minutes} मिनट"
+  "time_left_minutes": "{minutes} मिनट",
+  "listen_stop_a11y": "सुनाना बंद करें"
 }

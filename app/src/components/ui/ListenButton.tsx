@@ -22,61 +22,88 @@
  *   once the other screens have narration sentences worth synthesizing.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { colors, fontFamily, radius, space } from '../../theme/tokens';
+import { colors, fontFamily, radius } from '../../theme/tokens';
 import { Icon } from './Icon';
 import { useT } from '../../lib/i18n';
-import { speakText } from '../../lib/voice';
+import { speakSmart, stopSpeaking } from '../../lib/voice';
 
 export function ListenButton({ text, label }: { text: string; label?: string }) {
   const { t, locale } = useT();
   const [speaking, setSpeaking] = useState(false);
 
   /**
-   * ★ Every tap restarts the narration from the beginning.
+   * ★ A toggle, not a replay.
    *
-   *   This used to bail out early while `speaking` was true, so a farmer who
-   *   missed a sentence had no way to hear it again — the button simply did
-   *   nothing until the whole utterance finished, and if the engine's finish
-   *   event never arrived it stayed dead for good.
+   *   The button used to start playback with no way to stop it. It showed
+   *   "Playing…" and a second tap restarted from the top — so a farmer who
+   *   had heard enough, or who tapped it by accident on a long narration,
+   *   had to sit through the whole thing or leave the screen. Worse, on the
+   *   Sarvam path leaving the screen did not help either: `stopSpeaking()`
+   *   only reached the on-device TTS engine, and the clip kept playing.
    *
-   *   Restarting is the whole behaviour, so there is no `disabled` on the
-   *   button either. `disabled={speaking}` was still on it, which made this
-   *   branch unreachable: the control went inert for the entire utterance —
-   *   precisely the window in which someone who missed a number reaches for
-   *   it. `speakText` stops any current speech before it starts, so a second
-   *   tap simply begins again from the first word.
+   *   Now: tapping while it speaks stops it immediately and the label goes
+   *   back to "Listen". Tapping again starts from the first word.
+   *
+   * ★ `stoppedRef` guards the stale-finally race. The in-flight `speakSmart`
+   *   resolves shortly after a stop, and its `finally` would otherwise clear
+   *   the flag on a *newer* utterance the farmer had already started.
    */
+  const runIdRef = useRef(0);
+
   const onPress = async () => {
     if (text.trim().length === 0) return;
+
+    if (speaking) {
+      runIdRef.current += 1;
+      setSpeaking(false);
+      await stopSpeaking();
+      return;
+    }
+
+    const runId = runIdRef.current + 1;
+    runIdRef.current = runId;
     setSpeaking(true);
     try {
-      // Spoken in the language the farmer chose, not the app's default.
-      await speakText(text, locale);
+      // Sarvam's voice where the server is reachable, the device's own TTS
+      // where it is not — and always in the language the farmer chose.
+      await speakSmart(text, locale);
     } catch {
       // A farmer who taps listen and hears nothing has lost a nice-to-have,
       // not the screen. An error banner over a TTS glitch would outrank the
       // content it was meant to read.
     } finally {
-      setSpeaking(false);
+      // Only the run that is still current may clear the flag.
+      if (runIdRef.current === runId) setSpeaking(false);
     }
   };
+
+  /* Leaving the screen mid-sentence should not leave a voice behind. */
+  useEffect(() => {
+    return () => {
+      runIdRef.current += 1;
+      void stopSpeaking();
+    };
+  }, []);
 
   return (
     <TouchableOpacity
       style={[styles.btn, speaking && styles.btnActive]}
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={label ?? t('listen_button')}>
-      {/* ★ Always the speaker, never `volume-off`. A crossed-out speaker means
-          *muted* — it was showing the one icon that says "there is no sound"
-          at precisely the moment there is sound, and tapping it restarts the
-          narration rather than muting anything, so the metaphor was wrong in
-          both directions. The state is carried by the label and the filled
-          background instead. */}
-      <Icon name="volume" size={14} color={speaking ? colors.onPrimary : colors.primary} />
+      accessibilityState={{ selected: speaking }}
+      accessibilityLabel={speaking ? t('listen_stop_a11y') : (label ?? t('listen_button'))}>
+      {/* ★ A speaker when idle, a stop square when speaking — never
+          `volume-off`. A crossed-out speaker means *muted*, which was the
+          one thing it did not mean: there was sound, and tapping did not
+          mute it. The icon now says what the tap will do. */}
+      <Icon
+        name={speaking ? 'x-circle' : 'volume'}
+        size={14}
+        color={speaking ? colors.onPrimary : colors.primary}
+      />
       <Text style={[styles.label, speaking && styles.labelActive]}>
         {speaking ? t('listening_button') : t('splash_listen')}
       </Text>

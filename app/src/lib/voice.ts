@@ -291,13 +291,27 @@ function speakViaTts(text: string): Promise<void> {
     /** A completion that arrived while the id was still unknown. */
     let finishedEarly = false;
 
+    /**
+     * ★ Unsubscribed through the returned subscriptions, not through
+     *   `Tts.removeEventListener`. That method calls `this.removeListener()`
+     *   on its `NativeEventEmitter` base — a method React Native deleted —
+     *   so it threw `this.removeListener is not a function` the moment any
+     *   utterance finished, and the red box took over the screen. It fired
+     *   from `finish()`, meaning it hit on *every* successful narration.
+     *   `addEventListener` already hands back an `EmitterSubscription`; that
+     *   is what we keep and call `.remove()` on.
+     */
     const finish = () => {
       if (settled) return;
       settled = true;
       clearTimeout(guard);
-      Tts.removeEventListener('tts-finish', onDone);
-      Tts.removeEventListener('tts-error', onDone);
-      Tts.removeEventListener('tts-cancel', onDone);
+      for (const sub of subscriptions) {
+        try {
+          sub.remove();
+        } catch {
+          // Already gone.
+        }
+      }
       resolve();
     };
 
@@ -315,9 +329,18 @@ function speakViaTts(text: string): Promise<void> {
 
     const guard = setTimeout(finish, TTS_GUARD_MS);
 
-    Tts.addEventListener('tts-finish', onDone);
-    Tts.addEventListener('tts-error', onDone);
-    Tts.addEventListener('tts-cancel', onDone);
+    /* ★ The library's `.d.ts` types this as returning `void`; the JavaScript
+       returns `this.addListener(...)`, an `EmitterSubscription`. Same lying
+       declaration as `speak()` a few lines up, and the cast is here so the
+       real return value can be used to unsubscribe. */
+    const subscribe = (event: 'tts-finish' | 'tts-error' | 'tts-cancel') =>
+      Tts.addEventListener(event, onDone) as unknown as { remove: () => void } | undefined;
+
+    const subscriptions = [
+      subscribe('tts-finish'),
+      subscribe('tts-error'),
+      subscribe('tts-cancel'),
+    ].filter((sub): sub is { remove: () => void } => typeof sub?.remove === 'function');
 
     // Typed as `string | number` by the library and actually a Promise on
     // Android. `Promise.resolve` accepts either, so this handles both without
@@ -389,16 +412,81 @@ export async function speakText(text: string, locale: Locale = 'mr'): Promise<vo
   //   why the speaker "only played once" — tapping again did nothing audible
   //   and there was no way to replay a sentence a farmer missed.
   await stopSpeaking();
+  const generation = speechGeneration;
   await ensureTtsLanguage(locale);
+  if (generation !== speechGeneration) return;
   await speakViaTts(text);
 }
 
-/** Cancels any utterance in flight. Safe to call when nothing is speaking. */
+/**
+ * What every Listen button on every screen now calls.
+ *
+ * ★ Prefers Sarvam's human-grade voice over the device's own TTS, and falls
+ *   back the moment the server is unreachable. The two are not close: stock
+ *   Android Marathi TTS is barely intelligible on a cheap handset, and the
+ *   whole premise of this product is a farmer who does not read fluently.
+ *   The verdict screen has preferred Sarvam since the backend team wired
+ *   `/voice/narrate`; there was no reason the other twenty screens should
+ *   not, and the fallback means a network problem downgrades the voice
+ *   rather than silencing it.
+ *
+ * ★ I7 is not broken by this. The demo's guarantee is that it survives with
+ *   *no* network, and it does — the fallback is on-device and offline. This
+ *   only spends a round trip when there is one to spend.
+ */
+export async function speakSmart(text: string, locale: Locale = 'mr'): Promise<void> {
+  await stopSpeaking();
+  const generation = speechGeneration;
+  try {
+    await speakViaSarvam(text, locale, generation);
+  } catch {
+    // The farmer pressed stop while the clip was still coming down; do not
+    // start the fallback on top of a deliberate silence.
+    if (generation !== speechGeneration) return;
+    await ensureTtsLanguage(locale);
+    if (generation !== speechGeneration) return;
+    await speakViaTts(text);
+  }
+}
+
+/**
+ * The Sarvam player currently holding audio, if any.
+ *
+ * ★ Why this is module state rather than a local: there are two ways this
+ *   app makes sound — the on-device TTS engine and an `AudioRecorderPlayer`
+ *   playing a Sarvam clip — and `stopSpeaking()` has to silence both. Before
+ *   this, stopping only reached the TTS engine, so a farmer who tapped a
+ *   Listen button that had chosen the Sarvam path had no way to stop it. He
+ *   could leave the screen and the voice would keep talking.
+ */
+let activePlayer: { stopPlayer: () => Promise<unknown>; removePlayBackListener: () => void } | null =
+  null;
+
+/**
+ * Bumped on every stop. Anything mid-flight compares the generation it
+ * started under against this and gives up if it has moved — otherwise a
+ * Sarvam clip that was still downloading when the farmer pressed stop would
+ * begin playing a second later, with nothing left to stop it.
+ */
+let speechGeneration = 0;
+
+/** Cancels anything in flight — TTS or Sarvam. Safe to call when silent. */
 export async function stopSpeaking(): Promise<void> {
+  speechGeneration += 1;
   try {
     await Tts.stop();
   } catch {
     // Nothing was speaking.
+  }
+  const player = activePlayer;
+  activePlayer = null;
+  if (player) {
+    try {
+      player.removePlayBackListener();
+      await player.stopPlayer();
+    } catch {
+      // Already stopped, or never started.
+    }
   }
 }
 
@@ -424,7 +512,7 @@ export async function speakSaleWindow(v: WindowRes, locale: Locale = 'mr'): Prom
   const narration = buildVerdictNarrationFor(v, locale);
   await stopSpeaking();
   try {
-    await speakSarvamVerdict(narration, locale);
+    await speakViaSarvam(narration, locale);
   } catch {
     await speakText(narration, locale);
   }
@@ -437,24 +525,41 @@ export async function speakSaleWindow(v: WindowRes, locale: Locale = 'mr'): Prom
  * Throws (does not swallow) on network/fs/playback errors by design — the
  * fallback lives in `speakSaleWindow`, not here.
  */
-async function speakSarvamVerdict(narration: string, locale: Locale = 'mr'): Promise<void> {
+async function speakViaSarvam(
+  narration: string,
+  locale: Locale = 'mr',
+  generation?: number,
+): Promise<void> {
   const { audio_base64 } = await narrate(narration, locale);
+
+  // The farmer pressed stop while this was still coming down the wire.
+  if (generation !== undefined && generation !== speechGeneration) return;
 
   // Decode the base64 WAV to bytes and park it in a temp cache file the
   // native player can read. CachesDirectory is sandboxed, app-owned, and
   // survives long enough for one playback.
   const RNFS = require('react-native-fs');
   const cacheDir: string = RNFS.CachesDirectoryPath;
-  let filePath = `${cacheDir}/sarvam_verdict.wav`;
+  // ★ One file per utterance, not a single `sarvam_verdict.wav`. Two screens
+  //   speaking in quick succession were writing over each other's audio
+  //   mid-playback, which on Android is a truncated clip rather than an
+  //   error — the voice simply stopped mid-sentence.
+  let filePath = `${cacheDir}/sarvam_${Date.now()}.wav`;
   // iOS's AVPlayer wants an explicit file:// scheme; Android's MediaPlayer
   // does not. Prepend only when it is missing so neither platform chokes.
   if (!filePath.startsWith('file://')) {
     filePath = `file://${filePath}`;
   }
   await RNFS.writeFile(filePath, audio_base64, 'base64');
+  if (generation !== undefined && generation !== speechGeneration) return;
 
   const AudioRecorderPlayer = require('react-native-audio-recorder-player').default;
   const player = new AudioRecorderPlayer();
+  // ★ Registered before playback starts, so `stopSpeaking()` can reach it.
+  //   Without this the Sarvam path was unstoppable: the Listen button's stop
+  //   only spoke to the TTS engine, and a farmer who tapped it heard the
+  //   voice carry on.
+  activePlayer = player;
   try {
     await player.startPlayer(filePath);
     // Wait for the native finish event before resolving — otherwise we'd
@@ -462,7 +567,7 @@ async function speakSarvamVerdict(narration: string, locale: Locale = 'mr'): Pro
     // player (no event ever fires) cannot hang the farmer's session: fall
     // through to stop after a generous ceiling.
     await Promise.race([
-      new Promise<void>((resolve) => {
+      new Promise<void>(resolve => {
         const onStatus = (e: { isFinished?: boolean }) => {
           if (e.isFinished) {
             player.removePlayBackListener();
@@ -471,19 +576,22 @@ async function speakSarvamVerdict(narration: string, locale: Locale = 'mr'): Pro
         };
         player.addPlayBackListener(onStatus);
       }),
-      new Promise<void>((resolve) => setTimeout(resolve, 60_000)),
+      new Promise<void>(resolve => setTimeout(resolve, 60_000)),
     ]);
   } finally {
+    if (activePlayer === player) activePlayer = null;
     try {
       await player.stopPlayer();
     } catch {
       // already stopped
     }
     player.removePlayBackListener();
+    // Best effort — a stale cache file is harmless, a crash on cleanup is not.
+    RNFS.unlink(filePath).catch(() => {});
   }
 }
 
-export async function speakVerdict(v: WindowRes, t?: TFn): Promise<void> {
+export async function speakVerdict(v: WindowRes, _t?: TFn): Promise<void> {
   if (v.action === 'NO_ADVICE') {
     await speak(['no_advice']);
     return;

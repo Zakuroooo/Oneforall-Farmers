@@ -1334,5 +1334,6 @@
   "chat_time_left": "वेळ शिल्लक: {time}",
   "time_left_days": "{days} दिवस {hours} तास",
   "time_left_hours": "{hours} तास {minutes} मिनिटे",
-  "time_left_minutes": "{minutes} मिनिटे"
+  "time_left_minutes": "{minutes} मिनिटे",
+  "listen_stop_a11y": "ऐकवणे थांबवा"
 }

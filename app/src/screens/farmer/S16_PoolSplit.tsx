@@ -102,7 +102,10 @@ export default function S16_PoolSplit({ route }: Props) {
 
   return (
     <ScrollView contentContainerStyle={styles.root}>
-      <Text style={styles.header}>{pool.fpo.name_mr}</Text>
+      {/* ★ `name_mr` is a fixed wire field, not a localised one, so rendering
+          it directly put Devanagari inside an English screen. Same rule the
+          market and district names already follow: pick by locale. */}
+      <Text style={styles.header}>{locale === 'en' ? pool.fpo.name : pool.fpo.name_mr}</Text>
       <Card style={styles.summaryCard}>
         <Text style={styles.summaryLine}>
           {translate('total_qty_line', locale, { qty: formatNumber(toQuintal(pool.total_qty_kg), locale) })}
