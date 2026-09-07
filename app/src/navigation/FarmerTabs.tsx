@@ -1,11 +1,15 @@
 /**
- * The farmer app. Four tabs: Home, Prices, My Lots, Deals. Pranay.
+ * The farmer app. Four tabs: Home, Market, My Produce, Deals. Pranay.
  *
- * ★ Deals replaced what used to be a fourth "Assistant" tab (the canned
- *   Q&A/FAQ screen, S28) — the actual Stitch design's footer is Home /
- *   Market / My Produce / Deals, and Deals had no tab at all before this,
- *   reachable only by going Menu → Deals, several taps deep. The FAQ
- *   assistant moved to the hamburger menu instead (`S34_MenuDrawer`).
+ * ★ Those four names are the Stitch footer, verbatim, and getting there took
+ *   two fixes. The fourth slot used to be an "Assistant" tab (the canned
+ *   Q&A/FAQ screen, S28) with Deals having no tab at all — reachable only
+ *   through Menu → Deals, several taps deep; the FAQ moved to the hamburger
+ *   menu (`S34_MenuDrawer`) and Deals took the slot. The middle two were then
+ *   still labelled "Prices" and "My Lots", which is what a farmer actually
+ *   saw at the bottom of every screen while the design said "Market" and
+ *   "My Produce". The route names stay `Prices`/`MyLots` — renaming those
+ *   would touch every cross-tab `navigate` call for no user-visible gain.
  *
  * ★ Four, not seven. This is a phone held by someone who may not read fluently, in
  *   a mandi, in sunlight, possibly one-handed. Every tab past the fourth is a tab
@@ -304,17 +308,17 @@ export function FarmerTabs() {
       <Tab.Screen
         name="Prices"
         component={PricesStackNavigator}
-        options={{ title: t('tab_prices'), tabBarIcon: tabIcon('prices') }}
+        options={{ title: t('tab_market'), tabBarIcon: tabIcon('prices') }}
       />
       <Tab.Screen
         name="MyLots"
         component={MyLotsStackNavigator}
-        options={{ title: t('tab_my_lots'), tabBarIcon: tabIcon('lots') }}
+        options={{ title: t('tab_my_produce'), tabBarIcon: tabIcon('lots') }}
       />
       <Tab.Screen
         name="Deals"
         component={DealsStackNavigator}
-        options={{ title: t('deals_page_title'), tabBarIcon: tabIcon('deals') }}
+        options={{ title: t('tab_deals'), tabBarIcon: tabIcon('deals') }}
       />
     </Tab.Navigator>
   );

@@ -1295,5 +1295,6 @@
   "cb_desc_commission": "The yard’s adat, charged on the sale value.",
   "cb_desc_storage": "Ventilated storage for each day the lot is held.",
   "cb_desc_spoilage": "Expected weight loss and drying while stored.",
-  "cb_desc_loading": "Labour at the ramp and the weighbridge slip."
+  "cb_desc_loading": "Labour at the ramp and the weighbridge slip.",
+  "tab_my_produce": "My Produce"
 }

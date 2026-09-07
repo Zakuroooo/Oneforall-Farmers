@@ -72,8 +72,17 @@ const PATHS: Record<TabIconName, readonly string[]> = {
   matches: ['M4 8.5h10', 'M11.5 6 14 8.5 11.5 11', 'M20 15.5H10', 'M12.5 13 10 15.5 12.5 18'],
   /** A price tag. */
   offers: ['M4 11.5 11.5 4H20v8.5L12.5 20 4 11.5Z'],
-  /** A shield with a tick: escrow. The deal is held, then it clears. */
-  deals: ['M12 3l7.5 3v6.2c0 4.1-3.2 6.7-7.5 8.3-4.3-1.6-7.5-4.2-7.5-8.3V6L12 3Z', 'M8.8 12l2.4 2.4L15.6 10'],
+  /** A handshake — the Stitch footer's own glyph for this tab. Drawn as two
+   * forearms meeting at a clasp rather than the interlocked-fingers shape,
+   * which turns to mush below about 20 px. */
+  deals: [
+    'M3 11.5l3-3 3.2 3.2a2 2 0 0 0 2.8 0L14 9.5',
+    'M21 11.5l-3-3-3.4 3.4',
+    'M9.2 11.7l2.3 2.3',
+    'M11.5 14l1.8 1.8',
+    'M3 11.5V15a2 2 0 0 0 2 2h1',
+    'M21 11.5V15a2 2 0 0 1-2 2h-1',
+  ],
   /** A ledger book with ruled lines. Append-only, so it is drawn closed. */
   ledger: ['M5.5 4h10.5a2 2 0 0 1 2 2v14H7.5a2 2 0 0 1-2-2V4Z', 'M9 8.5h6', 'M9 12h6', 'M9 15.5h4'],
   /** A chain link: where the number came from. */
