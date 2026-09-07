@@ -1445,5 +1445,19 @@
   "ld_escrow_title": "Payment is held in escrow",
   "ld_escrow_body": "The buyer’s money is held until the weighment receipt clears, then released to your bank.",
   "ld_set_price": "Set your asking price",
-  "deal_done_title": "Deal confirmed"
+  "deal_done_title": "Deal confirmed",
+  "dd_subtitle": "The buyer has accepted. Nothing more is needed from you right now.",
+  "dd_steps_title": "What happens next",
+  "dd_step1_title": "Agreement locked",
+  "dd_step1_detail": "Both sides have confirmed the rate and the quantity.",
+  "dd_step1_badge": "Done",
+  "dd_step2_title": "Truck comes to collect",
+  "dd_step2_detail": "The buyer arranges pickup and tells you the time.",
+  "dd_step2_badge": "Next",
+  "dd_step3_title": "Weighment slip",
+  "dd_step3_detail": "The lot is weighed and the weight is recorded against this deal.",
+  "dd_step4_title": "Money to your bank",
+  "dd_step4_detail": "Once the weighment clears, the escrow is released to your account.",
+  "dd_track_cta": "Track this deal",
+  "dd_my_produce": "Back to my produce"
 }

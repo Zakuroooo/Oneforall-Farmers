@@ -8,45 +8,24 @@ import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { useAuth } from '../../lib/auth';
 import { ListenButton } from '../../components/ui/ListenButton';
 
+/** Keys, not sentences — the old array held strings like "सौदा करार अधिकृत
+ * झाला (Contract Signed & Locked)", so both languages rendered at once no
+ * matter which one the farmer had chosen. Timestamps ("आज १२:३९ PM",
+ * "उद्या सकाळी १०:००") and a "₹75,400" figure were baked in here too; none
+ * of them came from the deal. */
 const NEXT_STEPS = [
-  {
-    num: 1,
-    done: true,
-    title: 'सौदा करार अधिकृत झाला (Contract Signed & Locked)',
-    detail: 'दोन्ही बाजूंनी काळदेशीर मंजुरी पूर्ण झाली · आज १२:३९ PM',
-    badge: 'झाले (Done)',
-    badgeDone: true,
-  },
-  {
-    num: 2,
-    done: false,
-    title: 'पुढील कृती · NEXT STEP  उद्या सकाळी १०:०० वाजता',
-    detail: 'गाडी शेतावर येईल (Truck arriving at Farm Gate)',
-    badge: 'उद्या सकाळी १०:०० वाजता',
-    badgeDone: false,
-  },
-  {
-    num: 3,
-    done: false,
-    title: 'डिजिटल वजन पावती (Weighment Slip)',
-    detail: 'शेतात किंवा नजीकच्या धर्मकाट्यावर अचूक वजन नोंदवले जाईल व OTP जनरेट होईल.',
-    badge: null,
-    badgeDone: false,
-  },
-  {
-    num: 4,
-    done: false,
-    title: '२ तासांत बँक खात्यात RTGS ट्रान्सफर',
-    detail: 'वजन पावतीवर शिक्कामोर्तब होताच एस्क्रोमधून ₹75,400 लाळकळ पैसे जातील.',
-    badge: null,
-    badgeDone: false,
-  },
+  { num: 1, done: true, titleKey: 'dd_step1_title', detailKey: 'dd_step1_detail', badgeKey: 'dd_step1_badge', badgeDone: true },
+  { num: 2, done: false, titleKey: 'dd_step2_title', detailKey: 'dd_step2_detail', badgeKey: 'dd_step2_badge', badgeDone: false },
+  { num: 3, done: false, titleKey: 'dd_step3_title', detailKey: 'dd_step3_detail', badgeKey: null, badgeDone: false },
+  { num: 4, done: false, titleKey: 'dd_step4_title', detailKey: 'dd_step4_detail', badgeKey: null, badgeDone: false },
 ] as const;
 
 export default function S30_DealDone({ navigation }: any) {
   const { t } = useT();
+  const { user } = useAuth();
 
   return (
     <View style={styles.root}>
@@ -58,8 +37,8 @@ export default function S30_DealDone({ navigation }: any) {
           <Icon name="leaf" size={16} color={colors.onPrimary} />
         </View>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerFarmer}>शेतकरी · Rambhau Patil</Text>
-          <Text style={styles.headerMandi}>Lasalgaon Mandi</Text>
+          <Text style={styles.headerFarmer}>{user?.name ?? ''}</Text>
+          <Text style={styles.headerMandi}>{t('home_market_name')}</Text>
         </View>
         <ListenButton text={t('deal_done_title')} />
       </View>
@@ -67,7 +46,7 @@ export default function S30_DealDone({ navigation }: any) {
       {/* Deal locked banner */}
       <View style={styles.dealLockedBanner}>
         <Icon name="check-circle" size={14} color={colors.onPrimary} />
-        <Text style={styles.dealLockedText}>करार यशस्वी · APMC BINDING DEAL LOCKED</Text>
+        <Text style={styles.dealLockedText}>{t('deal_done_title')}</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
@@ -85,91 +64,21 @@ export default function S30_DealDone({ navigation }: any) {
             <Icon name="check-circle" size={44} color={colors.onPrimary} />
           </View>
 
-          <Text style={styles.celebTitle}>सौदा पक्का झाला!</Text>
-          <Text style={styles.celebSubTitle}>Deal Confirmed &amp; Digitally Signed</Text>
-
-          <View style={styles.saudaRefRow}>
-            <Icon name="clipboard" size={13} color={colors.onSurfaceVariant} />
-            <Text style={styles.saudaRef}>सौदा संदर्भ क्र: #SD-2024-8842</Text>
-          </View>
-
-          <View style={styles.saleTagBadge}>
-            <Icon name="tag" size={14} color={colors.primaryContainer} />
-            <Text style={styles.saleTagText}>40 क्विंटल कांदा ₹1,900/क्विंटल दराने विकला!</Text>
-          </View>
+          <Text style={styles.celebTitle}>{t('deal_done_title')}</Text>
+          <Text style={styles.celebSubTitle}>{t('dd_subtitle')}</Text>
         </View>
-
-        {/* Net settlement */}
-        <View style={styles.settlementCard}>
-          <View style={styles.settlementHeader}>
-            <Text style={styles.settlementLabel}>अंतिम देय रक्कम · NET SETTLEMENT</Text>
-            <View style={styles.rtgsBadge}>
-              <Icon name="zap" size={10} color={colors.tertiary} />
-              <Text style={styles.rtgsText}>नक्की जमा</Text>
-            </View>
-          </View>
-          <Text style={styles.settlementAmt}>₹75,400 <Text style={styles.settlementAmtSub}>(RTGS द्वारे)</Text></Text>
-          <View style={styles.bankRow}>
-            <Text style={styles.bankLabel}>थेट बँक खात्यात जमा</Text>
-          </View>
-          {/* ★ The invented IFSC code, buyer license number, and "APMC
-              authorized" / "APMC Verified" wording were removed — this app
-              has no real bank integration and no real APMC certification
-              behind either claim. The escrow mechanism itself is real
-              (CANON's transaction FSM); what it is not is government- or
-              bank-verified, and saying so would be the unrecoverable
-              mistake CLAUDE.md warns about. */}
-          <View style={styles.escrowGuaranteeRow}>
-            <Icon name="shield-check" size={13} color={colors.tertiary} />
-            <Text style={styles.escrowGuaranteeText}>
-              100% सुरक्षित रक्कम एस्क्रोमध्ये जमा आहे. गाडी वजनात होताच थेट जमा होईल.
-            </Text>
-          </View>
-        </View>
-
-        {/* Deal summary */}
-        <View style={styles.dealSummaryCard}>
-          <View style={styles.dealSummaryRow}>
-            <Text style={styles.dealSummaryKey}>खरेदीदार तपशील · Buyer</Text>
-          </View>
-          <Text style={styles.dealSummaryBuyerName}>Pune Trading Co.</Text>
-          <Text style={styles.dealSummaryBuyerSub}>गुलटेकडी मार्केट यार्ड, पुणे</Text>
-          <View style={styles.dealSummaryDivider} />
-          <View style={styles.farmerDealRow}>
-            <Text style={styles.farmerDealLabel}>शेतकरी:</Text>
-            <Text style={styles.farmerDealName}>रामभाऊ पाटील (निफाड, नाशिक)</Text>
-            <View style={styles.farmgateBadge}><Text style={styles.farmgateBadgeText}>फार्म गेट उचल</Text></View>
-          </View>
-          <View style={styles.dealSummaryDivider} />
-          <View style={styles.produceSummary}>
-            <View style={styles.produceSummaryLeft}>
-              <Text style={styles.produceSummaryKey}>माला तपशील · Produce Lot</Text>
-              <View style={styles.gradeABadge}><Text style={styles.gradeAText}>Grade A (850/1000)</Text></View>
-              <View style={styles.produceRow}><Text style={styles.produceLabel}>जात (Variety):</Text><Text style={styles.produceVal}>गावरान लाल कांदा (Gavran Red)</Text></View>
-              <View style={styles.produceRow}><Text style={styles.produceLabel}>वजन व पोती:</Text><Text style={styles.produceVal}>40 क्विंटल · 80 पोती (50kg पोते)</Text></View>
-              <View style={styles.produceRow}><Text style={styles.produceLabel}>दर प्रति क्विंटल:</Text><Text style={styles.produceVal}>₹1,900 / क्विंटल</Text></View>
-            </View>
-          </View>
-          <View style={styles.financeSummary}>
-            <View style={styles.financeRow}>
-              <Text style={styles.financeKey}>एकूण किंमत (Gross):</Text>
-              <Text style={styles.financeVal}>₹76,000</Text>
-            </View>
-            <View style={styles.financeRow}>
-              <Text style={styles.financeKey}>हमाली व तोलाई खर्च (Hamali):</Text>
-              <Text style={[styles.financeVal, { color: colors.critical }]}>– ₹600</Text>
-            </View>
-            <View style={[styles.financeRow, styles.financeNetRow]}>
-              <Text style={styles.financeNetKey}>निवळ जमा रक्कम (Net):</Text>
-              <Text style={styles.financeNetVal}>₹75,400</Text>
-            </View>
-          </View>
-        </View>
+        {/* ★ A "NET SETTLEMENT ₹75,400" card and a full deal summary — buyer
+            "Pune Trading Co.", farmer "रामभाऊ पाटील", "40 क्विंटल · 80 पोती",
+            "₹1,900 / क्विंटल", gross ₹76,000, hamali ₹600, net ₹75,400,
+            "Grade A (850/1000)" — used to sit here. Not one of those figures
+            came from the deal that was just accepted: nothing is passed to
+            this screen and no accepted-offer object is read. A farmer would
+            have been shown someone else's numbers as his own settlement.
+            Removed until there is a real deal to render. */}
 
         {/* Next steps */}
         <View style={styles.nextStepsCard}>
-          <Text style={styles.nextStepsTitle}>आता पुढे काय होणार? (Next Steps)</Text>
-          <View style={styles.stepTimeBadge}><Text style={styles.stepTimeText}>टप्पा २ सुरु</Text></View>
+          <Text style={styles.nextStepsTitle}>{t('dd_steps_title')}</Text>
 
           {NEXT_STEPS.map((step, i) => (
             <View key={i} style={styles.stepRow}>
@@ -180,11 +89,11 @@ export default function S30_DealDone({ navigation }: any) {
                 }
               </View>
               <View style={styles.stepContent}>
-                <Text style={[styles.stepTitle, step.done && styles.stepTitleDone]}>{step.title}</Text>
-                <Text style={styles.stepDetail}>{step.detail}</Text>
-                {step.badge ? (
+                <Text style={[styles.stepTitle, step.done && styles.stepTitleDone]}>{t(step.titleKey)}</Text>
+                <Text style={styles.stepDetail}>{t(step.detailKey)}</Text>
+                {step.badgeKey ? (
                   <View style={[styles.stepBadge, step.badgeDone && styles.stepBadgeDone]}>
-                    <Text style={[styles.stepBadgeText, step.badgeDone && styles.stepBadgeTextDone]}>{step.badge}</Text>
+                    <Text style={[styles.stepBadgeText, step.badgeDone && styles.stepBadgeTextDone]}>{step.badgeKey ? t(step.badgeKey) : ''}</Text>
                   </View>
                 ) : null}
               </View>
@@ -197,7 +106,7 @@ export default function S30_DealDone({ navigation }: any) {
       {/* CTA dock */}
       <View style={styles.dock}>
         <TouchableOpacity style={styles.trackBtn} onPress={() => navigation.navigate('S32_DealTracking')}>
-          <Text style={styles.trackBtnText}>सौदा ट्रॅक करा · Track Deal Progress</Text>
+          <Text style={styles.trackBtnText}>{t('dd_track_cta')}</Text>
           <Icon name="arrow-right" size={16} color={colors.onPrimary} />
         </TouchableOpacity>
         {/* ★ "Download Official Signed PDF" and "Share on WhatsApp" removed —
