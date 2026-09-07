@@ -19,14 +19,28 @@ import {
   View,
 } from 'react-native';
 import Svg, { Rect, Line, Text as SvgText } from 'react-native-svg';
+import { useQuery } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { colors, fontFamily, space, radius } from '../../theme/tokens';
+import { colors, fontFamily, space, radius, cardShadow } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { useAuth } from '../../lib/auth';
+import { getPriceSeries, recommendWindow } from '../../lib/api';
+import { formatPaise } from '../../lib/money';
+import {
+  DEFAULT_COMMODITY_ID,
+  DEFAULT_GRADE,
+  DEFAULT_HORIZON_DAYS,
+  DEFAULT_MARKET_ID,
+  DEFAULT_QTY_KG,
+  USE_FIXTURES,
+} from '../../config';
+import { fxPriceSeries } from '../../fixtures/prices';
+import { fxHold } from '../../fixtures/window';
 import type { HomeStackParamList, FarmerTabParamList } from '../../navigation/FarmerTabs';
+import type { PricePoint } from '../../types/api';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'S4_Home'>;
 type ParentNav = CompositeNavigationProp<
@@ -34,26 +48,20 @@ type ParentNav = CompositeNavigationProp<
   BottomTabNavigationProp<FarmerTabParamList>
 >;
 
-// ── Price chart data ────────────────────────────────────────────────
-const PRICE_DATA = [
-  { day: 'M', price: 2450 },
-  { day: 'T', price: 2580 },
-  { day: 'W', price: 2510 },
-  { day: 'T', price: 2720 },
-  { day: 'F', price: 2850 },
-  { day: 'S', price: 2980 },
-  { day: 'S', price: 3120 },
-];
-
+// ── Price chart — draws whatever 7 points it's handed; no data of its own ──
 const CHART_W = 280;
 const CHART_H = 120;
 const BAR_GAP = 6;
-const NUM_BARS = PRICE_DATA.length;
-const BAR_W = (CHART_W - BAR_GAP * (NUM_BARS - 1)) / NUM_BARS;
-const MIN_PRICE = Math.min(...PRICE_DATA.map(d => d.price)) - 200;
-const MAX_PRICE = Math.max(...PRICE_DATA.map(d => d.price)) + 200;
 
-function PriceChart() {
+function PriceChart({ points }: { points: PricePoint[] }) {
+  const numBars = points.length;
+  if (numBars === 0) return null;
+  const barW = (CHART_W - BAR_GAP * (numBars - 1)) / numBars;
+  const prices = points.map(p => p.modal_paise_per_qtl);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+  const range = maxPrice - minPrice || 1;
+
   return (
     <Svg width={CHART_W} height={CHART_H + 20} viewBox={`0 0 ${CHART_W} ${CHART_H + 20}`}>
       {/* Guide lines */}
@@ -74,42 +82,43 @@ function PriceChart() {
       })}
 
       {/* Bars */}
-      {PRICE_DATA.map((d, i) => {
-        const normH = ((d.price - MIN_PRICE) / (MAX_PRICE - MIN_PRICE)) * CHART_H;
-        const x = i * (BAR_W + BAR_GAP);
+      {points.map((p, i) => {
+        const normH = ((p.modal_paise_per_qtl - minPrice) / range) * (CHART_H - 12) + 8;
+        const x = i * (barW + BAR_GAP);
         const y = CHART_H - normH;
-        const isToday = i === PRICE_DATA.length - 1;
+        const isToday = i === points.length - 1;
+        const dayLabel = new Date(p.obs_date).toLocaleDateString(undefined, { weekday: 'narrow' });
 
         return (
-          <React.Fragment key={i}>
+          <React.Fragment key={p.obs_date}>
             <Rect
               x={x}
               y={y}
-              width={BAR_W}
+              width={barW}
               height={normH}
               rx={4}
               fill={isToday ? colors.primaryContainer : colors.surfaceContainerHighest}
             />
             {/* Day label */}
             <SvgText
-              x={x + BAR_W / 2}
+              x={x + barW / 2}
               y={CHART_H + 16}
               textAnchor="middle"
               fontSize={10}
               fontFamily={fontFamily.semiBold}
               fill={isToday ? colors.primaryContainer : colors.outline}>
-              {d.day}
+              {dayLabel}
             </SvgText>
             {/* Price label on today's bar */}
             {isToday && (
               <SvgText
-                x={x + BAR_W / 2}
+                x={x + barW / 2}
                 y={y - 5}
                 textAnchor="middle"
                 fontSize={9}
                 fontFamily={fontFamily.bold}
                 fill={colors.primaryContainer}>
-                ₹{d.price}
+                {formatPaise(p.modal_paise_per_qtl, 'en')}
               </SvgText>
             )}
           </React.Fragment>
@@ -117,6 +126,23 @@ function PriceChart() {
       })}
     </Svg>
   );
+}
+
+async function fetchPrices() {
+  if (USE_FIXTURES) return fxPriceSeries;
+  return getPriceSeries(DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, 14);
+}
+
+async function fetchVerdict() {
+  if (USE_FIXTURES) return fxHold;
+  return recommendWindow({
+    commodity_id: DEFAULT_COMMODITY_ID,
+    market_id: DEFAULT_MARKET_ID,
+    qty_kg: DEFAULT_QTY_KG,
+    grade: DEFAULT_GRADE,
+    lot_id: null,
+    horizon_days: DEFAULT_HORIZON_DAYS,
+  });
 }
 
 // ── Screen ──────────────────────────────────────────────────────────
@@ -128,6 +154,29 @@ export default function S04_Home({ navigation }: Props) {
   const parentNav = navigation as unknown as ParentNav;
   const goToLots = () => parentNav.navigate('MyLots', { screen: 'S15_MyLots' } as never);
 
+  // ★ These used to be literal numbers baked into the JSX below — every
+  //   screen that shows "today's onion price" invented its own, so Home
+  //   said ₹3,120 while the phone-entry screen said ₹2,850–3,120 and the
+  //   published-lot radar said ₹2,100. Same demo scenario every other
+  //   screen (S9_Verdict, S04's own earlier build) already reads from —
+  //   one real query, so this number can't drift from the others again.
+  const pricesQuery = useQuery({ queryKey: ['home', 'prices'], queryFn: fetchPrices, staleTime: 5 * 60 * 1000 });
+  const verdictQuery = useQuery({ queryKey: ['home', 'verdict'], queryFn: fetchVerdict, staleTime: 5 * 60 * 1000 });
+
+  const points = pricesQuery.data?.points ?? [];
+  const last = points[points.length - 1];
+  const prev = points.length >= 2 ? points[points.length - 2] : undefined;
+  const recent7 = points.slice(-7);
+  const minPaise = recent7.length ? Math.min(...recent7.map(p => p.min_paise_per_qtl)) : 0;
+  const maxPaise = recent7.length ? Math.max(...recent7.map(p => p.max_paise_per_qtl)) : 0;
+  const avgPaise = recent7.length
+    ? Math.floor(recent7.reduce((s, p) => s + p.modal_paise_per_qtl, 0) / recent7.length)
+    : 0;
+  const deltaPaise = last && prev ? last.modal_paise_per_qtl - prev.modal_paise_per_qtl : 0;
+  const isUp = deltaPaise >= 0;
+
+  const verdict = verdictQuery.data;
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
@@ -136,12 +185,11 @@ export default function S04_Home({ navigation }: Props) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}>
 
-        {/* ── 1. Top bar ─────────────────────────────────────
-             The app name/role/sign-out chrome already renders once,
-             globally, in RootNavigator — repeating it here as a second
-             "Mandi-Setu" brand label was both wrong-branded and a
-             redundant second header. This row now shows page context
-             (who's signed in, which market) instead of the app name. */}
+        {/* ── 1. Top bar — a conventional navbar: menu left, the product
+             name centered as the title (not a personal greeting — the
+             farmer's own name lives one tap away, in the menu), a
+             balancing spacer on the right so the centered title is
+             actually centered rather than left-shifted by the hamburger. */}
         <View style={styles.topBar}>
           <TouchableOpacity
             style={styles.menuBtn}
@@ -154,7 +202,7 @@ export default function S04_Home({ navigation }: Props) {
           </TouchableOpacity>
           <View style={styles.topBarText}>
             <Text style={styles.topGreeting} numberOfLines={1}>
-              {user?.name ?? t('app_name')}
+              {t('app_name')}
             </Text>
             <Text style={styles.topDate}>{t('home_market_name')}</Text>
           </View>
@@ -194,94 +242,140 @@ export default function S04_Home({ navigation }: Props) {
 
         {/* ── 3. Price intelligence card ────────────────── */}
         <View style={styles.priceCard}>
-          {/* Card header */}
-          <View style={styles.priceCardHeader}>
-            <View>
-              <Text style={styles.priceCardLabel}>{t('home_todays_rate')}</Text>
-              <Text style={styles.priceHero}>₹3,120<Text style={styles.priceHeroUnit}>/q</Text></Text>
-            </View>
-            <View style={styles.priceCardRight}>
-              <View style={styles.trendBadge}>
-                <Icon name="trending-up" size={12} color={colors.tertiary} />
-                <Text style={styles.trendText}>+₹270</Text>
+          {pricesQuery.isLoading ? (
+            <Text style={styles.cardStatusText}>{t('loading_label')}</Text>
+          ) : pricesQuery.isError || !last ? (
+            <Text style={styles.cardErrorText}>{t('home_price_error')}</Text>
+          ) : (
+            <>
+              {/* Card header */}
+              <View style={styles.priceCardHeader}>
+                <View>
+                  <Text style={styles.priceCardLabel}>{t('home_todays_rate')}</Text>
+                  <Text style={styles.priceHero}>
+                    {formatPaise(last.modal_paise_per_qtl, 'en')}
+                    <Text style={styles.priceHeroUnit}>/q</Text>
+                  </Text>
+                </View>
+                <View style={styles.priceCardRight}>
+                  {deltaPaise !== 0 && (
+                    <View
+                      style={[
+                        styles.trendBadge,
+                        !isUp && { backgroundColor: colors.criticalContainer, borderColor: 'rgba(185,28,28,0.2)' },
+                      ]}>
+                      <Icon
+                        name={isUp ? 'trending-up' : 'trending-down'}
+                        size={12}
+                        color={isUp ? colors.tertiary : colors.critical}
+                      />
+                      <Text style={[styles.trendText, !isUp && { color: colors.critical }]}>
+                        {isUp ? '+' : ''}
+                        {formatPaise(deltaPaise, 'en')}
+                      </Text>
+                    </View>
+                  )}
+                  <Text style={styles.arrivalsText}>
+                    {t('home_arrivals', { count: String(last.arrivals_qtl) })}
+                  </Text>
+                </View>
               </View>
-              <Text style={styles.arrivalsText}>
-                {t('home_arrivals', { count: '1,240' })}
-              </Text>
-            </View>
-          </View>
 
-          {/* Min / Avg / Max row */}
-          <View style={styles.priceStats}>
-            {[
-              { labelKey: 'home_min', value: '₹2,850' },
-              { labelKey: 'home_avg', value: '₹2,980' },
-              { labelKey: 'home_max', value: '₹3,120' },
-            ].map(({ labelKey, value }) => (
-              <View key={labelKey} style={styles.priceStat}>
-                <Text style={styles.priceStatLabel}>{t(labelKey)}</Text>
-                <Text style={styles.priceStatValue}>{value}</Text>
+              {/* Min / Avg / Max row */}
+              <View style={styles.priceStats}>
+                {[
+                  { labelKey: 'home_min', value: minPaise },
+                  { labelKey: 'home_avg', value: avgPaise },
+                  { labelKey: 'home_max', value: maxPaise },
+                ].map(({ labelKey, value }) => (
+                  <View key={labelKey} style={styles.priceStat}>
+                    <Text style={styles.priceStatLabel}>{t(labelKey)}</Text>
+                    <Text style={styles.priceStatValue}>{formatPaise(value, 'en')}</Text>
+                  </View>
+                ))}
               </View>
-            ))}
-          </View>
 
-          {/* 7-day chart */}
-          <View style={styles.chartSection}>
-            <View style={styles.chartHeader}>
-              <Icon name="chart-bar" size={12} color={colors.primary} />
-              <Text style={styles.chartLabel}>{t('home_7day_climb')}</Text>
-            </View>
-            <View style={styles.chartArea}>
-              <PriceChart />
-            </View>
-          </View>
+              {/* 7-day chart */}
+              <View style={styles.chartSection}>
+                <View style={styles.chartHeader}>
+                  <Icon name="chart-bar" size={12} color={colors.primary} />
+                  <Text style={styles.chartLabel}>{t('home_7day_climb')}</Text>
+                </View>
+                <View style={styles.chartArea}>
+                  <PriceChart points={recent7} />
+                </View>
+              </View>
 
-          {/* AI Intelligence footer */}
-          <View style={styles.aiRow}>
-            <View style={styles.aiIconBg}>
-              <Icon name="star" size={12} color={colors.primary} />
-            </View>
-            <Text style={styles.aiLabel}>{t('home_ai_intelligence')}</Text>
-            <Text style={styles.aiConfidence}>{t('home_confidence_label', { level: 'Medium' })}</Text>
-          </View>
+              {/* AI Intelligence footer */}
+              <View style={styles.aiRow}>
+                <View style={styles.aiIconBg}>
+                  <Icon name="star" size={12} color={colors.primary} />
+                </View>
+                <Text style={styles.aiLabel}>{t('home_ai_intelligence')}</Text>
+                {verdict && (
+                  <Text style={styles.aiConfidence}>
+                    {t('home_confidence_label', { level: t(`confidence_${verdict.confidence.toLowerCase()}`) })}
+                  </Text>
+                )}
+              </View>
+            </>
+          )}
         </View>
 
         {/* ── 4. Advisory card ──────────────────────────── */}
         <View style={styles.advisoryCard}>
-          <View style={styles.advisoryHeader}>
-            <Icon name="info" size={14} color={colors.primary} />
-            <Text style={styles.advisoryLabel}>{t('home_advisory')}</Text>
-          </View>
+          {verdictQuery.isLoading ? (
+            <Text style={styles.cardStatusText}>{t('loading_label')}</Text>
+          ) : verdictQuery.isError || !verdict ? (
+            <Text style={styles.cardErrorText}>{t('home_verdict_error')}</Text>
+          ) : (
+            <>
+              <View style={styles.advisoryHeader}>
+                <Icon name="info" size={14} color={colors.primary} />
+                <Text style={styles.advisoryLabel}>{t('home_advisory')}</Text>
+              </View>
 
-          <Text style={styles.advisoryRecommendation}>
-            {t('home_hold_recommendation', { days: '5' })}
-          </Text>
-          <Text style={styles.advisoryHoldCosts}>
-            {t('home_holding_costs', { cost: '₹42' })}
-          </Text>
+              <Text style={styles.advisoryRecommendation}>
+                {verdict.action === 'HOLD' && verdict.hold_days !== null
+                  ? t('home_hold_recommendation', { days: String(verdict.hold_days) })
+                  : t(verdict.action === 'NO_ADVICE' ? 'no_advice_label' : `action_${verdict.action.toLowerCase()}`)}
+              </Text>
+              <Text style={styles.advisoryHoldCosts}>
+                {t('home_holding_costs', { cost: formatPaise(verdict.costs.total_paise_per_qtl, 'en') })}
+              </Text>
 
-          {/* Gain/Loss row */}
-          <View style={styles.advisoryStats}>
-            <View style={styles.advisoryStat}>
-              <Text style={styles.advisoryStatLabel}>{t('home_expected_gain', { qty: '50' })}</Text>
-              <Text style={[styles.advisoryStatValue, { color: colors.tertiary }]}>+₹13,500</Text>
-              <Text style={styles.advisoryStatSub}>{t('home_projected', { price: '₹3,390' })}</Text>
-            </View>
-            <View style={styles.advisoryStatDivider} />
-            <View style={styles.advisoryStat}>
-              <Text style={styles.advisoryStatLabel}>{t('home_worst_case', { qty: '50' })}</Text>
-              <Text style={[styles.advisoryStatValue, { color: colors.critical }]}>–₹6,000</Text>
-              <Text style={styles.advisoryStatSub}>{t('home_downside', { price: '₹2,730' })}</Text>
-            </View>
-          </View>
+              {/* Gain/Loss row — ★ I16: identical font size for both numbers */}
+              {verdict.expected_gain_paise !== null && verdict.worst_case_paise !== null && (
+                <View style={styles.advisoryStats}>
+                  <View style={styles.advisoryStat}>
+                    <Text style={styles.advisoryStatLabel}>
+                      {t('home_expected_gain', { qty: String(Math.floor(DEFAULT_QTY_KG / 100)) })}
+                    </Text>
+                    <Text style={[styles.advisoryStatValue, { color: colors.tertiary }]}>
+                      +{formatPaise(verdict.expected_gain_paise, 'en')}
+                    </Text>
+                  </View>
+                  <View style={styles.advisoryStatDivider} />
+                  <View style={styles.advisoryStat}>
+                    <Text style={styles.advisoryStatLabel}>
+                      {t('home_worst_case', { qty: String(Math.floor(DEFAULT_QTY_KG / 100)) })}
+                    </Text>
+                    <Text style={[styles.advisoryStatValue, { color: colors.critical }]}>
+                      {formatPaise(verdict.worst_case_paise, 'en')}
+                    </Text>
+                  </View>
+                </View>
+              )}
 
-          <TouchableOpacity style={styles.costBreakdownBtn}>
-            <Icon name="clipboard" size={13} color={colors.primary} />
-            <Text style={styles.costBreakdownText}>
-              {t('home_cost_breakdown', { cost: '₹42' })}
-            </Text>
-            <Icon name="chevron-right" size={13} color={colors.primary} />
-          </TouchableOpacity>
+              <TouchableOpacity style={styles.costBreakdownBtn} onPress={() => navigation.navigate('S9_Verdict')}>
+                <Icon name="clipboard" size={13} color={colors.primary} />
+                <Text style={styles.costBreakdownText}>
+                  {t('home_cost_breakdown', { cost: formatPaise(verdict.costs.total_paise_per_qtl, 'en') })}
+                </Text>
+                <Icon name="chevron-right" size={13} color={colors.primary} />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
 
         {/* ── 5. My lots section ────────────────────────── */}
@@ -369,8 +463,8 @@ const styles = StyleSheet.create({
     paddingTop: space.lg + 20,
     paddingBottom: space.sm,
     backgroundColor: colors.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.outlineVariant,
+    zIndex: 1,
+    ...cardShadow,
   },
   menuBtn: {
     width: 40,
@@ -387,18 +481,20 @@ const styles = StyleSheet.create({
     borderRadius: 1,
     backgroundColor: colors.onSurface,
   },
-  topBarText: { flex: 1 },
+  topBarText: { flex: 1, alignItems: 'center' },
   topGreeting: {
     fontFamily: fontFamily.extraBold,
-    fontSize: 20,
+    fontSize: 19,
     color: colors.primary,
-    letterSpacing: -0.3,
+    letterSpacing: -0.2,
+    textAlign: 'center',
   },
   topDate: {
-    fontFamily: fontFamily.regular,
-    fontSize: 12,
+    fontFamily: fontFamily.medium,
+    fontSize: 11,
     color: colors.onSurfaceVariant,
     marginTop: 1,
+    textAlign: 'center',
   },
   topActions: {
     flexDirection: 'row',
@@ -483,6 +579,16 @@ const styles = StyleSheet.create({
   },
 
   // Price card
+  cardStatusText: {
+    fontFamily: fontFamily.regular,
+    fontSize: 13,
+    color: colors.onSurfaceVariant,
+  },
+  cardErrorText: {
+    fontFamily: fontFamily.semiBold,
+    fontSize: 13,
+    color: colors.critical,
+  },
   priceCard: {
     margin: space.md,
     marginTop: space.sm,

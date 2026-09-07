@@ -49,7 +49,8 @@ export type IconName =
   | 'map-pin'
   | 'plus'
   | 'camera'
-  | 'scale';
+  | 'scale'
+  | 'share';
 
 interface IconProps {
   name: IconName;
@@ -317,7 +318,15 @@ const ICON_PATHS: Record<IconName, (color: string) => React.ReactElement> = {
       <Path d="M20.39 18.39A5 5 0 0 0 18 9H16.74A8 8 0 1 0 3 16.3" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
     </G>
   ),
+  share: (c) => (
+    <G>
+      <Path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Path d="M16 6L12 2L8 6" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <Path d="M12 2v13" stroke={c} strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </G>
+  ),
 };
+
 
 export function Icon({ name, size = 24, color = '#1C1C17' }: IconProps) {
   const renderIcon = ICON_PATHS[name];
