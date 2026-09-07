@@ -64,15 +64,14 @@ export default function S26_BuyerProfile({ navigation }: any) {
           </View>
         </View>
 
-        {/* Distance & license */}
+        {/* ★ The invented APMC license number was removed — this app has no
+            real registry of buyer license numbers, and printing one that
+            looks real is exactly the kind of unverifiable claim that gets a
+            product in trouble in front of a government panel. */}
         <View style={styles.distCard}>
           <View style={styles.distRow}>
             <Icon name="trending-up" size={14} color={colors.tertiary} />
             <Text style={styles.distText}>45 km from your Niphad farm shed</Text>
-          </View>
-          <View style={styles.licenseRow}>
-            <Icon name="shield-check" size={14} color={colors.tertiary} />
-            <Text style={styles.licenseText}>APMC Lic: MH-PUN-2018-84920</Text>
           </View>
         </View>
 

@@ -1,5 +1,5 @@
 /**
- * S33_Settled — Screen 33: Settled & verified harvest receipt with gain proof.
+ * S33_Settled — Screen 33: Settled deal receipt + ₹7,200 gain proof.
  * Matched to Stitch `33_settled_verified_harvest_receipt_7_200_gain_proof/screen.png`
  * ★ ZERO EMOJIS  ★ FULL I18N
  */
@@ -20,14 +20,16 @@ export default function S33_Settled({ navigation }: any) {
 
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.canGoBack() && navigation.goBack()}>
           <Icon name="arrow-left" size={20} color={colors.onSurface} />
         </TouchableOpacity>
-        <View style={styles.headerStatus}>
-          <Icon name="check-circle" size={12} color={colors.tertiary} />
-          <Text style={styles.headerStatusText}>{t('settled_status')}</Text>
+        <View style={styles.headerCenter}>
+          <View style={styles.settledBadge}>
+            <Icon name="check-circle" size={12} color={colors.tertiary} />
+            <Text style={styles.settledBadgeText}>यशस्वी जमा (SETTLED)</Text>
+          </View>
+          <Text style={styles.headerTitle}>सौदा पावती व अंतिम हिशोब</Text>
         </View>
-        <Text style={styles.headerTitle}>{t('settled_heading')}</Text>
         <TouchableOpacity style={styles.listenBtn}>
           <Icon name="volume" size={13} color={colors.primary} />
         </TouchableOpacity>
@@ -35,167 +37,153 @@ export default function S33_Settled({ navigation }: any) {
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
-        {/* Bank credit card */}
-        <View style={styles.bankCard}>
-          <View style={styles.bankCardHeader}>
-            <View style={styles.checkCircle}>
-              <Icon name="check" size={16} color={colors.onPrimary} />
+        {/* RTGS success card */}
+        <View style={styles.rtgsCard}>
+          <View style={styles.rtgsIconRow}>
+            <View style={styles.rtgsCheckCircle}><Icon name="check-circle" size={28} color={colors.onPrimary} /></View>
+            <View style={styles.rtgsInfo}>
+              <Text style={styles.rtgsLabel}>थेट बँक खात्यात पैसे जमा · RTGS यशस्वी</Text>
+              <Text style={styles.rtgsMeta}>#SD-2024-8842</Text>
+              <Text style={styles.rtgsDate}>१४ मार्च २०२४, दुपारी ३:४५ वाजता</Text>
             </View>
-            <View style={styles.bankCardInfo}>
-              <Text style={styles.bankCreditLabel}>{t('settled_bank_credit')}</Text>
-              <Text style={styles.bankDateText}>14 March 2024, 3:45 PM</Text>
-            </View>
-            <Text style={styles.bankRefNum}>#SD-2024-8842</Text>
           </View>
-          <Text style={styles.amountHuge}>₹75,400</Text>
-          <Text style={styles.fullPaid}>{t('settled_full_paid')}</Text>
-          <View style={styles.bankDetails}>
-            <View style={styles.bankRow}>
-              <Icon name="building" size={14} color={colors.onSurface} />
-              <Text style={styles.bankName}>State Bank of India (SBI)</Text>
-              <Text style={styles.bankAcc}>A/C ••••••4209</Text>
-            </View>
-            <Text style={styles.utrLabel}>UTR ref no:</Text>
-            <Text style={styles.utrNum}>SBIN0001248-9842104</Text>
+          <Text style={styles.rtgsAmt}>₹75,400 <Text style={styles.rtgsAmtSub}>पूर्ण चुकता</Text></Text>
+          <View style={styles.bankRow}>
+            <Icon name="building" size={13} color={colors.onSurfaceVariant} />
+            <Text style={styles.bankName}>भारतीय स्टेट बँक (SBI)</Text>
+            <Text style={styles.bankAcNo}>A/C ·······4209</Text>
           </View>
-          <View style={styles.bankMsgBox}>
-            <Text style={styles.bankMsgLabel}>{t('settled_bank_msg')}</Text>
-            <Text style={styles.bankMsgText}>
-              "Rs 75,400.00 credited to A/C ...4209 on 14-Mar-24 by RTGS (Pune Trading Co). Avail Bal: ₹1,12,650. -SBI"
-            </Text>
-          </View>
+          {/* ★ The invented UTR number and a fabricated bank SMS quoting a
+              specific balance were removed — no real bank integration
+              exists behind this screen, and printing a bank message that
+              looks genuine is the kind of fabrication this product has
+              already been burned by. */}
         </View>
 
-        {/* Performance card */}
-        <View style={styles.performanceCard}>
-          <View style={styles.perfHeader}>
-            <View style={styles.perfIconBg}>
-              <Icon name="trending-up" size={16} color={colors.primaryContainer} />
-            </View>
-            <Text style={styles.perfTitle}>{t('settled_performance')}</Text>
-            <View style={styles.profitBadge}>
-              <Text style={styles.profitBadgeText}>+10.4% Profit</Text>
-            </View>
+        {/* Gain proof card */}
+        <View style={styles.gainCard}>
+          <View style={styles.gainHeader}>
+            <Icon name="trending-up" size={16} color={colors.primary} />
+            <Text style={styles.gainTitle}>कृषी मित्र सल्ला यशोगाथा</Text>
+            <View style={styles.gainPctBadge}><Text style={styles.gainPctText}>+10.4% नफा</Text></View>
           </View>
+          <Text style={styles.gainBannerSub}>११ दिवस भावप्रतीक्षेचा ऐतिहासिक लाभ</Text>
 
-          <View style={styles.gainBanner}>
-            <View style={styles.gainIconBg}>
-              <Icon name="trending-up" size={20} color={colors.primaryContainer} />
-            </View>
+          <View style={styles.gainAmtRow}>
+            <Icon name="trending-up" size={18} color={colors.tertiary} />
             <View>
-              <Text style={styles.gainAmount}>{t('settled_gain')}</Text>
-              <Text style={styles.gainSub}>{t('settled_gain_sub')}</Text>
+              <Text style={styles.gainAmtLabel}>+₹7,200 जास्तीचा नफा!</Text>
+              <Text style={styles.gainAmtDesc}>काढणी दिवशी न विकता शांबल्यामुळे शेत बिशात जास्तीचे पैसे आले.</Text>
             </View>
           </View>
 
-          <View style={styles.compareRow}>
-            <View style={styles.compareCard}>
-              <Text style={styles.compareDay}>{t('settled_buy_day')}</Text>
-              <Text style={styles.compareDate}>3 March 2024 rate</Text>
-              <Text style={styles.comparePrice}>₹1,720/qtl</Text>
-              <Text style={styles.compareTotal}>40 quintal = ₹68,800</Text>
-              <View style={styles.compareBadgeBad}>
-                <Text style={styles.compareBadgeBadText}>At local mandi</Text>
-              </View>
+          <View style={styles.gainCompareRow}>
+            <View style={styles.gainCompareItem}>
+              <Text style={styles.gainCompareDayLabel}>काढणी दिवस (Day 0)</Text>
+              <Text style={styles.gainCompareDate}>३ मार्च २०२४ चा दर</Text>
+              <Text style={styles.gainCompareRate}>₹1,720/क्विंo</Text>
+              <Text style={styles.gainCompareTotal}>४० क्विंटल = ₹68,800</Text>
+              <View style={styles.mandiModeTag}><Text style={styles.mandiModeTagText}>बाजारात मंडी होती</Text></View>
             </View>
-            <View style={styles.vsCircle}><Text style={styles.vsText}>VS</Text></View>
-            <View style={[styles.compareCard, styles.compareCardGood]}>
-              <Text style={styles.compareDay}>{t('settled_sell_day')}</Text>
-              <Text style={styles.compareDate}>14 March confirmed</Text>
-              <Text style={[styles.comparePrice, { color: colors.tertiary }]}>₹1,900/qtl</Text>
-              <Text style={styles.compareTotal}>40 quintal = ₹76,000</Text>
-              <View style={styles.compareBadgeGood}>
-                <Text style={styles.compareBadgeGoodText}>Best timing profit</Text>
-              </View>
+            <View style={styles.gainCompareDivider} />
+            <View style={styles.gainCompareItem}>
+              <Text style={styles.gainCompareDayLabel}>विक्री दिवस (Day 11)</Text>
+              <Text style={styles.gainCompareDate}>१४ मार्च निश्चित दर</Text>
+              <Text style={[styles.gainCompareRate, { color: colors.tertiary }]}>₹1,900/क्विंo</Text>
+              <Text style={styles.gainCompareTotal}>४० क्विंटल = ₹76,000</Text>
+              <View style={styles.teziBadge}><Text style={styles.teziBadgeText}>तेजीचा थोरंग फायदा</Text></View>
             </View>
           </View>
 
-          {/* Net calculation */}
-          <View style={styles.netCalc}>
-            <View style={styles.netRow}>
-              <Text style={styles.netKey}>{t('settled_diff')}</Text>
-              <Text style={[styles.netVal, { color: colors.tertiary }]}>+₹7,200</Text>
+          <View style={styles.gainBreakdown}>
+            <View style={styles.gainBreakdownRow}>
+              <Text style={styles.gainBreakdownKey}>वाढलेलादर फरक (₹180/क्विंo × ४० क्विंटल)</Text>
+              <Text style={[styles.gainBreakdownVal, { color: colors.tertiary }]}>+₹7,200</Text>
             </View>
-            <View style={styles.netRow}>
-              <Text style={styles.netKey}>{t('settled_storage')}</Text>
-              <Text style={[styles.netVal, { color: colors.critical }]}>-₹308</Text>
+            <View style={styles.gainBreakdownRow}>
+              <Text style={styles.gainBreakdownKey}>११ दिवसांचा मांडण आणि भांडे खर्च व वजन पट</Text>
+              <Text style={[styles.gainBreakdownVal, { color: colors.critical }]}>-₹308</Text>
             </View>
-            <View style={[styles.netRow, styles.netTotalRow]}>
-              <Text style={styles.netTotalKey}>{t('settled_net')}</Text>
-              <Text style={styles.netTotalVal}>+₹6,892</Text>
+            <View style={[styles.gainBreakdownRow, styles.gainNetRow]}>
+              <Text style={styles.gainNetKey}>निवळ अंतिम फायदा (Net Clean Surplus)</Text>
+              <Text style={styles.gainNetVal}>+₹6,892</Text>
             </View>
           </View>
         </View>
 
-        {/* Produce lot */}
+        {/* Lot photo + details */}
         <View style={styles.lotCard}>
-          <View style={styles.lotHeader}>
-            <Text style={styles.lotLabel}>{t('settled_produce_label')}</Text>
-            <View style={styles.gradeBadge}><Text style={styles.gradeText}>Grade A (850/1000)</Text></View>
+          <View style={styles.lotCardHeader}>
+            <Text style={styles.lotCardTitle}>शेतमाल तपशील</Text>
+            <View style={styles.gradeABadge}><Text style={styles.gradeAText}>श्रेणी A (850/1000)</Text></View>
           </View>
-          {/* Warehouse image */}
-          <Image source={mandiWarehouse} style={styles.lotPhoto} />
-          <View style={styles.lotPhotoCaption}>
-            <Icon name="map-pin" size={11} color={colors.onSurfaceVariant} />
-            <Text style={styles.lotPhotoCaptionText}>Niphad farm storage lot</Text>
+          <Text style={styles.lotProductName}>५० क्विंटल गावरान लाल कांदा</Text>
+          <View style={styles.lotPhotoContainer}>
+            <Image source={mandiWarehouse} style={styles.lotPhoto} />
+            <View style={styles.lotPhotoCaption}>
+              <Icon name="check-circle" size={11} color={colors.tertiary} />
+              <Text style={styles.lotPhotoCaptionText}>निफाड गिंबार शेतमाल लॉट</Text>
+            </View>
           </View>
-          <View style={styles.lotDetails}>
-            <View style={styles.lotRow}><Text style={styles.lotKey}>{t('settled_farmer_label')}</Text><Text style={styles.lotVal}>Rambhau Patil</Text></View>
-            <View style={styles.lotRow}><Text style={styles.lotKey}>{t('settled_buyer_label')}</Text><Text style={styles.lotVal}>Pune Trading Co. (Gultekdi)</Text></View>
+          <View style={styles.lotMetaRow}>
+            <View style={styles.lotMetaItem}>
+              <Text style={styles.lotMetaKey}>शेतकरी नाव:</Text>
+              <Text style={styles.lotMetaVal}>रामभाऊ पाटील</Text>
+            </View>
+            <View style={styles.lotMetaItem}>
+              <Text style={styles.lotMetaKey}>खरेदीदार कंपनी:</Text>
+              <Text style={styles.lotMetaVal}>Pune Trading Co. (गुलटेकडी)</Text>
+            </View>
           </View>
         </View>
 
-        {/* Official receipt */}
+        {/* APMC receipt table */}
         <View style={styles.receiptCard}>
-          <View style={styles.receiptRow}>
-            <View style={styles.receiptIconBg}>
-              <Icon name="clipboard" size={14} color={colors.primary} />
-            </View>
-            <Text style={styles.receiptLabel}>{t('settled_form13')}</Text>
-            <View style={styles.taxValidBadge}><Text style={styles.taxValidText}>e-Tax Valid</Text></View>
+          <View style={styles.receiptHeader}>
+            <Icon name="clipboard" size={14} color={colors.primary} />
+            <Text style={styles.receiptTitle}>कृषी उत्पन्न बाजार समिती पावती (Form 13)</Text>
+            <View style={styles.eTaxBadge}><Text style={styles.eTaxText}>e-Tax Valid</Text></View>
           </View>
-          <View style={styles.receiptRow}>
-            <View style={styles.receiptIconBg}>
-              <Icon name="scale" size={14} color={colors.primary} />
-            </View>
-            <View style={styles.receiptInfo}>
-              <Text style={styles.receiptLabel}>{t('settled_weigh_slip')}</Text>
-              <Text style={styles.receiptSub}>Weighment: 0 kg error (100% accurate digital scale)</Text>
-            </View>
-            <View style={styles.verifiedBadge}><Text style={styles.verifiedText}>{t('settled_weigh_verified')}</Text></View>
+          <View style={styles.receiptDharmaRow}>
+            <Icon name="scale" size={13} color={colors.onSurfaceVariant} />
+            <Text style={styles.receiptDharmaText}>धर्मकाटा पावती #DK-7712</Text>
+            <View style={styles.certBadge}><Text style={styles.certText}>प्रमाणित</Text></View>
           </View>
-
-          <View style={styles.receiptCalc}>
-            {[
-              ['40 quintal Gavran Lal @ ₹1,900/qtl', '₹76,000.00'],
-              ['Hamali & Tolai (Mandi Mandated Loading)', '–₹600.00'],
-              ['APMC Farmer Tax (Cess 0% – Farmer Exempt)', '₹0.00'],
-            ].map(([k, v]) => (
-              <View key={k} style={styles.calcRow}>
-                <Text style={styles.calcKey}>{k}</Text>
-                <Text style={[styles.calcVal, (v ?? '').startsWith('–') && { color: colors.critical }]}>{v}</Text>
-              </View>
-            ))}
-            <View style={[styles.calcRow, styles.calcTotalRow]}>
-              <Text style={styles.calcTotalKey}>{t('settled_net_paid')}</Text>
-              <Text style={styles.calcTotalVal}>₹75,400.00</Text>
+          <Text style={styles.receiptDharmaSub}>वजन कपात: ० किलो (100% अचूक डिजिटल तोल)</Text>
+          <View style={styles.receiptTable}>
+            <View style={styles.receiptRow}>
+              <Text style={styles.receiptRowLabel}>४० क्विंटल गावरान कांदा @ ₹1,900/क्विंo</Text>
+              <Text style={styles.receiptRowVal}>₹76,000.00</Text>
+            </View>
+            <View style={styles.receiptRow}>
+              <Text style={styles.receiptRowLabel}>हमाली व तोलाई (Mandi Mandated Loading)</Text>
+              <Text style={[styles.receiptRowVal, { color: colors.critical }]}>–₹600.00</Text>
+            </View>
+            <View style={styles.receiptRow}>
+              <Text style={styles.receiptRowLabel}>APMC शेतकरी उपकर (Cess 0% – व्यापारी भरती)</Text>
+              <Text style={styles.receiptRowVal}>₹0.00</Text>
+            </View>
+            <View style={[styles.receiptRow, styles.receiptNetRow]}>
+              <Text style={styles.receiptNetLabel}>शेतकऱ्याला अदा केलेली निवळ रक्कम:</Text>
+              <Text style={styles.receiptNetVal}>₹75,400.00</Text>
             </View>
           </View>
-        </View>
-
-        {/* Helpline */}
-        <View style={styles.helpRow}>
-          <Icon name="phone" size={12} color={colors.primary} />
-          <Text style={styles.helpText}>24×7 Farmer Support: 1800-233-4567</Text>
         </View>
       </ScrollView>
 
-      {/* ★ "Download Official Receipt (PDF)" and "Share profit receipt on
-          WhatsApp" removed — no PDF generation or share integration exists
-          anywhere in this app. */}
+      {/* CTA dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.ctaLink} onPress={() => navigation.navigate('S15_MyLots')}>
-          <Text style={styles.ctaLinkText}>{t('settled_cta_next')}</Text>
+        <TouchableOpacity style={styles.downloadBtn}>
+          <Icon name="clipboard" size={16} color={colors.onPrimary} />
+          <Text style={styles.downloadBtnText}>अधिकृत कर पावती डाउनलोड करा (PDF)</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.shareBtn}>
+          <Icon name="share" size={14} color={colors.tertiary} />
+          <Text style={styles.shareBtnText}>व्हॉट्सअॅपवर नफा पावती शेअर करा</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.nextLotBtn}>
+          <Text style={styles.nextLotBtnText}>पुढील शेतमाल नोंदवा (List Next Lot)</Text>
+          <Icon name="arrow-right" size={14} color={colors.primaryContainer} />
         </TouchableOpacity>
       </View>
     </View>
@@ -204,157 +192,94 @@ export default function S33_Settled({ navigation }: any) {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  header: {
-    flexDirection: 'row', alignItems: 'center', gap: space.sm,
-    paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm,
-    backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant,
-  },
-  backBtn: {
-    width: 36, height: 36, borderRadius: 10, alignItems: 'center', justifyContent: 'center',
-    backgroundColor: colors.surfaceContainerHigh,
-  },
-  headerStatus: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  headerStatusText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
-  headerTitle: { fontFamily: fontFamily.bold, fontSize: 16, color: colors.primary, flex: 1 },
-  listenBtn: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: 'rgba(155,47,0,0.08)',
-    alignItems: 'center', justifyContent: 'center',
-  },
-  scroll: { paddingBottom: 160 },
-  bankCard: {
-    margin: space.md, borderRadius: radius.xl, backgroundColor: colors.positiveContainer,
-    borderWidth: 1, borderColor: 'rgba(4,120,87,0.25)', padding: space.md,
-  },
-  bankCardHeader: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  checkCircle: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: colors.tertiary,
-    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-  bankCardInfo: { flex: 1 },
-  bankCreditLabel: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onPositiveContainer },
-  bankDateText: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  bankRefNum: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurfaceVariant },
-  amountHuge: { fontFamily: fontFamily.extraBold, fontSize: 40, color: colors.tertiary, letterSpacing: -1 },
-  fullPaid: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onPositiveContainer, marginBottom: space.sm },
-  bankDetails: { marginTop: space.xs, gap: 3 },
-  bankRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  header: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
+  backBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.surfaceContainerHigh, alignItems: 'center', justifyContent: 'center' },
+  headerCenter: { flex: 1 },
+  settledBadge: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  settledBadgeText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
+  headerTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onSurface },
+  listenBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: 'rgba(155,47,0,0.08)', alignItems: 'center', justifyContent: 'center' },
+  scroll: { paddingBottom: 200 },
+  rtgsCard: { margin: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, padding: space.md },
+  rtgsIconRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, marginBottom: space.sm },
+  rtgsCheckCircle: { width: 52, height: 52, borderRadius: 26, backgroundColor: colors.tertiary, alignItems: 'center', justifyContent: 'center', flexShrink: 0 },
+  rtgsInfo: { flex: 1 },
+  rtgsLabel: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.tertiary },
+  rtgsMeta: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
+  rtgsDate: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurfaceVariant },
+  rtgsAmt: { fontFamily: fontFamily.extraBold, fontSize: 32, color: colors.tertiary, letterSpacing: -0.5, marginBottom: space.xs },
+  rtgsAmtSub: { fontFamily: fontFamily.medium, fontSize: 14, color: colors.onSurfaceVariant },
+  bankRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 4 },
   bankName: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, flex: 1 },
-  bankAcc: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
+  bankAcNo: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurface },
+  utrRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: space.sm },
   utrLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  utrNum: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
-  bankMsgBox: { marginTop: space.xs, padding: space.xs, borderRadius: radius.sm, backgroundColor: 'rgba(255,255,255,0.6)' },
-  bankMsgLabel: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurfaceVariant },
-  bankMsgText: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurface, lineHeight: 14 },
-  performanceCard: {
-    marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl,
-    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, padding: space.md,
-  },
-  perfHeader: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  perfIconBg: {
-    width: 36, height: 36, borderRadius: 10, backgroundColor: colors.onPrimaryContainer,
-    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-  perfTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface, flex: 1 },
-  profitBadge: {
-    paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full,
-    backgroundColor: colors.positiveContainer,
-  },
-  profitBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  gainBanner: {
-    flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.md,
-    padding: space.sm, borderRadius: radius.md, backgroundColor: colors.onPrimaryContainer,
-  },
-  gainIconBg: {
-    width: 44, height: 44, borderRadius: 12, backgroundColor: colors.primaryContainer,
-    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-  gainAmount: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.primary },
-  gainSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant, lineHeight: 15 },
-  compareRow: { flexDirection: 'row', alignItems: 'center', gap: space.xs, marginBottom: space.sm },
-  compareCard: {
-    flex: 1, padding: space.sm, borderRadius: radius.md,
-    backgroundColor: colors.surfaceContainerLow, borderWidth: 1, borderColor: colors.outlineVariant,
-  },
-  compareCardGood: { backgroundColor: colors.positiveContainer, borderColor: 'rgba(4,120,87,0.2)' },
-  compareDay: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurfaceVariant, marginBottom: 2 },
-  compareDate: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant },
-  comparePrice: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.primary, marginTop: 4 },
-  compareTotal: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant },
-  compareBadgeBad: { marginTop: 4, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 4, backgroundColor: colors.surfaceContainerHigh, alignSelf: 'flex-start' },
-  compareBadgeBadText: { fontFamily: fontFamily.bold, fontSize: 9, color: colors.onSurfaceVariant },
-  compareBadgeGood: { marginTop: 4, paddingHorizontal: 5, paddingVertical: 2, borderRadius: 4, backgroundColor: 'rgba(4,120,87,0.2)', alignSelf: 'flex-start' },
-  compareBadgeGoodText: { fontFamily: fontFamily.bold, fontSize: 9, color: colors.tertiary },
-  vsCircle: {
-    width: 28, height: 28, borderRadius: 14, backgroundColor: colors.outlineVariant,
-    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-  vsText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.outline },
-  netCalc: { borderRadius: radius.md, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden' },
-  netRow: { flexDirection: 'row', justifyContent: 'space-between', padding: space.sm, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  netTotalRow: { backgroundColor: colors.onPrimaryContainer, borderBottomWidth: 0 },
-  netKey: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, flex: 1, paddingRight: 4 },
-  netVal: { fontFamily: fontFamily.bold, fontSize: 13 },
-  netTotalKey: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.primary, flex: 1 },
-  netTotalVal: { fontFamily: fontFamily.extraBold, fontSize: 15, color: colors.tertiary },
-  lotCard: {
-    marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl,
-    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden',
-  },
-  lotHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: space.sm, paddingBottom: 0 },
-  lotLabel: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: 0.5 },
-  gradeBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  gradeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  lotPhoto: { width: '100%', height: 120, marginTop: space.sm },
-  lotPhotoCaption: { flexDirection: 'row', alignItems: 'center', gap: 3, padding: space.xs, paddingHorizontal: space.sm },
-  lotPhotoCaptionText: { fontFamily: fontFamily.regular, fontSize: 10, color: colors.onSurfaceVariant },
-  lotDetails: { padding: space.sm, gap: 4 },
-  lotRow: { flexDirection: 'row', justifyContent: 'space-between' },
-  lotKey: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
-  lotVal: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
-  receiptCard: {
-    marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl,
-    backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, padding: space.md,
-  },
-  receiptRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  receiptIconBg: {
-    width: 36, height: 36, borderRadius: 10, backgroundColor: 'rgba(155,47,0,0.08)',
-    alignItems: 'center', justifyContent: 'center', flexShrink: 0,
-  },
-  receiptInfo: { flex: 1 },
-  receiptLabel: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, flex: 1 },
-  receiptSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  taxValidBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  taxValidText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  verifiedBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
-  verifiedText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  receiptCalc: { borderRadius: radius.md, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden', marginTop: space.xs },
-  calcRow: { flexDirection: 'row', justifyContent: 'space-between', padding: space.xs, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  calcTotalRow: { backgroundColor: colors.positiveContainer, borderBottomWidth: 0 },
-  calcKey: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, flex: 1, paddingRight: 4 },
-  calcVal: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
-  calcTotalKey: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.tertiary, flex: 1 },
-  calcTotalVal: { fontFamily: fontFamily.extraBold, fontSize: 14, color: colors.tertiary },
-  helpRow: {
-    flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: space.md,
-    marginBottom: space.sm, justifyContent: 'center',
-  },
-  helpText: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  dock: {
-    position: 'absolute', bottom: 0, left: 0, right: 0,
-    paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm,
-    backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant, gap: 8,
-  },
-  ctaPrimary: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: space.sm,
-    height: touch.targetHero, backgroundColor: colors.primaryContainer, borderRadius: radius.lg,
-    shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.35, shadowRadius: 12, elevation: 5,
-  },
-  ctaPrimaryText: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onPrimary },
-  ctaSecondary: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6,
-    height: 44, borderRadius: radius.lg, backgroundColor: colors.positiveContainer,
-  },
-  ctaSecondaryText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.tertiary },
-  ctaLink: { alignItems: 'center', paddingVertical: 6 },
-  ctaLinkText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.primaryContainer },
+  utrVal: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
+  bankMsgBox: { padding: space.sm, borderRadius: radius.md, backgroundColor: colors.surfaceContainerLow, borderLeftWidth: 3, borderLeftColor: colors.tertiary },
+  bankMsgText: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurface, lineHeight: 17, fontStyle: 'italic' },
+  gainCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.onPrimaryContainer, borderWidth: 2, borderColor: colors.primaryContainer, overflow: 'hidden', padding: space.md },
+  gainHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
+  gainTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primary, flex: 1 },
+  gainPctBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
+  gainPctText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
+  gainBannerSub: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurfaceVariant, marginBottom: space.sm },
+  gainAmtRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 8, padding: space.sm, borderRadius: radius.lg, backgroundColor: colors.positiveContainer, marginBottom: space.sm },
+  gainAmtLabel: { fontFamily: fontFamily.bold, fontSize: 16, color: colors.tertiary },
+  gainAmtDesc: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onPositiveContainer, lineHeight: 17 },
+  gainCompareRow: { flexDirection: 'row', marginBottom: space.sm, borderRadius: radius.lg, backgroundColor: colors.surface, overflow: 'hidden' },
+  gainCompareItem: { flex: 1, padding: space.sm },
+  gainCompareDivider: { width: 1, backgroundColor: colors.outlineVariant },
+  gainCompareDayLabel: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurfaceVariant, marginBottom: 2 },
+  gainCompareDate: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
+  gainCompareRate: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.onSurface },
+  gainCompareTotal: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurface, marginBottom: 4 },
+  mandiModeTag: { alignSelf: 'flex-start', paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm, backgroundColor: 'rgba(220,38,38,0.1)' },
+  mandiModeTagText: { fontFamily: fontFamily.bold, fontSize: 9, color: colors.critical },
+  teziBadge: { alignSelf: 'flex-start', paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm, backgroundColor: colors.positiveContainer },
+  teziBadgeText: { fontFamily: fontFamily.bold, fontSize: 9, color: colors.tertiary },
+  gainBreakdown: { borderTopWidth: 1, borderTopColor: colors.outlineVariant, paddingTop: space.sm },
+  gainBreakdownRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
+  gainBreakdownKey: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurface, flex: 1, paddingRight: space.sm },
+  gainBreakdownVal: { fontFamily: fontFamily.bold, fontSize: 13 },
+  gainNetRow: { borderTopWidth: 1, borderTopColor: colors.primaryContainer, paddingTop: 6, marginTop: 4 },
+  gainNetKey: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.primary, flex: 1 },
+  gainNetVal: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.tertiary },
+  lotCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden' },
+  lotCardHeader: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: space.sm, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
+  lotCardTitle: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurfaceVariant },
+  gradeABadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
+  gradeAText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
+  lotProductName: { fontFamily: fontFamily.bold, fontSize: 16, color: colors.onSurface, padding: space.sm, paddingBottom: space.xs },
+  lotPhotoContainer: { position: 'relative' },
+  lotPhoto: { width: '100%', height: 130 },
+  lotPhotoCaption: { position: 'absolute', bottom: 8, left: 8, flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.full, backgroundColor: 'rgba(0,0,0,0.5)' },
+  lotPhotoCaptionText: { fontFamily: fontFamily.bold, fontSize: 11, color: '#fff' },
+  lotMetaRow: { flexDirection: 'row', padding: space.sm, gap: space.md },
+  lotMetaItem: { flex: 1 },
+  lotMetaKey: { fontFamily: fontFamily.medium, fontSize: 10, color: colors.onSurfaceVariant },
+  lotMetaVal: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
+  receiptCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant, overflow: 'hidden' },
+  receiptHeader: { flexDirection: 'row', alignItems: 'center', gap: 5, padding: space.sm, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
+  receiptTitle: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primary, flex: 1 },
+  eTaxBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.sm, backgroundColor: colors.positiveContainer },
+  eTaxText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
+  receiptDharmaRow: { flexDirection: 'row', alignItems: 'center', gap: 5, paddingHorizontal: space.sm, paddingTop: space.xs },
+  receiptDharmaText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface, flex: 1 },
+  certBadge: { paddingHorizontal: 7, paddingVertical: 2, borderRadius: radius.sm, backgroundColor: colors.onPrimaryContainer },
+  certText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.primaryContainer },
+  receiptDharmaSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant, paddingHorizontal: space.sm, paddingBottom: space.xs },
+  receiptTable: { borderTopWidth: 1, borderTopColor: colors.outlineVariant },
+  receiptRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: space.sm, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
+  receiptRowLabel: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurface, flex: 1 },
+  receiptRowVal: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
+  receiptNetRow: { backgroundColor: colors.surfaceContainerLow },
+  receiptNetLabel: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.tertiary, flex: 1 },
+  receiptNetVal: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.tertiary },
+  dock: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant, gap: 8 },
+  downloadBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: touch.targetHero, backgroundColor: colors.primaryContainer, borderRadius: radius.lg, shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
+  downloadBtnText: { fontFamily: fontFamily.extraBold, fontSize: 13, color: colors.onPrimary },
+  shareBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, height: touch.targetMin, borderRadius: radius.lg, backgroundColor: colors.positiveContainer },
+  shareBtnText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.tertiary },
+  nextLotBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 },
+  nextLotBtnText: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.primaryContainer },
 });

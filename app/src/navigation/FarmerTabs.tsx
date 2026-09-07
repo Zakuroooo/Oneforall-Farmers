@@ -69,7 +69,10 @@ import S27_Bargaining from '../screens/farmer/S27_Bargaining';
 import S28_CounterOffer from '../screens/farmer/S28_CounterOffer';
 import S29_ConfirmAcceptance from '../screens/farmer/S29_ConfirmAcceptance';
 import S30_DealDone from '../screens/farmer/S30_DealDone';
+import S31_DealsList from '../screens/farmer/S31_DealsList';
+import S32_DealTracking from '../screens/farmer/S32_DealTracking';
 import S33_Settled from '../screens/farmer/S33_Settled';
+import S35_FarmerProfile from '../screens/farmer/S35_FarmerProfile';
 
 export type FarmerTabParamList = {
   Home: undefined;
@@ -190,7 +193,10 @@ export type MyLotsStackParamList = {
   S28_CounterOffer: undefined;
   S29_ConfirmAcceptance: undefined;
   S30_DealDone: undefined;
+  S31_DealsList: undefined;
+  S32_DealTracking: undefined;
   S33_Settled: undefined;
+  S35_FarmerProfile: undefined;
 };
 
 const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
@@ -217,7 +223,10 @@ function MyLotsStackNavigator() {
       />
       <MyLotsStack.Screen name="S29_ConfirmAcceptance" component={S29_ConfirmAcceptance} />
       <MyLotsStack.Screen name="S30_DealDone" component={S30_DealDone} />
+      <MyLotsStack.Screen name="S31_DealsList" component={S31_DealsList} />
+      <MyLotsStack.Screen name="S32_DealTracking" component={S32_DealTracking} />
       <MyLotsStack.Screen name="S33_Settled" component={S33_Settled} />
+      <MyLotsStack.Screen name="S35_FarmerProfile" component={S35_FarmerProfile} />
     </MyLotsStack.Navigator>
   );
 }

@@ -47,6 +47,10 @@ export default function S34_MenuDrawer({ navigation }: Props) {
     navigation.navigate('FarmerTabs', { screen: 'MyLots', params: { screen: 'S15_MyLots' } } as never);
   const goToModelCard = () =>
     navigation.navigate('FarmerTabs', { screen: 'Prices', params: { screen: 'S8_ModelCard' } } as never);
+  const goToDeals = () =>
+    navigation.navigate('FarmerTabs', { screen: 'MyLots', params: { screen: 'S31_DealsList' } } as never);
+  const goToProfile = () =>
+    navigation.navigate('FarmerTabs', { screen: 'MyLots', params: { screen: 'S35_FarmerProfile' } } as never);
 
   return (
     <View style={styles.root}>
@@ -65,8 +69,8 @@ export default function S34_MenuDrawer({ navigation }: Props) {
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Profile */}
-        <View style={styles.profileCard}>
+        {/* Profile — tap through to full details */}
+        <TouchableOpacity style={styles.profileCard} onPress={goToProfile} activeOpacity={0.7}>
           <View style={styles.avatarCircle}>
             <Text style={styles.avatarInitial}>{(user?.name?.trim()?.[0] ?? '?').toUpperCase()}</Text>
           </View>
@@ -76,9 +80,10 @@ export default function S34_MenuDrawer({ navigation }: Props) {
             </Text>
             <Text style={styles.profilePhone}>{user?.phone ?? ''}</Text>
           </View>
-        </View>
+          <Icon name="chevron-right" size={16} color={colors.outline} />
+        </TouchableOpacity>
 
-        {/* Produce */}
+        {/* Produce & deals */}
         <Text style={styles.sectionLabel}>{t('tab_my_lots')}</Text>
         <View style={styles.menuCard}>
           <TouchableOpacity style={styles.menuRow} onPress={goToMyLots}>
@@ -86,6 +91,14 @@ export default function S34_MenuDrawer({ navigation }: Props) {
               <Icon name="box" size={16} color={colors.primary} />
             </View>
             <Text style={styles.menuTitle}>{t('my_lots_header')}</Text>
+            <Icon name="chevron-right" size={16} color={colors.outline} />
+          </TouchableOpacity>
+          <View style={styles.menuDivider} />
+          <TouchableOpacity style={styles.menuRow} onPress={goToDeals}>
+            <View style={styles.menuIconBg}>
+              <Icon name="handshake" size={16} color={colors.primary} />
+            </View>
+            <Text style={styles.menuTitle}>Deals</Text>
             <Icon name="chevron-right" size={16} color={colors.outline} />
           </TouchableOpacity>
         </View>
@@ -169,6 +182,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   menuTitle: { flex: 1, fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
+  menuDivider: { height: 1, backgroundColor: colors.outlineVariant, marginLeft: 52 },
 
   langRow: { flexDirection: 'row', gap: space.xs, padding: space.md },
   langChip: {

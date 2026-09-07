@@ -15,8 +15,8 @@ const MILESTONES = [
     active: false,
     icon: 'lock',
     title: 'Payment in Escrow (₹76,000 Locked)',
-    time: 'Completed today 09:30 AM via RTGS',
-    sub: 'Mandi Board Authorized Vault Receipt #4419',
+    time: 'Completed today 09:30 AM',
+    sub: '',
     subGreen: true,
   },
   {
@@ -60,8 +60,8 @@ const MILESTONES = [
     active: false,
     icon: 'zap',
     title: 'Instant Payment Release',
-    time: 'Direct NEFT/IMPS credit to SBI A/c ending in 4108',
-    sub: 'Instant Escrow Disbursal (< 60 seconds)',
+    time: 'Released to your bank account',
+    sub: '',
     subGreen: true,
   },
 ] as const;
@@ -100,15 +100,13 @@ export default function S32_DealTracking({ navigation }: any) {
             <View style={styles.securedBadge}><Text style={styles.securedText}>100% SECURED</Text></View>
           </View>
           <Text style={styles.escrowHeroAmt}>₹76,000 SAFE IN</Text>
-          <Text style={styles.escrowHeroAmtLine2}>MANDI-SETU ESCROW</Text>
+          <Text style={styles.escrowHeroAmtLine2}>KRISHI MITRA ESCROW</Text>
           <Text style={styles.escrowHeroDesc}>
             Buyer deposited full funds. Money will be released to your bank upon delivery inspection.
           </Text>
-          <View style={styles.escrowIdRow}>
-            <Icon name="shield-check" size={12} color={colors.onPrimary} />
-            <Text style={styles.escrowIdText}>APMC Regulated Escrow Trust</Text>
-            <Text style={styles.escrowIdText}>  ID: SETU-ESC-9941</Text>
-          </View>
+          {/* ★ "APMC Regulated Escrow Trust" and a fabricated trust ID were
+              removed — there is no regulated third-party escrow trust
+              behind this feature, only this app's own transaction FSM. */}
         </View>
 
         {/* Deal snapshot */}
@@ -219,25 +217,18 @@ export default function S32_DealTracking({ navigation }: any) {
           ))}
         </View>
 
-        {/* Document & report */}
-        <TouchableOpacity style={styles.docRow}>
-          <View style={styles.docIcon}><Icon name="clipboard" size={16} color={colors.primary} /></View>
-          <Text style={styles.docText}>Download Escrow Legal Guarantee Agreement</Text>
-          <Text style={styles.docSub}>Digitally signed by APMC Lasalgaon</Text>
+        {/* ★ "Download Escrow Legal Guarantee Agreement · Digitally signed
+            by APMC Lasalgaon" and "100% insured by Mandi-Setu Board
+            Protection" were both removed — there is no legal agreement
+            generation, no APMC digital signature, and no insurance product
+            behind this screen. Claiming government/board-level backing
+            this app does not have is exactly the mistake CLAUDE.md warns
+            is unrecoverable in front of a government panel. */}
+        <TouchableOpacity style={styles.docRow} onPress={() => navigation.navigate('S33_Settled')}>
+          <View style={styles.docIcon}><Icon name="check-circle" size={16} color={colors.tertiary} /></View>
+          <Text style={styles.docText}>View Settlement Receipt</Text>
           <Icon name="arrow-right" size={16} color={colors.onSurfaceVariant} />
         </TouchableOpacity>
-
-        <TouchableOpacity style={styles.reportRow}>
-          <Icon name="info" size={14} color={colors.critical} />
-          <Text style={styles.reportText}>Report Issue with Transit</Text>
-        </TouchableOpacity>
-
-        <View style={styles.insuredRow}>
-          <Icon name="shield" size={11} color={colors.tertiary} />
-          <Text style={styles.insuredText}>
-            Your produce and payment are 100% insured by Mandi-Setu Board Protection.
-          </Text>
-        </View>
       </ScrollView>
 
       {/* Bottom tab bar */}

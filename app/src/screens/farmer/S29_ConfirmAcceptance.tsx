@@ -39,16 +39,16 @@ export default function S29_ConfirmAcceptance({ navigation }: any) {
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
 
-        {/* Legal contract band */}
+        {/* ★ "APMC Act 1963 · Enforceable Trade Contract" removed — this app
+            has no actual legal standing under that Act, and claiming a deal
+            is government-enforceable when it is a demo-stage FSM transition
+            is exactly the kind of claim that gets a product in real trouble
+            in front of a government panel. */}
         <View style={styles.legalBand}>
           <View style={styles.legalLeft}>
             <Icon name="shield-check" size={16} color={colors.primaryContainer} />
-            <View>
-              <Text style={styles.legalTitle}>अधिकृत ई-सौदा करार</Text>
-              <Text style={styles.legalSub}>APMC Act 1963 · Enforceable Trade Contract</Text>
-            </View>
+            <Text style={styles.legalTitle}>सौदा करार</Text>
           </View>
-          <View style={styles.legalBadge}><Text style={styles.legalBadgeText}>कायदेशीर</Text></View>
         </View>
 
         {/* Countdown */}
@@ -90,8 +90,7 @@ export default function S29_ConfirmAcceptance({ navigation }: any) {
             </View>
             <Text style={styles.partyRole}>खरेदीदार (Buyer)</Text>
             <Text style={styles.partyName}>Pune Trading Co.</Text>
-            <Text style={styles.partySub}>गुलटेकडी APMC, पुणे</Text>
-            <Text style={styles.partyLic}>Lic: MH-PUN-2018-84920</Text>
+            <Text style={styles.partySub}>गुलटेकडी, पुणे</Text>
           </View>
         </View>
 
@@ -197,13 +196,13 @@ export default function S29_ConfirmAcceptance({ navigation }: any) {
           <Text style={styles.agreementText}>
             मी ४० क्विंटल कांदा ₹1,900/क्विंटल दराने विकण्यास पूर्ण संमती देत आहे.{'\n'}
             <Text style={styles.agreementSubText}>
-              हा सौदा APMC e-Mandi नियमांनुसार दोन्ही बाजूंसाठी कायदेशीर बंधनकारक आहे.
+              ही निवड निश्चित झाल्यावर बदलता येणार नाही.
             </Text>
           </Text>
         </TouchableOpacity>
 
         <Text style={styles.securityNote}>
-          256-बिट एन्क्रिप्टेड · APMC नियम 1963 अंतर्गत थेट संरक्षित
+          256-बिट एन्क्रिप्टेड
         </Text>
       </ScrollView>
 
@@ -226,7 +225,7 @@ export default function S29_ConfirmAcceptance({ navigation }: any) {
           </TouchableOpacity>
           <TouchableOpacity style={styles.helpLink}>
             <Icon name="phone" size={13} color={colors.tertiary} />
-            <Text style={styles.helpLinkText}>मंडी मित्र मदत (Helpline)</Text>
+            <Text style={styles.helpLinkText}>मदत (Helpline)</Text>
           </TouchableOpacity>
         </View>
       </View>

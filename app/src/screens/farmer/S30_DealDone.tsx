@@ -22,7 +22,7 @@ const NEXT_STEPS = [
     num: 2,
     done: false,
     title: 'पुढील कृती · NEXT STEP  उद्या सकाळी १०:०० वाजता',
-    detail: 'गाडी शेतावर येईल (Truck arriving at Farm Gate)\nवाहतूकदार: ओम साई लॉजिस्टिक्स (MH-15-EG-4402). चालक संपर्क: +91220XXXXX.',
+    detail: 'गाडी शेतावर येईल (Truck arriving at Farm Gate)',
     badge: 'उद्या सकाळी १०:०० वाजता',
     badgeDone: false,
   },
@@ -112,13 +112,19 @@ export default function S30_DealDone({ navigation }: any) {
           </View>
           <Text style={styles.settlementAmt}>₹75,400 <Text style={styles.settlementAmtSub}>(RTGS द्वारे)</Text></Text>
           <View style={styles.bankRow}>
-            <Text style={styles.bankLabel}>थेट बँक खात्यात: SBI ······4209</Text>
-            <Text style={styles.bankIfsc}>IFSC: SBIN0001248</Text>
+            <Text style={styles.bankLabel}>थेट बँक खात्यात जमा</Text>
           </View>
+          {/* ★ The invented IFSC code, buyer license number, and "APMC
+              authorized" / "APMC Verified" wording were removed — this app
+              has no real bank integration and no real APMC certification
+              behind either claim. The escrow mechanism itself is real
+              (CANON's transaction FSM); what it is not is government- or
+              bank-verified, and saying so would be the unrecoverable
+              mistake CLAUDE.md warns about. */}
           <View style={styles.escrowGuaranteeRow}>
             <Icon name="shield-check" size={13} color={colors.tertiary} />
             <Text style={styles.escrowGuaranteeText}>
-              100% सुरक्षित रक्कम APMC अधिकृत बँक एस्क्रोमध्ये जमा आहे. व्यापाऱ्याकडून संपूर्ण रक्कम लसलगाव बाजार समितीच्या एस्क्रो खात्यात सुरक्षित ठेवण्यात आली आहे. गाडी वजनात होताच थेट जमा होईल.
+              100% सुरक्षित रक्कम एस्क्रोमध्ये जमा आहे. गाडी वजनात होताच थेट जमा होईल.
             </Text>
           </View>
         </View>
@@ -126,20 +132,10 @@ export default function S30_DealDone({ navigation }: any) {
         {/* Deal summary */}
         <View style={styles.dealSummaryCard}>
           <View style={styles.dealSummaryRow}>
-            <View>
-              <Text style={styles.dealSummaryKey}>खरेदीदार तपशील · Buyer</Text>
-              <View style={styles.apmc}><Icon name="check-circle" size={11} color={colors.tertiary} /><Text style={styles.apmcText}>APMC Verified</Text></View>
-            </View>
+            <Text style={styles.dealSummaryKey}>खरेदीदार तपशील · Buyer</Text>
           </View>
           <Text style={styles.dealSummaryBuyerName}>Pune Trading Co.</Text>
-          <Text style={styles.dealSummaryBuyerSub}>गुलटेकडी APMC मार्केट यार्ड, पुणे (Gultekdi APMC Yard)</Text>
-          <View style={styles.dealSummaryRow2}>
-            <Text style={styles.dealSummaryLic}>परवाना: MH-PUN-2018-84920</Text>
-            <View style={styles.ratingRow}>
-              <Icon name="star" size={11} color="#F59E0B" />
-              <Text style={styles.ratingText}>4.9 (2400+ सौदे)</Text>
-            </View>
-          </View>
+          <Text style={styles.dealSummaryBuyerSub}>गुलटेकडी मार्केट यार्ड, पुणे</Text>
           <View style={styles.dealSummaryDivider} />
           <View style={styles.farmerDealRow}>
             <Text style={styles.farmerDealLabel}>शेतकरी:</Text>
@@ -202,7 +198,7 @@ export default function S30_DealDone({ navigation }: any) {
 
       {/* CTA dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.trackBtn} onPress={() => navigation.navigate('S33_Settled')}>
+        <TouchableOpacity style={styles.trackBtn} onPress={() => navigation.navigate('S32_DealTracking')}>
           <Text style={styles.trackBtnText}>सौदा ट्रॅक करा · Track Deal Progress</Text>
           <Icon name="arrow-right" size={16} color={colors.onPrimary} />
         </TouchableOpacity>

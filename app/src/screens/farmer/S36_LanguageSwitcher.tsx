@@ -70,7 +70,7 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
         </TouchableOpacity>
         <View style={styles.headerCenter}>
           <Text style={styles.headerTitle}>भाषा बदला</Text>
-          <Text style={styles.headerSub}>Language Settings · Mandi-Setu · Screen 36</Text>
+          <Text style={styles.headerSub}>Language Settings · Krishi Mitra</Text>
         </View>
         <TouchableOpacity style={styles.listenBtn}>
           <Icon name="volume" size={13} color={colors.primary} />

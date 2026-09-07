@@ -8,6 +8,7 @@ import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View 
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { useAuth } from '../../lib/auth';
 
 const redOnions = require('../../assets/images/red_onions.jpg');
 
@@ -15,6 +16,7 @@ type Tab = 'escrow' | 'transit' | 'settled';
 
 export default function S31_DealsList({ navigation }: any) {
   const { t } = useT();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<Tab>('escrow');
 
   return (
@@ -31,7 +33,7 @@ export default function S31_DealsList({ navigation }: any) {
             <Text style={styles.headerMandi}>Lasalgaon Mandi</Text>
             <View style={styles.apmcBadge}><Text style={styles.apmcBadgeText}>APMC</Text></View>
           </View>
-          <Text style={styles.headerFarmer}>रामभाऊ पाटील · निफाड (नाशिक)</Text>
+          <Text style={styles.headerFarmer}>{user?.name ?? ''}</Text>
         </View>
         <TouchableOpacity style={styles.listenBtn}>
           <Icon name="volume" size={13} color={colors.primary} />
@@ -85,7 +87,7 @@ export default function S31_DealsList({ navigation }: any) {
         <View style={styles.escrowBanner}>
           <View style={styles.escrowBannerIcon}><Icon name="shield-check" size={16} color={colors.tertiary} /></View>
           <Text style={styles.escrowBannerText}>
-            मंडी-सेतू 100% पेमेंट हमी. वजन पावती येताच २ तासांत बँक खात्यात थेट RTGS. कोणतीही अडचण आल्यास APMC लवाद संरक्षण.
+            कृषी मित्र 100% पेमेंट हमी. वजन पावती येताच २ तासांत बँक खात्यात थेट RTGS. कोणतीही अडचण आल्यास APMC लवाद संरक्षण.
             <Icon name="check-circle" size={11} color={colors.tertiary} />
           </Text>
         </View>
@@ -142,17 +144,17 @@ export default function S31_DealsList({ navigation }: any) {
             <Icon name="truck" size={13} color={colors.primaryContainer} />
             <View>
               <Text style={styles.nextStepLabel}>पुढील टप्पा · लॉजिस्टिक्स</Text>
-              <Text style={styles.nextStepText}>उद्या सकाळी: १०:०० · गाडी शेतावर येईल (Truck MH-15-EG-4402 arrives at Niphad shed)</Text>
+              <Text style={styles.nextStepText}>उद्या सकाळी: १०:०० · गाडी शेतावर येईल</Text>
             </View>
           </View>
 
           <View style={styles.dealCtaRow}>
-            <TouchableOpacity style={styles.trackBtn}>
+            <TouchableOpacity style={styles.trackBtn} onPress={() => navigation.navigate('S32_DealTracking')}>
               <View style={styles.liveGreen} />
               <Text style={styles.trackBtnText}>सौदा ट्रॅक करा · Live</Text>
               <Icon name="arrow-right" size={13} color={colors.onPrimary} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.receiptBtn}>
+            <TouchableOpacity style={styles.receiptBtn} onPress={() => navigation.navigate('S33_Settled')}>
               <Icon name="clipboard" size={14} color={colors.primary} />
               <Text style={styles.receiptBtnText}>पावती</Text>
             </TouchableOpacity>
