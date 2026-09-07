@@ -25,6 +25,7 @@ import { useT } from '../../lib/i18n';
 import type { Locale } from '../../types/api';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { demoTodayRange } from '../../lib/demoPrice';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S0_Splash'>;
 
@@ -59,10 +60,13 @@ export default function S00_Splash({ navigation }: Props) {
             <View style={styles.liveDot} />
             <Text style={styles.liveText}>{t('splash_live_mandi')}</Text>
           </View>
-          <TouchableOpacity style={styles.listenPill} activeOpacity={0.7}>
-            <Icon name="volume" size={14} color={colors.primary} />
-            <Text style={styles.listenText}>{t('splash_listen')}</Text>
-          </TouchableOpacity>
+          {/* ★ This pill had no `onPress` at all — the very first speaker a
+              farmer meets did nothing when tapped. `ListenButton` owns the
+              behaviour so it cannot go dead again by copy-paste, and it reads
+              the screen: the product name, the tagline, and today's price. */}
+          <ListenButton
+            text={`${t('splash_app_name')}. ${t('splash_tagline')}. ${t('splash_today_price')}: ${demoTodayRange(locale)}.`}
+          />
         </View>
 
         {/* ── 2. App emblem ─────────────────────────────────── */}
@@ -83,13 +87,19 @@ export default function S00_Splash({ navigation }: Props) {
         </View>
 
         {/* ── 3. App name ───────────────────────────────────── */}
-        <Text style={styles.appNameDevanagari}>{t('splash_app_name')}</Text>
-        <Text style={styles.appNameLatin}>{t('splash_app_name_latin')}</Text>
+        {/* ★ One name. This rendered `splash_app_name` *and*
+            `splash_app_name_latin` — so an English farmer saw "Krishi Mitra"
+            with "KRISHI MITRA" stacked beneath it, and a Marathi one saw two
+            scripts at once on the app's first screen. */}
+        <Text style={styles.appName} numberOfLines={1} adjustsFontSizeToFit minimumFontScale={0.7}>
+          {t('splash_app_name')}
+        </Text>
 
         {/* ── 4. Tagline ────────────────────────────────────── */}
         <View style={styles.taglineCard}>
+          {/* Same duplication as the name: `splash_tagline` and
+              `splash_tagline_sub` say the same thing twice. */}
           <Text style={styles.taglineDevanagari}>{t('splash_tagline')}</Text>
-          <Text style={styles.taglineEnglish}>{t('splash_tagline_sub')}</Text>
         </View>
 
         {/* ── 5. Live price strip ───────────────────────────── */}
@@ -357,23 +367,27 @@ const styles = StyleSheet.create({
   },
 
   // App name
-  appNameDevanagari: {
+  /**
+   * ★ The title was clipped under the logo in Marathi and Hindi. Cause:
+   *   `fontSize: 40` with `lineHeight: 48`. Devanagari needs far more
+   *   vertical room than Latin at the same size — the shirorekha and the
+   *   matras above it (कृषी) plus descenders below sit outside what a 1.2×
+   *   line box allows, so the glyph tops were cut. Latin never showed it,
+   *   which is why it read as a logo-overflow bug rather than a type bug.
+   *   1.45× plus explicit padding clears both extremes in all three scripts.
+   */
+  appName: {
     fontFamily: fontFamily.extraBold,
-    fontSize: 40,
-    lineHeight: 48,
+    fontSize: 38,
+    lineHeight: 58,
+    paddingTop: 6,
+    paddingBottom: 2,
     color: colors.primary,
     letterSpacing: -0.5,
     textAlign: 'center',
     marginTop: space.md,
-  },
-  appNameLatin: {
-    fontFamily: fontFamily.bold,
-    fontSize: 16,
-    lineHeight: 22,
-    letterSpacing: 4,
-    color: colors.onSurfaceVariant,
-    textTransform: 'uppercase',
-    textAlign: 'center',
+    alignSelf: 'stretch',
+    paddingHorizontal: space.md,
   },
 
   // Tagline
@@ -394,15 +408,6 @@ const styles = StyleSheet.create({
     lineHeight: 28,
     color: colors.onSurface,
     textAlign: 'center',
-  },
-  taglineEnglish: {
-    fontFamily: fontFamily.semiBold,
-    fontSize: 12,
-    lineHeight: 16,
-    letterSpacing: 0.3,
-    color: colors.secondary,
-    textAlign: 'center',
-    marginTop: 2,
   },
 
   // Price strip
