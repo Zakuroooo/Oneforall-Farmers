@@ -225,11 +225,15 @@ export type MyLotsStackParamList = {
   S22_PricePublish: { lot_id?: string } | undefined;
   S23_PublishedRadar: { lot_id?: string; asking_paise?: number } | undefined;
   S24_LotDetail: { lot_id?: string; asking_paise?: number } | undefined;
-  S25_BuyersForLot: undefined;
-  S26_BuyerProfile: undefined;
-  S27_Bargaining: undefined;
-  S28_CounterOffer: undefined;
-  S29_ConfirmAcceptance: undefined;
+  /* ★ These four took no params, which is how they ended up rendering
+     hardcoded buyers and prices: a screen that is never told *which* offer
+     it is about has nothing to render but literals. The id is what lets
+     them read real data. */
+  S25_BuyersForLot: { lot_id?: string } | undefined;
+  S26_BuyerProfile: { buyer_id?: string } | undefined;
+  S27_Bargaining: { offer_id?: string } | undefined;
+  S28_CounterOffer: { offer_id?: string } | undefined;
+  S29_ConfirmAcceptance: { offer_id?: string } | undefined;
   S30_DealDone: undefined;
   S31_DealsList: undefined;
   S32_DealTracking: undefined;

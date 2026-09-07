@@ -1,282 +1,325 @@
 /**
- * S25_BuyersForLot — Screen 25: Ranked buyer net-offer comparison.
- * Matched to Stitch `25_buyers_for_lot_ranked_net_offer_comparison/screen.png`
- * ★ ZERO EMOJIS  ★ FULL I18N
+ * S25 — the offers standing on one lot, ranked by what they actually pay.
+ * Stitch `25_buyers_for_lot_ranked_net_offer_comparison`.
+ *
+ * ★ What this replaces, and why it had to be a rewrite rather than a restyle:
+ *   the old screen ran no query at all. Its three buyers — "Nashik Agro
+ *   Exports", "Sahyadri Farms FPO", "Pune Trading Co." — were hardcoded, and
+ *   not even in this file: they lived in the i18n dictionaries as
+ *   `buyer1_name`, `buyer2_name`, `buyer3_name`, alongside `buyer1_rate`,
+ *   `buyer2_net`, "4.9 stars", "188 deals", "99.2% on-time pay", "100%
+ *   Escrow". Every farmer in every language met the same three fictional
+ *   firms quoting the same fictional prices, and the "Start Sauda" button
+ *   navigated to `S30_DealCounterOffer` — a route this navigator has never
+ *   registered, so the primary action on the screen did nothing.
+ *
+ *   That is the failure `CLAUDE.md` §9 calls the one unrecoverable mistake
+ *   available to this team: unlabelled synthetic data shown to a government
+ *   panel. It is not fixed by translating it.
+ *
+ * ★ What is on screen now is only what an `OfferDto` carries: the price, the
+ *   quantity, the round, when it arrived, when it expires, and the buyer's
+ *   note. Offers are ranked by **total value to the farmer** (price × qty),
+ *   not by the per-quintal rate — the highest rate here is an offer for half
+ *   the lot, and a farmer comparing rates alone would take the smaller
+ *   cheque. The rate is shown too, and the partial-offer case is called out
+ *   in words rather than left to be inferred from a number.
+ *
+ * ★ What is deliberately absent: the buyer's name, their rating, their
+ *   on-time record, their escrow badge. `OfferDto` has `buyer_id` and no
+ *   more. CANON §6.2's `buyers` table really does hold `business_name`,
+ *   `tier`, `deals_completed`, `on_time_payment_bps` and
+ *   `renegotiation_bps`, but §7.6 exposes none of them and there is no
+ *   `GET /buyers/{id}`. Blocker filed (`docs/BLOCKERS.md`).
+ *   TODO(akash): render the buyer block when that lands.
+ *
+ *   Note that `on_time_payment_bps` *defaults to 10000* in the schema. So
+ *   the tempting shortcut — show the column, let it default — would have
+ *   this screen assert a flawless payment record for a buyer nobody has ever
+ *   transacted with. The absence is the honest state.
+ *
+ * ★ ZERO EMOJIS. ★ Loading, empty, error and data all render.
  */
-import React, { useState } from 'react';
-import {
-  Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View,
-} from 'react-native';
-import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
+
+import React, { useMemo } from 'react';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+
+import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
-import { useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
+import { useT } from '../../lib/i18n';
+import { formatNumber, formatPaise, formatQuintal, quintalValuePaise, toQuintal } from '../../lib/money';
+import { formatDateShort } from '../../lib/dates';
+import { getLots, getOffers } from '../../lib/api';
+import { DEFAULT_LOT_ID, USE_FIXTURES } from '../../config';
+import { fxLotOffers } from '../../fixtures/offers';
+import { fxMyLots } from '../../fixtures/lots';
+import { ErrorState, Skeleton } from '../../components/farmer/States';
+import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
+import type { LotDto, OfferDto } from '../../types/api';
 
-const redOnions = require('../../assets/images/red_onions.jpg');
+type Props = NativeStackScreenProps<MyLotsStackParamList, 'S25_BuyersForLot'>;
 
-export default function S25_BuyersForLot({ navigation }: any) {
-  const { t } = useT();
-  const [sortHighest, setSortHighest] = useState(true);
+async function fetchOffers(): Promise<OfferDto[]> {
+  if (USE_FIXTURES) return fxLotOffers;
+  return getOffers();
+}
 
-  const BUYERS = [
-    {
-      rank: '#1',
-      rankLabel: t('buyer1_rank_label'),
-      rankBadge: t('buyer1_rank_badge'),
-      borderColor: colors.primaryContainer,
-      highlight: true,
-      name: t('buyer1_name'),
-      rating: 4.9,
-      reviews: t('buyer1_reviews'),
-      onTime: t('buyer1_ontime'),
-      escrow: t('buyer1_escrow'),
-      rate: t('buyer1_rate'),
-      rateUnit: t('buyer1_rate_unit'),
-      pickup: t('buyer1_pickup'),
-      pickupNote: t('buyer1_pickup_note'),
-      demand: t('buyer1_demand'),
-      grossKey: t('buyer1_gross_key'),
-      grossVal: t('buyer1_gross_val'),
-      hamali: t('buyer1_hamali_val'),
-      hamaliKey: t('buyer1_hamali_key'),
-      platformFee: t('buyer1_platform_fee'),
-      platformFeeKey: t('buyer1_platform_fee_key'),
-      net: t('buyer1_net'),
-      ctaLabel: t('buyer1_cta'),
-      profileLabel: t('buyer1_profile'),
-      onCta: () => navigation.navigate('S30_DealCounterOffer'),
-      onProfile: () => navigation.navigate('S26_BuyerProfile'),
-    },
-    {
-      rank: '#2',
-      rankLabel: t('buyer2_rank_label'),
-      rankBadge: t('buyer2_rank_badge'),
-      borderColor: colors.outlineVariant,
-      highlight: false,
-      name: t('buyer2_name'),
-      rating: 4.8,
-      reviews: t('buyer2_reviews'),
-      onTime: t('buyer2_ontime'),
-      escrow: null,
-      rate: t('buyer2_rate'),
-      rateUnit: t('buyer1_rate_unit'),
-      pickup: t('buyer2_pickup'),
-      pickupNote: t('buyer2_pickup_note'),
-      demand: null,
-      grossKey: null,
-      grossVal: null,
-      hamali: null,
-      hamaliKey: null,
-      platformFee: null,
-      platformFeeKey: null,
-      net: t('buyer2_net'),
-      ctaLabel: t('buyer2_cta'),
-      profileLabel: t('buyer1_profile'),
-      onCta: () => navigation.navigate('S30_DealCounterOffer'),
-      onProfile: () => navigation.navigate('S26_BuyerProfile'),
-    },
-    {
-      rank: '#3',
-      rankLabel: t('buyer3_rank_label'),
-      rankBadge: t('buyer3_rank_badge'),
-      borderColor: colors.outlineVariant,
-      highlight: false,
-      name: t('buyer3_name'),
-      rating: 4.7,
-      reviews: t('buyer3_reviews'),
-      onTime: t('buyer3_ontime'),
-      escrow: null,
-      rate: t('buyer3_rate'),
-      rateUnit: t('buyer1_rate_unit'),
-      pickup: t('buyer3_pickup'),
-      pickupNote: t('buyer3_pickup_note'),
-      demand: null,
-      grossKey: null,
-      grossVal: null,
-      hamali: null,
-      hamaliKey: null,
-      platformFee: null,
-      platformFeeKey: null,
-      net: t('buyer3_net'),
-      ctaLabel: t('buyer3_cta'),
-      profileLabel: t('buyer1_profile'),
-      onCta: () => navigation.navigate('S30_DealCounterOffer'),
-      onProfile: () => navigation.navigate('S26_BuyerProfile'),
-    },
-  ] as const;
+async function fetchLots(): Promise<LotDto[]> {
+  if (USE_FIXTURES) return fxMyLots;
+  return getLots();
+}
+
+/** What this offer is worth in total, in paise. The ranking key.
+ *
+ * ★ Computed from `qty_kg`, not from `toQuintal(qty_kg)`. Flooring the weight
+ *   before multiplying loses up to 99 kg of it — on a 4,050 kg offer at
+ *   ₹1,950/qtl that is ₹975 the farmer would never see on screen, and it
+ *   would silently change the *ranking* whenever two offers were close. */
+function offerValuePaise(o: OfferDto): number {
+  return quintalValuePaise(o.price_paise_per_qtl, o.qty_kg);
+}
+
+export default function S25_BuyersForLot({ navigation, route }: Props) {
+  const { t, locale } = useT();
+
+  /* ★ The screen took no params at all — "buyers for lot" with no lot. It
+     now takes one, and falls back to the demo lot the rest of the app
+     agrees on rather than guessing. */
+  const lotId = route.params?.lot_id ?? DEFAULT_LOT_ID;
+
+  const offersQuery = useQuery({ queryKey: ['offers', 'talks'], queryFn: fetchOffers });
+  const lotsQuery = useQuery({ queryKey: ['lots'], queryFn: fetchLots });
+
+  const lot = (lotsQuery.data ?? []).find(l => l.id === lotId) ?? null;
+
+  /** Live offers on *this* lot, best total first. */
+  const offers = useMemo(() => {
+    const all = offersQuery.data ?? [];
+    return all
+      .filter(o => o.status === 'OPEN' && o.lots.some(l => l.lot_id === lotId))
+      .sort((a, b) => offerValuePaise(b) - offerValuePaise(a));
+  }, [offersQuery.data, lotId]);
+
+  const lotQuintals = lot ? formatQuintal(lot.qty_kg, locale) : null;
+  const best = offers[0] ?? null;
+
+  const narration = useMemo(() => {
+    if (offers.length === 0) return t('bfl_empty_title');
+    const parts = [
+      t('bfl_narr_count', { n: formatNumber(offers.length, locale) }),
+      ...offers.map((o, i) =>
+        t('bfl_narr_offer', {
+          n: formatNumber(i + 1, locale),
+          rate: formatPaise(o.price_paise_per_qtl, locale),
+          qty: formatQuintal(o.qty_kg, locale),
+          total: formatPaise(offerValuePaise(o), locale),
+        }),
+      ),
+    ];
+    return parts.join(' ');
+  }, [offers, locale, t]);
+
+  const header = (
+    <View style={styles.header}>
+      <TouchableOpacity
+        style={styles.backBtn}
+        onPress={() => navigation.canGoBack() && navigation.goBack()}
+        accessibilityRole="button"
+        accessibilityLabel={t('back_button')}>
+        <Icon name="arrow-left" size={20} color={colors.onSurface} />
+      </TouchableOpacity>
+      <View style={styles.headerCenter}>
+        <Text style={styles.headerTitle}>{t('bfl_title')}</Text>
+        <Text style={styles.headerSub}>
+          {t('bfl_subtitle', { n: formatNumber(offers.length, locale) })}
+        </Text>
+      </View>
+      <ListenButton text={narration} />
+    </View>
+  );
+
+  if (offersQuery.isLoading || lotsQuery.isLoading) {
+    return (
+      <View style={styles.root}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+        {header}
+        <View style={styles.scroll}>
+          <Skeleton height={110} />
+          <View style={{ height: space.sm }} />
+          <Skeleton height={190} />
+        </View>
+      </View>
+    );
+  }
+
+  if (offersQuery.error && !offersQuery.data) {
+    return (
+      <View style={styles.root}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+        {header}
+        <ErrorState message={t('offers_fetch_error')} onRetry={() => offersQuery.refetch()} />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.root}>
-      <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
-
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backBtn} onPress={() => navigation.canGoBack() && navigation.goBack()}>
-          <Icon name="arrow-left" size={20} color={colors.onSurface} />
-        </TouchableOpacity>
-        <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>{t('lot_header_title')}</Text>
-          <Text style={styles.headerSub}>{t('lot_header_sub')}</Text>
-        </View>
-        <View style={styles.liveBadge}>
-          <View style={styles.liveGreen} />
-          <Text style={styles.liveText}>{t('lot_live_bids')}</Text>
-        </View>
-        <ListenButton text={`${t('lot_header_title')}. ${t('mkt_nearby_sub')}`} />
-      </View>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+      {header}
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* Lot band */}
-        <View style={styles.lotBand}>
-          <Image source={redOnions} style={styles.lotThumb} />
-          <View style={styles.lotBandInfo}>
-            <Text style={styles.lotBandId}>{t('lot_band_id')}</Text>
-            <Text style={styles.lotVariety}>{t('lot_variety')}</Text>
-            <View style={styles.lotBandRow}>
-              <Text style={styles.lotBandSub}>{t('lot_asking')}</Text>
-              <View style={styles.mandiBench}>
-                <Icon name="building" size={11} color={colors.onSurfaceVariant} />
-                <Text style={styles.lotBandSub}>{t('lot_mandi')}</Text>
-              </View>
+        {/* ── The lot these offers are for ─────────────────────────────
+            Every field read off the real LotDto. The old band showed
+            "LOT #LP-403", "Gavran Red Onion", "Asking: ₹2,100/Qtl" and
+            "Grade A (850/1000)" — four literals, none of them from a lot. */}
+        {lot ? (
+          <View style={styles.lotBand}>
+            <View style={styles.lotIcon}>
+              <Icon name="leaf" size={18} color={colors.primary} />
+            </View>
+            <View style={styles.lotBandInfo}>
+              <Text style={styles.lotBandId}>
+                {t('bfl_lot_qty', { qty: lotQuintals ?? '' })}
+              </Text>
+              <Text style={styles.lotBandSub}>
+                {t('bfl_lot_listed_on', {
+                  date: formatDateShort(lot.created_at.slice(0, 10), locale, ''),
+                })}
+              </Text>
+            </View>
+            <View style={styles.gradeBadge}>
+              <Text style={styles.gradeText}>{t(`lot_grade_${lot.grade.toLowerCase()}`)}</Text>
             </View>
           </View>
-          <View style={styles.gradeBadge}><Text style={styles.gradeText}>{t('lot_grade')}</Text></View>
-        </View>
+        ) : null}
 
-        {/* Sort tabs */}
-        <View style={styles.sortRow}>
-          <TouchableOpacity
-            style={[styles.sortTab, sortHighest && styles.sortTabActive]}
-            onPress={() => setSortHighest(true)}>
-            <Text style={[styles.sortTabText, sortHighest && styles.sortTabTextActive]}>
-              {t('lot_sort_highest')}
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.sortTab, !sortHighest && styles.sortTabActive]}
-            onPress={() => setSortHighest(false)}>
-            <Text style={[styles.sortTabText, !sortHighest && styles.sortTabTextActive]}>
-              {t('lot_sort_fastest')}
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Bids */}
-        {BUYERS.map((b, i) => (
-          <View key={i} style={[styles.card, { borderColor: b.borderColor }]}>
-            {/* Rank header */}
-            <View style={[styles.cardRankRow, b.highlight && styles.cardRankRowHighlight]}>
-              <View style={styles.rankBadgeBg}>
-                <Text style={styles.rankNum}>{b.rank}</Text>
-              </View>
-              <Text style={[styles.rankLabel, b.highlight && styles.rankLabelHighlight]}>{b.rankLabel}</Text>
-              <View style={[styles.rankExtraBadge, b.highlight && styles.rankExtraBadgeHighlight]}>
-                <Icon name="trending-up" size={12} color={b.highlight ? colors.primary : colors.tertiary} />
-                <Text style={[styles.rankExtraText, b.highlight && styles.rankExtraTextHighlight]}>{b.rankBadge}</Text>
-              </View>
+        {offers.length === 0 ? (
+          <View style={styles.emptyCard}>
+            <View style={styles.emptyIcon}>
+              <Icon name="handshake" size={26} color={colors.outline} />
             </View>
+            <Text style={styles.emptyTitle}>{t('bfl_empty_title')}</Text>
+            <Text style={styles.emptyBody}>{t('bfl_empty_body')}</Text>
+          </View>
+        ) : null}
 
-            {/* Buyer Profile Row */}
-            <View style={styles.profileRow}>
-              <View style={styles.buyerIdentity}>
-                <View style={styles.buyerNameLine}>
-                  <Text style={styles.buyerName}>{b.name}</Text>
-                  <Icon name="check-circle" size={14} color={colors.tertiary} />
-                </View>
-                <View style={styles.buyerStats}>
-                  <Icon name="star" size={12} color="#F59E0B" />
-                  <Text style={styles.buyerStatText}>{b.rating}</Text>
-                  <Text style={styles.buyerStatDot}>•</Text>
-                  <Text style={styles.buyerStatText}>{b.reviews}</Text>
-                  <Text style={styles.buyerStatDot}>•</Text>
-                  <Text style={styles.buyerStatText}>{b.onTime}</Text>
-                </View>
-                {b.escrow && (
-                  <View style={styles.escrowBadge}>
-                    <Icon name="shield" size={10} color={colors.tertiary} />
-                    <Text style={styles.escrowText}>{b.escrow}</Text>
-                  </View>
-                )}
-              </View>
-              
-              {/* Added profile view button with navigation hook */}
-              <TouchableOpacity style={styles.profileBtn} onPress={b.onProfile}>
-                <Text style={styles.profileBtnText}>{b.profileLabel}</Text>
-                <Icon name="arrow-right" size={14} color={colors.primary} />
-              </TouchableOpacity>
-            </View>
+        {offers.map((o, i) => {
+          const isBest = o.id === best?.id;
+          const qtl = formatQuintal(o.qty_kg, locale);
+          const total = offerValuePaise(o);
+          /* An offer for less than the whole lot is not comparable on rate
+             alone, and this is the screen where that mistake costs money. */
+          const isPartial = lot !== null && o.qty_kg < lot.qty_kg;
+          const behindBest = best ? total - offerValuePaise(best) : 0;
 
-            {/* Core Offer */}
-            <View style={styles.offerRow}>
-              <View style={styles.offerCol}>
-                <Text style={styles.offerLabel}>Gross Rate (दर)</Text>
-                <View style={styles.offerRateLine}>
-                  <Text style={styles.offerRate}>{b.rate}</Text>
-                  <Text style={styles.offerRateUnit}>{b.rateUnit}</Text>
+          return (
+            <View key={o.id} style={[styles.card, isBest && styles.cardBest]}>
+              <View style={[styles.rankRow, isBest && styles.rankRowBest]}>
+                <View style={styles.rankBadge}>
+                  <Text style={styles.rankNum}>{formatNumber(i + 1, locale)}</Text>
                 </View>
-              </View>
-              <View style={styles.offerDivider} />
-              <View style={styles.offerCol}>
-                <Text style={styles.offerLabel}>Logistics (वाहतूक)</Text>
-                <View style={styles.pickupLine}>
-                  <Icon name="truck" size={14} color={colors.tertiary} />
-                  <Text style={styles.pickupVal}>{b.pickup}</Text>
-                </View>
-                <Text style={styles.pickupNote}>{b.pickupNote}</Text>
-              </View>
-            </View>
-
-            {/* Breakup (only for top) */}
-            {b.highlight && b.grossKey && (
-              <View style={styles.breakupBox}>
-                <View style={styles.breakupTitleRow}>
-                  <Icon name="chart-bar" size={12} color={colors.onSurfaceVariant} />
-                  <Text style={styles.breakupTitle}>{t('buyer_breakup_title')}</Text>
-                </View>
-                <View style={styles.breakupRow}>
-                  <Text style={styles.breakupKey}>{b.demand}</Text>
-                </View>
-                <View style={styles.breakupRow}>
-                  <Text style={styles.breakupKey}>{b.grossKey}</Text>
-                  <Text style={styles.breakupValGross}>{b.grossVal}</Text>
-                </View>
-                <View style={styles.breakupRow}>
-                  <Text style={styles.breakupKey}>{b.hamaliKey}</Text>
-                  <Text style={styles.breakupValNeg}>{b.hamali}</Text>
-                </View>
-                <View style={styles.breakupRow}>
-                  <Text style={styles.breakupKey}>{b.platformFeeKey}</Text>
-                  <Text style={styles.breakupValFree}>{b.platformFee}</Text>
-                </View>
-                <View style={styles.breakupTotalRow}>
-                  <Text style={styles.breakupTotalKey}>{t('buyer_net_bank_account')}</Text>
-                  <Text style={styles.breakupTotalVal}>{b.net}</Text>
-                </View>
-              </View>
-            )}
-
-            {/* CTA */}
-            <View style={styles.ctaRow}>
-              {!b.highlight && (
-                <Text style={styles.simpleNet}>{b.net}</Text>
-              )}
-              <TouchableOpacity
-                style={[styles.primaryBtn, b.highlight ? styles.primaryBtnHighlight : null]}
-                onPress={b.onCta}>
-                <Text style={[styles.primaryBtnText, b.highlight ? styles.primaryBtnTextHighlight : null]}>
-                  {b.ctaLabel}
+                <Text style={[styles.rankLabel, isBest && styles.rankLabelBest]}>
+                  {isBest ? t('bfl_rank_best') : t('bfl_rank_n', { n: formatNumber(i + 1, locale) })}
                 </Text>
-                <Icon name="arrow-right" size={16} color={b.highlight ? colors.onPrimary : colors.primary} />
+                <Text style={styles.rankDate}>
+                  {formatDateShort(o.created_at.slice(0, 10), locale, '')}
+                </Text>
+              </View>
+
+              {/* The buyer, as the contract knows him. No name, no stars, no
+                  on-time percentage — see the header of this file. */}
+              <View style={styles.buyerRow}>
+                <View style={styles.buyerAvatar}>
+                  <Icon name="building" size={16} color={colors.primary} />
+                </View>
+                <View style={styles.buyerText}>
+                  <Text style={styles.buyerName}>{t('chat_from_buyer')}</Text>
+                  <Text style={styles.buyerMeta}>
+                    {t('chat_round', { round: formatNumber(o.round, locale) })}
+                  </Text>
+                </View>
+              </View>
+
+              <View style={styles.figures}>
+                <View style={styles.figureCol}>
+                  <Text style={styles.figureLabel}>{t('bfl_rate_label')}</Text>
+                  <Text style={styles.figureRate}>
+                    {formatPaise(o.price_paise_per_qtl, locale)}
+                  </Text>
+                  <Text style={styles.figureUnit}>{t('mkt_per_qtl')}</Text>
+                </View>
+                <View style={styles.figureDivider} />
+                <View style={styles.figureCol}>
+                  <Text style={styles.figureLabel}>{t('bfl_total_label')}</Text>
+                  <Text style={[styles.figureRate, styles.figureTotal]}>
+                    {formatPaise(total, locale)}
+                  </Text>
+                  <Text style={styles.figureUnit}>
+                    {t('bfl_for_qty', { qty: qtl })}
+                  </Text>
+                </View>
+              </View>
+
+              {isPartial ? (
+                <View style={styles.partialBanner}>
+                  <Icon name="info" size={14} color={colors.onSurfaceVariant} />
+                  <Text style={styles.partialText}>
+                    {t('bfl_partial_note', {
+                      qty: qtl,
+                      lot: lotQuintals ?? '',
+                    })}
+                  </Text>
+                </View>
+              ) : null}
+
+              {!isBest && behindBest < 0 ? (
+                <View style={styles.behindBanner}>
+                  <Icon name="trending-down" size={14} color={colors.critical} />
+                  <Text style={styles.behindText}>
+                    {t('bfl_behind_best', { amount: formatPaise(Math.abs(behindBest), locale) })}
+                  </Text>
+                </View>
+              ) : null}
+
+              {o.note?.trim() ? <Text style={styles.note}>{o.note}</Text> : null}
+
+              {o.expires_at ? (
+                <Text style={styles.expires}>
+                  {t('bfl_expires', {
+                    date: formatDateShort(o.expires_at.slice(0, 10), locale, ''),
+                  })}
+                </Text>
+              ) : null}
+
+              <TouchableOpacity
+                style={[styles.cta, isBest && styles.ctaBest]}
+                /* Was `navigate('S30_DealCounterOffer')` — a route no
+                   navigator registers, so the button did nothing. This one
+                   opens the real thread for this offer. */
+                onPress={() => navigation.navigate('S27_Bargaining', { offer_id: o.id })}
+                accessibilityRole="button">
+                <Text style={[styles.ctaText, isBest && styles.ctaTextBest]}>
+                  {t('bfl_open_talk')}
+                </Text>
+                <Icon
+                  name="arrow-right"
+                  size={16}
+                  color={isBest ? colors.onPrimary : colors.primary}
+                />
               </TouchableOpacity>
             </View>
+          );
+        })}
+
+        {offers.length > 0 ? (
+          <View style={styles.footerNote}>
+            <Icon name="info" size={14} color={colors.onSurfaceVariant} />
+            <Text style={styles.footerNoteText}>{t('bfl_footer_note')}</Text>
           </View>
-        ))}
-        
-        {/* Helper Note */}
-        <View style={styles.footerNote}>
-          <Icon name="info" size={14} color={colors.onSurfaceVariant} />
-          <Text style={styles.footerNoteText}>{t('buyer_apmc_tax_footer_note')}</Text>
-        </View>
+        ) : null}
       </ScrollView>
     </View>
   );
@@ -284,85 +327,184 @@ export default function S25_BuyersForLot({ navigation }: any) {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
+
   header: {
-    flexDirection: 'row', alignItems: 'center', gap: space.sm,
-    paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm,
-    backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    paddingHorizontal: space.md,
+    paddingTop: space.xl + 8,
+    paddingBottom: space.sm,
+    backgroundColor: colors.surface,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.outlineVariant,
   },
-  backBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.surfaceContainerHigh, alignItems: 'center', justifyContent: 'center' },
-  headerCenter: { flex: 1 },
-  headerTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onSurface },
-  headerSub: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  liveBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: 'rgba(22,163,74,0.1)', paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.sm },
-  liveGreen: { width: 6, height: 6, borderRadius: 3, backgroundColor: colors.positive },
-  liveText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.positive },
-  listenBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.full, backgroundColor: 'rgba(155,47,0,0.08)' },
-  listenText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
-  scroll: { paddingBottom: space.xxl },
-  lotBand: { flexDirection: 'row', backgroundColor: colors.surface, padding: space.sm, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  lotThumb: { width: 50, height: 50, borderRadius: radius.sm, backgroundColor: colors.surfaceContainerHigh },
-  lotBandInfo: { flex: 1, marginLeft: space.sm, justifyContent: 'center' },
-  lotBandId: { fontFamily: fontFamily.extraBold, fontSize: 11, color: colors.onSurfaceVariant, letterSpacing: 0.5 },
-  lotVariety: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
-  lotBandRow: { flexDirection: 'row', alignItems: 'center', gap: space.md, marginTop: 2 },
-  lotBandSub: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
-  mandiBench: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  gradeBadge: { position: 'absolute', right: space.sm, top: space.sm, backgroundColor: colors.positiveContainer, paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm },
-  gradeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  sortRow: { flexDirection: 'row', margin: space.md, backgroundColor: colors.surfaceContainerHighest, borderRadius: radius.md, padding: 4 },
-  sortTab: { flex: 1, alignItems: 'center', paddingVertical: 8, borderRadius: radius.sm },
-  sortTabActive: { backgroundColor: colors.surface, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
-  sortTabText: { fontFamily: fontFamily.medium, fontSize: 13, color: colors.onSurfaceVariant },
-  sortTabTextActive: { fontFamily: fontFamily.bold, color: colors.onSurface },
-  card: { marginHorizontal: space.md, marginBottom: space.md, backgroundColor: colors.surface, borderRadius: radius.xl, borderWidth: 1, overflow: 'hidden' },
-  cardRankRow: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.md, paddingVertical: space.sm, backgroundColor: colors.surfaceContainerHighest, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  cardRankRowHighlight: { backgroundColor: colors.primaryContainer, borderBottomColor: 'rgba(194, 65, 12, 0.2)' },
-  rankBadgeBg: { backgroundColor: colors.surface, width: 24, height: 24, borderRadius: 12, alignItems: 'center', justifyContent: 'center', marginRight: 8, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.1, shadowRadius: 2, elevation: 2 },
-  rankNum: { fontFamily: fontFamily.extraBold, fontSize: 12, color: colors.onSurface },
-  rankLabel: { flex: 1, fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurfaceVariant },
-  rankLabelHighlight: { color: colors.onPrimaryContainer },
-  rankExtraBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.surface, paddingHorizontal: 8, paddingVertical: 4, borderRadius: radius.full, borderWidth: 1, borderColor: colors.outlineVariant },
-  rankExtraBadgeHighlight: { borderColor: 'rgba(194, 65, 12, 0.2)' },
-  rankExtraText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
-  rankExtraTextHighlight: { color: colors.primary },
-  profileRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', paddingHorizontal: space.md, paddingTop: space.md },
-  buyerIdentity: { flex: 1 },
-  buyerNameLine: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  buyerName: { fontFamily: fontFamily.extraBold, fontSize: 18, color: colors.onSurface },
-  buyerStats: { flexDirection: 'row', alignItems: 'center', marginTop: 4 },
-  buyerStatText: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant, marginLeft: 2 },
-  buyerStatDot: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.outline, marginHorizontal: 4 },
-  escrowBadge: { alignSelf: 'flex-start', flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 6, backgroundColor: colors.positiveContainer, paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm },
-  escrowText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  profileBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 6, borderRadius: radius.full, backgroundColor: 'rgba(155,47,0,0.08)' },
-  profileBtnText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primary },
-  offerRow: { flexDirection: 'row', padding: space.md, marginTop: space.sm, backgroundColor: colors.surfaceContainerLowest },
-  offerCol: { flex: 1 },
-  offerDivider: { width: 1, backgroundColor: colors.outlineVariant, marginHorizontal: space.md },
-  offerLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, marginBottom: 4 },
-  offerRateLine: { flexDirection: 'row', alignItems: 'baseline', gap: 2 },
-  offerRate: { fontFamily: fontFamily.extraBold, fontSize: 24, color: colors.onSurface, letterSpacing: -0.5 },
-  offerRateUnit: { fontFamily: fontFamily.medium, fontSize: 14, color: colors.onSurfaceVariant },
-  pickupLine: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
-  pickupVal: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.tertiary },
-  pickupNote: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  breakupBox: { marginHorizontal: space.md, marginBottom: space.md, padding: space.md, borderRadius: radius.md, backgroundColor: '#F9FAFB', borderWidth: 1, borderColor: colors.outlineVariant },
-  breakupTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.sm },
-  breakupTitle: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurfaceVariant, textTransform: 'uppercase', letterSpacing: 0.5 },
-  breakupRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 4 },
-  breakupKey: { fontFamily: fontFamily.regular, fontSize: 13, color: colors.onSurfaceVariant },
-  breakupValGross: { fontFamily: fontFamily.medium, fontSize: 13, color: colors.onSurface },
-  breakupValNeg: { fontFamily: fontFamily.medium, fontSize: 13, color: colors.critical },
-  breakupValFree: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.positive },
-  breakupTotalRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: space.sm, paddingTop: space.sm, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
-  breakupTotalKey: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
-  breakupTotalVal: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary },
-  ctaRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: space.md, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
-  simpleNet: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary },
-  primaryBtn: { flexDirection: 'row', alignItems: 'center', gap: 6, backgroundColor: 'rgba(155,47,0,0.08)', paddingHorizontal: space.lg, height: 44, borderRadius: radius.lg, alignSelf: 'flex-end', marginLeft: 'auto' },
-  primaryBtnHighlight: { backgroundColor: colors.primary, shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.35, shadowRadius: 12, elevation: 5 },
-  primaryBtnText: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primary },
-  primaryBtnTextHighlight: { color: colors.onPrimary },
-  footerNote: { flexDirection: 'row', alignItems: 'flex-start', gap: 6, paddingHorizontal: space.md, paddingBottom: space.xl },
-  footerNoteText: { flex: 1, fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurfaceVariant, lineHeight: 16 },
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainerHigh,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerCenter: { flex: 1, minWidth: 0 },
+  headerTitle: { ...typography.titleLg, color: colors.onSurface, fontFamily: fontFamily.extraBold },
+  headerSub: { ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
+
+  scroll: { padding: space.md, paddingBottom: space.xxl, gap: space.sm },
+
+  lotBand: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: space.sm,
+    padding: space.md,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+  },
+  lotIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  lotBandInfo: { flex: 1, minWidth: 0 },
+  lotBandId: { ...typography.titleMd, color: colors.onSurface },
+  lotBandSub: { ...typography.labelSm, color: colors.onSurfaceVariant, marginTop: 1 },
+  gradeBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: radius.full,
+    backgroundColor: colors.surfaceContainerHigh,
+  },
+  gradeText: { ...typography.labelMd, color: colors.onSurface },
+
+  emptyCard: {
+    alignItems: 'center',
+    gap: 8,
+    padding: space.xl,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+  },
+  emptyIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.surfaceContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyTitle: { ...typography.titleLg, color: colors.onSurface, textAlign: 'center' },
+  emptyBody: {
+    ...typography.bodySm,
+    color: colors.onSurfaceVariant,
+    textAlign: 'center',
+    lineHeight: 19,
+  },
+
+  card: {
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+    padding: space.md,
+    gap: space.xs,
+  },
+  cardBest: { borderWidth: 2, borderColor: colors.primaryContainer },
+
+  rankRow: { flexDirection: 'row', alignItems: 'center', gap: space.xs },
+  rankRowBest: {},
+  rankBadge: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    backgroundColor: colors.surfaceContainerHigh,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rankNum: { ...typography.labelSm, color: colors.onSurface, fontFamily: fontFamily.extraBold },
+  rankLabel: { flex: 1, ...typography.labelMd, color: colors.onSurfaceVariant },
+  rankLabelBest: { color: colors.primary, fontFamily: fontFamily.extraBold },
+  rankDate: { ...typography.labelSm, color: colors.onSurfaceVariant },
+
+  buyerRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  buyerAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.surfaceContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buyerText: { flex: 1, minWidth: 0 },
+  buyerName: { ...typography.titleMd, color: colors.onSurface },
+  buyerMeta: { ...typography.labelSm, color: colors.onSurfaceVariant },
+
+  figures: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainer,
+    paddingVertical: space.sm,
+  },
+  figureCol: { flex: 1, minWidth: 0, alignItems: 'center', gap: 1 },
+  figureDivider: { width: 1, backgroundColor: colors.outlineVariant },
+  figureLabel: { ...typography.labelSm, color: colors.onSurfaceVariant },
+  /* I16's habit, applied here too: the total and the rate render at the same
+     size, so neither reads as the footnote of the other. */
+  figureRate: { ...typography.titleLg, color: colors.onSurface, fontFamily: fontFamily.extraBold },
+  figureTotal: { color: colors.primary },
+  figureUnit: { ...typography.labelSm, color: colors.onSurfaceVariant },
+
+  partialBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    padding: space.xs,
+    borderRadius: radius.sm,
+    backgroundColor: colors.surfaceContainerHigh,
+  },
+  partialText: { ...typography.labelSm, color: colors.onSurfaceVariant, flex: 1, lineHeight: 16 },
+
+  behindBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    padding: space.xs,
+    borderRadius: radius.sm,
+    backgroundColor: colors.criticalContainer,
+  },
+  behindText: { ...typography.labelSm, color: colors.onCriticalContainer, flex: 1 },
+
+  note: { ...typography.bodySm, color: colors.onSurfaceVariant, lineHeight: 18 },
+  expires: { ...typography.labelSm, color: colors.onSurfaceVariant },
+
+  cta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    minHeight: touch.targetMin,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainerHigh,
+    marginTop: 2,
+  },
+  ctaBest: { backgroundColor: colors.primaryContainer },
+  ctaText: { ...typography.titleMd, color: colors.primary },
+  ctaTextBest: { color: colors.onPrimary, fontFamily: fontFamily.extraBold },
+
+  footerNote: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 6,
+    padding: space.sm,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainer,
+  },
+  footerNoteText: { ...typography.labelSm, color: colors.onSurfaceVariant, flex: 1, lineHeight: 17 },
 });

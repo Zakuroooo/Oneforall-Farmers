@@ -8,7 +8,7 @@
  *     npx jest src/lib
  */
 
-import { formatPaise, toQuintal, formatNumber, formatBps } from '../money';
+import { formatPaise, toQuintal, formatNumber, formatBps, formatQuintal, quintalValuePaise } from '../money';
 
 describe('formatPaise', () => {
   it('renders the demo gain in all three locales', () => {
@@ -72,5 +72,47 @@ describe('formatBps', () => {
     expect(formatBps(2140, 'mr')).toBe('२१%');
     expect(formatBps(5820, 'mr')).toBe('५८%'); // the refusal-screen band
     expect(formatBps(3500, 'en')).toBe('35%'); // the refusal threshold
+  });
+});
+
+describe('formatQuintal', () => {
+  it('says the part quintal instead of flooring it away', () => {
+    expect(formatQuintal(10050, 'en')).toBe('100.5');
+    expect(formatQuintal(2050, 'en')).toBe('20.5');
+  });
+
+  it('stays whole when the weight is whole', () => {
+    expect(formatQuintal(10000, 'en')).toBe('100');
+    expect(formatQuintal(4000, 'en')).toBe('40');
+  });
+
+  it('does not render a pointless .0 for a sub-10 kg remainder', () => {
+    expect(formatQuintal(10003, 'en')).toBe('100');
+    // ...and rolls up rather than showing "100.10"
+    expect(formatQuintal(10098, 'en')).toBe('101');
+  });
+
+  it('renders Devanagari digits, decimal point included', () => {
+    expect(formatQuintal(10050, 'mr')).toBe('१००.५');
+  });
+});
+
+describe('quintalValuePaise', () => {
+  /**
+   * The bug this exists to prevent: `price * toQuintal(kg)` floors the weight
+   * first, so up to 99 kg of a lot silently stops being paid for.
+   */
+  it('pays for the whole weight, not the floored quintal count', () => {
+    // 4050 kg at ₹1,950/qtl is ₹78,975 — not ₹78,000.
+    expect(quintalValuePaise(195000, 4050)).toBe(7897500);
+    expect(quintalValuePaise(195000, 4050)).not.toBe(195000 * toQuintal(4050));
+  });
+
+  it('is exact on whole quintals', () => {
+    expect(quintalValuePaise(195000, 4000)).toBe(7800000);
+  });
+
+  it('returns an integer number of paise (I1)', () => {
+    expect(Number.isInteger(quintalValuePaise(196333, 2051))).toBe(true);
   });
 });

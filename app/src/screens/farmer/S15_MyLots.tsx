@@ -9,7 +9,8 @@
  *   create button as the header, not a blank list.
  *
  * ★ I2: `LotDto.qty_kg` is stored in kg and **displayed in quintals**, floored
- *   via `toQuintal` — never rounded, never a raw kg number on screen.
+ *   via `formatQuintal` — never a raw kg number on screen, and a part
+ *   quintal is shown rather than quietly floored away.
  *
  * ★ `LotDto.grade` is `LotGrade` (four values, including `UNGRADED`), not
  *   `Grade` (three). An ungraded lot must read as "not yet assessed", not
@@ -30,7 +31,7 @@ import { getLots } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
 import { translate } from '../../lib/i18n';
 import { formatDate } from '../../lib/dates';
-import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
+import { formatNumber, formatPaise, formatQuintal } from '../../lib/money';
 import { FIXTURE_LOTS_EMPTY, USE_FIXTURES } from '../../config';
 import { fxMyLots, fxMyLotsEmpty } from '../../fixtures/lots';
 import { fxEscrowEvents, fxEscrowEventsDisputed, fxTx, fxTxDisputed } from '../../fixtures/escrow';
@@ -312,7 +313,10 @@ export default function S15_MyLots({ navigation }: Props) {
   // price and no offer, so a rupee total for this list would be a number this
   // app invented. Quantity it does know, so quantity is what it shows.
   const totalKg = lots.reduce((sum, l) => sum + l.qty_kg, 0);
-  const totalQtl = toQuintal(totalKg);
+  /* ★ Not `toQuintal`. Flooring here put "100 qtl" beside "201 bags of
+     50 kg" from the same 10,050 kg — both numbers correct, the pair
+     nonsense. `formatQuintal` says 100.5 and the two agree again. */
+  const totalQtl = formatQuintal(totalKg, locale);
   const bags = Math.floor(totalKg / KG_PER_BAG);
 
   return (
@@ -330,7 +334,7 @@ export default function S15_MyLots({ navigation }: Props) {
           <View style={styles.statCard}>
             <Text style={styles.statLabel}>{t('mp_stat_quantity')}</Text>
             <Text style={styles.statValue}>
-              {t('mp_qtl_unit', { qty: formatNumber(totalQtl, locale) })}
+              {t('mp_qtl_unit', { qty: totalQtl })}
             </Text>
             <Text style={styles.statSub}>{t('mp_bags_note', { bags: formatNumber(bags, locale) })}</Text>
           </View>
@@ -355,7 +359,7 @@ export default function S15_MyLots({ navigation }: Props) {
               <View style={styles.lotBodyText}>
                 <Text style={styles.lotTitle}>{commodityMarketLabel(item, locale)}</Text>
                 <Text style={styles.lotMeta}>
-                  {t('qty_label_value', { qty: formatNumber(toQuintal(item.qty_kg), locale) })}
+                  {t('qty_label_value', { qty: formatQuintal(item.qty_kg, locale) })}
                 </Text>
                 <Text style={styles.lotMeta}>
                   {t('mp_harvest', { date: harvestDateLabel(item, locale) })}
@@ -416,7 +420,7 @@ export default function S15_MyLots({ navigation }: Props) {
                   <Text style={styles.rowCardTitle}>{pool.fpo.name_mr}</Text>
                   <Text style={styles.lotMeta}>
                     {t('pool_summary_line', {
-                      qty: formatNumber(toQuintal(pool.total_qty_kg), locale),
+                      qty: formatQuintal(pool.total_qty_kg, locale),
                       members: formatNumber(pool.members.length, locale),
                     })}
                   </Text>

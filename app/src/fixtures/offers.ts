@@ -61,3 +61,56 @@ export const fxOffer: OfferDto = {
   lots: [{ lot_id: 'lot_listed_1', qty_allocated_kg: 4000 }],
   note: 'वाहतूक खर्च जास्त आहे, म्हणून किंमत वाढवली.',
 };
+
+/**
+ * Two more buyers bidding on the same lot, so "who wants my produce" has
+ * something to rank.
+ *
+ * ★ Why these are only offers and carry no buyer names: `OfferDto` has
+ *   `buyer_id` and nothing else about the buyer. CANON §6.2's `buyers` table
+ *   does have `business_name`, `tier`, `deals_completed`,
+ *   `on_time_payment_bps` and `renegotiation_bps` — but §7.6 exposes none of
+ *   it, and there is no `GET /buyers/{id}`. Blocker filed.
+ *
+ *   The screen that ranks these used to fill the gap with three invented
+ *   companies — "Nashik Agro Exports", "Sahyadri Farms FPO", "Pune Trading
+ *   Co." — with invented star ratings and on-time percentages, hardcoded as
+ *   i18n strings so every farmer in every language met the same three
+ *   fictional firms. Inventing them here instead would move the same lie one
+ *   directory over. A fixture may stand in for an endpoint that exists on
+ *   paper; it may not stand in for a field the contract does not have.
+ *
+ * ★ The prices differ meaningfully rather than by a rupee, because the
+ *   screen's job is to make the best offer obvious at a glance to someone
+ *   who may not read the numbers fluently.
+ */
+export const fxLotOffers: OfferDto[] = [
+  fxIncomingOffer,
+  {
+    ...fxIncomingOffer,
+    id: 'offer_b2_1',
+    buyer_id: 'buyer_2',
+    price_paise_per_qtl: 191000,
+    qty_kg: 4000,
+    round: 1,
+    parent_offer_id: null,
+    created_at: '2026-09-03T12:40:00+05:30',
+    lots: [{ lot_id: 'lot_listed_1', qty_allocated_kg: 4000 }],
+    note: 'गाडी उद्या सकाळी शेतावर पाठवतो.',
+  },
+  {
+    ...fxIncomingOffer,
+    id: 'offer_b3_1',
+    buyer_id: 'buyer_3',
+    // Partial: wants half the lot. The screen has to say so — an offer for
+    // 20 quintals at a high rate is not comparable to one for all 40, and a
+    // farmer reading only the per-quintal number would pick wrong.
+    price_paise_per_qtl: 196000,
+    qty_kg: 2000,
+    round: 1,
+    parent_offer_id: null,
+    created_at: '2026-09-04T08:10:00+05:30',
+    lots: [{ lot_id: 'lot_listed_1', qty_allocated_kg: 2000 }],
+    note: null,
+  },
+];

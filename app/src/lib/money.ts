@@ -85,6 +85,46 @@ export function toQuintal(kg: number): number {
 }
 
 /**
+ * The same quantity, but told exactly — "१००.५" for 10050 kg, "१००" for 10000.
+ *
+ * ★ Why this exists next to `toQuintal`: flooring is right for a headline
+ *   count and wrong the moment two floored numbers sit beside each other. My
+ *   Produce showed "100 qtl" and "201 bags of 50 kg" from the same 10,050 kg,
+ *   because 100.5 quintals floors to 100 while 201 bags is exact. Neither
+ *   number was wrong and the pair was still nonsense. Where a remainder
+ *   exists, say so.
+ */
+export function formatQuintal(kg: number, locale: Locale = 'mr'): string {
+  const whole = Math.floor(kg / 100);
+  const remainderKg = kg - whole * 100;
+  if (remainderKg === 0) return formatNumber(whole, locale);
+  // One decimal is as fine as a mandi weighbridge is read aloud.
+  const tenths = Math.round(remainderKg / 10);
+  if (tenths === 0) return formatNumber(whole, locale);
+  if (tenths === 10) return formatNumber(whole + 1, locale);
+  const s = `${whole}.${tenths}`;
+  return locale === 'en' ? s : toDevanagari(s);
+}
+
+/**
+ * What a per-quintal rate is worth for a given weight, in integer paise.
+ *
+ * ★ Why not `price * toQuintal(kg)`: that floors the weight before
+ *   multiplying, so 4,050 kg at ₹1,950/qtl came out as 40 quintals' worth and
+ *   the farmer was shown ₹975 less than the offer is actually for. The
+ *   mandi weighs to the kilogram and pays on that weight; the arithmetic has
+ *   to as well.
+ *
+ * ★ I1 holds: paise in, paise out, integer throughout. The single division is
+ *   by the 100 kg in a quintal — a unit conversion, not a money one — and it
+ *   is rounded rather than truncated so the result is the nearest paise
+ *   rather than always the farmer's loss.
+ */
+export function quintalValuePaise(pricePaisePerQtl: number, kg: number): number {
+  return Math.round((pricePaisePerQtl * kg) / 100);
+}
+
+/**
  * Integer count -> Devanagari, for the non-money numbers: hold days, quintals,
  * distance. `11` -> `११`. English passes through.
  *
