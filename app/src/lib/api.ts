@@ -307,6 +307,20 @@ export const rejectOffer = (offerId: string) => post<OfferDto>(`/offers/${offerI
  * third round from `OfferDto.round` rather than waiting to be told by the
  * 409; the status code is the backstop, not the primary path.
  */
+/**
+ * The full back-and-forth on one negotiation, oldest round first.
+ *
+ * ★ The backend has had `GET /offers/{id}/thread` all along and the frontend
+ *   never called it. That omission is why "chat" looked missing: the
+ *   negotiation channel in this product is the offer thread — each round
+ *   carries a price and an optional `note`, which is the message — and
+ *   without this call there was no way to render a conversation, only the
+ *   single latest offer. A separate free-text messenger would have needed an
+ *   endpoint that does not exist; this one does.
+ */
+export const getOfferThread = (offerId: string) =>
+  get<OfferDto[]>(`/offers/${offerId}/thread`);
+
 export const counterOffer = (offerId: string, body: { price_paise_per_qtl: number; note?: string }) =>
   post<OfferDto>(`/offers/${offerId}/counter`, body);
 

@@ -86,11 +86,13 @@ import S31_DealsList from '../screens/farmer/S31_DealsList';
 import S32_DealTracking from '../screens/farmer/S32_DealTracking';
 import S33_Settled from '../screens/farmer/S33_Settled';
 import S35_FarmerProfile from '../screens/farmer/S35_FarmerProfile';
+import S37_Talks from '../screens/farmer/S37_Talks';
 
 export type FarmerTabParamList = {
   Home: undefined;
   Prices: undefined;
   MyLots: undefined;
+  Talks: undefined;
   Deals: undefined;
 };
 
@@ -268,6 +270,29 @@ function DealsStackNavigator() {
   );
 }
 
+/**
+ * Talks is its own tab and its own stack: the inbox, and the counter-offer
+ * screen it opens into. `S14_CounterOffer` is registered here as well as on
+ * MyLots — same component, two stack instances, each keeping the history that
+ * makes sense for how it was reached. Answering an offer from the inbox
+ * should return to the inbox, not into the middle of the selling flow.
+ */
+export type TalksStackParamList = {
+  S37_Talks: undefined;
+  S14_CounterOffer: { offer_id?: string } | undefined;
+};
+
+const TalksStack = createNativeStackNavigator<TalksStackParamList>();
+
+function TalksStackNavigator() {
+  return (
+    <TalksStack.Navigator screenOptions={STACK_SCREEN_OPTIONS}>
+      <TalksStack.Screen name="S37_Talks" component={S37_Talks} />
+      <TalksStack.Screen name="S14_CounterOffer" component={S14_CounterOffer} />
+    </TalksStack.Navigator>
+  );
+}
+
 const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
 
 function MyLotsStackNavigator() {
@@ -340,6 +365,11 @@ export function FarmerTabs() {
         name="MyLots"
         component={MyLotsStackNavigator}
         options={{ title: t('tab_my_produce'), tabBarIcon: tabIcon('lots') }}
+      />
+      <Tab.Screen
+        name="Talks"
+        component={TalksStackNavigator}
+        options={{ title: t('tab_chat'), tabBarIcon: tabIcon('chat') }}
       />
       <Tab.Screen
         name="Deals"
