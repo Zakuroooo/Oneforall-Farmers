@@ -32,6 +32,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
+import { ListenButton } from '../../components/ui/ListenButton';
 import { useT } from '../../lib/i18n';
 import { formatBps, formatNumber, formatPaise } from '../../lib/money';
 import { recommendWindow } from '../../lib/api';
@@ -71,6 +72,34 @@ export default function S13_CropLoan({ navigation }: Props) {
     queryFn: fetchVerdict,
   });
 
+  /* ★ A loan is the single most consequential thing on this screen, and it
+     had no speaker. The narration reads the amount, the interest, and — the
+     comparison I13 exists for — the expected gain beside that interest, so a
+     farmer hears whether waiting still pays after borrowing. */
+  const narration = (() => {
+    if (!data) return t('loan_title');
+    const q = data.pledge_quote;
+    if (!q) return `${t('loan_no_quote')} ${t('loan_no_quote_sub')}`;
+    const g = data.expected_gain_paise;
+    const parts = [
+      t('loan_narr_amount', {
+        amount: formatPaise(q.loan_paise, locale),
+        days: formatNumber(q.days, locale),
+        interest: formatPaise(q.interest_paise, locale),
+      }),
+    ];
+    if (g !== null) {
+      parts.push(
+        t('loan_narr_compare', {
+          gain: formatPaise(g, locale),
+          interest: formatPaise(q.interest_paise, locale),
+          surplus: formatPaise(g - q.interest_paise, locale),
+        }),
+      );
+    }
+    return parts.join(' ');
+  })();
+
   const header = (
     <View style={styles.header}>
       <TouchableOpacity
@@ -84,6 +113,7 @@ export default function S13_CropLoan({ navigation }: Props) {
         <Text style={styles.eyebrow}>{t('loan_eyebrow')}</Text>
         <Text style={styles.headerTitle}>{t('loan_title')}</Text>
       </View>
+      <ListenButton text={narration} />
     </View>
   );
 

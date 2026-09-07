@@ -33,8 +33,9 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
+import { ListenButton } from '../../components/ui/ListenButton';
 import { useT } from '../../lib/i18n';
-import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
+import { formatNumber, formatPaise, formatQuintal, quintalValuePaise, toQuintal } from '../../lib/money';
 import { getLot } from '../../lib/api';
 import { DEFAULT_LOT_ID, USE_FIXTURES } from '../../config';
 import { fxLotListed } from '../../fixtures/lots';
@@ -92,6 +93,30 @@ export default function S24_LotDetail({ route, navigation }: Props) {
   const bags = Math.floor(lot.qty_kg / KG_PER_BAG);
   const offers = offersQuery.data ?? [];
 
+  /* ★ Reads the lot and every offer standing on it — quantity, grade,
+     status, then each buyer's rate and what it comes to for the whole
+     lot. */
+  const narration = [
+    t('ld_narr_lot', {
+      qty: formatQuintal(lot.qty_kg, locale),
+      grade: t(`lot_grade_${lot.grade.toLowerCase()}`),
+      status: t(`lot_status_${lot.status.toLowerCase()}`),
+    }),
+    ...(askingPaise !== null
+      ? [t('ld_narr_asking', { rate: formatPaise(askingPaise, locale) })]
+      : []),
+    offers.length === 0
+      ? t('bfl_empty_title')
+      : offers
+          .map(o =>
+            t('ld_narr_offer', {
+              rate: formatPaise(o.price_paise_per_qtl, locale),
+              total: formatPaise(quintalValuePaise(o.price_paise_per_qtl, o.qty_kg), locale),
+            }),
+          )
+          .join(' '),
+  ].join(' ');
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
@@ -108,6 +133,7 @@ export default function S24_LotDetail({ route, navigation }: Props) {
           <Text style={styles.headerTitle}>{t('ld_title')}</Text>
           <Text style={styles.headerSub}>{t(`lot_status_${lot.status.toLowerCase()}`)}</Text>
         </View>
+        <ListenButton text={narration} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

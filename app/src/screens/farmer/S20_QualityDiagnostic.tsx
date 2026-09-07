@@ -31,6 +31,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
+import { ListenButton } from '../../components/ui/ListenButton';
 import { getLot, submitAssay } from '../../lib/api';
 import { translate, useT } from '../../lib/i18n';
 import { formatNumber, toQuintal } from '../../lib/money';
@@ -208,6 +209,24 @@ export default function S20_QualityDiagnostic({ route, navigation }: Props) {
     if (body) submit(body);
   };
 
+  /* ★ Six questions a farmer has to answer to get a grade, on a screen with
+     no speaker at all — the one place in the app where reading is genuinely
+     the task. The narration reads each question with its three choices, in
+     order, so someone who cannot read the page can still answer it. */
+  const narration = [
+    t('qd_title'),
+    ...RATING_QUESTIONS.map((q, i) =>
+      [
+        t('qd_narr_question', { n: formatNumber(i + 1, locale), question: t(q.labelKey) }),
+        q.choices.map(c => t(c.labelKey)).join(', '),
+      ].join(' '),
+    ),
+    t('qd_narr_question', {
+      n: formatNumber(RATING_QUESTIONS.length + 1, locale),
+      question: t('assay_damage_question'),
+    }),
+  ].join(' ');
+
   const header = (
     <View style={styles.header}>
       <TouchableOpacity
@@ -228,6 +247,7 @@ export default function S20_QualityDiagnostic({ route, navigation }: Props) {
           </Text>
         ) : null}
       </View>
+      <ListenButton text={narration} />
     </View>
   );
 

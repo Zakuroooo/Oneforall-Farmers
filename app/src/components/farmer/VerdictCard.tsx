@@ -87,6 +87,12 @@ export function VerdictCard({
   // taps listen and hears nothing has lost a nice-to-have, not the verdict
   // itself, and an error banner over a voice glitch would outrank the actual
   // recommendation on screen.
+  /* ★ Every tap replays from the first word. There is no `disabled` here:
+     it used to carry `disabled={speaking}`, which made the control inert for
+     the whole utterance — exactly the window in which a farmer who missed
+     the worst-case number reaches for it. `speakSaleWindow` stops any
+     current speech before it starts. Same bug, and same fix, as
+     `components/ui/ListenButton`; this was the second copy. */
   const handleSpeak = async () => {
     setSpeaking(true);
     try {
@@ -159,7 +165,6 @@ export function VerdictCard({
       <TouchableOpacity
         style={styles.voiceButton}
         onPress={handleSpeak}
-        disabled={speaking}
         accessibilityRole="button"
         accessibilityLabel={t('listen_button')}>
         <Icon name="volume" size={18} color={colors.primary} />

@@ -27,13 +27,14 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { acceptOffer, counterOffer, getForecast, getOffers, rejectOffer } from '../../lib/api';
 import { getLocale } from '../../lib/locale';
 import { translate } from '../../lib/i18n';
-import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
+import { formatNumber, formatPaise, formatQuintal, quintalValuePaise, toQuintal } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_HORIZON_DAYS, DEFAULT_MARKET_ID, USE_FIXTURES } from '../../config';
 import { fxForecast } from '../../fixtures/forecast';
 import { fxTx } from '../../fixtures/escrow';
 import { fxIncomingOffer, fxLotOffers } from '../../fixtures/offers';
 import { Button } from '../../components/ui/Button';
 import { Card } from '../../components/ui/Card';
+import { ListenButton } from '../../components/ui/ListenButton';
 import { ForecastFan } from '../../components/charts/ForecastFan';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
@@ -204,11 +205,47 @@ export default function S14_CounterOffer({ navigation, route }: Props) {
   const canSubmitCounter =
     !atLastRound && counterPrice.trim().length > 0 && Number.isFinite(parsedCounter) && parsedCounter > 0;
 
+  /* ★ This is the screen where the money is decided, and it had no speaker
+     at all. It reads the offer, what the whole lot comes to at that rate,
+     and — the part that matters — the forecast's floor beside its ceiling,
+     so a farmer deciding whether to counter hears the downside in the same
+     breath as the upside (I16, aloud). */
+  const narration = [
+    translate('offer_narr_round', locale, {
+      round: formatNumber(offer.round, locale),
+      max: formatNumber(MAX_ROUND, locale),
+    }),
+    translate('offer_narr_price', locale, {
+      rate: formatPaise(offer.price_paise_per_qtl, locale),
+      qty: formatQuintal(offer.qty_kg, locale),
+      total: formatPaise(quintalValuePaise(offer.price_paise_per_qtl, offer.qty_kg), locale),
+    }),
+    ...(forecast.points.length > 0
+      ? [
+          translate('offer_narr_forecast', locale, {
+            n: formatNumber(forecast.points.length, locale),
+            floor: formatPaise(
+              Math.min(...forecast.points.map(pt => pt.p10_paise_per_qtl)),
+              locale,
+            ),
+            ceiling: formatPaise(
+              Math.max(...forecast.points.map(pt => pt.p90_paise_per_qtl)),
+              locale,
+            ),
+          }),
+        ]
+      : []),
+    ...(atLastRound ? [translate('offer_narr_last_round', locale)] : []),
+  ].join(' ');
+
   return (
     <ScrollView contentContainerStyle={styles.root}>
-      <Text style={styles.header}>
-        {translate('offer_round_header', locale, { round: formatNumber(offer.round, locale) })}
-      </Text>
+      <View style={styles.headerRow}>
+        <Text style={styles.header}>
+          {translate('offer_round_header', locale, { round: formatNumber(offer.round, locale) })}
+        </Text>
+        <ListenButton text={narration} />
+      </View>
       <Card style={styles.offerCard}>
         <Text style={styles.offerPrice}>
           {formatPaise(offer.price_paise_per_qtl, locale)} {translate('per_quintal_label', locale)}
@@ -270,7 +307,14 @@ export default function S14_CounterOffer({ navigation, route }: Props) {
 
 const styles = StyleSheet.create({
   root: { padding: space.md, paddingBottom: space.xxl, backgroundColor: colors.background },
-  header: { ...typography.headlineSm, color: colors.onSurface, fontFamily: fontFamily.extraBold, marginBottom: space.sm },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: space.sm,
+    marginBottom: space.sm,
+  },
+  header: { ...typography.headlineSm, color: colors.onSurface, fontFamily: fontFamily.extraBold, flex: 1, minWidth: 0 },
   offerCard: { padding: 16, marginBottom: 20 },
   offerPrice: { ...typography.headlineMd, color: colors.tertiary, fontFamily: fontFamily.extraBold },
   offerQty: { ...typography.bodySm, color: colors.onSurfaceVariant, marginTop: 4 },

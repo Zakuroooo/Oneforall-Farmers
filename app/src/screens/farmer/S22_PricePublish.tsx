@@ -51,6 +51,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
+import { ListenButton } from '../../components/ui/ListenButton';
 import { useT } from '../../lib/i18n';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { getLot, getPriceSeries, recommendWindow } from '../../lib/api';
@@ -217,6 +218,29 @@ export default function S22_PricePublish({ route, navigation }: Props) {
         ? 'below'
         : 'in';
 
+  /* ★ The screen where a farmer sets his own asking price, and it had no
+     speaker. It reads back what he has set, what the whole lot comes to,
+     what the deductions leave him, and how his ask sits against today's
+     mandi range — which is the judgement the screen exists to support. */
+  const narration = [
+    t('pp_narr_ask', {
+      rate: formatPaise(asking, locale),
+      qty: formatNumber(qtl, locale),
+      gross: formatPaise(gross, locale),
+    }),
+    ...(net !== null
+      ? [t('pp_narr_net', { net: formatPaise(net, locale) })]
+      : []),
+    t(
+      rangeState === 'above'
+        ? 'pp_narr_above'
+        : rangeState === 'below'
+          ? 'pp_narr_below'
+          : 'pp_narr_in',
+      { modal: formatPaise(modal, locale), diff: formatPaise(Math.abs(diff), locale) },
+    ),
+  ].join(' ');
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
@@ -238,6 +262,7 @@ export default function S22_PricePublish({ route, navigation }: Props) {
             })}
           </Text>
         </View>
+        <ListenButton text={narration} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

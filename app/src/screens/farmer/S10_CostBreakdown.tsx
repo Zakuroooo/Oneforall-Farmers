@@ -32,6 +32,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
+import { ListenButton } from '../../components/ui/ListenButton';
 import { useT } from '../../lib/i18n';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { recommendWindow } from '../../lib/api';
@@ -87,6 +88,29 @@ export default function S10_CostBreakdown({ navigation }: Props) {
 
   const close = () => navigation.canGoBack() && navigation.goBack();
 
+  /* ★ Reads every deduction line and then the total — the whole point of
+     this sheet is that nothing is hidden, and a farmer who cannot read the
+     table should hear the same list rather than a summary of it. */
+  const narration = data
+    ? [
+        t('cb_narr_total', {
+          perQtl: formatPaise(data.costs.total_paise_per_qtl, locale),
+          qty: formatNumber(qtyQtl, locale),
+          total: formatPaise(data.costs.total_paise_per_qtl * qtyQtl, locale),
+        }),
+        ...LINES.filter(
+          l => !l.whenHolding || (data.hold_days !== null && data.hold_days > 0),
+        )
+          .filter(l => data.costs[l.key] > 0)
+          .map(l =>
+            t('cb_narr_line', {
+              label: t(l.labelKey),
+              amount: formatPaise(data.costs[l.key], locale),
+            }),
+          ),
+      ].join(' ')
+    : t('cb_title');
+
   const sheetHeader = (
     <>
       <View style={styles.grabberRow}>
@@ -106,6 +130,7 @@ export default function S10_CostBreakdown({ navigation }: Props) {
             </Text>
           ) : null}
         </View>
+        <ListenButton text={narration} />
         <TouchableOpacity
           style={styles.closeBtn}
           onPress={close}

@@ -38,6 +38,7 @@ import { getOffers } from '../../lib/api';
 import { USE_FIXTURES } from '../../config';
 import { fxMyOffers } from '../../fixtures/offers';
 import { ErrorState, Skeleton } from '../../components/farmer/States';
+import { ListenButton } from '../../components/ui/ListenButton';
 import type { OfferDto, OfferStatus, Role } from '../../types/api';
 
 const STATUS_KEY: Record<OfferStatus, string> = {
@@ -90,6 +91,25 @@ export function TalksList({
 
   const offers = data ?? [];
 
+  /* ★ The speaker reads the inbox: how many talks, and for each one the last
+     price offered and whose turn it is. A farmer who cannot read the list
+     still learns the one thing it exists to tell him — who is waiting on
+     him, and at what price. */
+  const narration =
+    offers.length === 0
+      ? t('chat_empty_title')
+      : [
+          t('chat_narr_count', { n: formatNumber(offers.length, locale) }),
+          ...offers.map(o =>
+            t(o.initiator !== viewerRole && o.status === 'OPEN'
+              ? 'chat_narr_waiting_you'
+              : 'chat_narr_waiting_them', {
+              rate: formatPaise(o.price_paise_per_qtl, locale),
+              qty: formatNumber(toQuintal(o.qty_kg), locale),
+            }),
+          ),
+        ].join(' ');
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
@@ -102,6 +122,7 @@ export function TalksList({
           <Text style={styles.headerTitle}>{t('chat_title')}</Text>
           <Text style={styles.headerSub}>{t('chat_subtitle')}</Text>
         </View>
+        <ListenButton text={narration} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

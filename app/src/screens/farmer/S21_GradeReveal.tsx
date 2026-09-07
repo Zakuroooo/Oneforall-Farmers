@@ -31,6 +31,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
+import { ListenButton } from '../../components/ui/ListenButton';
 import { useT } from '../../lib/i18n';
 import { formatNumber } from '../../lib/money';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
@@ -101,6 +102,24 @@ export default function S21_GradeReveal({ route, navigation }: Props) {
    * so it is the only one drawn. */
   const scorePct = Math.max(0, Math.min(100, Math.round((result.score / 1000) * 100)));
 
+  /* ★ The grade is the number that decides what a farmer can ask for, and
+     this screen had no speaker. It reads the grade, the score, the weakest
+     dimension and its tip — the same four things the cards render, and the
+     tip is the actionable half. */
+  const narration = [
+    t('gr_narr_grade', {
+      grade: result.grade,
+      score: formatNumber(result.score, locale),
+    }),
+    t('gr_narr_weakest', {
+      dimension:
+        result.weakest_dimension === 'damage_pct'
+          ? t('assay_damage_question')
+          : t(ANSWER_LABEL[result.weakest_dimension].questionKey),
+    }),
+    t(TIP_KEY[result.weakest_dimension]),
+  ].join(' ');
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
@@ -114,6 +133,7 @@ export default function S21_GradeReveal({ route, navigation }: Props) {
           <Icon name="arrow-left" size={20} color={colors.onSurface} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('gr_title')}</Text>
+        <ListenButton text={narration} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

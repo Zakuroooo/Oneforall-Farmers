@@ -77,6 +77,7 @@ import { fxCommodities, fxMarketsFor } from '../../fixtures/reference';
 import { fxDistricts } from '../../fixtures/auth';
 import { ErrorState, Skeleton } from '../../components/farmer/States';
 import { Picker } from '../../components/ui/Picker';
+import { ListenButton } from '../../components/ui/ListenButton';
 import type { PricesStackParamList } from '../../navigation/FarmerTabs';
 import type {
   Commodity,
@@ -320,6 +321,56 @@ export default function PricesIndex({ navigation }: Props) {
    *   Maharashtra: the mandi was hardcoded, and "Live" was a claim about
    *   AGMARKNET data that arrives once a day.
    */
+  /**
+   * ★ What the speaker reads: the whole screen, in the order it is laid out —
+   *   which crop at which mandi, today's rate and how it moved, the forecast
+   *   corridor with **both** its floor and its ceiling, and the best-paying
+   *   nearby yard. Every value is the same variable the card beside it
+   *   renders, so the voice can never describe a number that is not on
+   *   screen.
+   *
+   * ★ I16 holds aloud. The corridor's floor is spoken in the same breath as
+   *   its ceiling; a narration that read out only the upside would be the
+   *   same failure as rendering the worst case in smaller type.
+   */
+  const narration = (() => {
+    const parts: string[] = [];
+    const where = t('mkt_narr_where', {
+      crop: activeCommodity ? localName(activeCommodity) : '',
+      market: activeMarket ? localName(activeMarket) : '',
+    });
+    parts.push(where);
+    if (latest) {
+      parts.push(t('mkt_narr_today', { price: formatPaise(latest.modal_paise_per_qtl, locale) }));
+      if (delta !== null && delta !== 0) {
+        parts.push(
+          t(delta > 0 ? 'mkt_narr_up' : 'mkt_narr_down', {
+            amount: formatPaise(Math.abs(delta), locale),
+          }),
+        );
+      }
+    }
+    if (floorPaise !== null && ceilingPaise !== null) {
+      parts.push(
+        t('mkt_narr_corridor', {
+          n: formatNumber(fPoints.length, locale),
+          floor: formatPaise(floorPaise, locale),
+          ceiling: formatPaise(ceilingPaise, locale),
+        }),
+      );
+    }
+    const bestNearby = nearby.data?.rows[0];
+    if (bestNearby) {
+      parts.push(
+        t('mkt_narr_best_nearby', {
+          market: t(MARKET_NAME_KEY[bestNearby.market_id] ?? '') || bestNearby.name_mr,
+          net: formatPaise(bestNearby.net_paise_per_qtl, locale),
+        }),
+      );
+    }
+    return parts.join(' ');
+  })();
+
   const chrome = (
     <>
       <View style={styles.header}>
@@ -340,6 +391,7 @@ export default function PricesIndex({ navigation }: Props) {
                 : ''}
           </Text>
         </View>
+        <ListenButton text={narration} />
       </View>
 
       <View style={styles.pickerRow}>

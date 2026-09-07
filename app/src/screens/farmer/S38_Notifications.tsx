@@ -23,6 +23,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
+import { ListenButton } from '../../components/ui/ListenButton';
 import { useT } from '../../lib/i18n';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { getOffers, getPriceSeries } from '../../lib/api';
@@ -66,6 +67,29 @@ export default function S38_Notifications({ navigation }: Props) {
 
   const isEmpty = waiting.length === 0 && (delta === null || delta === 0);
 
+  /* ★ Reads exactly the rows below it, in order — nothing summarised away
+     and nothing added. */
+  const narration = isEmpty
+    ? t('nt_empty_title')
+    : [
+        ...waiting.map(o =>
+          t('nt_offer_body', {
+            rate: formatPaise(o.price_paise_per_qtl, locale),
+            qty: formatNumber(toQuintal(o.qty_kg), locale),
+            round: formatNumber(o.round, locale),
+          }),
+        ),
+        ...(today && delta !== null && delta !== 0
+          ? [
+              t('nt_price_body', {
+                market: t('home_market_name'),
+                price: formatPaise(today.modal_paise_per_qtl, locale),
+                delta: `${delta > 0 ? '+' : '−'}${formatPaise(Math.abs(delta), locale)}`,
+              }),
+            ]
+          : []),
+      ].join(' ');
+
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
@@ -82,6 +106,7 @@ export default function S38_Notifications({ navigation }: Props) {
           <Text style={styles.headerTitle}>{t('nt_title')}</Text>
           <Text style={styles.headerSub}>{t('nt_subtitle')}</Text>
         </View>
+        <ListenButton text={narration} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

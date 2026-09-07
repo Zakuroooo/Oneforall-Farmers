@@ -39,6 +39,7 @@ import { fxIncomingOffer, fxIncomingOfferLastRound } from '../../fixtures/offers
 import { fxPool } from '../../fixtures/pools';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
+import { ListenButton } from '../../components/ui/ListenButton';
 import { Badge } from '../../components/ui/Badge';
 import type { BadgeType } from '../../components/ui/Badge';
 import { EscrowTimeline, txStatusLabel } from '../../components/EscrowTimeline';
@@ -214,6 +215,32 @@ export default function S15_MyLots({ navigation }: Props) {
 
   const goCreateLot = () => navigation.navigate('S17_CameraGuide');
 
+  /* ★ The speaker reads the screen: how many lots and how much produce in
+     total, then each lot with its grade, then how many buyers are waiting on
+     a reply. Every value comes from the same query the card renders. */
+  const narration = (() => {
+    const list = lots ?? [];
+    if (list.length === 0) return t('mp_empty_title');
+    const kg = list.reduce((sum, l) => sum + l.qty_kg, 0);
+    const parts = [
+      t('mp_narr_summary', {
+        n: formatNumber(list.length, locale),
+        qty: formatQuintal(kg, locale),
+      }),
+      ...list.map(l =>
+        t('mp_narr_lot', {
+          qty: formatQuintal(l.qty_kg, locale),
+          grade: t(`lot_grade_${l.grade.toLowerCase()}`),
+        }),
+      ),
+    ];
+    const waiting = pendingOffers?.length ?? 0;
+    if (waiting > 0) {
+      parts.push(t('mp_narr_waiting', { n: formatNumber(waiting, locale) }));
+    }
+    return parts.join(' ');
+  })();
+
   const header = (
     <View style={styles.topBar}>
       <View style={styles.topBarIcon}>
@@ -223,6 +250,7 @@ export default function S15_MyLots({ navigation }: Props) {
         <Text style={styles.topBarTitle}>{t('mp_title')}</Text>
         <Text style={styles.topBarSub}>{t('produce_empty_cycle')}</Text>
       </View>
+      <ListenButton text={narration} />
     </View>
   );
 
