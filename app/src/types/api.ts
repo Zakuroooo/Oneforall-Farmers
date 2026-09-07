@@ -667,23 +667,3 @@ export interface ProvenanceRes {
   rows: ProvenanceRow[];
   generated_at: string;
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// §S26 Chat — PROPOSED, not in CANON
-//
-// ★ PRANAY.md §1.3: "S26 and S28 are new ... because of the chat + call ...
-//   scope added after the baseline was written." CANON §7 has no chat
-//   section at all — no table, no DDL, no endpoint. This shape is this
-//   frontend's own proposal, the same "propose it, flag it, build against
-//   it" discipline every other undefined CANON shape in this file uses
-//   (see `LotDto`/`OfferDto`'s own headers). Confirm or correct when a real
-//   chat endpoint exists.
-// ─────────────────────────────────────────────────────────────────────────────
-
-export interface ChatMessage {
-  id: string;
-  tx_id: string;
-  sender: 'FARMER' | 'BUYER';
-  text: string;
-  created_at: string;
-}

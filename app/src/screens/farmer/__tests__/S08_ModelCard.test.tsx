@@ -34,6 +34,15 @@ jest.mock('../../../lib/locale', () => ({
   setLocale: () => Promise.resolve(),
 }));
 
+// `useFocusEffect` needs a real `NavigationContainer` ancestor to have a focus
+// state to key off of, which this file's tree has no reason to build just to
+// get a locale re-fetch — the same reason S06/S07/etc.'s suites do this. Run
+// the callback the way `useEffect` used to: once, on mount.
+jest.mock('@react-navigation/native', () => ({
+  ...jest.requireActual('@react-navigation/native'),
+  useFocusEffect: (cb: () => void) => require('react').useEffect(cb, []),
+}));
+
 /**
  * Renders S8 with a pre-seeded cache rather than by mocking the fetcher, so the
  * screen takes the same path it takes in the app off a hydrated cache (P11).

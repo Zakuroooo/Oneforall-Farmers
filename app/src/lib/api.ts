@@ -23,7 +23,6 @@ import type {
   AssayRecord,
   AssayRes,
   AuthRes,
-  ChatMessage,
   DemandDto,
   DisputeDto,
   DisputeReasonCode,
@@ -335,17 +334,6 @@ export const getDispute = (id: string) => get<DisputeRes>(`/disputes/${id}`);
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getDataProvenance = () => get<ProvenanceRes>('/meta/data-provenance');
-
-// ─────────────────────────────────────────────────────────────────────────────
-// S26 chat — PROPOSED, no CANON section defines this (see types/api.ts's
-// ChatMessage header). Paths are this frontend's own guess at what a real
-// endpoint would look like, not a transcription of a documented one.
-// ─────────────────────────────────────────────────────────────────────────────
-
-export const getChatMessages = (txId: string) => get<ChatMessage[]>(`/tx/${txId}/messages`);
-
-export const sendChatMessage = (txId: string, text: string) =>
-  post<ChatMessage>(`/tx/${txId}/messages`, { text });
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Voice — PROPOSED, same status as the chat section above: no CANON section

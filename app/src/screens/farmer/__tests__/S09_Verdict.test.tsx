@@ -35,6 +35,13 @@ jest.mock('../../../lib/locale', () => ({
   setLocale: () => Promise.resolve(),
 }));
 
+// See S08_ModelCard.test.tsx — `useFocusEffect` needs a `NavigationContainer`
+// ancestor this tree has no other reason to build; run it like `useEffect`.
+jest.mock('@react-navigation/native', () => ({
+  ...jest.requireActual('@react-navigation/native'),
+  useFocusEffect: (cb: () => void) => require('react').useEffect(cb, []),
+}));
+
 /**
  * S9 takes a `navigation` prop it only ever uses for one `navigate` call. The
  * screen is typed against `NativeStackScreenProps`, but it reads exactly two

@@ -48,7 +48,6 @@ import S13_SelfAssay from '../screens/farmer/S13_SelfAssay';
 import S14_CounterOffer from '../screens/farmer/S14_CounterOffer';
 import S15_MyLots from '../screens/farmer/S15_MyLots';
 import S16_PoolSplit from '../screens/farmer/S16_PoolSplit';
-import S26_Chat from '../screens/farmer/S26_Chat';
 import S28_Assistant from '../screens/farmer/S28_Assistant';
 import PricesIndex from '../screens/farmer/PricesIndex';
 // ★ The post-listing selling journey (list → grade → publish → buyers →
@@ -178,7 +177,6 @@ export type MyLotsStackParamList = {
   /** P15, cuttable — reached from a transaction row in S15. No params: it
    * reads the one demo transaction thread every chat fixture already
    * agrees on, same fixture-first pattern as S10 reading S9's cache key. */
-  S26_Chat: undefined;
 
   /** ★ The Stitch-matched selling journey, reachable but still visual-only:
    *  none of these call a real endpoint (no assay submission, no real buyer
@@ -209,7 +207,6 @@ function MyLotsStackNavigator() {
       <MyLotsStack.Screen name="S13_SelfAssay" component={S13_SelfAssay} />
       <MyLotsStack.Screen name="S14_CounterOffer" component={S14_CounterOffer} />
       <MyLotsStack.Screen name="S16_PoolSplit" component={S16_PoolSplit} />
-      <MyLotsStack.Screen name="S26_Chat" component={S26_Chat} />
       <MyLotsStack.Screen name="S22_PricePublish" component={S22_PricePublish} />
       <MyLotsStack.Screen name="S23_PublishedRadar" component={S23_PublishedRadar} />
       <MyLotsStack.Screen name="S24_LotDetail" component={S24_LotDetail} />

@@ -18,6 +18,7 @@
  */
 
 import React, { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -163,9 +164,11 @@ function harvestDateLabel(lot: LotDto, locale: Locale): string {
 
 export default function S15_MyLots({ navigation }: Props) {
   const [locale, setLocale] = useState<Locale>('mr');
-  React.useEffect(() => {
-    getLocale().then(l => l && setLocale(l));
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getLocale().then(l => l && setLocale(l));
+    }, []),
+  );
 
   const { data: lots, isLoading, error, refetch } = useQuery({
     queryKey: ['lots'],
@@ -339,9 +342,6 @@ export default function S15_MyLots({ navigation }: Props) {
                     <EscrowTimeline tx={tx} events={events} locale={locale} />
                   </View>
                 ) : null}
-                <TouchableOpacity onPress={() => navigation.navigate('S26_Chat')} accessibilityRole="button">
-                  <Text style={styles.chatLink}>{translate('chat_with_buyer_link', locale)}</Text>
-                </TouchableOpacity>
               </Card>
             );
           })}
@@ -367,7 +367,6 @@ const styles = StyleSheet.create({
   txStatusText: { fontSize: 12, fontWeight: '700', color: '#E65100' },
   txToggleHint: { fontSize: 13, color: '#1B5E20', fontWeight: '600', marginTop: 8 },
   txExpanded: { marginTop: 12, borderTopWidth: 1, borderTopColor: '#E2E8F0', paddingTop: 12 },
-  chatLink: { fontSize: 13, color: '#1B5E20', fontWeight: '600', marginTop: 10 },
   lotHeaderRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

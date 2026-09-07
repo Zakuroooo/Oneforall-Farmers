@@ -22,6 +22,7 @@
  */
 import React from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { CommonActions } from '@react-navigation/native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space } from '../../theme/tokens';
@@ -43,14 +44,41 @@ export default function S34_MenuDrawer({ navigation }: Props) {
   const { user, signOut } = useAuth();
   const { t, locale, setLocale } = useT();
 
-  const goToMyLots = () =>
-    navigation.navigate('FarmerTabs', { screen: 'MyLots', params: { screen: 'S15_MyLots' } } as never);
-  const goToModelCard = () =>
-    navigation.navigate('FarmerTabs', { screen: 'Prices', params: { screen: 'S8_ModelCard' } } as never);
-  const goToDeals = () =>
-    navigation.navigate('FarmerTabs', { screen: 'MyLots', params: { screen: 'S31_DealsList' } } as never);
-  const goToProfile = () =>
-    navigation.navigate('FarmerTabs', { screen: 'MyLots', params: { screen: 'S35_FarmerProfile' } } as never);
+  // ★ Closing the menu with `navigate` used to just push the target screen on
+  //   top of whatever the MyLots tab's stack already had piled up (the whole
+  //   create-lot → grade → publish → bargain → deal chain, since a tab's
+  //   nested stack keeps its history across tab switches). That is why "My
+  //   Deal" from the menu could open into a long chain of unrelated back
+  //   presses. `reset` on the root stack instead throws away that leftover
+  //   history and lands on exactly [My Lots, target] — closing the menu and
+  //   giving a clean two-deep stack in one move.
+  const goToTab = (tab: 'Home' | 'Prices' | 'MyLots', screen: string) => {
+    const action = CommonActions.reset({
+      index: 0,
+      routes: [
+        {
+          name: 'FarmerTabs',
+          state: {
+            routes: [
+              {
+                name: tab,
+                state:
+                  tab === 'MyLots' && screen !== 'S15_MyLots'
+                    ? { index: 1, routes: [{ name: 'S15_MyLots' }, { name: screen }] }
+                    : { index: 0, routes: [{ name: screen }] },
+              },
+            ],
+          },
+        },
+      ],
+    });
+    navigation.dispatch(action as never);
+  };
+
+  const goToMyLots = () => goToTab('MyLots', 'S15_MyLots');
+  const goToModelCard = () => goToTab('Prices', 'S8_ModelCard');
+  const goToDeals = () => goToTab('MyLots', 'S31_DealsList');
+  const goToProfile = () => goToTab('MyLots', 'S35_FarmerProfile');
 
   return (
     <View style={styles.root}>
@@ -83,7 +111,7 @@ export default function S34_MenuDrawer({ navigation }: Props) {
           <Icon name="chevron-right" size={16} color={colors.outline} />
         </TouchableOpacity>
 
-        {/* Produce & deals */}
+        {/* Produce — listing and grading */}
         <Text style={styles.sectionLabel}>{t('tab_my_lots')}</Text>
         <View style={styles.menuCard}>
           <TouchableOpacity style={styles.menuRow} onPress={goToMyLots}>
@@ -93,12 +121,18 @@ export default function S34_MenuDrawer({ navigation }: Props) {
             <Text style={styles.menuTitle}>{t('my_lots_header')}</Text>
             <Icon name="chevron-right" size={16} color={colors.outline} />
           </TouchableOpacity>
-          <View style={styles.menuDivider} />
+        </View>
+
+        {/* Deals — its own section: escrow, tracking, settlement. This is a
+            different concept from "My Lots" (unsold produce) and used to be
+            grouped in the same card, reading as if it were a sub-item of it. */}
+        <Text style={styles.sectionLabel}>{t('deals_page_title')}</Text>
+        <View style={styles.menuCard}>
           <TouchableOpacity style={styles.menuRow} onPress={goToDeals}>
             <View style={styles.menuIconBg}>
               <Icon name="handshake" size={16} color={colors.primary} />
             </View>
-            <Text style={styles.menuTitle}>Deals</Text>
+            <Text style={styles.menuTitle}>{t('deals_page_title')}</Text>
             <Icon name="chevron-right" size={16} color={colors.outline} />
           </TouchableOpacity>
         </View>
