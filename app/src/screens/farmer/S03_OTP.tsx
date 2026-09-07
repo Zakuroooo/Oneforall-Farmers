@@ -86,6 +86,23 @@ export default function S03_OTP({ navigation }: Props) {
   //   unknown phone" — any failure is treated as "never registered" and
   //   carries the same {phone, code} to S3_Profile, which verifies it for
   //   real via `register()`.
+  /**
+   * ★ Both back affordances on this screen used to call `navigation.goBack()`
+   *   bare. When the OTP screen is the bottom of the stack — a returning
+   *   farmer starts at S2_Phone, which `AuthStack` makes the initial route
+   *   once a locale is stored, and a `replace()` on the way in leaves no
+   *   history — React Navigation has nothing to pop and throws "The action
+   *   GO_BACK was not handled by any navigator" over the screen.
+   *
+   *   Going back from here means one thing: change the number. So it pops
+   *   when it can and navigates to the phone screen when it cannot, which is
+   *   the same destination either way and never errors.
+   */
+  const goBackToPhone = () => {
+    if (navigation.canGoBack()) navigation.goBack();
+    else navigation.navigate('S2_Phone');
+  };
+
   const handleVerify = async () => {
     if (!phone) return;
     const code = otp.join('');
@@ -139,7 +156,7 @@ export default function S03_OTP({ navigation }: Props) {
 
         {/* Header */}
         <View style={styles.header}>
-          <TouchableOpacity style={styles.backBtn} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.backBtn} onPress={goBackToPhone}>
             <Icon name="arrow-left" size={20} color={colors.onSurface} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
@@ -171,7 +188,7 @@ export default function S03_OTP({ navigation }: Props) {
               own number. The key now carries the placeholder in all three and
               is given the value. */}
           <Text style={styles.phoneNum}>{t('otp_sent_to', { phone: phone ?? '' })}</Text>
-          <TouchableOpacity style={styles.editBtn} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={styles.editBtn} onPress={goBackToPhone}>
             <Icon name="edit" size={12} color={colors.primaryContainer} />
             <Text style={styles.editText}>{t('otp_edit')}</Text>
           </TouchableOpacity>

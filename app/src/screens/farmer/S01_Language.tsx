@@ -8,7 +8,7 @@
  * ★ Selecting a language updates the global i18n context immediately.
  */
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -21,7 +21,8 @@ import {
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
-import { useT } from '../../lib/i18n';
+import { translate, useT } from '../../lib/i18n';
+import { speakSmart, stopSpeaking } from '../../lib/voice';
 import type { Locale } from '../../types/api';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { demoTodayRange } from '../../lib/demoPrice';
@@ -72,6 +73,45 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
 export default function S01_Language({ navigation }: Props) {
   const { t, locale, setLocale } = useT();
   const [selected, setSelected] = useState<Locale>(locale);
+
+  /** Which card is speaking, so its row can offer to stop. */
+  const [sampleLocale, setSampleLocale] = useState<Locale | null>(null);
+
+  /**
+   * Speaks a card's own example sentence in that card's language.
+   *
+   * ★ Deliberately `speakSmart`, so a farmer hears Sarvam's voice in the
+   *   language he is about to choose rather than the device's stock engine
+   *   reading Marathi with an English one — which is the very thing this
+   *   screen exists to let him avoid.
+   */
+  const playSample = async (option: LanguageOption) => {
+    if (sampleLocale === option.code) {
+      setSampleLocale(null);
+      await stopSpeaking();
+      return;
+    }
+    const sentence = `${translate('lang_example_prefix', option.code)} ${option.exampleText.replace(
+      '{range}',
+      demoTodayRange(option.code),
+    )}`;
+    setSampleLocale(option.code);
+    try {
+      await speakSmart(sentence, option.code);
+    } catch {
+      // Silence is the failure mode here, and the written example is still
+      // on screen — an error banner over a voice preview would be louder
+      // than the thing it failed to do.
+    } finally {
+      setSampleLocale(cur => (cur === option.code ? null : cur));
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      void stopSpeaking();
+    };
+  }, []);
 
   const handleSelect = (code: Locale) => {
     setSelected(code);
@@ -183,12 +223,33 @@ export default function S01_Language({ navigation }: Props) {
                   )}
                 </View>
 
-                {/* Audio preview + example text */}
+                {/* ── Hear the language before choosing it ─────────────
+                    ★ This row was a volume icon and the words "Listen Sample
+                      (0:04)" with no handler on it at all — nothing played,
+                      and the "0:04" was a duration nothing had measured. It
+                      is the first control a farmer meets, and it did nothing.
+
+                    ★ It speaks the same example sentence rendered beneath it,
+                      in that card's own language, so what he hears and what
+                      he reads are the same string. That is also the honest
+                      way to choose a language you cannot read. */}
                 <View style={styles.langCardBottom}>
-                  <View style={styles.audioRow}>
-                    <Icon name="volume" size={12} color={colors.primary} />
-                    <Text style={styles.audioText}>{t('lang_audio_preview')}</Text>
-                  </View>
+                  <TouchableOpacity
+                    style={styles.audioRow}
+                    onPress={() => playSample(option)}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('lang_audio_preview')}>
+                    <Icon
+                      name={sampleLocale === option.code ? 'x-circle' : 'volume'}
+                      size={13}
+                      color={colors.primary}
+                    />
+                    <Text style={styles.audioText}>
+                      {sampleLocale === option.code
+                        ? t('listening_button')
+                        : t('lang_audio_preview')}
+                    </Text>
+                  </TouchableOpacity>
                   <Text style={styles.exampleText}>
                     {t('lang_example_prefix')}{' '}
                     {option.exampleText.replace('{range}', demoTodayRange(option.code))}
@@ -200,7 +261,12 @@ export default function S01_Language({ navigation }: Props) {
           })}
         </View>
 
-        {/* ── Voice assist info card ───────────────────── */}
+        {/* ── What the voice actually does ──────────────
+            ★ This read "Always keep voice assistance on" beside a mic icon,
+              which is the shape of a setting — so it looked like a switch
+              that had stopped working. There is no switch: the app speaks
+              because every screen carries a Listen button. The card now says
+              that, rather than implying a toggle it does not have. */}
         <View style={styles.voiceCard}>
           <View style={styles.voiceIconBg}>
             <Icon name="mic" size={20} color={colors.primary} />

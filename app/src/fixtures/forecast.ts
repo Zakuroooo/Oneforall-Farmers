@@ -30,9 +30,42 @@ function dateNDaysAhead(n: number): string {
   return d.toISOString().slice(0, 10);
 }
 
+/**
+ * The median path.
+ *
+ * ★ This was `205000 + daysAhead * 1850` — a mathematically perfect straight
+ *   line, drawn as a fourteen-day forecast corridor. Nobody who has seen a
+ *   mandi price chart believes a ruler, and the people who will look hardest
+ *   at this screen are exactly the people who have seen one. A model output
+ *   that looks synthetic undermines the model even when the model is fine.
+ *
+ * ★ So: a rising trend, with a slow wave over it and a smaller faster one on
+ *   top. Two periods that do not divide into each other never repeat inside
+ *   the window, which is what stops it reading as a pattern. Every term is
+ *   deterministic — no `Math.random`, so the fixture is reproducible and the
+ *   tests below can assert on it.
+ *
+ * ★ The amplitudes are deliberately small against the drift. A forecast that
+ *   swings wildly around its own median is not a more realistic forecast, it
+ *   is a less confident one, and confidence is what the p10–p90 band is for.
+ */
+const FORECAST_START = 205000;
+const FORECAST_DRIFT = 1850; // paise/qtl/day — the trend fxPriceHistory ends on
+const SLOW_WAVE = 2200;
+const FAST_WAVE = 900;
+
+function forecastMedian(daysAhead: number): number {
+  const trend = FORECAST_START + daysAhead * FORECAST_DRIFT;
+  const slow = SLOW_WAVE * Math.sin((daysAhead / 9) * Math.PI * 2);
+  const fast = FAST_WAVE * Math.sin((daysAhead / 3.5) * Math.PI * 2 + 1.1);
+  return Math.round(trend + slow + fast);
+}
+
 function buildPoint(daysAhead: number): ForecastPoint {
-  const p50 = 205000 + daysAhead * 1850; // continues fxPriceHistory's own trend
-  const bandFraction = 0.05 + daysAhead * 0.012; // widens with horizon
+  const p50 = forecastMedian(daysAhead);
+  // The band still widens with horizon — that is the honest part, and it is
+  // what makes the fan a fan rather than three parallel lines.
+  const bandFraction = 0.05 + daysAhead * 0.012;
   const half = Math.round((p50 * bandFraction) / 2);
   return {
     target_date: dateNDaysAhead(daysAhead),
@@ -82,7 +115,14 @@ const MARKET_LEVEL: Record<string, number> = {
 };
 
 function tomatoPoint(daysAhead: number): ForecastPoint {
-  const p50 = 130000 + daysAhead * 900;
+  // Same reasoning as `forecastMedian` above, with a bigger swing — tomato is
+  // the volatile crop, and a flat line for it would contradict the very
+  // history that makes the model refuse to advise on it.
+  const p50 =
+    130000 +
+    daysAhead * 900 +
+    Math.round(4200 * Math.sin((daysAhead / 5) * Math.PI * 2)) +
+    Math.round(1800 * Math.sin((daysAhead / 2.5) * Math.PI * 2 + 0.7));
   // Starts wide and widens fast — a seven-day shelf life leaves nothing to
   // anchor a two-week forecast on.
   const bandFraction = 0.18 + daysAhead * 0.022;
