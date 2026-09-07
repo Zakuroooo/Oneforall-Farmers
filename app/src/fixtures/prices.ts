@@ -117,3 +117,95 @@ export const fxPriceHistory: PriceSeriesRes = {
   source_summary: { AGMARKNET: 179, SYNTHETIC: 1 },
   latest_obs_date: dateNDaysAgo(0),
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The picker's series — one per (commodity, market) pair the app offers
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * ★ Why this exists: the market screen used to be hardwired to onion at
+ *   Lasalgaon. Now that it has a crop picker and a district picker, a farmer
+ *   who picks tomato at Pune must not be shown onion's chart under a tomato
+ *   heading — a fixture that ignores its own arguments is worse than no
+ *   fixture, because it looks right.
+ *
+ * ★ Onion at Lasalgaon returns `fxPriceHistory` *itself*, untouched. That
+ *   series is pinned to `fixtures/window.ts` by construction, so the demo
+ *   scenario's numbers stay in agreement across every screen. Everything the
+ *   picker adds is built around it, never on top of it.
+ *
+ * ★ Tomato is deliberately the volatile one. That is the whole reason it is
+ *   in scope (`KARTIK.md`: "Tomato is the NO_ADVICE crop. One commodity
+ *   cannot demonstrate refusal.") — its swings are what widen the p10–p90
+ *   band past the threshold and make the model refuse, which is the one
+ *   behaviour a judge will actually try to break.
+ */
+
+/** Rupee level each mandi trades onion at, relative to Lasalgaon. Lasalgaon
+ * is 1 by definition. Pune and Ahmednagar sit above and below it in the same
+ * order `fixtures/nearby.ts` already puts them in, so the picker can never
+ * contradict the nearby table on the same screen. */
+const MARKET_LEVEL: Record<string, number> = {
+  mkt_lasalgaon: 1,
+  mkt_pimpalgaon: 0.97,
+  mkt_ahmednagar: 0.93,
+  mkt_pune: 1.06,
+};
+
+/** Tomato trades far below onion per quintal and swings hard week to week —
+ * a triangular-wave shape rather than a seasonal curve, because that is what
+ * a crop with a seven-day shelf life does when a week's arrivals land. */
+const TOMATO_BASE = 118000;
+const TOMATO_SWING = 46000;
+const TOMATO_PERIOD = 23;
+
+function tomatoModal(i: number): number {
+  // Triangle wave in [-1, 1], deterministic — no Math.random in a fixture.
+  const phase = ((i % TOMATO_PERIOD) / TOMATO_PERIOD) * 2 - 1;
+  const wave = 1 - 2 * Math.abs(phase);
+  const drift = (i / 179) * 12000;
+  return Math.round(TOMATO_BASE + drift + TOMATO_SWING * wave);
+}
+
+/**
+ * The series for one (commodity, market) pair, 180 days.
+ *
+ * Returns `null` for a pair this app carries no data for, and the screen
+ * renders its empty state. That is not a gap being papered over: a real mandi
+ * genuinely does not trade every crop, `/prices/series` will return an empty
+ * series for those, and the screen has to survive it either way.
+ */
+export function fxSeriesFor(commodityId: string, marketId: string): PriceSeriesRes | null {
+  const level = MARKET_LEVEL[marketId];
+  if (level === undefined) return null;
+
+  if (commodityId === 'cmd_onion') {
+    if (marketId === 'mkt_lasalgaon') return fxPriceHistory;
+    return {
+      points: fxPriceHistory.points.map(p => ({
+        ...p,
+        min_paise_per_qtl: Math.round(p.min_paise_per_qtl * level),
+        max_paise_per_qtl: Math.round(p.max_paise_per_qtl * level),
+        modal_paise_per_qtl: Math.round(p.modal_paise_per_qtl * level),
+      })),
+      source_summary: { ...fxPriceHistory.source_summary },
+      latest_obs_date: fxPriceHistory.latest_obs_date,
+    };
+  }
+
+  if (commodityId === 'cmd_tomato') {
+    // Pimpalgaon is an onion yard. Tomato does not trade there, and the empty
+    // state is the honest answer rather than a curve invented to fill a chart.
+    if (marketId === 'mkt_pimpalgaon') return null;
+    return {
+      points: Array.from({ length: 180 }, (_, i) => {
+        const daysAgo = 179 - i;
+        return pointAt(daysAgo, Math.round(tomatoModal(i) * level), 'AGMARKNET');
+      }),
+      source_summary: { AGMARKNET: 180 },
+      latest_obs_date: dateNDaysAgo(0),
+    };
+  }
+
+  return null;
+}

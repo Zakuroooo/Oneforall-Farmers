@@ -104,14 +104,23 @@ export const DEFAULT_HORIZON_DAYS = 14;
 
 /**
  * The demo scenario — the same commodity/market pair CANON §7.4's own example
- * uses (`cmd_onion` / `mkt_lasalgaon`). There is no commodity/market picker
- * screen in scope yet, so every farmer screen reads today's price for this pair
- * until one exists. TODO(pranay): replace with the farmer's own selection once a
- * settings or profile screen carries it — likely derived from `district_id` at
- * registration, but that is a real design decision, not a default to guess at now.
+ * uses (`cmd_onion` / `mkt_lasalgaon`).
+ *
+ * ★ The market tab no longer reads these. It has a crop picker and a district
+ *   picker, so a farmer growing tomato in Ahmednagar is no longer shown onion
+ *   at Lasalgaon with no control to say otherwise: the district defaults to
+ *   his own (`user.district_id`, falling back to `DEFAULT_DISTRICT_ID`) and
+ *   the mandi comes from `GET /ref/markets` for whichever district is picked.
+ *
+ * ★ The screens that still read the pair below are the ones about *one lot* —
+ *   the verdict, the cost breakdown, the pledge, the publish flow. Those are
+ *   not browsing prices; they are asking about a specific consignment, and
+ *   they will read the commodity and mandi off `LotDto` once S12 creates a
+ *   real one. TODO(pranay): that swap is P9/P10, not this screen's problem.
  */
 export const DEFAULT_COMMODITY_ID = 'cmd_onion';
 export const DEFAULT_MARKET_ID = 'mkt_lasalgaon';
+export const DEFAULT_DISTRICT_ID = 'dist_nashik';
 
 /**
  * `POST /ai/window/recommend`'s request body, CANON §7.4's own example values —

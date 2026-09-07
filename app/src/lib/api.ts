@@ -23,6 +23,7 @@ import type {
   AssayRecord,
   AssayRes,
   AuthRes,
+  Commodity,
   DemandDto,
   DisputeDto,
   DisputeReasonCode,
@@ -32,6 +33,7 @@ import type {
   ForecastRes,
   Locale,
   LotDto,
+  Market,
   MatchesRes,
   ModelCard,
   NearbyRes,
@@ -199,6 +201,13 @@ export const getMe = () => get<{ user: User }>('/auth/me');
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const getDistricts = () => get<District[]>('/ref/districts');
+
+/** CANON §7.2. The market picker needs these: a district on its own does not
+ * identify a price series — `/prices/series` is keyed by mandi. */
+export const getMarkets = (districtId: string) =>
+  get<Market[]>(`/ref/markets?district_id=${districtId}`);
+
+export const getCommodities = () => get<Commodity[]>('/ref/commodities');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Prices — §7.3

@@ -55,22 +55,35 @@ import { useT } from '../../lib/i18n';
 import { useAuth } from '../../lib/auth';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
 import { formatDateShort } from '../../lib/dates';
-import { getForecast, getNearbyMarkets, getPriceSeries } from '../../lib/api';
+import {
+  getCommodities,
+  getDistricts,
+  getForecast,
+  getMarkets,
+  getNearbyMarkets,
+  getPriceSeries,
+} from '../../lib/api';
 import {
   DEFAULT_COMMODITY_ID,
+  DEFAULT_DISTRICT_ID,
   DEFAULT_HORIZON_DAYS,
-  DEFAULT_MARKET_ID,
   DEFAULT_QTY_KG,
   USE_FIXTURES,
 } from '../../config';
-import { fxPriceHistory } from '../../fixtures/prices';
-import { fxForecast } from '../../fixtures/forecast';
+import { fxSeriesFor } from '../../fixtures/prices';
+import { fxForecastFor } from '../../fixtures/forecast';
 import { fxNearby } from '../../fixtures/nearby';
+import { fxCommodities, fxMarketsFor } from '../../fixtures/reference';
+import { fxDistricts } from '../../fixtures/auth';
 import { ErrorState, Skeleton } from '../../components/farmer/States';
+import { Picker } from '../../components/ui/Picker';
 import type { PricesStackParamList } from '../../navigation/FarmerTabs';
 import type {
+  Commodity,
   DataSource,
+  District,
   ForecastRes,
+  Market,
   NearbyRes,
   PricePoint,
   PriceSeriesRes,
@@ -107,23 +120,59 @@ const CHART_W = 320;
 const CHART_H = 132;
 const CHART_PAD = 10;
 
-async function fetchSeries(): Promise<PriceSeriesRes> {
-  if (USE_FIXTURES) return fxPriceHistory;
-  return getPriceSeries(DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, 180);
+/**
+ * ★ These take the picked pair rather than reading a constant. A fixture that
+ *   ignores its own arguments is the worst kind: it looks right. `fxSeriesFor`
+ *   and `fxForecastFor` return `null` for a mandi that does not trade the
+ *   crop, and an empty series is what the real endpoint returns there too, so
+ *   the screen's empty branch is exercised in both modes.
+ */
+async function fetchSeries(commodityId: string, marketId: string): Promise<PriceSeriesRes> {
+  if (USE_FIXTURES) {
+    // No pair, no observations, and therefore no latest observation date —
+    // `PriceSeriesRes.latest_obs_date` is a non-null `string` by CANON, so an
+    // empty series carries an empty one. The screen branches on `points`.
+    return (
+      fxSeriesFor(commodityId, marketId) ?? {
+        points: [],
+        source_summary: {},
+        latest_obs_date: '',
+      }
+    );
+  }
+  return getPriceSeries(commodityId, marketId, 180);
 }
 
-async function fetchForecastRes(): Promise<ForecastRes> {
-  if (USE_FIXTURES) return fxForecast;
-  return getForecast(DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, DEFAULT_HORIZON_DAYS);
+async function fetchForecastRes(
+  commodityId: string,
+  marketId: string,
+): Promise<ForecastRes | null> {
+  if (USE_FIXTURES) return fxForecastFor(commodityId, marketId);
+  return getForecast(commodityId, marketId, DEFAULT_HORIZON_DAYS);
+}
+
+async function fetchCommodities(): Promise<Commodity[]> {
+  if (USE_FIXTURES) return fxCommodities;
+  return getCommodities();
+}
+
+async function fetchDistricts(): Promise<District[]> {
+  if (USE_FIXTURES) return fxDistricts;
+  return getDistricts();
+}
+
+async function fetchMarkets(districtId: string): Promise<Market[]> {
+  if (USE_FIXTURES) return fxMarketsFor(districtId);
+  return getMarkets(districtId);
 }
 
 /** `getNearbyMarkets` is keyed by **district**, not market — the alternatives
  * to Lasalgaon are the other yards in Nashik district, not other rows for the
  * same yard. Same derivation and same query key as S6, so both screens share
  * one cache entry rather than fetching the same list twice. */
-async function fetchNearbyRes(districtId: string): Promise<NearbyRes> {
+async function fetchNearbyRes(commodityId: string, districtId: string): Promise<NearbyRes> {
   if (USE_FIXTURES) return fxNearby;
-  return getNearbyMarkets(DEFAULT_COMMODITY_ID, districtId);
+  return getNearbyMarkets(commodityId, districtId);
 }
 
 /** A cubic path through the points, so the trend reads as a curve like the
@@ -147,21 +196,69 @@ function smoothPath(pts: Array<{ x: number; y: number }>): string {
 export default function PricesIndex({ navigation }: Props) {
   const { t, locale } = useT();
   const { user } = useAuth();
-  const districtId = user?.district_id ?? 'dist_nashik';
   const [periodDays, setPeriodDays] = useState<number>(180);
 
+  /**
+   * ★ What the pickers replaced: this screen read `DEFAULT_COMMODITY_ID` and
+   *   `DEFAULT_MARKET_ID` out of `config.ts` — every farmer in Maharashtra was
+   *   shown onion at Lasalgaon, and a farmer in Ahmednagar growing tomato had
+   *   no control anywhere in the app to say so. The TODO in `config.ts` asked
+   *   for exactly this and guessed it would come from `district_id`; that is
+   *   the default here, not the whole answer, because the mandi a farmer sells
+   *   at is a choice and his district is only where he starts from.
+   */
+  const [commodityId, setCommodityId] = useState<string>(DEFAULT_COMMODITY_ID);
+  const [districtId, setDistrictId] = useState<string>(
+    user?.district_id ?? DEFAULT_DISTRICT_ID,
+  );
+  const [pickedMarketId, setPickedMarketId] = useState<string | null>(null);
+
+  const commodities = useQuery({ queryKey: ['ref', 'commodities'], queryFn: fetchCommodities });
+  const districts = useQuery({ queryKey: ['ref', 'districts'], queryFn: fetchDistricts });
+  const markets = useQuery({
+    queryKey: ['ref', 'markets', districtId],
+    queryFn: () => fetchMarkets(districtId),
+  });
+
+  const marketList = markets.data ?? [];
+  /** A mandi picked in another district is not a valid selection here, so the
+   * first mandi of the current district takes over rather than the screen
+   * querying a market/district pair that does not exist. */
+  const marketId =
+    pickedMarketId && marketList.some(m => m.id === pickedMarketId)
+      ? pickedMarketId
+      : marketList[0]?.id ?? null;
+
   const series = useQuery({
-    queryKey: ['prices', 'series', '180', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID],
-    queryFn: fetchSeries,
+    queryKey: ['prices', 'series', '180', commodityId, marketId],
+    queryFn: () => fetchSeries(commodityId, marketId!),
+    enabled: marketId !== null,
   });
   const forecast = useQuery({
-    queryKey: ['ai', 'forecast', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, DEFAULT_HORIZON_DAYS],
-    queryFn: fetchForecastRes,
+    queryKey: ['ai', 'forecast', commodityId, marketId, DEFAULT_HORIZON_DAYS],
+    queryFn: () => fetchForecastRes(commodityId, marketId!),
+    enabled: marketId !== null,
   });
   const nearby = useQuery({
-    queryKey: ['prices', 'nearby', DEFAULT_COMMODITY_ID, districtId],
-    queryFn: () => fetchNearbyRes(districtId),
+    queryKey: ['prices', 'nearby', commodityId, districtId],
+    queryFn: () => fetchNearbyRes(commodityId, districtId),
   });
+
+  const localName = (o: { name: string; name_mr: string }) =>
+    locale === 'mr' ? o.name_mr : o.name;
+
+  const commodityOptions = (commodities.data ?? []).map(c => ({
+    id: c.id,
+    label: localName(c),
+  }));
+  const districtOptions = (districts.data ?? []).map(d => ({
+    id: d.id,
+    label: localName(d),
+  }));
+  const marketOptions = marketList.map(m => ({ id: m.id, label: localName(m) }));
+
+  const activeMarket = marketList.find(m => m.id === marketId) ?? null;
+  const activeCommodity = (commodities.data ?? []).find(c => c.id === commodityId) ?? null;
 
   const points = series.data?.points ?? [];
 
@@ -209,11 +306,87 @@ export default function PricesIndex({ navigation }: Props) {
 
   const lotQuintals = toQuintal(DEFAULT_QTY_KG);
 
+  /**
+   * ★ The header and the pickers render in *every* state, which is why they
+   *   are lifted out rather than living inside the data branch. A farmer who
+   *   picks a crop his mandi does not trade would otherwise land on a bare
+   *   error screen with no control on it — the one screen from which he
+   *   cannot pick anything else, reachable in two taps. The pickers are the
+   *   way out of the empty state, so they have to be *in* it.
+   *
+   * ★ The title is the mandi the numbers actually come from, and the
+   *   subtitle is that series' own `latest_obs_date`. It used to read
+   *   "Lasalgaon APMC · Market Pulse · Live Yard" on every device in
+   *   Maharashtra: the mandi was hardcoded, and "Live" was a claim about
+   *   AGMARKNET data that arrives once a day.
+   */
+  const chrome = (
+    <>
+      <View style={styles.header}>
+        <View style={styles.headerIconRing}>
+          <Icon name="trending-up" size={18} color={colors.primary} />
+        </View>
+        <View style={styles.headerText}>
+          <Text style={styles.headerTitle}>
+            {activeMarket ? localName(activeMarket) : t('mkt_pick_market')}
+          </Text>
+          <Text style={styles.headerSub}>
+            {series.data?.latest_obs_date
+              ? t('mkt_as_of', {
+                  date: formatDateShort(series.data.latest_obs_date, locale, ''),
+                })
+              : activeCommodity
+                ? localName(activeCommodity)
+                : ''}
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.pickerRow}>
+        <Picker
+          label={t('mkt_pick_crop')}
+          icon="leaf"
+          options={commodityOptions}
+          selectedId={commodityId}
+          onSelect={setCommodityId}
+        />
+        <Picker
+          label={t('mkt_pick_district')}
+          icon="map-pin"
+          options={districtOptions}
+          selectedId={districtId}
+          onSelect={id => {
+            setDistrictId(id);
+            // The mandi belongs to the old district; let the new district's
+            // first yard take over rather than querying a pair that does not
+            // exist.
+            setPickedMarketId(null);
+          }}
+        />
+      </View>
+
+      {/* Only a real choice gets a control. A district with one yard states
+          it in the header instead of offering a dropdown of one. */}
+      {marketOptions.length > 1 ? (
+        <View style={styles.pickerRow}>
+          <Picker
+            label={t('mkt_pick_mandi')}
+            icon="building"
+            options={marketOptions}
+            selectedId={marketId}
+            onSelect={setPickedMarketId}
+          />
+        </View>
+      ) : null}
+    </>
+  );
+
   // ── Four states ───────────────────────────────────────────────────────
-  if (series.isLoading) {
+  if (series.isLoading || markets.isLoading) {
     return (
       <View style={styles.root}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+        {chrome}
         <ScrollView contentContainerStyle={styles.scroll}>
           <Skeleton height={120} />
           <View style={{ height: space.sm }} />
@@ -226,11 +399,36 @@ export default function PricesIndex({ navigation }: Props) {
   }
 
   if (series.error && !series.data) {
-    return <ErrorState message={t('mkt_error')} onRetry={() => series.refetch()} />;
+    return (
+      <View style={styles.root}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+        {chrome}
+        <ErrorState message={t('mkt_error')} onRetry={() => series.refetch()} />
+      </View>
+    );
   }
 
   if (!latest) {
-    return <ErrorState message={t('mkt_empty')} onRetry={() => series.refetch()} />;
+    /* Not an error. A mandi that does not trade this crop is a fact about
+       the market, and the answer is to say so and leave the pickers up. */
+    return (
+      <View style={styles.root}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
+        {chrome}
+        <View style={styles.emptyCard}>
+          <View style={styles.emptyIcon}>
+            <Icon name="info" size={24} color={colors.outline} />
+          </View>
+          <Text style={styles.emptyTitle}>
+            {t('mkt_no_pair_title', {
+              crop: activeCommodity ? localName(activeCommodity) : '',
+              market: activeMarket ? localName(activeMarket) : '',
+            })}
+          </Text>
+          <Text style={styles.emptyBody}>{t('mkt_no_pair_body')}</Text>
+        </View>
+      </View>
+    );
   }
 
   const sourceIsTrusted = TRUSTED_SOURCES.has(latest.source);
@@ -238,34 +436,9 @@ export default function PricesIndex({ navigation }: Props) {
   return (
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.surface} />
-
-      {/* ── Top app bar ─────────────────────────────────────────────── */}
-      <View style={styles.header}>
-        <View style={styles.headerIconRing}>
-          <Icon name="trending-up" size={18} color={colors.primary} />
-        </View>
-        <View style={styles.headerText}>
-          <View style={styles.headerTitleRow}>
-            <Text style={styles.headerTitle}>{t('home_market_name')}</Text>
-            <View style={styles.liveDot} />
-          </View>
-          <Text style={styles.headerSub}>{t('mkt_pulse_sub')}</Text>
-        </View>
-      </View>
+      {chrome}
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-        {/* ── Commodity + season row ────────────────────────────────── */}
-        <View style={styles.chipRow}>
-          <View style={styles.commodityChip}>
-            <View style={styles.commodityDot} />
-            <Text style={styles.commodityChipText}>{t('demo_commodity_name')}</Text>
-          </View>
-          <View style={styles.seasonChip}>
-            <Icon name="check-circle" size={12} color={colors.onPositiveContainer} />
-            <Text style={styles.seasonChipText}>{t('mkt_season_badge')}</Text>
-          </View>
-        </View>
-
         {/* ── Today's benchmark ─────────────────────────────────────── */}
         <View style={styles.card}>
           <View style={styles.benchmarkRow}>
@@ -296,10 +469,16 @@ export default function PricesIndex({ navigation }: Props) {
           <View style={styles.arrivalsRow}>
             <View style={styles.arrivalsLeft}>
               <Icon name="truck" size={16} color={colors.primary} />
+              {/* ★ `arrivals_qtl` is quintals, and it now says quintals. It
+                  used to render as "1200 Bags" — the same number relabelled
+                  into a unit it is not. A bag of onion is roughly 50 kg, so
+                  1,200 quintals is nearer 2,400 bags: the screen was off by
+                  a factor of two on the one figure a trader would check by
+                  eye. I2 — store kg, display quintals, and never rename a
+                  unit at the render edge. */}
               <Text style={styles.arrivalsValue}>
                 {t('mkt_arrivals_value', { count: formatNumber(latest.arrivals_qtl, locale) })}
               </Text>
-              <Text style={styles.labelSm}>{t('mkt_arrivals_note')}</Text>
             </View>
             {/* I8 — the provenance badge. `source` is shown as-is when it is
                 a trusted feed, and called out when it is not. */}
@@ -363,7 +542,15 @@ export default function PricesIndex({ navigation }: Props) {
           <View style={styles.cardHeadRow}>
             <View style={styles.cardHeadText}>
               <Text style={styles.cardTitle}>{t('mkt_history_title')}</Text>
-              <Text style={styles.labelSm}>{t('mkt_history_sub')}</Text>
+              {/* Was the literal string "Nashik APMC Onion Cycle" — wrong the
+                  moment either picker moves, and it named a district while
+                  the chart plots a mandi. */}
+              <Text style={styles.labelSm}>
+                {t('mkt_history_sub', {
+                  crop: activeCommodity ? localName(activeCommodity) : '',
+                  market: activeMarket ? localName(activeMarket) : '',
+                })}
+              </Text>
             </View>
             <Icon name="chart-bar" size={20} color={colors.onSurfaceVariant} />
           </View>
@@ -724,37 +911,45 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   headerText: { flex: 1 },
-  headerTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   headerTitle: { ...typography.titleLg, color: colors.primary },
-  liveDot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.tertiary },
   headerSub: { ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
+
+  /* `minWidth: 0` on the Picker itself is what keeps a long Marathi mandi
+     name from pushing its neighbour off the row. */
+  pickerRow: {
+    flexDirection: 'row',
+    gap: space.sm,
+    paddingHorizontal: space.md,
+    paddingTop: space.sm,
+  },
 
   scroll: { padding: space.md, paddingBottom: space.xxl, gap: space.sm },
 
-  chipRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  commodityChip: {
-    flexDirection: 'row',
+  emptyCard: {
     alignItems: 'center',
-    gap: 6,
+    gap: 8,
+    margin: space.md,
+    padding: space.xl,
+    borderRadius: radius.lg,
     backgroundColor: colors.surface,
     borderWidth: 1,
-    borderColor: colors.outlineVariant,
-    borderRadius: radius.full,
-    paddingHorizontal: space.sm,
-    paddingVertical: 6,
+    borderColor: colors.borderCard,
   },
-  commodityDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.secondaryContainer },
-  commodityChipText: { ...typography.labelMd, color: colors.onSurface },
-  seasonChip: {
-    flexDirection: 'row',
+  emptyIcon: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: colors.surfaceContainer,
     alignItems: 'center',
-    gap: 4,
-    backgroundColor: colors.positiveContainer,
-    borderRadius: radius.full,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    justifyContent: 'center',
   },
-  seasonChipText: { ...typography.labelSm, color: colors.onPositiveContainer },
+  emptyTitle: { ...typography.titleLg, color: colors.onSurface, textAlign: 'center' },
+  emptyBody: {
+    ...typography.bodySm,
+    color: colors.onSurfaceVariant,
+    textAlign: 'center',
+    lineHeight: 19,
+  },
 
   card: {
     backgroundColor: colors.surface,

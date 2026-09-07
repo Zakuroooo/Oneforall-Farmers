@@ -52,3 +52,86 @@ export const fxForecast: ForecastRes = {
   points: Array.from({ length: 14 }, (_, i) => buildPoint(i + 1)),
   model_card: { mase: 0.71, coverage_80_bps: 7840 },
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// The picker's forecast — one per (commodity, market) pair
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Same rule as `fxSeriesFor` in `fixtures/prices.ts`: once the market screen
+ * has a crop picker and a district picker, a fixture that ignores which crop
+ * was asked about is a fixture that lies convincingly.
+ *
+ * ★ Onion at Lasalgaon returns `fxForecast` itself, so the demo scenario's
+ *   numbers stay pinned to `fixtures/window.ts`.
+ *
+ * ★ Tomato's band is wide on purpose, and it is wide because the history is:
+ *   `fxSeriesFor('cmd_tomato', …)` swings ±46,000 paise on a 23-day cycle, and
+ *   a quantile model fitted to that cannot produce a narrow interval. At day 14
+ *   the band runs past 35% of p50 — `NO_ADVICE_BAND_THRESHOLD_BPS`, the
+ *   server's refusal threshold — which is exactly the point. I6 is not a
+ *   special case the app handles; it is the honest output for a crop that
+ *   genuinely cannot be forecast, and the picker is what lets a judge ask for
+ *   it.
+ */
+const MARKET_LEVEL: Record<string, number> = {
+  mkt_lasalgaon: 1,
+  mkt_pimpalgaon: 0.97,
+  mkt_ahmednagar: 0.93,
+  mkt_pune: 1.06,
+};
+
+function tomatoPoint(daysAhead: number): ForecastPoint {
+  const p50 = 130000 + daysAhead * 900;
+  // Starts wide and widens fast — a seven-day shelf life leaves nothing to
+  // anchor a two-week forecast on.
+  const bandFraction = 0.18 + daysAhead * 0.022;
+  const half = Math.round((p50 * bandFraction) / 2);
+  return {
+    target_date: dateNDaysAhead(daysAhead),
+    p10_paise_per_qtl: p50 - half,
+    p50_paise_per_qtl: p50,
+    p90_paise_per_qtl: p50 + half,
+  };
+}
+
+function scalePoint(p: ForecastPoint, level: number): ForecastPoint {
+  return {
+    target_date: p.target_date,
+    p10_paise_per_qtl: Math.round(p.p10_paise_per_qtl * level),
+    p50_paise_per_qtl: Math.round(p.p50_paise_per_qtl * level),
+    p90_paise_per_qtl: Math.round(p.p90_paise_per_qtl * level),
+  };
+}
+
+/** `null` where `fxSeriesFor` also returns null — there is nothing to forecast
+ * from a mandi that does not trade the crop. */
+export function fxForecastFor(commodityId: string, marketId: string): ForecastRes | null {
+  const level = MARKET_LEVEL[marketId];
+  if (level === undefined) return null;
+
+  if (commodityId === 'cmd_onion') {
+    if (marketId === 'mkt_lasalgaon') return fxForecast;
+    return {
+      as_of_date: fxForecast.as_of_date,
+      points: fxForecast.points.map(p => scalePoint(p, level)),
+      model_card: { ...fxForecast.model_card },
+    };
+  }
+
+  if (commodityId === 'cmd_tomato') {
+    if (marketId === 'mkt_pimpalgaon') return null;
+    return {
+      as_of_date: dateNDaysAhead(0),
+      points: Array.from({ length: 14 }, (_, i) => scalePoint(tomatoPoint(i + 1), level)),
+      // Worse on both counts than onion, and shown rather than hidden: a MASE
+      // near 1 means the model is barely beating a naive forecast, and 61%
+      // coverage on an interval sold as 80% is the model admitting it is
+      // overconfident. I8's spirit — the number that undercuts us is the one
+      // that has to be on screen.
+      model_card: { mase: 0.98, coverage_80_bps: 6120 },
+    };
+  }
+
+  return null;
+}

@@ -28,7 +28,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { colors, fontFamily, radius, space } from '../../theme/tokens';
 import { Icon } from './Icon';
 import { useT } from '../../lib/i18n';
-import { speakText, stopSpeaking } from '../../lib/voice';
+import { speakText } from '../../lib/voice';
 
 export function ListenButton({ text, label }: { text: string; label?: string }) {
   const { t, locale } = useT();
@@ -40,17 +40,17 @@ export function ListenButton({ text, label }: { text: string; label?: string }) 
    *   This used to bail out early while `speaking` was true, so a farmer who
    *   missed a sentence had no way to hear it again — the button simply did
    *   nothing until the whole utterance finished, and if the engine's finish
-   *   event never arrived it stayed dead for good. Tapping mid-speech now
-   *   stops and replays, which is what a farmer who did not catch something
-   *   actually wants.
+   *   event never arrived it stayed dead for good.
+   *
+   *   Restarting is the whole behaviour, so there is no `disabled` on the
+   *   button either. `disabled={speaking}` was still on it, which made this
+   *   branch unreachable: the control went inert for the entire utterance —
+   *   precisely the window in which someone who missed a number reaches for
+   *   it. `speakText` stops any current speech before it starts, so a second
+   *   tap simply begins again from the first word.
    */
   const onPress = async () => {
     if (text.trim().length === 0) return;
-    if (speaking) {
-      await stopSpeaking();
-      setSpeaking(false);
-      return;
-    }
     setSpeaking(true);
     try {
       // Spoken in the language the farmer chose, not the app's default.
@@ -68,7 +68,6 @@ export function ListenButton({ text, label }: { text: string; label?: string }) 
     <TouchableOpacity
       style={[styles.btn, speaking && styles.btnActive]}
       onPress={onPress}
-      disabled={speaking}
       accessibilityRole="button"
       accessibilityLabel={label ?? t('listen_button')}>
       <Icon name={speaking ? 'volume-off' : 'volume'} size={14} color={colors.primary} />
