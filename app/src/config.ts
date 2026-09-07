@@ -76,6 +76,21 @@ export const API_BASE_URL = __DEV__
  *   — this is a dev-time necessity right now, not a demo-day setting, and leaving
  *   it `true` past that point means testing against stale fixtures without
  *   noticing the real endpoint drifted.
+ *
+ * ★ **The flip is one line, and that has been checked rather than assumed**
+ *   (2026-09-07). Setting this to `false` compiles with zero TypeScript
+ *   errors: all 33 screens that branch on it call a real `lib/api` function
+ *   on the other side, including the two reference endpoints that had no
+ *   caller at all until the market pickers needed them (`getMarkets`,
+ *   `getCommodities`). Nothing is stubbed behind a `throw` or a `null` that
+ *   would only surface at runtime.
+ *
+ *   What that does *not* prove is that the responses match. The fixtures are
+ *   CANON-shaped by construction and the app reads `snake_case` straight off
+ *   the wire, so the shapes should hold — but three endpoints this app calls
+ *   have open contract questions in `docs/BLOCKERS.md` (`GET /buyers/{id}`,
+ *   `GET /tx`, and a `tx_id` on the accepted `OfferDto`), and those screens
+ *   degrade to a stated empty state rather than guessing a URL.
  */
 export const USE_FIXTURES = true;
 
