@@ -117,3 +117,42 @@ export function formatTimeShort(
   const mm = m[2]!;
   return locale === 'en' ? `${hh}:${mm}` : `${devNum(Number(hh), locale)}:${devNum(Number(mm), locale)}`;
 }
+
+/**
+ * How long is left before `iso`, as "५ तास २४ मिनिटे" / "5h 24m".
+ *
+ * ★ Returns `null` once the moment has passed, rather than a negative or a
+ *   cheerful "0 minutes left". An expired offer is a different state from an
+ *   expiring one, and the caller has to say so in its own words.
+ *
+ * ★ Unlike the date helpers above this one *does* go through `Date`, and has
+ *   to: a remaining duration is the difference between two instants, so the
+ *   device clock is the right reference and the timezone in the string is
+ *   handled correctly by the parser.
+ */
+export function formatTimeRemaining(
+  iso: string | null | undefined,
+  locale: Locale = 'mr',
+  t?: (key: string, vars?: Record<string, string | number>) => string,
+): string | null {
+  if (!iso) return null;
+  const ms = new Date(iso).getTime() - Date.now();
+  if (!Number.isFinite(ms) || ms <= 0) return null;
+
+  const totalMinutes = Math.floor(ms / 60000);
+  const days = Math.floor(totalMinutes / (60 * 24));
+  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+  const minutes = totalMinutes % 60;
+
+  // Without a translator the caller gets a compact machine form; screens pass
+  // `t` so the units read in the farmer's own language.
+  if (!t) return `${days > 0 ? `${days}d ` : ''}${hours}h ${minutes}m`;
+
+  if (days > 0) {
+    return t('time_left_days', { days: devNum(days, locale), hours: devNum(hours, locale) });
+  }
+  if (hours > 0) {
+    return t('time_left_hours', { hours: devNum(hours, locale), minutes: devNum(minutes, locale) });
+  }
+  return t('time_left_minutes', { minutes: devNum(minutes, locale) });
+}
