@@ -1278,5 +1278,22 @@
   "vd_open_cost_sheet": "पूरा खर्च पत्रक खोलें",
   "vd_sell_today_cta": "आज {price}/क्वि पर बेचें",
   "vd_list_lot_cta": "यह माल खरीदारों के लिए दर्ज करें",
-  "vd_no_hold_persist": "इसे देखने से कुछ तय नहीं होता। मंडी बदलेगी तो सिफ़ारिश भी बदलेगी।"
+  "vd_no_hold_persist": "इसे देखने से कुछ तय नहीं होता। मंडी बदलेगी तो सिफ़ारिश भी बदलेगी।",
+  "cb_title": "मद-वार खर्च ब्यौरा",
+  "cb_subtitle": "{qty} क्विंटल · {days} दिन रोकने की अवधि",
+  "cb_subtitle_no_hold": "{qty} क्विंटल · आज बेचने पर खर्च",
+  "cb_total_eyebrow": "कुल मंडी व भंडारण कटौती",
+  "cb_lot_total_label": "{qty} क्विंटल का कुल",
+  "cb_lot_total_note": "{qty} × {perQtl}",
+  "cb_items_title": "{n} खर्च की मदें",
+  "cb_all_inclusive": "सर्व-समावेशी",
+  "cb_lot_total_suffix": "कुल {amount}",
+  "cb_only_when_holding": "केवल रोकने पर",
+  "cb_net_gain_label": "नीचे की हर कटौती के बाद अपेक्षित लाभ",
+  "cb_done_cta": "समझ गया — निर्णय पर वापस",
+  "cb_desc_transport": "खेत से मंडी तक माल ले जाने का खर्च।",
+  "cb_desc_commission": "मंडी की अढ़त, बिक्री राशि पर ली जाती है।",
+  "cb_desc_storage": "माल रोके रखने के हर दिन का हवादार भंडारण खर्च।",
+  "cb_desc_spoilage": "भंडारण में अपेक्षित वजन घटना और सूखना।",
+  "cb_desc_loading": "रैंप पर मज़दूरी और तौल पर्ची।"
 }

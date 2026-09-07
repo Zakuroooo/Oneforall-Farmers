@@ -1278,5 +1278,22 @@
   "vd_open_cost_sheet": "Open itemised cost sheet",
   "vd_sell_today_cta": "Sell today at {price}/q",
   "vd_list_lot_cta": "List this lot for buyers",
-  "vd_no_hold_persist": "Nothing is committed by viewing this. The recommendation updates as the mandi does."
+  "vd_no_hold_persist": "Nothing is committed by viewing this. The recommendation updates as the mandi does.",
+  "cb_title": "Itemised cost breakdown",
+  "cb_subtitle": "{qty} quintals · {days}-day holding window",
+  "cb_subtitle_no_hold": "{qty} quintals · sell-today costs",
+  "cb_total_eyebrow": "Total yard & holding deductions",
+  "cb_lot_total_label": "{qty} quintal total",
+  "cb_lot_total_note": "{qty} × {perQtl}",
+  "cb_items_title": "{n} holding cost items",
+  "cb_all_inclusive": "All-inclusive",
+  "cb_lot_total_suffix": "{amount} total",
+  "cb_only_when_holding": "Only while holding",
+  "cb_net_gain_label": "Expected gain, after every deduction below",
+  "cb_done_cta": "Got it — back to the decision",
+  "cb_desc_transport": "Moving the lot from the farm gate to the yard.",
+  "cb_desc_commission": "The yard’s adat, charged on the sale value.",
+  "cb_desc_storage": "Ventilated storage for each day the lot is held.",
+  "cb_desc_spoilage": "Expected weight loss and drying while stored.",
+  "cb_desc_loading": "Labour at the ramp and the weighbridge slip."
 }

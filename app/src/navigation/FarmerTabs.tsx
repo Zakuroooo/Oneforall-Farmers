@@ -119,7 +119,12 @@ function HomeStackNavigator() {
     <HomeStack.Navigator screenOptions={STACK_SCREEN_OPTIONS}>
       <HomeStack.Screen name="S4_Home" component={S04_Home} />
       <HomeStack.Screen name="S9_Verdict" component={S09_Verdict} />
-      <HomeStack.Screen name="S10_CostBreakdown" component={S10_CostBreakdown} />
+      {/* Stitch 12 is a bottom sheet over the decision screen, not a page. */}
+      <HomeStack.Screen
+        name="S10_CostBreakdown"
+        component={S10_CostBreakdown}
+        options={{ presentation: 'modal' }}
+      />
     </HomeStack.Navigator>
   );
 }

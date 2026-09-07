@@ -1,43 +1,40 @@
 /**
- * S10 — the cost breakdown. P5, and P0 priority, because it is the screen that
- * turns the verdict from a claim into an audit.
+ * S10 — the itemised cost sheet. Stitch screen 12
+ * (`12_cost_breakdown_itemized_deductions_sheet`), which is a bottom sheet
+ * over the decision screen; it is registered with `presentation: 'modal'` so
+ * it arrives the way the design says it does.
  *
- * ★ Why this is a screen and not only the expandable row inside `VerdictCard`:
- *   PRANAY.md §1.4's inventory gives S10 its own ID, and §1.7's S9 mockup
- *   annotates the cost row `costs.total_paise_per_qtl → S10`. The row on S9 is
- *   the peek — five numbers, no context. This is where the farmer (or a judge
- *   who taps it) sees the same five numbers multiplied out onto his actual lot,
- *   and which of them he pays only if he waits. Both exist on purpose.
+ * ★ It reads the **same `queryKey` as S9**, deliberately. The costs shown
+ *   here are the costs that produced the gain on the verdict — not a second
+ *   fetch that could disagree with it. Reached from S9's "open itemised cost
+ *   sheet" row, so the cache is always warm; on a cold start it fetches the
+ *   same key and both screens still agree.
  *
- * ★ It reads the **same `queryKey` as S9**, deliberately. That means:
- *     - no second network call — TanStack serves it from cache instantly,
- *     - it works in airplane mode off the P11 hydrated cache,
- *     - and the two screens can never disagree about the numbers, because
- *       there is one cache entry and both read it.
- *   Passing `costs` through route params would have been fewer lines and would
- *   have made S10 unreachable from a cold start or a deep link.
+ * ★ `whenHolding` marks the two lines that only exist because the lot is
+ *   being held (storage, spoilage). On a SELL_NOW verdict they are still
+ *   rendered — a zero that is explained beats a row that silently vanishes —
+ *   but they carry the "only while holding" tag so the farmer can see which
+ *   part of the deduction he avoids by selling today.
  *
- * ★ I1 — every value on this screen is an integer of paise until `formatPaise`.
- *   The one multiplication (`per_qtl × quintals`) is integer × integer. There is
- *   no division anywhere in this file; `toQuintal` owns the only one, in
- *   `lib/money.ts`.
- *
- * ★ The total rendered is the **server's** `total_paise_per_qtl`, not a sum this
- *   screen computes. If the server's total ever disagrees with its own five
- *   lines, the farmer must see what the server actually charged and we must fail
- *   a test — not have the client quietly paper over the gap. That agreement is
- *   asserted in `__tests__/S10_CostBreakdown.test.tsx`, which is P5's gate.
+ * ★ Three things in the mockup are not reproduced: a "Middleman Cut ~₹280/q"
+ *   comparison (no field anywhere carries a middleman rate — it is a made-up
+ *   number used to flatter the product), a "Direct Escrow Mandi Settlement
+ *   Guarantee" stamp (no such guarantee exists), and "Download Itemized PDF
+ *   Receipt / Tax Invoice" (nothing in this app generates a PDF or a tax
+ *   invoice). Named specifics like "Shriram Warehouse Niphad, ₹2.55/bag/day"
+ *   are likewise replaced with descriptions that are true of the fee itself.
  */
 
-import React, { useCallback, useState } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React from 'react';
+import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import { recommendWindow } from '../../lib/api';
-import { getLocale } from '../../lib/locale';
-import { translate } from '../../lib/i18n';
+import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
+import { Icon } from '../../components/ui/Icon';
+import { useT } from '../../lib/i18n';
 import { formatNumber, formatPaise, toQuintal } from '../../lib/money';
+import { recommendWindow } from '../../lib/api';
 import {
   DEFAULT_COMMODITY_ID,
   DEFAULT_GRADE,
@@ -47,35 +44,24 @@ import {
   USE_FIXTURES,
 } from '../../config';
 import { fxHold } from '../../fixtures/window';
-import { StaleBanner } from '../../components/farmer/StaleBanner';
 import { EmptyState, ErrorState, Skeleton } from '../../components/farmer/States';
-import type { Locale, WindowCosts } from '../../types/api';
+import type { HomeStackParamList } from '../../navigation/FarmerTabs';
+import type { WindowCosts } from '../../types/api';
 
-/**
- * The five deductions, in the order the S9 mockup lists them.
- *
- * `whenHolding` marks the two a farmer pays **only if he waits**. This is not an
- * invention: `NearbyMarketRow`'s own contract in `types/api.ts` defines a
- * sell-today net as `gross − transport − commission − loading` — storage and
- * spoilage are absent from it because nothing is stored and nothing rots in a
- * lot that leaves today. Saying so is the difference between a farmer reading
- * ₹155/क्विंटल as a toll and reading it as a choice.
- *
- * TODO(nilesh): confirm against `domain/costs.py` when the decision engine
- *   lands. If storage/spoilage do accrue on a same-day sale in your model, this
- *   flag is wrong and the note below must come off — a wrong reassurance is
- *   worse than no reassurance.
- */
-const COST_LINES: Array<{
+type Props = NativeStackScreenProps<HomeStackParamList, 'S10_CostBreakdown'>;
+
+const LINES: Array<{
   key: keyof Omit<WindowCosts, 'total_paise_per_qtl'>;
   labelKey: string;
+  descKey: string;
+  icon: Parameters<typeof Icon>[0]['name'];
   whenHolding: boolean;
 }> = [
-  { key: 'transport_paise_per_qtl', labelKey: 'cost_transport', whenHolding: false },
-  { key: 'commission_paise_per_qtl', labelKey: 'cost_commission', whenHolding: false },
-  { key: 'storage_paise_per_qtl', labelKey: 'cost_storage', whenHolding: true },
-  { key: 'spoilage_paise_per_qtl', labelKey: 'cost_spoilage', whenHolding: true },
-  { key: 'loading_paise_per_qtl', labelKey: 'cost_loading', whenHolding: false },
+  { key: 'transport_paise_per_qtl', labelKey: 'cost_transport', descKey: 'cb_desc_transport', icon: 'truck', whenHolding: false },
+  { key: 'commission_paise_per_qtl', labelKey: 'cost_commission', descKey: 'cb_desc_commission', icon: 'handshake', whenHolding: false },
+  { key: 'storage_paise_per_qtl', labelKey: 'cost_storage', descKey: 'cb_desc_storage', icon: 'box', whenHolding: true },
+  { key: 'spoilage_paise_per_qtl', labelKey: 'cost_spoilage', descKey: 'cb_desc_spoilage', icon: 'leaf', whenHolding: true },
+  { key: 'loading_paise_per_qtl', labelKey: 'cost_loading', descKey: 'cb_desc_loading', icon: 'scale', whenHolding: false },
 ];
 
 async function fetchVerdict() {
@@ -90,137 +76,314 @@ async function fetchVerdict() {
   });
 }
 
-export default function S10_CostBreakdown() {
-  const [locale, setLocale] = useState<Locale>('mr');
-  useFocusEffect(
-    useCallback(() => {
-      getLocale().then(l => l && setLocale(l));
-    }, []),
-  );
+export default function S10_CostBreakdown({ navigation }: Props) {
+  const { t, locale } = useT();
+  const qtyQtl = toQuintal(DEFAULT_QTY_KG);
 
-  // Identical to S9's key — see the header note. A different key here would mean
-  // a second request and two caches that can drift apart.
-  const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['ai', 'window', 'recommend', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, DEFAULT_QTY_KG],
     queryFn: fetchVerdict,
   });
 
+  const close = () => navigation.canGoBack() && navigation.goBack();
+
+  const sheetHeader = (
+    <>
+      <View style={styles.grabberRow}>
+        <View style={styles.grabber} />
+      </View>
+      <View style={styles.headerRow}>
+        <View style={styles.headerText}>
+          <Text style={styles.title}>{t('cb_title')}</Text>
+          {data ? (
+            <Text style={styles.subtitle}>
+              {data.hold_days !== null && data.hold_days > 0
+                ? t('cb_subtitle', {
+                    qty: formatNumber(qtyQtl, locale),
+                    days: formatNumber(data.hold_days, locale),
+                  })
+                : t('cb_subtitle_no_hold', { qty: formatNumber(qtyQtl, locale) })}
+            </Text>
+          ) : null}
+        </View>
+        <TouchableOpacity
+          style={styles.closeBtn}
+          onPress={close}
+          accessibilityRole="button"
+          accessibilityLabel={t('back_button')}>
+          <Icon name="x-circle" size={20} color={colors.onSurfaceVariant} />
+        </TouchableOpacity>
+      </View>
+    </>
+  );
+
   if (isLoading) {
     return (
-      <ScrollView contentContainerStyle={styles.root}>
-        <Skeleton height={320} />
-      </ScrollView>
+      <View style={styles.root}>
+        <StatusBar barStyle="dark-content" backgroundColor={colors.surfaceContainerLowest} />
+        {sheetHeader}
+        <ScrollView contentContainerStyle={styles.scroll}>
+          <Skeleton height={160} />
+          <View style={{ height: space.sm }} />
+          <Skeleton height={280} />
+        </ScrollView>
+      </View>
     );
   }
 
-  // Same rule as S9 (P11): an errored background refetch must not shadow a
-  // verdict the hydrated cache still holds. Only refuse to render when there is
-  // genuinely nothing.
   if (error && !data) {
-    return (
-      <ErrorState message={translate('cost_breakdown_error', locale)} onRetry={() => refetch()} />
-    );
+    return <ErrorState message={t('cost_breakdown_error')} onRetry={() => refetch()} />;
   }
 
   if (!data) {
-    return <EmptyState title={translate('cost_breakdown_empty', locale)} />;
+    return <EmptyState title={t('cost_breakdown_empty')} />;
   }
 
-  const { costs } = data;
-  const qtyQtl = toQuintal(DEFAULT_QTY_KG);
+  const totalPerQtl = data.costs.total_paise_per_qtl;
+  const lotTotal = totalPerQtl * qtyQtl;
+  const isHolding = data.hold_days !== null && data.hold_days > 0;
 
   return (
-    <ScrollView contentContainerStyle={styles.root}>
-      <StaleBanner dataUpdatedAt={dataUpdatedAt} locale={locale} />
+    <View style={styles.root}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.surfaceContainerLowest} />
+      {sheetHeader}
 
-      <Text style={styles.title}>{translate('cost_breakdown_title', locale)}</Text>
-      <Text style={styles.subtitle}>
-        {translate('cost_breakdown_subtitle', locale, {
-          market: translate('demo_commodity_market', locale),
-          perQtl: translate('per_quintal_label', locale),
-        })}
-      </Text>
-
-      <View style={styles.card}>
-        {COST_LINES.map(line => (
-          <View key={line.key} style={styles.row} testID={`cost-row-${line.key}`}>
-            <View style={styles.labelCol}>
-              <Text style={styles.label}>{translate(line.labelKey, locale)}</Text>
-              {line.whenHolding ? (
-                <Text style={styles.labelNote}>{translate('only_when_holding_note', locale)}</Text>
-              ) : null}
+      <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
+        {/* ── Total deductions hero ─────────────────────────────────── */}
+        <View style={styles.heroCard}>
+          <View style={styles.heroTopRow}>
+            <View style={styles.heroLeft}>
+              <View style={styles.heroEyebrowRow}>
+                <Icon name="clipboard" size={14} color={colors.primary} />
+                <Text style={styles.heroEyebrow}>{t('cb_total_eyebrow')}</Text>
+              </View>
+              <View style={styles.heroPriceRow}>
+                <Text style={styles.heroNumeral}>{formatPaise(totalPerQtl, locale)}</Text>
+                <Text style={styles.heroPerQtl}>{t('vd_per_quintal')}</Text>
+              </View>
             </View>
-            <Text style={styles.value}>{formatPaise(costs[line.key], locale)}</Text>
+            <View style={styles.heroRight}>
+              <Text style={styles.heroRightLabel}>
+                {t('cb_lot_total_label', { qty: formatNumber(qtyQtl, locale) })}
+              </Text>
+              <Text style={styles.heroRightValue}>{formatPaise(lotTotal, locale)}</Text>
+              <Text style={styles.heroRightNote}>
+                {t('cb_lot_total_note', {
+                  qty: formatNumber(qtyQtl, locale),
+                  perQtl: formatPaise(totalPerQtl, locale),
+                })}
+              </Text>
+            </View>
           </View>
-        ))}
 
-        <View style={[styles.row, styles.totalRow]}>
-          <Text style={styles.totalLabel}>{translate('cost_total', locale)}</Text>
-          <Text testID="cost-total" style={styles.totalValue}>
-            {formatPaise(costs.total_paise_per_qtl, locale)}
-          </Text>
+          {/* What survives the deductions. The gain is already net of every
+              line below — `cost_breakdown_footnote` states that contract, and
+              this is the same number the verdict shows, not a recomputation. */}
+          {data.expected_gain_paise !== null ? (
+            <View style={styles.netStrip}>
+              <View style={styles.netStripHead}>
+                <Icon name="trending-up" size={15} color={colors.tertiary} />
+                <Text style={styles.netStripLabel}>{t('cb_net_gain_label')}</Text>
+              </View>
+              <Text style={styles.netStripValue}>
+                + {formatPaise(data.expected_gain_paise, locale)}
+              </Text>
+            </View>
+          ) : null}
         </View>
-      </View>
 
-      {/*
-        The number a farmer actually feels. ₹155/क्विंटल is abstract; ₹6,214 off
-        four tonnes is the thing he decides against. Integer × integer (I1/I2) —
-        `toQuintal` floors the kg, so this understates rather than overstates.
-      */}
-      <View style={styles.lotCard}>
-        <Text style={styles.lotLabel}>
-          {translate('lot_total_cost_label', locale, { qty: formatNumber(qtyQtl, locale) })}
-        </Text>
-        <Text testID="cost-whole-lot" style={styles.lotValue}>
-          {formatPaise(costs.total_paise_per_qtl * qtyQtl, locale)}
-        </Text>
-        <Text style={styles.lotNote}>
-          {translate('lot_cost_multiply_note', locale, {
-            total: formatPaise(costs.total_paise_per_qtl, locale),
-            qty: formatNumber(qtyQtl, locale),
+        {/* ── Itemised ledger ───────────────────────────────────────── */}
+        <View style={styles.ledgerHead}>
+          <View style={styles.ledgerHeadLeft}>
+            <Icon name="check-circle" size={17} color={colors.primary} />
+            <Text style={styles.ledgerTitle}>
+              {t('cb_items_title', { n: formatNumber(LINES.length, locale) })}
+            </Text>
+          </View>
+          <Text style={styles.ledgerAllInclusive}>{t('cb_all_inclusive')}</Text>
+        </View>
+
+        <View style={styles.ledgerCard}>
+          {LINES.map((line, i) => {
+            const perQtl = data.costs[line.key];
+            return (
+              <View key={line.key} style={[styles.itemRow, i > 0 && styles.itemRowDivider]}>
+                <View style={styles.itemIconBox}>
+                  <Icon name={line.icon} size={17} color={colors.primary} />
+                </View>
+                <View style={styles.itemText}>
+                  <View style={styles.itemTitleRow}>
+                    <Text style={styles.itemTitle}>{t(line.labelKey)}</Text>
+                    {line.whenHolding && isHolding ? (
+                      <View style={styles.holdTag}>
+                        <Text style={styles.holdTagText}>{t('cb_only_when_holding')}</Text>
+                      </View>
+                    ) : null}
+                  </View>
+                  <Text style={styles.itemDesc}>{t(line.descKey)}</Text>
+                </View>
+                <View style={styles.itemAmounts}>
+                  <Text style={styles.itemPerQtl}>{formatPaise(perQtl, locale)}</Text>
+                  <Text style={styles.itemLotTotal}>
+                    {t('cb_lot_total_suffix', { amount: formatPaise(perQtl * qtyQtl, locale) })}
+                  </Text>
+                </View>
+              </View>
+            );
           })}
-        </Text>
-      </View>
 
-      <Text style={styles.footnote}>{translate('cost_breakdown_footnote', locale)}</Text>
-    </ScrollView>
+          <View style={[styles.itemRow, styles.totalRow]}>
+            <Text style={styles.totalLabel}>{t('cost_total')}</Text>
+            <View style={styles.itemAmounts}>
+              <Text style={styles.totalPerQtl}>{formatPaise(totalPerQtl, locale)}</Text>
+              <Text style={styles.itemLotTotal}>
+                {t('cb_lot_total_suffix', { amount: formatPaise(lotTotal, locale) })}
+              </Text>
+            </View>
+          </View>
+        </View>
+
+        <Text style={styles.footnote}>{t('cost_breakdown_footnote')}</Text>
+
+        <TouchableOpacity style={styles.doneBtn} onPress={close} accessibilityRole="button">
+          <Text style={styles.doneBtnText}>{t('cb_done_cta')}</Text>
+          <Icon name="arrow-right" size={18} color={colors.onPrimary} />
+        </TouchableOpacity>
+      </ScrollView>
+    </View>
   );
 }
 
-const GREEN = '#1B5E20';
-
 const styles = StyleSheet.create({
-  root: { padding: 24 },
+  root: { flex: 1, backgroundColor: colors.surfaceContainerLowest },
 
-  title: { fontSize: 24, fontWeight: '800', color: '#212121' },
-  subtitle: { fontSize: 15, color: '#666', marginTop: 4, marginBottom: 20 },
+  grabberRow: { alignItems: 'center', paddingTop: space.sm, paddingBottom: space.xs },
+  grabber: { width: 48, height: 6, borderRadius: radius.full, backgroundColor: colors.outlineVariant },
 
-  card: { backgroundColor: '#FFF', borderRadius: 16, padding: 20 },
-  row: {
+  headerRow: {
     flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: space.xs,
+    paddingHorizontal: space.md,
+    paddingBottom: space.sm,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.surfaceContainer,
+  },
+  headerText: { flex: 1 },
+  title: { ...typography.headlineSm, color: colors.onSurface, fontFamily: fontFamily.extraBold },
+  subtitle: { ...typography.labelSm, color: colors.onSurfaceVariant, marginTop: 2, fontFamily: fontFamily.medium },
+  closeBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    backgroundColor: colors.surfaceContainerLow,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  scroll: { padding: space.md, paddingBottom: space.xxl, gap: space.sm },
+
+  heroCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 2,
+    borderColor: colors.outlineVariant,
+    padding: space.md,
+  },
+  heroTopRow: { flexDirection: 'row', justifyContent: 'space-between', gap: space.sm },
+  heroLeft: { flex: 1 },
+  heroEyebrowRow: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  heroEyebrow: { ...typography.labelSm, color: colors.primary, textTransform: 'uppercase', flex: 1 },
+  heroPriceRow: { flexDirection: 'row', alignItems: 'baseline', gap: 6, marginTop: 4 },
+  heroNumeral: { ...typography.numeralHero, color: colors.onSurface },
+  heroPerQtl: { ...typography.titleMd, color: colors.onSurfaceVariant },
+  heroRight: { alignItems: 'flex-end' },
+  heroRightLabel: { ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
+  heroRightValue: { ...typography.titleLg, color: colors.primary, fontFamily: fontFamily.extraBold, marginTop: 2 },
+  heroRightNote: { ...typography.labelSm, color: colors.outline, fontFamily: fontFamily.medium },
+
+  netStrip: {
+    marginTop: space.sm,
+    backgroundColor: colors.surfaceContainerLowest,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    padding: space.sm,
+  },
+  netStripHead: { flexDirection: 'row', alignItems: 'center', gap: 5 },
+  netStripLabel: { ...typography.labelSm, color: colors.onSurfaceVariant, flex: 1 },
+  netStripValue: {
+    ...typography.headlineSm,
+    color: colors.tertiary,
+    fontFamily: fontFamily.bold,
+    marginTop: 2,
+  },
+
+  ledgerHead: {
+    flexDirection: 'row',
+    alignItems: 'center',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
+    gap: space.xs,
+    paddingHorizontal: 2,
   },
-  labelCol: { flexShrink: 1, paddingRight: 12 },
-  label: { fontSize: 16, color: '#333' },
-  labelNote: { fontSize: 12, color: '#888', marginTop: 2 },
-  value: { fontSize: 16, color: '#212121', fontWeight: '600' },
+  ledgerHeadLeft: { flexDirection: 'row', alignItems: 'center', gap: 6, flex: 1 },
+  ledgerTitle: { ...typography.titleMd, color: colors.onSurface, flex: 1 },
+  ledgerAllInclusive: { ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
 
-  totalRow: { borderTopWidth: 1, borderTopColor: '#EEE', marginTop: 6, paddingTop: 14 },
-  totalLabel: { fontSize: 18, fontWeight: '800', color: '#212121' },
-  totalValue: { fontSize: 18, fontWeight: '800', color: '#212121' },
+  ledgerCard: {
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+    overflow: 'hidden',
+  },
+  itemRow: { flexDirection: 'row', alignItems: 'flex-start', gap: space.sm, padding: space.sm },
+  itemRowDivider: { borderTopWidth: 1, borderTopColor: colors.outlineVariant },
+  itemIconBox: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.sm,
+    backgroundColor: colors.surfaceContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemText: { flex: 1 },
+  itemTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, flexWrap: 'wrap' },
+  itemTitle: { ...typography.titleMd, color: colors.onSurface },
+  holdTag: {
+    backgroundColor: colors.surfaceContainerHigh,
+    borderRadius: radius.full,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+  },
+  holdTagText: { ...typography.labelSm, fontSize: 10, color: colors.onSurfaceVariant },
+  itemDesc: { ...typography.bodySm, color: colors.onSurfaceVariant, marginTop: 2, lineHeight: 17 },
+  itemAmounts: { alignItems: 'flex-end' },
+  itemPerQtl: { ...typography.titleMd, color: colors.onSurface },
+  itemLotTotal: { ...typography.labelSm, color: colors.outline, fontFamily: fontFamily.medium, marginTop: 2 },
 
-  lotCard: {
-    backgroundColor: '#FFF',
-    borderRadius: 16,
-    padding: 20,
-    marginTop: 16,
+  totalRow: {
+    borderTopWidth: 1.5,
+    borderTopColor: colors.outlineVariant,
+    backgroundColor: colors.surfaceContainerLow,
     alignItems: 'center',
   },
-  lotLabel: { fontSize: 15, color: '#666', textAlign: 'center' },
-  lotValue: { fontSize: 28, fontWeight: '800', color: GREEN, marginTop: 6 },
-  lotNote: { fontSize: 13, color: '#888', marginTop: 6 },
+  totalLabel: { ...typography.titleLg, color: colors.onSurface, flex: 1 },
+  totalPerQtl: { ...typography.titleLg, color: colors.primary, fontFamily: fontFamily.extraBold },
 
-  footnote: { fontSize: 14, color: '#555', lineHeight: 22, marginTop: 20 },
+  footnote: { ...typography.bodySm, color: colors.onSurfaceVariant, lineHeight: 18 },
+
+  doneBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    height: touch.targetHero,
+    backgroundColor: colors.primaryContainer,
+    borderRadius: radius.md,
+    marginTop: space.xs,
+  },
+  doneBtnText: { ...typography.titleLg, color: colors.onPrimary, fontFamily: fontFamily.extraBold },
 });
