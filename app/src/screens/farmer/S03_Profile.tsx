@@ -15,7 +15,15 @@
  *   through S2 — there is nothing to register, so this screen sends the farmer
  *   back to S2 instead of crashing on a null phone at submit time.
  *
- * ★ `role: 'FARMER'` is fixed, not a picker. This is the farmer app's own
+ * ★ The role comes from `pendingAuth`, chosen on the phone screen, not
+ *   hardcoded here — one onboarding chain now serves both sides. A buyer
+ *   never actually reaches this screen (S3_OTP signs him in straight after
+ *   the OTP, since none of the fields below apply to him), but registration
+ *   still sends whatever role the flow started with rather than asserting
+ *   one. Previously this read `role: 'FARMER'` and the buyer login screen
+ *   that would have sent BUYER was unreachable, so BUYER was unregisterable.
+ *
+ * ★ Historical note — this used to read: `role: 'FARMER'` is fixed. This is the farmer app's own
  *   registration screen; a buyer registers through the buyer login screen, which
  *   sends `role: 'BUYER'`. One binary, but each onboarding path only ever writes
  *   its own role.
@@ -178,7 +186,7 @@ export default function S03_Profile({ navigation }: Props) {
             phone: pending.phone,
             code: pending.code,
             name: name.trim(),
-            role: 'FARMER',
+            role: pending.role,
             locale,
             district_id: districtId,
             ...(trimmedVillage ? { village: trimmedVillage } : {}),

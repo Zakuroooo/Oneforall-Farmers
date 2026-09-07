@@ -15,6 +15,7 @@ import { useT } from '../../lib/i18n';
 import { ApiError, requestOtp, verifyOtp } from '../../lib/api';
 import { getPendingAuth, setPendingAuth, useAuth } from '../../lib/auth';
 import { USE_FIXTURES } from '../../config';
+import { fxAuthRegisteredBuyer } from '../../fixtures/auth';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { ListenButton } from '../../components/ui/ListenButton';
 
@@ -36,6 +37,7 @@ export default function S03_OTP({ navigation }: Props) {
   // verify without it, so a farmer who somehow lands here directly goes
   // back rather than crashing on a null phone.
   const phone = getPendingAuth()?.phone ?? null;
+  const role = getPendingAuth()?.role ?? 'FARMER';
   useEffect(() => {
     if (!phone) navigation.replace('S2_Phone');
   }, [phone, navigation]);
@@ -70,14 +72,22 @@ export default function S03_OTP({ navigation }: Props) {
     setError('');
     try {
       if (USE_FIXTURES) {
-        setPendingAuth(phone, code);
+        // ★ A buyer needs nothing the farmer profile screen collects — no
+        //   district, no village, no land. Phone and OTP are the whole
+        //   signup, exactly as asked, so he lands in the buyer console here
+        //   instead of being walked through a farmer's form.
+        if (role === 'BUYER') {
+          await signIn(fxAuthRegisteredBuyer);
+          return;
+        }
+        setPendingAuth(phone, code, role);
         navigation.navigate('S3_Profile');
         return;
       }
       const res = await verifyOtp(phone, code);
       await signIn(res);
     } catch {
-      setPendingAuth(phone, code);
+      setPendingAuth(phone, code, role);
       navigation.navigate('S3_Profile');
     } finally {
       setVerifying(false);

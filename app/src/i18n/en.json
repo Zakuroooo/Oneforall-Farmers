@@ -1459,5 +1459,12 @@
   "dd_step4_title": "Money to your bank",
   "dd_step4_detail": "Once the weighment clears, the escrow is released to your account.",
   "dd_track_cta": "Track this deal",
-  "dd_my_produce": "Back to my produce"
+  "dd_my_produce": "Back to my produce",
+  "role_farmer": "Farmer",
+  "role_buyer": "Buyer",
+  "role_question": "I am a",
+  "role_farmer_sub": "I grow and sell produce",
+  "role_buyer_sub": "I buy produce from farmers",
+  "buyer_welcome_title": "Welcome",
+  "buyer_home_title": "Buyer console"
 }

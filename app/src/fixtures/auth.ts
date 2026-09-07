@@ -42,6 +42,25 @@ export const fxAuthRegistered: AuthRes = {
 };
 
 /**
+ * The same success path for a buyer. Buyers register with the identical
+ * phone + OTP flow — the only difference is the role, which decides which
+ * navigator the root renders. `district_id` is carried because `User`
+ * requires it; a buyer's district is where he collects from, not where he
+ * farms.
+ */
+export const fxAuthRegisteredBuyer: AuthRes = {
+  token: 'fixture-token-buyer',
+  user: {
+    id: 'usr_fixture_buyer_1',
+    phone: '9876543211',
+    name: 'Fixture Buyer',
+    role: 'BUYER',
+    locale: 'mr',
+    district_id: 'dist_nashik',
+  },
+};
+
+/**
  * ★ CONTRACT GAP, blocker filed: CANON §6.2's `users.locale` CHECK constraint is
  *   `in ('mr','en')` — it excludes `hi`. Hindi is a committed Phase-1 feature
  *   (PLAN.md §8, SH9) and `types/api.ts`'s own `Locale` type already includes it.

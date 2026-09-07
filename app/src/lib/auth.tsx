@@ -42,7 +42,7 @@ import {
 import { USE_FIXTURES } from '../config';
 import { fxAuthRegistered } from '../fixtures/auth';
 import { getLocale } from './locale';
-import type { AuthRes, User } from '../types/api';
+import type { AuthRes, Role, User } from '../types/api';
 
 /**
  * `loading` is a real state, not a detail. It is the window between app launch and
@@ -81,13 +81,21 @@ const AuthContext = createContext<AuthContextValue | null>(null);
  *   exactly the disclosure I14 exists to prevent — see the TODO this replaces in
  *   `AuthStack.tsx`.
  */
-let pendingAuth: { phone: string; code: string } | null = null;
+/**
+ * ★ `role` rides along with the pending credentials because the role is chosen
+ *   on the very first screen (phone entry) and is not known again until
+ *   registration completes, two screens later. Threading it through the store
+ *   the flow already uses is what lets one phone -> OTP -> profile chain serve
+ *   both sides, instead of a parallel set of buyer screens that would drift
+ *   from the farmer ones the first time either changed.
+ */
+let pendingAuth: { phone: string; code: string; role: Role } | null = null;
 
-export function setPendingAuth(phone: string, code: string): void {
-  pendingAuth = { phone, code };
+export function setPendingAuth(phone: string, code: string, role: Role = 'FARMER'): void {
+  pendingAuth = { phone, code, role };
 }
 
-export function getPendingAuth(): { phone: string; code: string } | null {
+export function getPendingAuth(): { phone: string; code: string; role: Role } | null {
   return pendingAuth;
 }
 

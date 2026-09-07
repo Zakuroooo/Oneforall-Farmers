@@ -1459,5 +1459,12 @@
   "dd_step4_title": "पैसा आपके बैंक में",
   "dd_step4_detail": "तौल मंज़ूर होते ही एस्क्रो से आपके खाते में पैसा जाता है।",
   "dd_track_cta": "यह सौदा देखें",
-  "dd_my_produce": "मेरे माल पर वापस"
+  "dd_my_produce": "मेरे माल पर वापस",
+  "role_farmer": "किसान",
+  "role_buyer": "खरीदार",
+  "role_question": "मैं हूँ",
+  "role_farmer_sub": "मैं फ़सल उगाता और बेचता हूँ",
+  "role_buyer_sub": "मैं किसानों से माल खरीदता हूँ",
+  "buyer_welcome_title": "स्वागत है",
+  "buyer_home_title": "खरीदार कक्ष"
 }

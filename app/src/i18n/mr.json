@@ -1459,5 +1459,12 @@
   "dd_step4_title": "पैसे तुमच्या बँकेत",
   "dd_step4_detail": "वजन मंजूर होताच एस्क्रोमधून तुमच्या खात्यात पैसे जातात.",
   "dd_track_cta": "हा सौदा पहा",
-  "dd_my_produce": "माझ्या मालाकडे परत"
+  "dd_my_produce": "माझ्या मालाकडे परत",
+  "role_farmer": "शेतकरी",
+  "role_buyer": "खरेदीदार",
+  "role_question": "मी आहे",
+  "role_farmer_sub": "मी शेतमाल पिकवतो आणि विकतो",
+  "role_buyer_sub": "मी शेतकऱ्यांकडून माल खरेदी करतो",
+  "buyer_welcome_title": "स्वागत आहे",
+  "buyer_home_title": "खरेदीदार कक्ष"
 }
