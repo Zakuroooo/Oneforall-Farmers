@@ -24,6 +24,7 @@ import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import type { Locale } from '../../types/api';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
+import { demoTodayRange } from '../../lib/demoPrice';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S0_Splash'>;
 
@@ -105,7 +106,7 @@ export default function S00_Splash({ navigation }: Props) {
               </View>
               <Text style={styles.priceCommodity}>{t('splash_commodity')}</Text>
               <Text style={styles.priceRange}>
-                ₹2,850 – ₹3,120
+                {demoTodayRange(locale)}
                 <Text style={styles.priceUnit}> {t('splash_per_quintal')}</Text>
               </Text>
             </View>

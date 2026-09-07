@@ -81,6 +81,27 @@ export default function S03_Profile({ navigation }: Props) {
   const [agent, setAgent] = useState<RegistrationAgent | null>(null);
   const [agentAction, setAgentAction] = useState<AgentAction | null>(null);
 
+  // ★ The agent speaks in the farmer's language, and both the district list
+  //   and the stored locale load asynchronously — whichever lands second must
+  //   not leave the agent asking in the wrong one. A ref carries the freshest
+  //   locale into construction, and the effect below rebuilds the agent if the
+  //   locale resolves after the districts did. Rebuilding is safe here and
+  //   only ever happens before the farmer has answered anything: the agent
+  //   holds no state worth preserving until its first reply.
+  const localeRef = React.useRef<Locale>(locale);
+  React.useEffect(() => {
+    localeRef.current = locale;
+  }, [locale]);
+
+  React.useEffect(() => {
+    if (districts.length === 0) return;
+    const a = new RegistrationAgent(districts, locale);
+    setAgent(a);
+    setAgentAction(a.start());
+    // Districts are loaded once; this re-runs only when the locale changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locale]);
+
   const loadDistricts = () => {
     setDistrictsLoading(true);
     setDistrictsError(false);
@@ -88,7 +109,7 @@ export default function S03_Profile({ navigation }: Props) {
       .then(list => {
         setDistricts(list);
         setDistrictId(prev => prev ?? list[0]?.id ?? null);
-        const a = new RegistrationAgent(list);
+        const a = new RegistrationAgent(list, localeRef.current);
         setAgent(a);
         setAgentAction(a.start());
       })
@@ -101,9 +122,9 @@ export default function S03_Profile({ navigation }: Props) {
   // silent (the CTA lighting up is feedback enough).
   useEffect(() => {
     if (!agentAction) return;
-    if (agentAction.type === 'ask') void speakText(agentAction.question_mr);
-    else if (agentAction.type === 'retry') void speakText(agentAction.message_mr);
-    else if (agentAction.type === 'prefill') void speakText(agentAction.confirm_mr);
+    if (agentAction.type === 'ask') void speakText(agentAction.question);
+    else if (agentAction.type === 'retry') void speakText(agentAction.message);
+    else if (agentAction.type === 'prefill') void speakText(agentAction.confirm);
   }, [agentAction]);
 
   const onVoiceTranscript = (transcript: string) => {
@@ -206,10 +227,10 @@ export default function S03_Profile({ navigation }: Props) {
               <Icon name="mic" size={16} color={colors.primary} />
               <Text style={styles.voicePrompt}>
                 {agentAction.type === 'ask'
-                  ? agentAction.question_mr
+                  ? agentAction.question
                   : agentAction.type === 'retry'
-                    ? agentAction.message_mr
-                    : agentAction.confirm_mr}
+                    ? agentAction.message
+                    : agentAction.confirm}
               </Text>
             </View>
 

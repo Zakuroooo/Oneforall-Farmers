@@ -11,7 +11,7 @@ describe('RegistrationAgent — slot order', () => {
   it('starts on the name slot', () => {
     const agent = new RegistrationAgent(DISTRICTS);
     const action = agent.start();
-    expect(action).toEqual({ type: 'ask', slot: 'name', question_mr: expect.any(String) });
+    expect(action).toEqual({ type: 'ask', slot: 'name', question: expect.any(String) });
   });
 
   it('moves name -> district -> village -> done, in that order', () => {

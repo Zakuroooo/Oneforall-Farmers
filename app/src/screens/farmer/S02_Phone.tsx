@@ -36,6 +36,7 @@ import { setPendingAuth } from '../../lib/auth';
 import { getLocale } from '../../lib/locale';
 import { USE_FIXTURES } from '../../config';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
+import { demoTodayRange } from '../../lib/demoPrice';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S2_Phone'>;
 type MicState = 'idle' | 'recording' | 'transcribing';
@@ -60,7 +61,7 @@ async function ensureMicPermission(): Promise<boolean> {
 }
 
 export default function S02_Phone({ navigation }: Props) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const [phone, setPhone] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -248,7 +249,7 @@ export default function S02_Phone({ navigation }: Props) {
               <Text style={styles.priceLiveText}>{t('phone_auction_live')}</Text>
             </View>
             <Text style={styles.priceTitle}>{t('phone_today_price')}</Text>
-            <Text style={styles.priceValue}>₹2,850 – ₹3,120<Text style={styles.priceUnit}>/qtl</Text></Text>
+            <Text style={styles.priceValue}>{demoTodayRange(locale)}<Text style={styles.priceUnit}>/qtl</Text></Text>
           </View>
         </View>
 

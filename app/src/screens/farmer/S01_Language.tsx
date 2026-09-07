@@ -24,6 +24,7 @@ import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import type { Locale } from '../../types/api';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
+import { demoTodayRange } from '../../lib/demoPrice';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S1_Language'>;
 
@@ -35,6 +36,9 @@ interface LanguageOption {
   englishName: string;
   subKey: string;
   standardKey: string;
+  /** The price sentence, with `{range}` filled in at render from the one
+   * shared demo price — so the three sample sentences cannot quote a
+   * different figure from each other, or from the app after login. */
   exampleText: string;
 }
 
@@ -45,7 +49,7 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
     englishName: 'Marathi',
     subKey: 'lang_marathi_sub',
     standardKey: 'lang_marathi_standard',
-    exampleText: 'आजचा कांदा भाव: ₹२,८५० – ₹३,१२०/क्विंटल',
+    exampleText: 'आजचा कांदा भाव: {range}/क्विंटल',
   },
   {
     code: 'hi',
@@ -53,7 +57,7 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
     englishName: 'Hindi',
     subKey: 'lang_hindi_sub',
     standardKey: 'lang_hindi_standard',
-    exampleText: 'आज का प्याज भाव: ₹२,८५० – ₹३,१२०/क्विंटल',
+    exampleText: 'आज का प्याज भाव: {range}/क्विंटल',
   },
   {
     code: 'en',
@@ -61,7 +65,7 @@ const LANGUAGE_OPTIONS: LanguageOption[] = [
     englishName: 'English',
     subKey: 'lang_english_sub',
     standardKey: 'lang_english_standard',
-    exampleText: "Today's Onion price: ₹2,850 – ₹3,120/quintal",
+    exampleText: "Today's onion price: {range}/quintal",
   },
 ];
 
@@ -174,7 +178,8 @@ export default function S01_Language({ navigation }: Props) {
                     <Text style={styles.audioText}>{t('lang_audio_preview')}</Text>
                   </View>
                   <Text style={styles.exampleText}>
-                    {t('lang_example_prefix')} {option.exampleText}
+                    {t('lang_example_prefix')}{' '}
+                    {option.exampleText.replace('{range}', demoTodayRange(option.code))}
                   </Text>
                   <Text style={styles.standardText}>{t(option.standardKey)}</Text>
                 </View>
