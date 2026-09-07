@@ -42,6 +42,7 @@ import { fxPriceSeries } from '../../fixtures/prices';
 import { fxHold } from '../../fixtures/window';
 import type { HomeStackParamList, FarmerTabParamList } from '../../navigation/FarmerTabs';
 import type { PricePoint } from '../../types/api';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'S4_Home'>;
 type ParentNav = CompositeNavigationProp<
@@ -150,9 +151,12 @@ async function fetchVerdict() {
 const redOnions = require('../../assets/images/red_onions.jpg');
 
 export default function S04_Home({ navigation }: Props) {
-  const { t } = useT();
+  const { t, locale } = useT();
   const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  // What the speaker reads: the screen, in the order a farmer reads it.
+  // Built from the same query data the cards render, so it can never
+  // describe a number that is not on screen.
   const parentNav = navigation as unknown as ParentNav;
   const goToLots = () => parentNav.navigate('MyLots', { screen: 'S15_MyLots' } as never);
 
@@ -178,6 +182,40 @@ export default function S04_Home({ navigation }: Props) {
   const isUp = deltaPaise >= 0;
 
   const verdict = verdictQuery.data;
+
+  /**
+   * What the speaker reads out: this screen, in the order a farmer reads it —
+   * today's rate and its move, then the recommendation with both the gain and
+   * the worst case. Composed from the same query data the cards render, so
+   * the voice can never describe a number that is not on screen, and I16
+   * holds aloud as well: the worst case is always spoken with the gain.
+   */
+  const homeNarration = [
+    t('app_name'),
+    last ? `${t('home_todays_rate')}: ${formatPaise(last.modal_paise_per_qtl, locale)}` : null,
+    last && deltaPaise !== 0
+      ? `${deltaPaise > 0 ? '+' : '−'}${formatPaise(Math.abs(deltaPaise), locale)}`
+      : null,
+    verdict && verdict.action !== 'NO_ADVICE'
+      ? t(
+          verdict.action === 'HOLD'
+            ? 'action_hold'
+            : verdict.action === 'SELL_NOW'
+              ? 'action_sell_now'
+              : verdict.action === 'SPLIT'
+                ? 'action_split'
+                : 'action_sell_elsewhere',
+        )
+      : null,
+    verdict?.expected_gain_paise != null
+      ? `${t('expected_gain')}: ${formatPaise(verdict.expected_gain_paise, locale)}`
+      : null,
+    verdict?.worst_case_paise != null
+      ? `${t('worst_case')}: ${formatPaise(verdict.worst_case_paise, locale)}`
+      : null,
+  ]
+    .filter(Boolean)
+    .join('. ');
 
   return (
     <View style={styles.root}>
@@ -208,39 +246,29 @@ export default function S04_Home({ navigation }: Props) {
             </Text>
             <Text style={styles.topDate}>{t('home_market_name')}</Text>
           </View>
-          {/* Voice narration and buyer-bid notifications are not wired yet
-              (no TTS-per-screen pipeline, no push/poll for new offers) — a
-              tappable icon that silently does nothing reads as a broken
-              button, so these render as plain, non-interactive glyphs
-              until there is a real handler behind them. */}
+          {/* ★ Both of these were plain, non-interactive glyphs — a mic and
+              a bell that did nothing. The mic was also the wrong control
+              here: this screen has nothing to dictate into. It is a speaker
+              now, and it reads the whole screen aloud. The bell opens a real
+              notifications screen built from real offers and real price
+              moves. */}
           <View style={styles.topActions}>
-            <View style={styles.topIconBtn}>
-              <Icon name="mic" size={18} color={colors.outline} />
-            </View>
-            <View style={styles.topIconBtn}>
-              <Icon name="bell" size={18} color={colors.outline} />
-            </View>
+            <ListenButton text={homeNarration} label={t('home_speaker_label')} />
+            <TouchableOpacity
+              style={styles.topIconBtn}
+              onPress={() => navigation.navigate('S38_Notifications')}
+              accessibilityRole="button"
+              accessibilityLabel={t('nt_title')}>
+              <Icon name="bell" size={18} color={colors.primary} />
+            </TouchableOpacity>
           </View>
         </View>
-
-        {/* ── 2. Offer alert banner ──────────────────────── */}
-        <TouchableOpacity style={styles.offerBanner} activeOpacity={0.85}>
-          <View style={styles.offerBannerLeft}>
-            <View style={styles.offerDot} />
-            <View>
-              <Text style={styles.offerBannerTitle}>
-                {t('home_buyers_bids', { count: '3' })}
-              </Text>
-              <Text style={styles.offerBannerSub}>
-                {t('home_valid_mins', { mins: '45' })}
-              </Text>
-            </View>
-          </View>
-          <View style={styles.offerBannerBtn}>
-            <Text style={styles.offerBannerBtnText}>{t('home_review_offers')}</Text>
-            <Icon name="chevron-right" size={14} color={colors.onPrimary} />
-          </View>
-        </TouchableOpacity>
+        {/* ★ A "3 Verified Buyers sent bids · valid for next 45 mins" banner
+            sat here with a "Review Offers" button. The count and the
+            countdown were both hardcoded, and the button navigated nowhere —
+            tapping it did nothing. Offers that are genuinely waiting now
+            appear in Notifications and in the Talks tab, both driven by real
+            OfferDto data. */}
 
         {/* ── 3. Price intelligence card ────────────────── */}
         <View style={styles.priceCard}>

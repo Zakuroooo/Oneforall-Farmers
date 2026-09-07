@@ -1516,5 +1516,16 @@
   "fd_privacy_body": "Used only to match your lot to buyers and to pay you. Never sold, never shared with brokers.",
   "fd_submit": "Confirm and continue",
   "fd_clear": "Clear and start again",
-  "fd_required": "Enter your name and pick your district to continue."
+  "fd_required": "Enter your name and pick your district to continue.",
+  "nt_title": "Notifications",
+  "nt_subtitle": "What changed since you last looked",
+  "nt_empty_title": "Nothing new",
+  "nt_empty_body": "Offers on your lots and big price moves will show up here.",
+  "nt_offer_title": "A buyer is waiting on you",
+  "nt_offer_body": "{rate}/quintal for {qty} quintals, round {round} of 3.",
+  "nt_price_up_title": "Price went up today",
+  "nt_price_down_title": "Price came down today",
+  "nt_price_body": "{market} is at {price}/quintal, {delta} on yesterday.",
+  "nt_open": "Open",
+  "home_speaker_label": "Listen to this screen"
 }

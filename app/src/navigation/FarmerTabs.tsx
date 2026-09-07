@@ -55,6 +55,7 @@ import S08_ModelCard from '../screens/farmer/S08_ModelCard';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
 import S10_CostBreakdown from '../screens/farmer/S10_CostBreakdown';
 import S13_CropLoan from '../screens/farmer/S13_CropLoan';
+import S38_Notifications from '../screens/farmer/S38_Notifications';
 import S14_CounterOffer from '../screens/farmer/S14_CounterOffer';
 import S15_MyLots from '../screens/farmer/S15_MyLots';
 import S16_PoolSplit from '../screens/farmer/S16_PoolSplit';
@@ -125,6 +126,8 @@ export type HomeStackParamList = {
    * renders when a quote exists at all (I13) — so this route is only ever
    * offered on the branch where there is something to show. */
   S13_CropLoan: undefined;
+  /** Opened from the bell on Home. */
+  S38_Notifications: undefined;
 };
 
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -141,6 +144,7 @@ function HomeStackNavigator() {
         options={{ presentation: 'modal' }}
       />
       <HomeStack.Screen name="S13_CropLoan" component={S13_CropLoan} />
+      <HomeStack.Screen name="S38_Notifications" component={S38_Notifications} />
     </HomeStack.Navigator>
   );
 }
