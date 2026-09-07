@@ -198,17 +198,17 @@ export default function S27_Bargaining({ navigation }: any) {
         {/* Escrow note */}
         <View style={styles.escrowNote}>
           <Icon name="lock" size={12} color={colors.onSurfaceVariant} />
-          <Text style={styles.escrowNoteText}>Protected by Mandi-Setu Verified Escrow · Payment locked before dispatch</Text>
+          <Text style={styles.escrowNoteText}>Protected by Krishi Mitra Verified Escrow · Payment locked before dispatch</Text>
         </View>
       </ScrollView>
 
       {/* CTA dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.acceptBtn}>
+        <TouchableOpacity style={styles.acceptBtn} onPress={() => navigation.navigate('S29_ConfirmAcceptance')}>
           <Icon name="check-circle" size={18} color={colors.onPrimary} />
           <Text style={styles.acceptBtnText}>Accept ₹1,900/q (₹76,000)</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.counterBtn}>
+        <TouchableOpacity style={styles.counterBtn} onPress={() => navigation.navigate('S28_CounterOffer')}>
           <Icon name="edit" size={16} color={colors.primaryContainer} />
           <Text style={styles.counterBtnText}>Make Final Counter-Offer</Text>
         </TouchableOpacity>

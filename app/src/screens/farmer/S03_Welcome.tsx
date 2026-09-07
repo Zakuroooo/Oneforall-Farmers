@@ -36,7 +36,7 @@ export default function S03_Welcome({ navigation }: Props) {
               <Text style={styles.logoLetter}>म</Text>
             </View>
             <View>
-              <Text style={styles.topBrand}>मंडी-सेतू</Text>
+              <Text style={styles.topBrand}>कृषी मित्र</Text>
               <Text style={styles.topSub}>LASALGAON APMC NETWORK</Text>
             </View>
           </View>

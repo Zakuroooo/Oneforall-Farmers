@@ -10,7 +10,7 @@ import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 
 const redOnions = require('../../assets/images/red_onions.jpg');
-const mandiWarehouse = require('../../assets/images/mandi_onion_warehouse.jpg');
+const mandiWarehouse = require('../../assets/images/mandi_warehouse.jpg');
 
 const QUALIFIED_BUYERS = [
   { name: 'Nashik Agro Exports', verified: true, meta: '12 km away · Direct Exporter · Highest potential', bid: '₹1,910', demand: 'Wants all 40 Qtl' },
@@ -123,7 +123,7 @@ export default function S24_LotDetail({ navigation }: any) {
         </View>
         <View style={styles.settlementAmtCard}>
           <Text style={styles.settlementAmt}>₹83,400 in Hand</Text>
-          <Text style={styles.settlementAmtSub}>After ₹600 hamali · 0% Mandi-Setu commission</Text>
+          <Text style={styles.settlementAmtSub}>After ₹600 hamali · 0% Krishi Mitra commission</Text>
         </View>
 
         {/* Qualified buyers */}
@@ -215,7 +215,7 @@ export default function S24_LotDetail({ navigation }: any) {
           <View style={styles.advisoryBox}>
             <Icon name="info" size={12} color={colors.primaryContainer} />
             <Text style={styles.advisoryText}>
-              Mandi-Setu Advisory: Holding window active for 11 days. Storage loss &lt;1.5%. You are well positioned to close at your ₹2,100 ask price today.
+              Krishi Mitra Advisory: Holding window active for 11 days. Storage loss &lt;1.5%. You are well positioned to close at your ₹2,100 ask price today.
             </Text>
           </View>
         </View>
@@ -240,8 +240,8 @@ export default function S24_LotDetail({ navigation }: any) {
           <Icon name="edit" size={14} color={colors.primaryContainer} />
           <Text style={styles.editPriceText}>भाव बदला</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.viewOffersBtn}>
-          <Text style={styles.viewOffersBtnText}>View Inbound Offers (3 Buyers) · सौदा पहा</Text>
+        <TouchableOpacity style={styles.viewOffersBtn} onPress={() => navigation.navigate('S25_BuyersForLot')}>
+          <Text style={styles.viewOffersBtnText}>View Inbound Offers · सौदा पहा</Text>
           <Icon name="arrow-right" size={16} color={colors.onPrimary} />
         </TouchableOpacity>
       </View>

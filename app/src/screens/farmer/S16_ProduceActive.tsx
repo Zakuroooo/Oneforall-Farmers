@@ -77,7 +77,7 @@ export default function S16_ProduceActive({ navigation }: any) {
         {/* Escrow strip */}
         <View style={styles.escrowStrip}>
           <Icon name="shield-check" size={14} color={colors.tertiary} />
-          <Text style={styles.escrowStripText}>Mandi-Setu 100% Escrow Guarantee Active</Text>
+          <Text style={styles.escrowStripText}>Krishi Mitra 100% Escrow Guarantee Active</Text>
           <Text style={styles.escrowStripTag}>सुरक्षित</Text>
         </View>
 

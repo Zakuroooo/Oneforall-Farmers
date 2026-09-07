@@ -20,6 +20,7 @@ import {
 } from 'react-native';
 import Svg, { Rect, Line, Text as SvgText } from 'react-native-svg';
 import { useQuery } from '@tanstack/react-query';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { CompositeNavigationProp } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -151,6 +152,7 @@ const redOnions = require('../../assets/images/red_onions.jpg');
 export default function S04_Home({ navigation }: Props) {
   const { t } = useT();
   const { user } = useAuth();
+  const insets = useSafeAreaInsets();
   const parentNav = navigation as unknown as ParentNav;
   const goToLots = () => parentNav.navigate('MyLots', { screen: 'S15_MyLots' } as never);
 
@@ -190,7 +192,7 @@ export default function S04_Home({ navigation }: Props) {
              farmer's own name lives one tap away, in the menu), a
              balancing spacer on the right so the centered title is
              actually centered rather than left-shifted by the hamburger. */}
-        <View style={styles.topBar}>
+        <View style={[styles.topBar, { paddingTop: insets.top + space.xs }]}>
           <TouchableOpacity
             style={styles.menuBtn}
             onPress={() => navigation.getParent()?.getParent()?.navigate('Menu' as never)}
@@ -460,7 +462,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: space.md,
-    paddingTop: space.lg + 20,
     paddingBottom: space.sm,
     backgroundColor: colors.surface,
     zIndex: 1,

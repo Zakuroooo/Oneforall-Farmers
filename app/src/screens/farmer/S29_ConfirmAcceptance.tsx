@@ -120,7 +120,7 @@ export default function S29_ConfirmAcceptance({ navigation }: any) {
           </View>
 
           <View style={styles.payoutRow}>
-            <Text style={styles.payoutKey}>मंडी-सेतू शुल्क (Platform Fee)</Text>
+            <Text style={styles.payoutKey}>कृषी मित्र शुल्क (Platform Fee)</Text>
             <View style={styles.freeBadge}><Text style={styles.freeBadgeText}>०% मोफत</Text></View>
             <Text style={[styles.payoutVal, { color: colors.tertiary }]}>₹0</Text>
           </View>
@@ -211,7 +211,8 @@ export default function S29_ConfirmAcceptance({ navigation }: any) {
       <View style={styles.dock}>
         <TouchableOpacity
           style={[styles.acceptBtn, !agreed && styles.acceptBtnDisabled]}
-          disabled={!agreed}>
+          disabled={!agreed}
+          onPress={() => navigation.navigate('S30_DealDone')}>
           <Icon name="shield-check" size={18} color={agreed ? colors.onPrimary : colors.outline} />
           <Text style={[styles.acceptBtnText, !agreed && styles.acceptBtnTextDisabled]}>
             सौदा पक्का करा · Accept &amp; Lock Deal{'\n'}

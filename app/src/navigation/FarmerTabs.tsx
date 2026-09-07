@@ -51,6 +51,25 @@ import S16_PoolSplit from '../screens/farmer/S16_PoolSplit';
 import S26_Chat from '../screens/farmer/S26_Chat';
 import S28_Assistant from '../screens/farmer/S28_Assistant';
 import PricesIndex from '../screens/farmer/PricesIndex';
+// ★ The post-listing selling journey (list → grade → publish → buyers →
+//   bargain → deal done → settled) was built as 11 Stitch-matched screens
+//   with zero navigation between them or to anything else — every one was
+//   unreachable from a running app, which is why "S12 is built" and "I
+//   cannot see anything except Home" were both true at once. Registered
+//   here and wired below; S15_MyLots/S13_SelfAssay/S14_CounterOffer/
+//   S16_PoolSplit stay as the primary, backend-wired path (real getLots(),
+//   real self-assay scoring, real offer negotiation) — none of that was
+//   replaced, since none of these new screens call a real endpoint yet.
+import S22_PricePublish from '../screens/farmer/S22_PricePublish';
+import S23_PublishedRadar from '../screens/farmer/S23_PublishedRadar';
+import S24_LotDetail from '../screens/farmer/S24_LotDetail';
+import S25_BuyersForLot from '../screens/farmer/S25_BuyersForLot';
+import S26_BuyerProfile from '../screens/farmer/S26_BuyerProfile';
+import S27_Bargaining from '../screens/farmer/S27_Bargaining';
+import S28_CounterOffer from '../screens/farmer/S28_CounterOffer';
+import S29_ConfirmAcceptance from '../screens/farmer/S29_ConfirmAcceptance';
+import S30_DealDone from '../screens/farmer/S30_DealDone';
+import S33_Settled from '../screens/farmer/S33_Settled';
 
 export type FarmerTabParamList = {
   Home: undefined;
@@ -157,6 +176,21 @@ export type MyLotsStackParamList = {
    * reads the one demo transaction thread every chat fixture already
    * agrees on, same fixture-first pattern as S10 reading S9's cache key. */
   S26_Chat: undefined;
+
+  /** ★ The Stitch-matched selling journey, reachable but still visual-only:
+   *  none of these call a real endpoint (no assay submission, no real buyer
+   *  list, no real offer/escrow transitions) — they're wired for tap-through
+   *  review, not yet backed by the API. See the import comment above. */
+  S22_PricePublish: undefined;
+  S23_PublishedRadar: undefined;
+  S24_LotDetail: undefined;
+  S25_BuyersForLot: undefined;
+  S26_BuyerProfile: undefined;
+  S27_Bargaining: undefined;
+  S28_CounterOffer: undefined;
+  S29_ConfirmAcceptance: undefined;
+  S30_DealDone: undefined;
+  S33_Settled: undefined;
 };
 
 const MyLotsStack = createNativeStackNavigator<MyLotsStackParamList>();
@@ -170,6 +204,20 @@ function MyLotsStackNavigator() {
       <MyLotsStack.Screen name="S14_CounterOffer" component={S14_CounterOffer} />
       <MyLotsStack.Screen name="S16_PoolSplit" component={S16_PoolSplit} />
       <MyLotsStack.Screen name="S26_Chat" component={S26_Chat} />
+      <MyLotsStack.Screen name="S22_PricePublish" component={S22_PricePublish} />
+      <MyLotsStack.Screen name="S23_PublishedRadar" component={S23_PublishedRadar} />
+      <MyLotsStack.Screen name="S24_LotDetail" component={S24_LotDetail} />
+      <MyLotsStack.Screen name="S25_BuyersForLot" component={S25_BuyersForLot} />
+      <MyLotsStack.Screen name="S26_BuyerProfile" component={S26_BuyerProfile} />
+      <MyLotsStack.Screen name="S27_Bargaining" component={S27_Bargaining} />
+      <MyLotsStack.Screen
+        name="S28_CounterOffer"
+        component={S28_CounterOffer}
+        options={{ presentation: 'modal' }}
+      />
+      <MyLotsStack.Screen name="S29_ConfirmAcceptance" component={S29_ConfirmAcceptance} />
+      <MyLotsStack.Screen name="S30_DealDone" component={S30_DealDone} />
+      <MyLotsStack.Screen name="S33_Settled" component={S33_Settled} />
     </MyLotsStack.Navigator>
   );
 }

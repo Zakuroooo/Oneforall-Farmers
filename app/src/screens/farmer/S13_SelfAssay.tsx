@@ -158,7 +158,7 @@ async function persistAssay(lotId: string, body: AssayReq): Promise<AssayRes> {
   return submitAssay(lotId, body);
 }
 
-export default function S13_SelfAssay({ route }: Props) {
+export default function S13_SelfAssay({ route, navigation }: Props) {
   const lotId = route.params?.lot_id ?? DEFAULT_LOT_ID;
 
   const [locale, setLocale] = useState<Locale>('mr');
@@ -301,6 +301,11 @@ export default function S13_SelfAssay({ route }: Props) {
           */}
           <Text style={styles.tipTextMr}>{translate(TIP_KEY[result.weakest_dimension], locale)}</Text>
         </Card>
+        <Button
+          title={translate('next', locale)}
+          onPress={() => navigation.navigate('S22_PricePublish')}
+          style={styles.continueButton}
+        />
         <Button title={translate('recheck_button', locale)} variant="outline" onPress={startOver} />
       </ScrollView>
     );
@@ -361,6 +366,7 @@ export default function S13_SelfAssay({ route }: Props) {
 
 const styles = StyleSheet.create({
   root: { padding: 20 },
+  continueButton: { marginTop: 12 },
   header: { fontSize: 20, fontWeight: '700', color: '#1E293B', marginBottom: 4 },
   subheader: { fontSize: 14, color: '#64748B', marginBottom: 16 },
   questionCard: { padding: 16 },

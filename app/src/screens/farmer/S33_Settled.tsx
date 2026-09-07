@@ -190,17 +190,11 @@ export default function S33_Settled({ navigation }: any) {
         </View>
       </ScrollView>
 
-      {/* CTA dock */}
+      {/* ★ "Download Official Receipt (PDF)" and "Share profit receipt on
+          WhatsApp" removed — no PDF generation or share integration exists
+          anywhere in this app. */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.ctaPrimary}>
-          <Icon name="chevron-down" size={16} color={colors.onPrimary} />
-          <Text style={styles.ctaPrimaryText}>{t('settled_cta_pdf')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.ctaSecondary}>
-          <Icon name="volume" size={14} color={colors.tertiary} />
-          <Text style={styles.ctaSecondaryText}>{t('settled_cta_share')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.ctaLink}>
+        <TouchableOpacity style={styles.ctaLink} onPress={() => navigation.navigate('S15_MyLots')}>
           <Text style={styles.ctaLinkText}>{t('settled_cta_next')}</Text>
         </TouchableOpacity>
       </View>

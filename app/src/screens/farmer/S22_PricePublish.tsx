@@ -165,7 +165,7 @@ export default function S22_PricePublish({ navigation }: any) {
             <Text style={[styles.payoutVal, { color: colors.critical }]}>–₹{hamali.toLocaleString('en-IN')} (₹15/bag)</Text>
           </View>
           <View style={styles.payoutRow}>
-            <Text style={styles.payoutKey}>Mandi-Setu Platform Fee:</Text>
+            <Text style={styles.payoutKey}>Krishi Mitra Platform Fee:</Text>
             <View style={styles.promoTag}><Text style={styles.promoTagText}>Farmer Promo</Text></View>
             <Text style={[styles.payoutVal, { color: colors.tertiary }]}>₹0 FREE</Text>
           </View>
@@ -278,7 +278,7 @@ export default function S22_PricePublish({ navigation }: any) {
 
       {/* CTA dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.publishBtn}>
+        <TouchableOpacity style={styles.publishBtn} onPress={() => navigation.navigate('S23_PublishedRadar')}>
           <Icon name="check-circle" size={18} color={colors.onPrimary} />
           <Text style={styles.publishBtnText}>Publish Lot to Marketplace · माल विक्रीसाठी टाका</Text>
           <Icon name="arrow-right" size={16} color={colors.onPrimary} />

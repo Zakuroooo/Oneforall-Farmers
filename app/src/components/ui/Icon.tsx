@@ -1,5 +1,5 @@
 /**
- * Icon — Professional SVG icon system for Mandi-Setu.
+ * Icon — Professional SVG icon system for Krishi Mitra.
  *
  * NO EMOJIS. Every icon is a proper vector path rendered via react-native-svg.
  * Usage: <Icon name="leaf" size={24} color={colors.primary} />

@@ -227,7 +227,7 @@ export default function S23_PublishedRadar({ navigation }: any) {
         <View style={styles.escrowCard}>
           <View style={styles.escrowIconBg}><Icon name="shield-check" size={22} color={colors.tertiary} /></View>
           <View style={styles.escrowContent}>
-            <Text style={styles.escrowTitle}>100% Mandi-Setu Escrow Guarantee</Text>
+            <Text style={styles.escrowTitle}>100% Krishi Mitra Escrow Guarantee</Text>
             <Text style={styles.escrowDesc}>
               शेतकऱ्याचे पैसे सुरक्षित. Buyer funds are locked in Mandi Board bank escrow before any transport truck enters your gate. No forced distress selling.
             </Text>
@@ -264,18 +264,16 @@ export default function S23_PublishedRadar({ navigation }: any) {
 
       {/* CTA dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.viewBuyersBtn}>
-          <Text style={styles.viewBuyersBtnText}>खरेदीदार पहा · View Buyers (3 Found)</Text>
+        <TouchableOpacity style={styles.viewBuyersBtn} onPress={() => navigation.navigate('S24_LotDetail')}>
+          <Text style={styles.viewBuyersBtnText}>खरेदीदार पहा · View Buyers</Text>
           <Icon name="arrow-right" size={18} color={colors.onPrimary} />
         </TouchableOpacity>
+        {/* ★ "Share on WhatsApp" removed — no share integration exists anywhere
+            in this app; it was a button that would have opened nothing. */}
         <View style={styles.dockSecondRow}>
-          <TouchableOpacity style={styles.myLotsBtn}>
+          <TouchableOpacity style={styles.myLotsBtn} onPress={() => navigation.navigate('S15_MyLots')}>
             <Icon name="box" size={14} color={colors.onSurface} />
             <Text style={styles.myLotsBtnText}>माझे माल (My Lots)</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.shareBtn}>
-            <Icon name="share" size={14} color={colors.tertiary} />
-            <Text style={styles.shareBtnText}>Share on WhatsApp</Text>
           </TouchableOpacity>
         </View>
       </View>

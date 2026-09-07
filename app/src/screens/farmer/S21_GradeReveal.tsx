@@ -10,7 +10,7 @@ import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 
 const redOnions = require('../../assets/images/red_onions.jpg');
-const mandiWarehouse = require('../../assets/images/mandi_onion_warehouse.jpg');
+const mandiWarehouse = require('../../assets/images/mandi_warehouse.jpg');
 
 const PARAMS = [
   { label: 'Bulb Uniformity & Size', labelMr: '52mm – 58mm Medium Large · Optimal Mandi Size', score: 92, max: 100 },
@@ -197,7 +197,7 @@ export default function S21_GradeReveal({ navigation }: any) {
         {/* Escrow guarantee */}
         <View style={styles.escrowCard}>
           <View style={styles.escrowIconBg}><Icon name="shield-check" size={22} color={colors.tertiary} /></View>
-          <Text style={styles.escrowTitle}>Mandi-Setu 100% Escrow Guarantee</Text>
+          <Text style={styles.escrowTitle}>Krishi Mitra 100% Escrow Guarantee</Text>
           <Text style={styles.escrowDesc}>
             Buyer locks payment into the Mandi Board Escrow before truck loading. Zero payment default risk for Grade A certified lots.
           </Text>

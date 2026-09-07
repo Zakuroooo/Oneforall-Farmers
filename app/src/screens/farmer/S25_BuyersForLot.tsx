@@ -35,7 +35,7 @@ const BUYERS = [
     hamali: '–₹600',
     hamaliKey: 'Farm Hamali / Loading (शेत हमाली)',
     platformFee: 'FREE (0%)',
-    platformFeeKey: 'Mandi-Setu Platform Fee',
+    platformFeeKey: 'Krishi Mitra Platform Fee',
     net: '₹75,800',
     ctaLabel: 'सौदा सुरू करा (Start Sauda)',
     profileLabel: 'प्रोफाइल',
@@ -254,7 +254,7 @@ export default function S25_BuyersForLot({ navigation }: any) {
                 </Text>
                 {b.highlight && <Icon name="handshake" size={16} color={colors.onPrimary} />}
               </TouchableOpacity>
-              <TouchableOpacity style={styles.profileBtn}>
+              <TouchableOpacity style={styles.profileBtn} onPress={() => navigation.navigate('S26_BuyerProfile')}>
                 <Text style={styles.profileBtnText}>{b.profileLabel}</Text>
               </TouchableOpacity>
             </View>
@@ -305,8 +305,8 @@ export default function S25_BuyersForLot({ navigation }: any) {
           <Text style={styles.dockBidsText}>3 Bids Active</Text>
           <Text style={styles.dockNetText}>Top Net Payout: ₹75,800</Text>
         </View>
-        <TouchableOpacity style={styles.dockCta}>
-          <Text style={styles.dockCtaText}>Nashik Agro शी सौदा करा</Text>
+        <TouchableOpacity style={styles.dockCta} onPress={() => navigation.navigate('S27_Bargaining')}>
+          <Text style={styles.dockCtaText}>सौदा करा</Text>
           <Icon name="arrow-right" size={18} color={colors.onPrimary} />
         </TouchableOpacity>
       </View>
