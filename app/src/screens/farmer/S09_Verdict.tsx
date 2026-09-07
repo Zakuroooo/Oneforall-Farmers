@@ -169,7 +169,7 @@ export default function S09_Verdict({ navigation }: Props) {
           onPress={() =>
             navigation.navigate('FarmerTabs' as never, {
               screen: 'MyLots',
-              params: { screen: 'S12_CreateLot' },
+              params: { screen: 'S17_CameraGuide' },
             } as never)
           }
           accessibilityRole="button">

@@ -211,7 +211,7 @@ export default function S15_MyLots({ navigation }: Props) {
 
   const [expandedTxId, setExpandedTxId] = useState<string | null>(null);
 
-  const goCreateLot = () => navigation.navigate('S12_CreateLot');
+  const goCreateLot = () => navigation.navigate('S17_CameraGuide');
 
   const header = (
     <View style={styles.topBar}>

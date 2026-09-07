@@ -54,7 +54,6 @@ import S07_Forecast from '../screens/farmer/S07_Forecast';
 import S08_ModelCard from '../screens/farmer/S08_ModelCard';
 import S09_Verdict from '../screens/farmer/S09_Verdict';
 import S10_CostBreakdown from '../screens/farmer/S10_CostBreakdown';
-import S12_CreateLot from '../screens/farmer/S12_CreateLot';
 import S13_CropLoan from '../screens/farmer/S13_CropLoan';
 import S14_CounterOffer from '../screens/farmer/S14_CounterOffer';
 import S15_MyLots from '../screens/farmer/S15_MyLots';
@@ -69,6 +68,9 @@ import PricesIndex from '../screens/farmer/PricesIndex';
 //   S16_PoolSplit stay as the primary, backend-wired path (real getLots(),
 //   real self-assay scoring, real offer negotiation) — none of that was
 //   replaced, since none of these new screens call a real endpoint yet.
+import S17_CameraGuide from '../screens/farmer/S17_CameraGuide';
+import S18_PhotoReview from '../screens/farmer/S18_PhotoReview';
+import S19_Quantity from '../screens/farmer/S19_Quantity';
 import S20_QualityDiagnostic from '../screens/farmer/S20_QualityDiagnostic';
 import S21_GradeReveal from '../screens/farmer/S21_GradeReveal';
 import S22_PricePublish from '../screens/farmer/S22_PricePublish';
@@ -182,13 +184,18 @@ function PricesStackNavigator() {
  */
 export type MyLotsStackParamList = {
   S15_MyLots: undefined;
-  S12_CreateLot: undefined;
   /**
    * `lot_id` is optional so the assay stays reachable directly (e.g. from a
    * deep link) without a lot created in this session — it falls back to
    * `DEFAULT_LOT_ID`. Both S12 (just created) and S15 (tapped from the list)
    * navigate here with the real id of the lot in question.
    */
+  /** Stitch 17 -> 18 -> 19: photograph, review, quantity. The three of them
+   * replace the single S12 form; S19 owns the `createLot` call that used to
+   * live there and hands the new lot straight to the assay. */
+  S17_CameraGuide: undefined;
+  S18_PhotoReview: { photoUri: string };
+  S19_Quantity: { photoUri: string | null } | undefined;
   S20_QualityDiagnostic: { lot_id?: string } | undefined;
   /**
    * S21 is a pure reveal: it renders what S20's own submission returned and
@@ -267,7 +274,9 @@ function MyLotsStackNavigator() {
   return (
     <MyLotsStack.Navigator initialRouteName="S15_MyLots" screenOptions={STACK_SCREEN_OPTIONS}>
       <MyLotsStack.Screen name="S15_MyLots" component={S15_MyLots} />
-      <MyLotsStack.Screen name="S12_CreateLot" component={S12_CreateLot} />
+      <MyLotsStack.Screen name="S17_CameraGuide" component={S17_CameraGuide} />
+      <MyLotsStack.Screen name="S18_PhotoReview" component={S18_PhotoReview} />
+      <MyLotsStack.Screen name="S19_Quantity" component={S19_Quantity} />
       <MyLotsStack.Screen name="S20_QualityDiagnostic" component={S20_QualityDiagnostic} />
       <MyLotsStack.Screen name="S21_GradeReveal" component={S21_GradeReveal} />
       <MyLotsStack.Screen name="S14_CounterOffer" component={S14_CounterOffer} />
