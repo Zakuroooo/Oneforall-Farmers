@@ -13,15 +13,13 @@
  *   offline — I7, and a farmer in a mandi with no signal still gets the
  *   number read to him.
  *
- *   The backend does have a live Sarvam narration route, and `narrate()` in
- *   `lib/api.ts` now matches its real response shape. It is not used for
- *   playback yet for one concrete reason: `/voice/narrate` returns
- *   `audio_base64`, and playing base64 needs it written to a file first —
- *   `react-native-sound` takes a path or URL, not a data blob. This app has
- *   no filesystem dependency, and 12_STACK bans adding one without the team.
- *   The cheaper fix is on the backend: return a URL instead of base64 and
- *   this component can play it with what is already installed. Flagged, not
- *   silently skipped.
+ *   For the verdict specifically, `speakSaleWindow()` prefers Sarvam's
+ *   human-grade Marathi over on-device TTS — the backend team wired that
+ *   (narrate -> base64 WAV -> cache file -> player, with `react-native-fs`),
+ *   and it falls back to on-device TTS whenever the server is unreachable, so
+ *   the verdict is never silent. This button speaks its own screen's text and
+ *   uses the on-device path directly; the Sarvam path is worth extending here
+ *   once the other screens have narration sentences worth synthesizing.
  */
 
 import React, { useState } from 'react';

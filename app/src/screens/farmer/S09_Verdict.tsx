@@ -23,7 +23,7 @@
  * already agree on.
  */
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -32,6 +32,7 @@ import { colors, fontFamily, radius, space, touch, type as typography } from '..
 import { Icon } from '../../components/ui/Icon';
 import { recommendWindow } from '../../lib/api';
 import { useT } from '../../lib/i18n';
+import { speakSaleWindow } from '../../lib/voice';
 import { useAuth } from '../../lib/auth';
 import { formatPaise } from '../../lib/money';
 import {
@@ -71,6 +72,20 @@ export default function S09_Verdict({ navigation }: Props) {
     queryKey: ['ai', 'window', 'recommend', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, DEFAULT_QTY_KG],
     queryFn: fetchVerdict,
   });
+
+  // The sale-window voice agent: speak the verdict + pledge narration once,
+  // when the recommendation first arrives. A farmer who cannot read should
+  // not have to find the listen button to hear the advice — it speaks itself.
+  // Ref-guarded so a refetch or re-render never re-speaks over the farmer;
+  // the listen button in VerdictCard is the replay path. Voice is a
+  // nice-to-have: a failure is swallowed, never surfaced over the verdict.
+  const spokenRef = useRef(false);
+  useEffect(() => {
+    if (data && !spokenRef.current) {
+      spokenRef.current = true;
+      speakSaleWindow(data).catch(() => {});
+    }
+  }, [data]);
 
   const header = (
     <View style={styles.header}>

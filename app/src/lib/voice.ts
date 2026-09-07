@@ -26,6 +26,11 @@ import Sound from 'react-native-sound';
 import Tts from 'react-native-tts';
 import type { WindowRes } from '../types/api';
 import type { TFn } from './i18n';
+import { buildVerdictNarration } from './verdictVoice';
+// ★ Upstream wrote this as `from '../api'`, which resolves to `src/api` — a
+//   file that does not exist, so the narration would have failed to bundle.
+//   `voice.ts` and `api.ts` are siblings in `lib/`.
+import { narrate } from './api';
 
 /**
  * Every ASCII, Android-resource-safe (`[a-z0-9_]+`, no Devanagari) clip id
@@ -305,6 +310,82 @@ export async function speak(clips: string[]): Promise<void> {
 export async function speakText(text: string): Promise<void> {
   await ensureTtsLanguage();
   await speakViaTts(text);
+}
+
+/**
+ * The sale-window voice agent: composes the full spoken Marathi narration for
+ * a `WindowRes` (action + worth + pledge) and speaks it.
+ *
+ * It prefers Sarvam's prosthetic, human-grade Marathi voice (the backend
+ * `POST /voice/narrate` synthesizes the dynamic sentence on demand — a lot,
+ * dates and amounts can't be pre-recorded clips). Sarvam needs a server round
+ * trip and a writable cache file to play back, so on-device TTS
+ * (`speakText`, offline, zero deps) is the guaranteed fallback: a network or
+ * server problem never silences the verdict, it only downgrades the voice.
+ * This is what S9 auto-plays on load and what the 🔊 button replays — richer
+ * than the clip-sequence `speakVerdict` below, because a farmer deciding
+ * whether to hold needs the whole trade in his ear, not isolated word-clips.
+ */
+export async function speakSaleWindow(v: WindowRes): Promise<void> {
+  const narration = buildVerdictNarration(v);
+  try {
+    await speakSarvamVerdict(narration);
+  } catch {
+    await speakText(narration);
+  }
+}
+
+/**
+ * Fetch `narration` as Sarvam-synthesized audio and play it. Resolves on
+ * success; rejects on any failure so the caller can fall back to on-device
+ * TTS. The flow: narrate -> base64 WAV -> temp cache file -> recorder player.
+ * Throws (does not swallow) on network/fs/playback errors by design — the
+ * fallback lives in `speakSaleWindow`, not here.
+ */
+async function speakSarvamVerdict(narration: string): Promise<void> {
+  const { audio_base64 } = await narrate(narration, 'mr');
+
+  // Decode the base64 WAV to bytes and park it in a temp cache file the
+  // native player can read. CachesDirectory is sandboxed, app-owned, and
+  // survives long enough for one playback.
+  const RNFS = require('react-native-fs');
+  const cacheDir: string = RNFS.CachesDirectoryPath;
+  let filePath = `${cacheDir}/sarvam_verdict.wav`;
+  // iOS's AVPlayer wants an explicit file:// scheme; Android's MediaPlayer
+  // does not. Prepend only when it is missing so neither platform chokes.
+  if (!filePath.startsWith('file://')) {
+    filePath = `file://${filePath}`;
+  }
+  await RNFS.writeFile(filePath, audio_base64, 'base64');
+
+  const AudioRecorderPlayer = require('react-native-audio-recorder-player').default;
+  const player = new AudioRecorderPlayer();
+  try {
+    await player.startPlayer(filePath);
+    // Wait for the native finish event before resolving — otherwise we'd
+    // tear the file down while it is still playing. Bound it so a hung
+    // player (no event ever fires) cannot hang the farmer's session: fall
+    // through to stop after a generous ceiling.
+    await Promise.race([
+      new Promise<void>((resolve) => {
+        const onStatus = (e: { isFinished?: boolean }) => {
+          if (e.isFinished) {
+            player.removePlayBackListener();
+            resolve();
+          }
+        };
+        player.addPlayBackListener(onStatus);
+      }),
+      new Promise<void>((resolve) => setTimeout(resolve, 60_000)),
+    ]);
+  } finally {
+    try {
+      await player.stopPlayer();
+    } catch {
+      // already stopped
+    }
+    player.removePlayBackListener();
+  }
 }
 
 export async function speakVerdict(v: WindowRes, t?: TFn): Promise<void> {

@@ -390,24 +390,32 @@ export async function transcribeAudio(audioUri: string, locale: Locale): Promise
 /**
  * Live TTS — Sarvam `bulbul:v3`, via the backend's `/voice/narrate`.
  *
- * ★ The response shape here was wrong and would have failed at runtime: this
- *   was typed `{ audio_url: string }`, and the route actually returns
- *   `audio_base64` / `audio_format` / `language_code` (see
- *   `app/schemas/voice.py:NarrateResponse` in the backend). Nothing called it
- *   yet, so the mismatch had never surfaced — it is corrected here against
- *   the live contract rather than left as a trap for whoever wired it first.
+ * The sale-window voice agent (S9) prefers this human-grade Marathi audio
+ * over the device's own TTS: the verdict sentence carries a lot, dates and
+ * amounts, so it cannot be a pre-recorded clip and has to be synthesized on
+ * demand. `lib/voice.ts`'s `speakSaleWindow()` falls back to on-device
+ * `speakText()` whenever this is unreachable, so a network or server problem
+ * never silences the verdict — it only downgrades the voice.
  *
- * ★ Not yet used for playback: base64 has to be written to a file before
- *   `react-native-sound` can play it, and this app has no filesystem
- *   dependency (12_STACK bans adding one unilaterally). A backend that
- *   returned a URL instead would be playable with what is already installed.
- *   `ListenButton` documents the same trade-off from the UI side.
+ * ★ This was typed `{ audio_url: string }` here and would have failed the
+ *   moment anything called it; the route returns base64. Corrected against
+ *   the live contract, and against the backend team's own `NarrateRes`.
  *
  * ★ The route is deliberately unauthenticated on the server — it runs before
  *   a JWT exists during voice registration.
  */
+/**
+ * ★ Shape adopted from the backend team's own `NarrateRes` (Nikhil's
+ *   `feat(voice)` commit) rather than the inline type this file had — theirs
+ *   also carries `request_id`, which Sarvam returns and which is the only
+ *   handle for chasing a bad synthesis upstream.
+ */
+export interface NarrateRes {
+  audio_base64: string;
+  audio_format: string;
+  language_code: string;
+  request_id?: string | null;
+}
+
 export const narrate = (text: string, locale: Locale) =>
-  post<{ audio_base64: string; audio_format: string; language_code: string }>(
-    '/voice/narrate',
-    { text, locale },
-  );
+  post<NarrateRes>('/voice/narrate', { text, locale });
