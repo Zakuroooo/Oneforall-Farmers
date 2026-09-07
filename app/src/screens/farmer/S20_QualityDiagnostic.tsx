@@ -9,68 +9,63 @@ import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 
-type Option = { label: string; labelMr: string; sublabel?: string; badge?: string; badgeColor?: string };
-
-const QUESTIONS: Array<{
-  num: string;
-  title: string;
-  titleMr: string;
-  badge?: string;
-  badgeColor?: string;
-  options: Option[];
-}> = [
-  {
-    num: '1.',
-    title: 'Onion Bulb Uniformity',
-    titleMr: 'कांद्याचा आकार आणि एकसारखेपणा',
-    badge: 'AI Detected: 75% Medium-Large',
-    badgeColor: colors.positiveContainer,
-    options: [
-      { label: 'Very Uniform (एकसारखा मोठा – 55mm+)', labelMr: 'Grade A premium export standard · समान गोलाकार माल', badge: '₹2,850+ Base' },
-      { label: 'Mixed Sizing (मध्यम व लहान मिसळ – 40–55mm)', labelMr: 'Standard domestic mandi grade · मध्यम साईझ' },
-      { label: 'Small / Gulti Sizing (गुल्टी / बारीक – <40mm)', labelMr: 'Discounted processing lot · गोल्टी माल' },
-    ],
-  },
-  {
-    num: '2.',
-    title: 'Skin Retention & Sun-Curing',
-    titleMr: 'पापुडा आणि साळकण स्थिती',
-    badge: 'AI Detected: 94% Double Skin',
-    badgeColor: colors.positiveContainer,
-    options: [
-      { label: 'Crisp Double Papery Skin (उत्कृष्ट दुहेरी लाल पापुडा)', labelMr: 'High luster. 0% shedding during handling · 45-day storage life' },
-      { label: 'Single Skin / Light Peel (एक पदरी पापुडा)', labelMr: 'Minor flaking on outer layer · हलका निघालेला पापुडा' },
-      { label: 'Peeled / Bald Onions Present (पापुडा निघालेला माल)', labelMr: 'White fleshy parts exposed · लाल/कच्च विकी योग्य' },
-    ],
-  },
-  {
-    num: '3.',
-    title: 'Moisture & Neck Tightness',
-    titleMr: 'ओलावा व कंद्याची मान कोरडी असणे',
-    badge: 'Safe Moisture < 10%',
-    badgeColor: colors.positiveContainer,
-    options: [
-      { label: 'Fully Cured & Dry Neck', labelMr: 'पूर्ण वाळलेला, मान कडक कोरडी' },
-      { label: 'Slight Moisture / Thick Neck', labelMr: 'किंचित ओलसर / जाड मान अडकणाचा मात्र' },
-    ],
-  },
-  {
-    num: '4.',
-    title: 'Sprouting & Black Mold / Dagi',
-    titleMr: 'कोंब आणि जैविक दूषण',
-    badge: 'Threshold: < 2%',
-    badgeColor: colors.surfaceContainerHigh,
-    options: [
-      { label: '0% Zero Sprouting & No Mold', labelMr: '(पूर्ण निरोगी माल) Clean lot, zero black mold powder on scales · निर्दोष', badge: 'Grade A', badgeColor: colors.positiveContainer },
-      { label: '< 3% Minor Surface Spots', labelMr: '(किंचित डाग) Superficial spots removable with outer scale · किरकोळ', badge: 'Grade B', badgeColor: '#FEF3C7' },
-      { label: '> 5% Sprouting Visible (कोंब फुटलेला माल)', labelMr: 'Green sprout visible at apex · लाल/कच्च प्रक्रियेसाठी', badge: 'Grade C', badgeColor: colors.surfaceContainerHigh },
-    ],
-  },
-];
+type Option = { label: string; sublabel?: string; badge?: string; badgeColor?: string };
 
 export default function S20_QualityDiagnostic({ navigation }: any) {
   const { t } = useT();
   const [selected, setSelected] = useState<Record<string, number>>({});
+
+  const QUESTIONS: Array<{
+    num: string;
+    title: string;
+    badge?: string;
+    badgeColor?: string;
+    options: Option[];
+  }> = [
+    {
+      num: '1.',
+      title: t('quality_q1_title'),
+      badge: t('quality_q1_ai_badge'),
+      badgeColor: colors.positiveContainer,
+      options: [
+        { label: t('quality_q1_opt1'), sublabel: t('quality_q1_opt1_sub'), badge: t('quality_q1_opt1_badge') },
+        { label: t('quality_q1_opt2'), sublabel: t('quality_q1_opt2_sub') },
+        { label: t('quality_q1_opt3'), sublabel: t('quality_q1_opt3_sub') },
+      ],
+    },
+    {
+      num: '2.',
+      title: t('quality_q2_title'),
+      badge: t('quality_q2_ai_badge'),
+      badgeColor: colors.positiveContainer,
+      options: [
+        { label: t('quality_q2_opt1'), sublabel: t('quality_q2_opt1_sub') },
+        { label: t('quality_q2_opt2'), sublabel: t('quality_q2_opt2_sub') },
+        { label: t('quality_q2_opt3'), sublabel: t('quality_q2_opt3_sub') },
+      ],
+    },
+    {
+      num: '3.',
+      title: t('quality_q3_title'),
+      badge: t('quality_q3_ai_badge'),
+      badgeColor: colors.positiveContainer,
+      options: [
+        { label: t('quality_q3_opt1'), sublabel: t('quality_q3_opt1_sub') },
+        { label: t('quality_q3_opt2'), sublabel: t('quality_q3_opt2_sub') },
+      ],
+    },
+    {
+      num: '4.',
+      title: t('quality_q4_title'),
+      badge: t('quality_q4_ai_badge'),
+      badgeColor: colors.surfaceContainerHigh,
+      options: [
+        { label: t('quality_q4_opt1'), sublabel: t('quality_q4_opt1_sub'), badge: t('quality_q4_opt1_badge'), badgeColor: colors.positiveContainer },
+        { label: t('quality_q4_opt2'), sublabel: t('quality_q4_opt2_sub'), badge: t('quality_q4_opt2_badge'), badgeColor: '#FEF3C7' },
+        { label: t('quality_q4_opt3'), sublabel: t('quality_q4_opt3_sub'), badge: t('quality_q4_opt3_badge'), badgeColor: colors.surfaceContainerHigh },
+      ],
+    },
+  ];
 
   return (
     <View style={styles.root}>
@@ -82,8 +77,8 @@ export default function S20_QualityDiagnostic({ navigation }: any) {
           <Icon name="arrow-left" size={20} color={colors.onSurface} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>Quality Diagnostic</Text>
-          <Text style={styles.headerSub}>Step 3 of 5 · दर्जा तपासणी · 40 Qtl</Text>
+          <Text style={styles.headerTitle}>{t('quality_header_title')}</Text>
+          <Text style={styles.headerSub}>{t('quality_header_sub')}</Text>
         </View>
         <Text style={styles.headerRef}>#LP-403</Text>
         <TouchableOpacity style={styles.listenBtn}>
@@ -97,10 +92,10 @@ export default function S20_QualityDiagnostic({ navigation }: any) {
         <View style={[styles.progressFill, { width: '60%' }]} />
       </View>
       <View style={styles.progressLabels}>
-        <Text style={styles.progressLabelActive}>Physical Assay Diagnostic (वैयक्तिक तपासणी)</Text>
+        <Text style={styles.progressLabelActive}>{t('quality_progress_label')}</Text>
         <View style={styles.draftBadge}>
           <Icon name="check" size={10} color={colors.tertiary} />
-          <Text style={styles.draftText}>Draft Saved · ऑफलाइन सुरक्षित</Text>
+          <Text style={styles.draftText}>{t('quality_draft_badge')}</Text>
         </View>
       </View>
 
@@ -112,11 +107,11 @@ export default function S20_QualityDiagnostic({ navigation }: any) {
             <Text style={styles.lotThumbText}>3 Photos</Text>
           </View>
           <View style={styles.lotInfo}>
-            <Text style={styles.lotVariety}>Gavran Red Onion (उन्हाळ कांदा)</Text>
-            <Text style={styles.lotSub}>40 Qtl · 80 Bags (#५० किलो बोरी) · Niphad F...</Text>
+            <Text style={styles.lotVariety}>{t('quality_lot_variety')}</Text>
+            <Text style={styles.lotSub}>{t('quality_lot_sub')}</Text>
             <View style={styles.aiPhotoRow}>
               <Icon name="star" size={11} color={colors.tertiary} />
-              <Text style={styles.aiPhotoText}>AI Photo Score: 98% Clear (3 फोटो तपासले)</Text>
+              <Text style={styles.aiPhotoText}>{t('quality_ai_photo')}</Text>
             </View>
           </View>
         </View>
@@ -128,7 +123,6 @@ export default function S20_QualityDiagnostic({ navigation }: any) {
               <Text style={styles.sectionNum}>{q.num}</Text>
               <View style={styles.sectionTitles}>
                 <Text style={styles.sectionTitle}>{q.title}</Text>
-                <Text style={styles.sectionTitleMr}>{q.titleMr}</Text>
               </View>
               {q.badge ? (
                 <View style={[styles.sectionBadge, { backgroundColor: q.badgeColor }]}>
@@ -149,46 +143,29 @@ export default function S20_QualityDiagnostic({ navigation }: any) {
                   <View style={[styles.radio, active && styles.radioActive]}>
                     {active && <View style={styles.radioFill} />}
                   </View>
-                  <View style={styles.optionText}>
-                    <Text style={[styles.optionLabel, active && styles.optionLabelActive]}>{opt.label}</Text>
-                    <Text style={styles.optionSubLabel}>{opt.labelMr}</Text>
-                  </View>
-                  {opt.badge ? (
-                    <View style={[styles.optionBadge, opt.badgeColor ? { backgroundColor: opt.badgeColor } : undefined]}>
-                      <Text style={styles.optionBadgeText}>{opt.badge}</Text>
+                  <View style={styles.optionContent}>
+                    <View style={styles.optionTitleRow}>
+                      <Text style={[styles.optionLabel, active && styles.optionLabelActive]}>{opt.label}</Text>
+                      {opt.badge && (
+                        <View style={[styles.optBadge, { backgroundColor: opt.badgeColor || colors.surfaceContainerHighest }]}>
+                          <Text style={styles.optBadgeText}>{opt.badge}</Text>
+                        </View>
+                      )}
                     </View>
-                  ) : null}
+                    {opt.sublabel && <Text style={styles.optionSub}>{opt.sublabel}</Text>}
+                  </View>
                 </TouchableOpacity>
               );
             })}
           </View>
         ))}
-
-        {/* Price protection note */}
-        <View style={styles.priceProtectionCard}>
-          <View style={styles.priceProtectionHeader}>
-            <Icon name="shield-check" size={16} color={colors.primary} />
-            <Text style={styles.priceProtectionTitle}>Mandi Price Protection Guarantee</Text>
-          </View>
-          <Text style={styles.priceProtectionText}>
-            Honest physical answers prevent re-grading disputes at the buyer's weighing bridge. 100% Escrow deposit is released immediately when self-declaration matches weighment assay at Lasalgaon Mandi Yard.
-          </Text>
-          <View style={styles.priceProtectionFooter}>
-            <Icon name="check-circle" size={12} color={colors.tertiary} />
-            <Text style={styles.priceProtectionFooterText}>APMC Board Verified Escrow Protocol · शेतकरी संरक्षण हमी</Text>
-          </View>
-        </View>
       </ScrollView>
 
-      {/* CTA dock */}
+      {/* Action Dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.ctaBtn}>
-          <Text style={styles.ctaBtnText}>Calculate Quality Grade · प्रतवारी काढा (Step 4)</Text>
+        <TouchableOpacity style={styles.dockBtn} onPress={() => navigation.navigate('S21_PriceDiscovery')}>
+          <Text style={styles.dockBtnText}>{t('quality_btn_save')}</Text>
           <Icon name="arrow-right" size={18} color={colors.onPrimary} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.saveLink}>
-          <Icon name="clipboard" size={13} color={colors.onSurfaceVariant} />
-          <Text style={styles.saveLinkText}>Save Draft &amp; Continue Later · नंतर सेव्ह करा</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -197,69 +174,49 @@ export default function S20_QualityDiagnostic({ navigation }: any) {
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.background },
-  header: {
-    flexDirection: 'row', alignItems: 'center', gap: space.xs,
-    paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm,
-    backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant,
-  },
+  header: { flexDirection: 'row', alignItems: 'center', gap: space.sm, paddingHorizontal: space.md, paddingTop: space.xl + 8, paddingBottom: space.sm, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
   backBtn: { width: 36, height: 36, borderRadius: 10, backgroundColor: colors.surfaceContainerHigh, alignItems: 'center', justifyContent: 'center' },
   headerCenter: { flex: 1 },
-  headerTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary },
-  headerSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  headerRef: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurfaceVariant },
+  headerTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onSurface },
+  headerSub: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
+  headerRef: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primaryContainer },
   listenBtn: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.full, backgroundColor: 'rgba(155,47,0,0.08)' },
   listenText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
-  progressBg: { height: 5, backgroundColor: colors.outlineVariant },
-  progressFill: { height: 5, backgroundColor: colors.primary },
-  progressLabels: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.md, paddingVertical: 5, backgroundColor: colors.surface, borderBottomWidth: 1, borderBottomColor: colors.outlineVariant },
-  progressLabelActive: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
-  draftBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 8, paddingVertical: 2, borderRadius: radius.full, backgroundColor: colors.positiveContainer },
+  progressBg: { height: 4, backgroundColor: colors.surfaceContainerHigh },
+  progressFill: { height: '100%', backgroundColor: colors.primary },
+  progressLabels: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: space.md, paddingVertical: space.sm, backgroundColor: colors.surface },
+  progressLabelActive: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primary },
+  draftBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: colors.positiveContainer, paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm },
   draftText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  scroll: { paddingBottom: 130 },
-  lotCard: {
-    flexDirection: 'row', alignItems: 'center', gap: space.sm,
-    margin: space.md, marginBottom: space.xs, padding: space.sm,
-    borderRadius: radius.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant,
-  },
-  lotThumbPlaceholder: { width: 64, height: 64, borderRadius: radius.md, backgroundColor: colors.surfaceContainerHigh, alignItems: 'center', justifyContent: 'center' },
-  lotThumbText: { fontFamily: fontFamily.medium, fontSize: 10, color: colors.onSurfaceVariant, marginTop: 2 },
-  lotInfo: { flex: 1 },
-  lotVariety: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
-  lotSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  aiPhotoRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 3 },
+  scroll: { paddingBottom: 100 },
+  lotCard: { flexDirection: 'row', margin: space.md, padding: space.sm, borderRadius: radius.lg, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant },
+  lotThumbPlaceholder: { width: 48, height: 48, borderRadius: radius.md, backgroundColor: colors.surfaceContainerHighest, alignItems: 'center', justifyContent: 'center' },
+  lotThumbText: { fontFamily: fontFamily.bold, fontSize: 9, color: colors.onSurfaceVariant, marginTop: 2 },
+  lotInfo: { flex: 1, marginLeft: space.md, justifyContent: 'center' },
+  lotVariety: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, marginBottom: 2 },
+  lotSub: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant, marginBottom: 6 },
+  aiPhotoRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   aiPhotoText: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.tertiary },
-  section: { marginHorizontal: space.md, marginBottom: space.sm },
-  sectionHeader: { flexDirection: 'row', alignItems: 'flex-start', gap: space.xs, marginBottom: space.xs },
-  sectionNum: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary, minWidth: 24 },
+  section: { marginHorizontal: space.md, marginBottom: space.lg },
+  sectionHeader: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: space.sm },
+  sectionNum: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.primary, marginRight: 8, marginTop: 2 },
   sectionTitles: { flex: 1 },
-  sectionTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface },
-  sectionTitleMr: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant },
-  sectionBadge: { flexDirection: 'row', alignItems: 'center', gap: 3, paddingHorizontal: 7, paddingVertical: 3, borderRadius: radius.full },
-  sectionBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  optionCard: {
-    flexDirection: 'row', alignItems: 'flex-start', gap: space.sm,
-    padding: space.sm, borderRadius: radius.lg, borderWidth: 1, borderColor: colors.outlineVariant,
-    backgroundColor: colors.surface, marginBottom: space.xs,
-  },
-  optionCardActive: { borderColor: colors.primaryContainer, borderWidth: 2, backgroundColor: colors.onPrimaryContainer },
-  radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: colors.outlineVariant, alignItems: 'center', justifyContent: 'center', marginTop: 1, flexShrink: 0 },
+  sectionTitle: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onSurface },
+  sectionBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, paddingHorizontal: 6, paddingVertical: 3, borderRadius: radius.sm, marginLeft: 8, alignSelf: 'flex-start' },
+  sectionBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurface },
+  optionCard: { flexDirection: 'row', padding: space.md, marginBottom: space.sm, borderRadius: radius.lg, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.outlineVariant },
+  optionCardActive: { borderColor: colors.primaryContainer, backgroundColor: colors.onPrimaryContainer, borderWidth: 2 },
+  radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: colors.outlineVariant, alignItems: 'center', justifyContent: 'center', marginRight: space.md, marginTop: 2 },
   radioActive: { borderColor: colors.primary },
   radioFill: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.primary },
-  optionText: { flex: 1 },
-  optionLabel: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface },
+  optionContent: { flex: 1 },
+  optionTitleRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 4 },
+  optionLabel: { flex: 1, fontFamily: fontFamily.bold, fontSize: 14, color: colors.onSurface, lineHeight: 20 },
   optionLabelActive: { color: colors.primary },
-  optionSubLabel: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant, marginTop: 1 },
-  optionBadge: { paddingHorizontal: 7, paddingVertical: 3, borderRadius: radius.full, backgroundColor: colors.positiveContainer, alignSelf: 'flex-start', flexShrink: 0 },
-  optionBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.tertiary },
-  priceProtectionCard: { marginHorizontal: space.md, marginBottom: space.sm, padding: space.md, borderRadius: radius.xl, backgroundColor: colors.onPrimaryContainer, borderWidth: 1, borderColor: colors.primaryContainer },
-  priceProtectionHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: space.xs },
-  priceProtectionTitle: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.primary, flex: 1 },
-  priceProtectionText: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurface, lineHeight: 18, marginBottom: space.xs },
-  priceProtectionFooter: { flexDirection: 'row', alignItems: 'center', gap: 5 },
-  priceProtectionFooterText: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.tertiary, flex: 1 },
-  dock: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant, gap: 6 },
-  ctaBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: touch.targetHero, backgroundColor: colors.primaryContainer, borderRadius: radius.lg, shadowColor: '#C2410C', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
-  ctaBtnText: { fontFamily: fontFamily.extraBold, fontSize: 14, color: colors.onPrimary },
-  saveLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 5 },
-  saveLinkText: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
+  optBadge: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: radius.sm, marginLeft: space.sm },
+  optBadgeText: { fontFamily: fontFamily.bold, fontSize: 10, color: colors.onSurface },
+  optionSub: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant, lineHeight: 17 },
+  dock: { position: 'absolute', bottom: 0, left: 0, right: 0, paddingHorizontal: space.md, paddingBottom: space.xl, paddingTop: space.sm, backgroundColor: colors.surface, borderTopWidth: 1, borderTopColor: colors.outlineVariant },
+  dockBtn: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, height: touch.targetHero, backgroundColor: colors.primary, borderRadius: radius.lg },
+  dockBtnText: { fontFamily: fontFamily.extraBold, fontSize: 16, color: colors.onPrimary },
 });
