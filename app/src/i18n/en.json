@@ -1362,5 +1362,21 @@
   "qs_conversion": "{kg} kg · {bags} bags of 50 kg",
   "qs_hint": "Tap and hold to move faster.",
   "qs_create": "Create this lot",
-  "qs_creating": "Creating…"
+  "qs_creating": "Creating…",
+  "vc_skip": "Skip",
+  "vc_step": "Step {n} of {total}",
+  "vc_title": "Why Krishi Mitra",
+  "vc_1_title": "Know whether waiting pays",
+  "vc_1_body": "A 14-day price outlook for your mandi, with the expected gain and the worst case shown side by side — never one without the other.",
+  "vc_1_tag": "Both numbers, always",
+  "vc_2_title": "Sell to buyers directly",
+  "vc_2_body": "Verified buyers bid on your lot. Every deduction — freight, adat, labour — is shown before you accept, so the rate you see is the rate you clear.",
+  "vc_2_tag": "Net, not gross",
+  "vc_3_title": "Money held until delivery",
+  "vc_3_body": "The buyer’s payment sits in escrow until the weighment receipt clears, then goes to your bank.",
+  "vc_3_tag": "Escrow",
+  "vc_refusal_title": "And it will tell you when it does not know",
+  "vc_refusal_body": "When the market is too volatile to call, this app refuses to guess instead of inventing a confident number.",
+  "vc_next": "Continue",
+  "vc_login": "I already have an account"
 }

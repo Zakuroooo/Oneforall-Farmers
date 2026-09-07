@@ -75,7 +75,7 @@ export default function S01_Language({ navigation }: Props) {
   };
 
   const handleContinue = () => {
-    navigation.navigate('S2_Phone');
+    navigation.navigate('S1b_ValueCarousel');
   };
 
   const selectedOption = LANGUAGE_OPTIONS.find(o => o.code === selected);

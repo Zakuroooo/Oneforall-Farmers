@@ -8,6 +8,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '../lib/auth';
 import S00_Splash from '../screens/farmer/S00_Splash';
 import S01_Language from '../screens/farmer/S01_Language';
+import S01b_ValueCarousel from '../screens/farmer/S01b_ValueCarousel';
 import S02_Phone from '../screens/farmer/S02_Phone';
 import S03_OTP from '../screens/farmer/S03_OTP';
 import S03_Profile from '../screens/farmer/S03_Profile';
@@ -17,6 +18,10 @@ import { S17_BuyerLogin } from '../screens/buyer/S17_BuyerLogin';
 export type AuthStackParamList = {
   S0_Splash: undefined;
   S1_Language: undefined;
+  /** Stitch 03 — "why Krishi Mitra", between the language choice and the
+   * phone number. `S1b` because three screens already carry the `S03_`
+   * prefix from the pre-Stitch numbering. */
+  S1b_ValueCarousel: undefined;
   S2_Phone: undefined;
   S3_OTP: undefined;
   S3_Profile: undefined;
@@ -35,6 +40,7 @@ export function AuthStack() {
       screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <Stack.Screen name="S0_Splash" component={S00_Splash} />
       <Stack.Screen name="S1_Language" component={S01_Language} />
+      <Stack.Screen name="S1b_ValueCarousel" component={S01b_ValueCarousel} />
       <Stack.Screen name="S2_Phone" component={S02_Phone} />
       <Stack.Screen name="S3_OTP" component={S03_OTP} />
       <Stack.Screen name="S3_Profile" component={S03_Profile} />
