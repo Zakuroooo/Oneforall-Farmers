@@ -100,6 +100,18 @@ export default function S01_Language({ navigation }: Props) {
 
         {/* ── Header ─────────────────────────────────── */}
         <View style={styles.header}>
+          {/* Back to the splash. The onboarding chain used to be one-way:
+              every screen pushed forward and none offered a way back, so a
+              farmer who wanted to re-read the intro simply could not. */}
+          {navigation.canGoBack() ? (
+            <TouchableOpacity
+              style={styles.backBtn}
+              onPress={() => navigation.goBack()}
+              accessibilityRole="button"
+              accessibilityLabel={t('back_button')}>
+              <Icon name="arrow-left" size={20} color={colors.onSurface} />
+            </TouchableOpacity>
+          ) : null}
           <View style={styles.stepRow}>
             <View style={styles.stepDot} />
             <View style={[styles.stepDot, styles.stepDotInactive]} />
@@ -517,5 +529,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: colors.onPrimary,
     letterSpacing: 0.3,
+  },
+  backBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: space.sm,
   },
 });

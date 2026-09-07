@@ -1466,5 +1466,8 @@
   "role_farmer_sub": "I grow and sell produce",
   "role_buyer_sub": "I buy produce from farmers",
   "buyer_welcome_title": "Welcome",
-  "buyer_home_title": "Buyer console"
+  "buyer_home_title": "Buyer console",
+  "lang_name_mr": "मराठी",
+  "lang_name_hi": "हिंदी",
+  "lang_name_en": "English"
 }

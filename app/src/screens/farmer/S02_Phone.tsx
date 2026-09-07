@@ -169,6 +169,21 @@ export default function S02_Phone({ navigation }: Props) {
           <View style={styles.headerTextRow}>
             <Text style={styles.headerTitle}>{t('phone_login_signup')}</Text>
           </View>
+
+          {/* ★ A returning farmer starts here — `AuthStack` sets
+              `initialRouteName` to this screen once a locale is stored, so
+              there is nothing behind it and `canGoBack()` is false. That is
+              correct (nobody wants the splash every launch) but it also meant
+              the language screen became unreachable forever after the first
+              run. This is the way back to it. */}
+          <TouchableOpacity
+            style={styles.langBtn}
+            onPress={() => navigation.navigate('S1_Language')}
+            accessibilityRole="button"
+            accessibilityLabel={t('select_language')}>
+            <Icon name="globe" size={16} color={colors.primary} />
+            <Text style={styles.langBtnText}>{t(`lang_name_${locale}`)}</Text>
+          </TouchableOpacity>
         </View>
 
         {/* ── Heading ────────────────────────────────── */}
@@ -787,4 +802,16 @@ const styles = StyleSheet.create({
   roleLabel: { fontFamily: fontFamily.bold, fontSize: 15, color: colors.onSurface, marginTop: 4 },
   roleLabelActive: { color: colors.primary },
   roleSub: { fontFamily: fontFamily.regular, fontSize: 11, color: colors.onSurfaceVariant, lineHeight: 15 },
+  langBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: radius.full,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+  },
+  langBtnText: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.primary },
 });

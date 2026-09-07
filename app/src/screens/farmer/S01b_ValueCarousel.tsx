@@ -51,6 +51,13 @@ export default function S01b_ValueCarousel({ navigation }: Props) {
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
 
       <View style={styles.header}>
+        <TouchableOpacity
+          style={styles.backBtn}
+          onPress={() => navigation.canGoBack() && navigation.goBack()}
+          accessibilityRole="button"
+          accessibilityLabel={t('back_button')}>
+          <Icon name="arrow-left" size={20} color={colors.onSurface} />
+        </TouchableOpacity>
         <Text style={styles.step}>{t('vc_step', { n: '2', total: '3' })}</Text>
         <TouchableOpacity onPress={goToPhone} accessibilityRole="button" style={styles.skipBtn}>
           <Text style={styles.skipText}>{t('vc_skip')}</Text>
@@ -111,7 +118,17 @@ const styles = StyleSheet.create({
     paddingTop: space.xl + 8,
     paddingBottom: space.xs,
   },
-  step: { ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
+  step: { flex: 1, ...typography.labelSm, color: colors.onSurfaceVariant, fontFamily: fontFamily.medium },
+  backBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.outlineVariant,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   skipBtn: { paddingHorizontal: space.xs, paddingVertical: 6 },
   skipText: { ...typography.labelMd, color: colors.primary },
 

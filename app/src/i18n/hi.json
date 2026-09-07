@@ -1466,5 +1466,8 @@
   "role_farmer_sub": "मैं फ़सल उगाता और बेचता हूँ",
   "role_buyer_sub": "मैं किसानों से माल खरीदता हूँ",
   "buyer_welcome_title": "स्वागत है",
-  "buyer_home_title": "खरीदार कक्ष"
+  "buyer_home_title": "खरीदार कक्ष",
+  "lang_name_mr": "मराठी",
+  "lang_name_hi": "हिंदी",
+  "lang_name_en": "English"
 }
