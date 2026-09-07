@@ -32,6 +32,7 @@ import { BuyerTabs } from './BuyerTabs';
 import { FarmerTabs } from './FarmerTabs';
 import S34_MenuDrawer from '../screens/farmer/S34_MenuDrawer';
 import S28_Assistant from '../screens/farmer/S28_Assistant';
+import S36_LanguageSwitcher from '../screens/farmer/S36_LanguageSwitcher';
 
 function Splash() {
   return (
@@ -51,6 +52,7 @@ export type FarmerRootStackParamList = {
   FarmerTabs: undefined;
   Menu: undefined;
   Assistant: undefined;
+  LanguageSwitcher: undefined;
 };
 const FarmerRootStack = createNativeStackNavigator<FarmerRootStackParamList>();
 
@@ -74,6 +76,11 @@ function FarmerRoot() {
         component={S28_Assistant}
         options={{ headerShown: true, title: '' }}
       />
+      {/* Stitch 36. Built, fully translated, and reachable from nothing until
+          now — the menu's three inline chips were the only way to change
+          language, and they carry none of this screen's per-language voice
+          and preview detail. */}
+      <FarmerRootStack.Screen name="LanguageSwitcher" component={S36_LanguageSwitcher} />
     </FarmerRootStack.Navigator>
   );
 }

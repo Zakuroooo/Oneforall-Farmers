@@ -145,7 +145,10 @@ export default function S34_MenuDrawer({ navigation }: Props) {
           </TouchableOpacity>
         </View>
 
-        {/* Language */}
+        {/* Language. The three chips switch instantly and stay — they are the
+            fast path. The row beneath opens Stitch 36, which is the same
+            choice with the per-language voice and preview detail the chips
+            have no room for. */}
         <Text style={styles.sectionLabel}>{t('select_language')}</Text>
         <View style={styles.menuCard}>
           <View style={styles.langRow}>
@@ -160,6 +163,17 @@ export default function S34_MenuDrawer({ navigation }: Props) {
               </TouchableOpacity>
             ))}
           </View>
+          <View style={styles.menuDivider} />
+          <TouchableOpacity
+            style={styles.menuRow}
+            onPress={() => navigation.navigate('LanguageSwitcher')}
+            accessibilityRole="button">
+            <View style={styles.menuIconBg}>
+              <Icon name="globe" size={16} color={colors.primary} />
+            </View>
+            <Text style={styles.menuTitle}>{t('select_language')}</Text>
+            <Icon name="chevron-right" size={16} color={colors.outline} />
+          </TouchableOpacity>
         </View>
 
         {/* Sign out — bottom of the menu, deliberately, not top-bar chrome */}
