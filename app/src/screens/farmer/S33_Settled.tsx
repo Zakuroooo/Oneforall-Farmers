@@ -26,9 +26,9 @@ export default function S33_Settled({ navigation }: any) {
         <View style={styles.headerCenter}>
           <View style={styles.settledBadge}>
             <Icon name="check-circle" size={12} color={colors.tertiary} />
-            <Text style={styles.settledBadgeText}>यशस्वी जमा (SETTLED)</Text>
+            <Text style={styles.settledBadgeText}>{t('settled_badge')}</Text>
           </View>
-          <Text style={styles.headerTitle}>सौदा पावती व अंतिम हिशोब</Text>
+          <Text style={styles.headerTitle}>{t('settled_header')}</Text>
         </View>
         <TouchableOpacity style={styles.listenBtn}>
           <Icon name="volume" size={13} color={colors.primary} />
@@ -42,71 +42,66 @@ export default function S33_Settled({ navigation }: any) {
           <View style={styles.rtgsIconRow}>
             <View style={styles.rtgsCheckCircle}><Icon name="check-circle" size={28} color={colors.onPrimary} /></View>
             <View style={styles.rtgsInfo}>
-              <Text style={styles.rtgsLabel}>थेट बँक खात्यात पैसे जमा · RTGS यशस्वी</Text>
-              <Text style={styles.rtgsMeta}>#SD-2024-8842</Text>
-              <Text style={styles.rtgsDate}>१४ मार्च २०२४, दुपारी ३:४५ वाजता</Text>
+              <Text style={styles.rtgsLabel}>{t('settled_rtgs_label')}</Text>
+              <Text style={styles.rtgsMeta}>{t('settled_rtgs_meta')}</Text>
+              <Text style={styles.rtgsDate}>{t('settled_rtgs_date')}</Text>
             </View>
           </View>
-          <Text style={styles.rtgsAmt}>₹75,400 <Text style={styles.rtgsAmtSub}>पूर्ण चुकता</Text></Text>
+          <Text style={styles.rtgsAmt}>{t('settled_rtgs_amt')} <Text style={styles.rtgsAmtSub}>{t('settled_rtgs_amt_sub')}</Text></Text>
           <View style={styles.bankRow}>
             <Icon name="building" size={13} color={colors.onSurfaceVariant} />
-            <Text style={styles.bankName}>भारतीय स्टेट बँक (SBI)</Text>
-            <Text style={styles.bankAcNo}>A/C ·······4209</Text>
+            <Text style={styles.bankName}>{t('settled_bank_name')}</Text>
+            <Text style={styles.bankAcNo}>{t('settled_bank_ac')}</Text>
           </View>
-          {/* ★ The invented UTR number and a fabricated bank SMS quoting a
-              specific balance were removed — no real bank integration
-              exists behind this screen, and printing a bank message that
-              looks genuine is the kind of fabrication this product has
-              already been burned by. */}
         </View>
 
         {/* Gain proof card */}
         <View style={styles.gainCard}>
           <View style={styles.gainHeader}>
             <Icon name="trending-up" size={16} color={colors.primary} />
-            <Text style={styles.gainTitle}>कृषी मित्र सल्ला यशोगाथा</Text>
-            <View style={styles.gainPctBadge}><Text style={styles.gainPctText}>+10.4% नफा</Text></View>
+            <Text style={styles.gainTitle}>{t('settled_gain_title')}</Text>
+            <View style={styles.gainPctBadge}><Text style={styles.gainPctText}>{t('settled_gain_pct')}</Text></View>
           </View>
-          <Text style={styles.gainBannerSub}>११ दिवस भावप्रतीक्षेचा ऐतिहासिक लाभ</Text>
+          <Text style={styles.gainBannerSub}>{t('settled_gain_sub')}</Text>
 
           <View style={styles.gainAmtRow}>
             <Icon name="trending-up" size={18} color={colors.tertiary} />
-            <View>
-              <Text style={styles.gainAmtLabel}>+₹7,200 जास्तीचा नफा!</Text>
-              <Text style={styles.gainAmtDesc}>काढणी दिवशी न विकता शांबल्यामुळे शेत बिशात जास्तीचे पैसे आले.</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.gainAmtLabel}>{t('settled_gain_amt')}</Text>
+              <Text style={styles.gainAmtDesc}>{t('settled_gain_desc')}</Text>
             </View>
           </View>
 
           <View style={styles.gainCompareRow}>
             <View style={styles.gainCompareItem}>
-              <Text style={styles.gainCompareDayLabel}>काढणी दिवस (Day 0)</Text>
-              <Text style={styles.gainCompareDate}>३ मार्च २०२४ चा दर</Text>
-              <Text style={styles.gainCompareRate}>₹1,720/क्विंo</Text>
-              <Text style={styles.gainCompareTotal}>४० क्विंटल = ₹68,800</Text>
-              <View style={styles.mandiModeTag}><Text style={styles.mandiModeTagText}>बाजारात मंडी होती</Text></View>
+              <Text style={styles.gainCompareDayLabel}>{t('settled_day0_label')}</Text>
+              <Text style={styles.gainCompareDate}>{t('settled_day0_date')}</Text>
+              <Text style={styles.gainCompareRate}>{t('settled_day0_rate')}</Text>
+              <Text style={styles.gainCompareTotal}>{t('settled_day0_total')}</Text>
+              <View style={styles.mandiModeTag}><Text style={styles.mandiModeTagText}>{t('settled_day0_tag')}</Text></View>
             </View>
             <View style={styles.gainCompareDivider} />
             <View style={styles.gainCompareItem}>
-              <Text style={styles.gainCompareDayLabel}>विक्री दिवस (Day 11)</Text>
-              <Text style={styles.gainCompareDate}>१४ मार्च निश्चित दर</Text>
-              <Text style={[styles.gainCompareRate, { color: colors.tertiary }]}>₹1,900/क्विंo</Text>
-              <Text style={styles.gainCompareTotal}>४० क्विंटल = ₹76,000</Text>
-              <View style={styles.teziBadge}><Text style={styles.teziBadgeText}>तेजीचा थोरंग फायदा</Text></View>
+              <Text style={styles.gainCompareDayLabel}>{t('settled_day11_label')}</Text>
+              <Text style={styles.gainCompareDate}>{t('settled_day11_date')}</Text>
+              <Text style={[styles.gainCompareRate, { color: colors.tertiary }]}>{t('settled_day11_rate')}</Text>
+              <Text style={styles.gainCompareTotal}>{t('settled_day11_total')}</Text>
+              <View style={styles.teziBadge}><Text style={styles.teziBadgeText}>{t('settled_day11_tag')}</Text></View>
             </View>
           </View>
 
           <View style={styles.gainBreakdown}>
             <View style={styles.gainBreakdownRow}>
-              <Text style={styles.gainBreakdownKey}>वाढलेलादर फरक (₹180/क्विंo × ४० क्विंटल)</Text>
-              <Text style={[styles.gainBreakdownVal, { color: colors.tertiary }]}>+₹7,200</Text>
+              <Text style={styles.gainBreakdownKey}>{t('settled_brk_diff_key')}</Text>
+              <Text style={[styles.gainBreakdownVal, { color: colors.tertiary }]}>{t('settled_brk_diff_val')}</Text>
             </View>
             <View style={styles.gainBreakdownRow}>
-              <Text style={styles.gainBreakdownKey}>११ दिवसांचा मांडण आणि भांडे खर्च व वजन पट</Text>
-              <Text style={[styles.gainBreakdownVal, { color: colors.critical }]}>-₹308</Text>
+              <Text style={styles.gainBreakdownKey}>{t('settled_brk_cost_key')}</Text>
+              <Text style={[styles.gainBreakdownVal, { color: colors.critical }]}>{t('settled_brk_cost_val')}</Text>
             </View>
             <View style={[styles.gainBreakdownRow, styles.gainNetRow]}>
-              <Text style={styles.gainNetKey}>निवळ अंतिम फायदा (Net Clean Surplus)</Text>
-              <Text style={styles.gainNetVal}>+₹6,892</Text>
+              <Text style={styles.gainNetKey}>{t('settled_net_key')}</Text>
+              <Text style={styles.gainNetVal}>{t('settled_net_val')}</Text>
             </View>
           </View>
         </View>
@@ -114,25 +109,25 @@ export default function S33_Settled({ navigation }: any) {
         {/* Lot photo + details */}
         <View style={styles.lotCard}>
           <View style={styles.lotCardHeader}>
-            <Text style={styles.lotCardTitle}>शेतमाल तपशील</Text>
-            <View style={styles.gradeABadge}><Text style={styles.gradeAText}>श्रेणी A (850/1000)</Text></View>
+            <Text style={styles.lotCardTitle}>{t('settled_lot_title')}</Text>
+            <View style={styles.gradeABadge}><Text style={styles.gradeAText}>{t('settled_lot_grade')}</Text></View>
           </View>
-          <Text style={styles.lotProductName}>५० क्विंटल गावरान लाल कांदा</Text>
+          <Text style={styles.lotProductName}>{t('settled_lot_name')}</Text>
           <View style={styles.lotPhotoContainer}>
             <Image source={mandiWarehouse} style={styles.lotPhoto} />
             <View style={styles.lotPhotoCaption}>
               <Icon name="check-circle" size={11} color={colors.tertiary} />
-              <Text style={styles.lotPhotoCaptionText}>निफाड गिंबार शेतमाल लॉट</Text>
+              <Text style={styles.lotPhotoCaptionText}>{t('settled_lot_caption')}</Text>
             </View>
           </View>
           <View style={styles.lotMetaRow}>
             <View style={styles.lotMetaItem}>
-              <Text style={styles.lotMetaKey}>शेतकरी नाव:</Text>
-              <Text style={styles.lotMetaVal}>रामभाऊ पाटील</Text>
+              <Text style={styles.lotMetaKey}>{t('settled_meta_farmer_key')}</Text>
+              <Text style={styles.lotMetaVal}>{t('settled_meta_farmer_val')}</Text>
             </View>
             <View style={styles.lotMetaItem}>
-              <Text style={styles.lotMetaKey}>खरेदीदार कंपनी:</Text>
-              <Text style={styles.lotMetaVal}>Pune Trading Co. (गुलटेकडी)</Text>
+              <Text style={styles.lotMetaKey}>{t('settled_meta_buyer_key')}</Text>
+              <Text style={styles.lotMetaVal}>{t('settled_meta_buyer_val')}</Text>
             </View>
           </View>
         </View>
@@ -141,31 +136,31 @@ export default function S33_Settled({ navigation }: any) {
         <View style={styles.receiptCard}>
           <View style={styles.receiptHeader}>
             <Icon name="clipboard" size={14} color={colors.primary} />
-            <Text style={styles.receiptTitle}>कृषी उत्पन्न बाजार समिती पावती (Form 13)</Text>
-            <View style={styles.eTaxBadge}><Text style={styles.eTaxText}>e-Tax Valid</Text></View>
+            <Text style={styles.receiptTitle}>{t('settled_rcpt_title')}</Text>
+            <View style={styles.eTaxBadge}><Text style={styles.eTaxText}>{t('settled_rcpt_etax')}</Text></View>
           </View>
           <View style={styles.receiptDharmaRow}>
             <Icon name="scale" size={13} color={colors.onSurfaceVariant} />
-            <Text style={styles.receiptDharmaText}>धर्मकाटा पावती #DK-7712</Text>
-            <View style={styles.certBadge}><Text style={styles.certText}>प्रमाणित</Text></View>
+            <Text style={styles.receiptDharmaText}>{t('settled_rcpt_dharma')}</Text>
+            <View style={styles.certBadge}><Text style={styles.certText}>{t('settled_rcpt_cert')}</Text></View>
           </View>
-          <Text style={styles.receiptDharmaSub}>वजन कपात: ० किलो (100% अचूक डिजिटल तोल)</Text>
+          <Text style={styles.receiptDharmaSub}>{t('settled_rcpt_sub')}</Text>
           <View style={styles.receiptTable}>
             <View style={styles.receiptRow}>
-              <Text style={styles.receiptRowLabel}>४० क्विंटल गावरान कांदा @ ₹1,900/क्विंo</Text>
-              <Text style={styles.receiptRowVal}>₹76,000.00</Text>
+              <Text style={styles.receiptRowLabel}>{t('settled_row_gross_label')}</Text>
+              <Text style={styles.receiptRowVal}>{t('settled_row_gross_val')}</Text>
             </View>
             <View style={styles.receiptRow}>
-              <Text style={styles.receiptRowLabel}>हमाली व तोलाई (Mandi Mandated Loading)</Text>
-              <Text style={[styles.receiptRowVal, { color: colors.critical }]}>–₹600.00</Text>
+              <Text style={styles.receiptRowLabel}>{t('settled_row_deduct_label')}</Text>
+              <Text style={[styles.receiptRowVal, { color: colors.critical }]}>{t('settled_row_deduct_val')}</Text>
             </View>
             <View style={styles.receiptRow}>
-              <Text style={styles.receiptRowLabel}>APMC शेतकरी उपकर (Cess 0% – व्यापारी भरती)</Text>
-              <Text style={styles.receiptRowVal}>₹0.00</Text>
+              <Text style={styles.receiptRowLabel}>{t('settled_row_tax_label')}</Text>
+              <Text style={styles.receiptRowVal}>{t('settled_row_tax_val')}</Text>
             </View>
             <View style={[styles.receiptRow, styles.receiptNetRow]}>
-              <Text style={styles.receiptNetLabel}>शेतकऱ्याला अदा केलेली निवळ रक्कम:</Text>
-              <Text style={styles.receiptNetVal}>₹75,400.00</Text>
+              <Text style={styles.receiptNetLabel}>{t('settled_net_payout_label')}</Text>
+              <Text style={styles.receiptNetVal}>{t('settled_net_payout_val')}</Text>
             </View>
           </View>
         </View>
@@ -175,14 +170,14 @@ export default function S33_Settled({ navigation }: any) {
       <View style={styles.dock}>
         <TouchableOpacity style={styles.downloadBtn}>
           <Icon name="clipboard" size={16} color={colors.onPrimary} />
-          <Text style={styles.downloadBtnText}>अधिकृत कर पावती डाउनलोड करा (PDF)</Text>
+          <Text style={styles.downloadBtnText}>{t('settled_btn_download')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.shareBtn}>
           <Icon name="share" size={14} color={colors.tertiary} />
-          <Text style={styles.shareBtnText}>व्हॉट्सअॅपवर नफा पावती शेअर करा</Text>
+          <Text style={styles.shareBtnText}>{t('settled_btn_share')}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.nextLotBtn}>
-          <Text style={styles.nextLotBtnText}>पुढील शेतमाल नोंदवा (List Next Lot)</Text>
+          <Text style={styles.nextLotBtnText}>{t('settled_btn_next')}</Text>
           <Icon name="arrow-right" size={14} color={colors.primaryContainer} />
         </TouchableOpacity>
       </View>
@@ -212,11 +207,6 @@ const styles = StyleSheet.create({
   bankRow: { flexDirection: 'row', alignItems: 'center', gap: 5, marginBottom: 4 },
   bankName: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurface, flex: 1 },
   bankAcNo: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurface },
-  utrRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: space.sm },
-  utrLabel: { fontFamily: fontFamily.medium, fontSize: 11, color: colors.onSurfaceVariant },
-  utrVal: { fontFamily: fontFamily.bold, fontSize: 12, color: colors.onSurface },
-  bankMsgBox: { padding: space.sm, borderRadius: radius.md, backgroundColor: colors.surfaceContainerLow, borderLeftWidth: 3, borderLeftColor: colors.tertiary },
-  bankMsgText: { fontFamily: fontFamily.regular, fontSize: 12, color: colors.onSurface, lineHeight: 17, fontStyle: 'italic' },
   gainCard: { marginHorizontal: space.md, marginBottom: space.sm, borderRadius: radius.xl, backgroundColor: colors.onPrimaryContainer, borderWidth: 2, borderColor: colors.primaryContainer, overflow: 'hidden', padding: space.md },
   gainHeader: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 2 },
   gainTitle: { fontFamily: fontFamily.bold, fontSize: 14, color: colors.primary, flex: 1 },

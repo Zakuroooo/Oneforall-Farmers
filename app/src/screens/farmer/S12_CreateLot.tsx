@@ -15,6 +15,7 @@
  */
 
 import React, { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import {
   PermissionsAndroid,
   Platform,
@@ -97,9 +98,11 @@ async function submitLot(body: {
 
 export default function S12_CreateLot({ navigation }: Props) {
   const [locale, setLocale] = useState<Locale>('mr');
-  React.useEffect(() => {
-    getLocale().then(l => l && setLocale(l));
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getLocale().then(l => l && setLocale(l));
+    }, []),
+  );
 
   const [qtyKg, setQtyKg] = useState(DEFAULT_QTY_KG);
   const [photoUri, setPhotoUri] = useState<string | null>(null);

@@ -10,7 +10,8 @@
  * has one (S3 requires it), so the fallback is defensive, not the real path.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 
@@ -33,9 +34,11 @@ export default function S06_Nearby() {
   const { user } = useAuth();
   const districtId = user?.district_id ?? 'dist_nashik';
   const [locale, setLocale] = useState<Locale>('mr');
-  useEffect(() => {
-    getLocale().then(l => l && setLocale(l));
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getLocale().then(l => l && setLocale(l));
+    }, []),
+  );
 
   const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
     queryKey: ['prices', 'nearby', DEFAULT_COMMODITY_ID, districtId],

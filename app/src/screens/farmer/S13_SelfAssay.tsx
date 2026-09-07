@@ -12,6 +12,7 @@
  */
 
 import React, { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -162,9 +163,11 @@ export default function S13_SelfAssay({ route, navigation }: Props) {
   const lotId = route.params?.lot_id ?? DEFAULT_LOT_ID;
 
   const [locale, setLocale] = useState<Locale>('mr');
-  React.useEffect(() => {
-    getLocale().then(l => l && setLocale(l));
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getLocale().then(l => l && setLocale(l));
+    }, []),
+  );
 
   const { data: lot, isLoading, error, refetch } = useQuery({
     queryKey: ['lots', lotId],

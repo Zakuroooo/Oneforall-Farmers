@@ -16,7 +16,8 @@
  * already agree on — there is no lot-creation flow in scope yet.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -56,9 +57,11 @@ async function fetchVerdict() {
 
 export default function S09_Verdict({ navigation }: Props) {
   const [locale, setLocale] = useState<Locale>('mr');
-  useEffect(() => {
-    getLocale().then(l => l && setLocale(l));
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getLocale().then(l => l && setLocale(l));
+    }, []),
+  );
 
   const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
     queryKey: ['ai', 'window', 'recommend', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, DEFAULT_QTY_KG],

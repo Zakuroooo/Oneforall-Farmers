@@ -6,7 +6,8 @@
  *   the one line that changes when it lands.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 
@@ -27,9 +28,11 @@ async function fetchHistory() {
 
 export default function S05_History() {
   const [locale, setLocale] = useState<Locale>('mr');
-  useEffect(() => {
-    getLocale().then(l => l && setLocale(l));
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getLocale().then(l => l && setLocale(l));
+    }, []),
+  );
 
   const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
     queryKey: ['prices', 'series', '180', DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID],

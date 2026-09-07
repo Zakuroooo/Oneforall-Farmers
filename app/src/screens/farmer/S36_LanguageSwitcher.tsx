@@ -9,55 +9,60 @@ import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 
-const LANGUAGES = [
-  {
-    id: 'mr',
-    option: 'पर्याय १',
-    name: 'मराठी',
-    nameEn: 'Marathi (महाराष्ट्र APMC मानक)',
-    badge: 'प्राथन्य',
-    badgeColor: colors.positiveContainer,
-    badgeTextColor: colors.tertiary,
-    active: true,
-    preview: '"भाव का भरोसा, थेट सौदा. आजचा लासलगाव कांदा भाव ₹२,०५०/क्विंटल."',
-    voiceLabel: 'आवाज नमुना ऐका (0:04)',
-    voiceNote: 'स्थानिक बोली',
-  },
-  {
-    id: 'hi',
-    option: 'पर्याय २',
-    name: 'हिन्दी',
-    nameEn: 'Hindi (राष्ट्रीय मंडी मानक)',
-    badge: 'eNAM सुसंगत',
-    badgeColor: colors.surfaceContainerHigh,
-    badgeTextColor: colors.onSurfaceVariant,
-    active: false,
-    preview: '"भाव का भरोसा, सीधा सौदा। आज का लासलगांव प्याज भाव ₹२,०५०/क्विंटल।"',
-    voiceLabel: 'आवाज नमुना सुनें (0:04)',
-    voiceNote: 'स्पष्ट आवाज',
-  },
-  {
-    id: 'en',
-    option: 'Option 3',
-    name: 'English',
-    nameEn: 'English (Formal Trading & Legal View)',
-    badge: 'Bills & Tax',
-    badgeColor: colors.surfaceContainerHigh,
-    badgeTextColor: colors.onSurfaceVariant,
-    active: false,
-    preview: '"Faith in price, direct trade. Today\'s Lasalgaon Onion rate ₹2,050/qtl."',
-    voiceLabel: 'Listen Sample (0:04)',
-    voiceNote: 'Standard Accent',
-  },
-] as const;
-
-const SPEEDS = ['सावकाश', 'सामान्य', 'जलद'] as const;
-
 export default function S36_LanguageSwitcher({ navigation }: any) {
-  const { t } = useT();
-  const [selectedLang, setSelectedLang] = useState<'mr' | 'hi' | 'en'>('mr');
+  const { t, locale, setLocale } = useT();
+  const [selectedLang, setSelectedLang] = useState<'mr' | 'hi' | 'en'>(locale);
   const [voiceOn, setVoiceOn] = useState(true);
   const [speed, setSpeed] = useState<0 | 1 | 2>(1);
+
+  const LANGUAGES = [
+    {
+      id: 'mr',
+      option: 'Option 1',
+      name: t('lang_mr_name'),
+      nameEn: t('lang_mr_sub'),
+      badge: t('lang_mr_badge'),
+      badgeColor: colors.positiveContainer,
+      badgeTextColor: colors.tertiary,
+      preview: t('lang_mr_preview'),
+      voiceLabel: t('lang_mr_voice_btn'),
+      voiceNote: t('lang_mr_voice_note'),
+      previewLabel: t('lang_mr_preview_label'),
+    },
+    {
+      id: 'hi',
+      option: 'Option 2',
+      name: t('lang_hi_name'),
+      nameEn: t('lang_hi_sub'),
+      badge: t('lang_hi_badge'),
+      badgeColor: colors.surfaceContainerHigh,
+      badgeTextColor: colors.onSurfaceVariant,
+      preview: t('lang_hi_preview'),
+      voiceLabel: t('lang_hi_voice_btn'),
+      voiceNote: t('lang_hi_voice_note'),
+      previewLabel: t('lang_hi_preview_label'),
+    },
+    {
+      id: 'en',
+      option: 'Option 3',
+      name: t('lang_en_name'),
+      nameEn: t('lang_en_sub'),
+      badge: t('lang_en_badge'),
+      badgeColor: colors.surfaceContainerHigh,
+      badgeTextColor: colors.onSurfaceVariant,
+      preview: t('lang_en_preview'),
+      voiceLabel: t('lang_en_voice_btn'),
+      voiceNote: t('lang_en_voice_note'),
+      previewLabel: t('lang_en_preview_label'),
+    },
+  ] as const;
+  
+  const SPEEDS = [t('lang_speed_slow'), t('lang_speed_normal'), t('lang_speed_fast')] as const;
+
+  const handleSave = () => {
+    setLocale(selectedLang);
+    navigation.canGoBack() && navigation.goBack();
+  };
 
   return (
     <View style={styles.root}>
@@ -69,8 +74,8 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
           <Icon name="arrow-left" size={20} color={colors.onSurface} />
         </TouchableOpacity>
         <View style={styles.headerCenter}>
-          <Text style={styles.headerTitle}>भाषा बदला</Text>
-          <Text style={styles.headerSub}>Language Settings · Krishi Mitra</Text>
+          <Text style={styles.headerTitle}>{t('lang_header_title')}</Text>
+          <Text style={styles.headerSub}>{t('lang_header_sub')}</Text>
         </View>
         <TouchableOpacity style={styles.listenBtn}>
           <Icon name="volume" size={13} color={colors.primary} />
@@ -85,15 +90,13 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
           <View style={styles.introIconBg}>
             <Icon name="volume" size={22} color={colors.primary} />
           </View>
-          <Text style={styles.introHeading}>तुम्हाला कोणती भाषा सोपी वाटते? निवडा.</Text>
-          <Text style={styles.introPara}>
-            निवडलेली भाषा त्वरित लागू होईल. बाजार भाव, पावत्या व सर्व व्यवहार त्याच भाषेत दिसतील.
-          </Text>
+          <Text style={styles.introHeading}>{t('lang_intro_heading')}</Text>
+          <Text style={styles.introPara}>{t('lang_intro_para')}</Text>
           <View style={styles.introBadge}>
             <Icon name="check-circle" size={12} color={colors.tertiary} />
-            <Text style={styles.introBadgeText}>प्रत्येक भाषेत ऐकून खात्री करा</Text>
+            <Text style={styles.introBadgeText}>{t('lang_intro_badge')}</Text>
           </View>
-          <Text style={styles.introTag}>१ सेकंदात बदल</Text>
+          <Text style={styles.introTag}>{t('lang_intro_tag')}</Text>
         </View>
 
         {/* Language cards */}
@@ -111,7 +114,7 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
                   {isActive ? (
                     <View style={styles.activeBanner}>
                       <Icon name="check-circle" size={12} color={colors.primaryContainer} />
-                      <Text style={styles.activeBannerText}>निवडलेली भाषा · Active</Text>
+                      <Text style={styles.activeBannerText}>{t('lang_active_badge')}</Text>
                     </View>
                   ) : (
                     <Text style={styles.langOption}>{lang.option}</Text>
@@ -132,7 +135,7 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
 
               {/* Live preview */}
               <View style={styles.previewBox}>
-                <Text style={styles.previewLabel}>{lang.id === 'en' ? 'Live Screen Preview:' : lang.id === 'hi' ? 'लाइव विव्यू (Live Preview):' : 'थेट स्क्रीन नमुना (Live Preview):'}</Text>
+                <Text style={styles.previewLabel}>{lang.previewLabel}</Text>
                 <Text style={styles.previewText}>{lang.preview}</Text>
               </View>
 
@@ -151,8 +154,8 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
           <View style={styles.voiceSectionHeader}>
             <Icon name="mic" size={16} color={colors.primary} />
             <View style={styles.voiceSectionInfo}>
-              <Text style={styles.voiceSectionTitle}>आवाज सहाय्य प्राधान्ये</Text>
-              <Text style={styles.voiceSectionSub}>अॅपमध्ये नेहमी आवाज सहाच्य चालू ठेवा</Text>
+              <Text style={styles.voiceSectionTitle}>{t('lang_voice_title')}</Text>
+              <Text style={styles.voiceSectionSub}>{t('lang_voice_sub')}</Text>
             </View>
             <TouchableOpacity
               style={[styles.toggleBtn, voiceOn && styles.toggleBtnActive]}
@@ -161,14 +164,12 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.voiceDescText}>
-            उन किंवा घाईच्या वेळी सर्व भाव व सौदे मोठ्याने ऐकता येतील.
-          </Text>
+          <Text style={styles.voiceDescText}>{t('lang_voice_desc')}</Text>
 
           {/* Speed selection */}
           <View style={styles.speedRow}>
-            <Text style={styles.speedLabel}>वाचनाचा वेग (Voice Speed):</Text>
-            <Text style={styles.speedCurrent}>सामान्य (1.0x)</Text>
+            <Text style={styles.speedLabel}>{t('lang_speed_label')}</Text>
+            <Text style={styles.speedCurrent}>{t('lang_speed_current')}</Text>
           </View>
           <View style={styles.speedTabs}>
             {SPEEDS.map((s, i) => (
@@ -183,27 +184,25 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
 
           <View style={styles.offlineNote}>
             <Icon name="check-circle" size={12} color={colors.tertiary} />
-            <Text style={styles.offlineNoteText}>इंटरनेट नसतानाही आवाज सहाय्य अखंड चालू राहते.</Text>
+            <Text style={styles.offlineNoteText}>{t('lang_offline_note')}</Text>
           </View>
         </View>
 
         {/* Footer note */}
         <View style={styles.footerNote}>
           <Icon name="lock" size={11} color={colors.tertiary} />
-          <Text style={styles.footerNoteText}>
-            भाषा बदलल्यास कोणताही डेटा किंवा नोंदणी बदलत नाही · Offline Instant Apply
-          </Text>
+          <Text style={styles.footerNoteText}>{t('lang_footer_note')}</Text>
         </View>
       </ScrollView>
 
       {/* CTA dock */}
       <View style={styles.dock}>
-        <TouchableOpacity style={styles.saveBtn}>
+        <TouchableOpacity style={styles.saveBtn} onPress={handleSave}>
           <Icon name="check-circle" size={18} color={colors.onPrimary} />
-          <Text style={styles.saveBtnText}>ही भाषा निश्चित करा · Save &amp; Apply</Text>
+          <Text style={styles.saveBtnText}>{t('lang_btn_save')}</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.cancelLink}>
-          <Text style={styles.cancelLinkText}>मागे जा (Cancel)</Text>
+        <TouchableOpacity style={styles.cancelLink} onPress={() => navigation.canGoBack() && navigation.goBack()}>
+          <Text style={styles.cancelLinkText}>{t('lang_btn_cancel')}</Text>
         </TouchableOpacity>
       </View>
     </View>

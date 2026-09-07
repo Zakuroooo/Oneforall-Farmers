@@ -23,6 +23,7 @@
  */
 
 import React, { useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -64,9 +65,11 @@ export default function S16_PoolSplit({ route }: Props) {
   const poolId = route.params?.pool_id ?? DEFAULT_POOL_ID;
 
   const [locale, setLocale] = useState<Locale>('mr');
-  React.useEffect(() => {
-    getLocale().then(l => l && setLocale(l));
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      getLocale().then(l => l && setLocale(l));
+    }, []),
+  );
 
   const { data: pool, isLoading, error, refetch } = useQuery({
     queryKey: ['pools', poolId],

@@ -29,7 +29,8 @@
  *   asserted in `__tests__/S10_CostBreakdown.test.tsx`, which is P5's gate.
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 
@@ -91,9 +92,11 @@ async function fetchVerdict() {
 
 export default function S10_CostBreakdown() {
   const [locale, setLocale] = useState<Locale>('mr');
-  useEffect(() => {
-    getLocale().then(l => l && setLocale(l));
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getLocale().then(l => l && setLocale(l));
+    }, []),
+  );
 
   // Identical to S9's key — see the header note. A different key here would mean
   // a second request and two caches that can drift apart.

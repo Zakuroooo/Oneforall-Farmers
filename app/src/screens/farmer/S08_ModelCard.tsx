@@ -41,7 +41,8 @@
  *   `FRONTEND_NEEDS_AI.md` §11.
  */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useQuery } from '@tanstack/react-query';
 
@@ -117,9 +118,11 @@ function Row({ label, value, testID }: { label: string; value: string; testID?: 
 
 export default function S08_ModelCard() {
   const [locale, setLocale] = useState<Locale>('mr');
-  useEffect(() => {
-    getLocale().then(l => l && setLocale(l));
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      getLocale().then(l => l && setLocale(l));
+    }, []),
+  );
 
   const { data, dataUpdatedAt, isLoading, error, refetch } = useQuery({
     queryKey: ['ai', 'model-card', DEFAULT_COMMODITY_ID],
