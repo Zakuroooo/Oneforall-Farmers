@@ -11,6 +11,7 @@ import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { demoTodayPrice } from '../../lib/demoPrice';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S3_Welcome'>;
 const farmerPortrait = require('../../assets/images/farmer_rambhau.jpg');
@@ -41,10 +42,7 @@ export default function S03_Welcome({ navigation }: Props) {
               <Text style={styles.topSub}>LASALGAON APMC NETWORK</Text>
             </View>
           </View>
-          <TouchableOpacity style={styles.listenBtn}>
-            <Icon name="volume" size={13} color={colors.primary} />
-            <Text style={styles.listenText}>{t('splash_listen')}</Text>
-          </TouchableOpacity>
+          <ListenButton text={t('welcome_ticker_label')} />
         </View>
 
         {/* Verification card */}

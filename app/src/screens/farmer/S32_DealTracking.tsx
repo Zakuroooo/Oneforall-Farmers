@@ -8,6 +8,7 @@ import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 export default function S32_DealTracking({ navigation }: any) {
   const { t } = useT();
@@ -87,9 +88,7 @@ export default function S32_DealTracking({ navigation }: any) {
             {t('tracking_header_sub', { farmer: 'Rambhau Patil', market: 'Lasalgaon' })}
           </Text>
         </View>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.onPrimary} />
-        </TouchableOpacity>
+        <ListenButton text={t('tracking_money_location')} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

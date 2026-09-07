@@ -1444,5 +1444,6 @@
   "ld_offer_respond": "Respond",
   "ld_escrow_title": "Payment is held in escrow",
   "ld_escrow_body": "The buyer’s money is held until the weighment receipt clears, then released to your bank.",
-  "ld_set_price": "Set your asking price"
+  "ld_set_price": "Set your asking price",
+  "deal_done_title": "Deal confirmed"
 }

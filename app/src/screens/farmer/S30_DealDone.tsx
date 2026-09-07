@@ -8,6 +8,7 @@ import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 const NEXT_STEPS = [
   {
@@ -60,10 +61,7 @@ export default function S30_DealDone({ navigation }: any) {
           <Text style={styles.headerFarmer}>शेतकरी · Rambhau Patil</Text>
           <Text style={styles.headerMandi}>Lasalgaon Mandi</Text>
         </View>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.primary} />
-          <Text style={styles.listenText}>{t('splash_listen')}</Text>
-        </TouchableOpacity>
+        <ListenButton text={t('deal_done_title')} />
       </View>
 
       {/* Deal locked banner */}

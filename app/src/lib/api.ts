@@ -388,10 +388,26 @@ export async function transcribeAudio(audioUri: string, locale: Locale): Promise
 }
 
 /**
- * Live TTS — kept for when the backend route exists, but nothing in this
- * app calls it yet. `lib/voice.ts`'s `speakText()` speaks the agent's
- * dynamic prompts through the device's own on-device TTS instead, which
- * works offline today (I7) and needs no server round trip at all.
+ * Live TTS — Sarvam `bulbul:v3`, via the backend's `/voice/narrate`.
+ *
+ * ★ The response shape here was wrong and would have failed at runtime: this
+ *   was typed `{ audio_url: string }`, and the route actually returns
+ *   `audio_base64` / `audio_format` / `language_code` (see
+ *   `app/schemas/voice.py:NarrateResponse` in the backend). Nothing called it
+ *   yet, so the mismatch had never surfaced — it is corrected here against
+ *   the live contract rather than left as a trap for whoever wired it first.
+ *
+ * ★ Not yet used for playback: base64 has to be written to a file before
+ *   `react-native-sound` can play it, and this app has no filesystem
+ *   dependency (12_STACK bans adding one unilaterally). A backend that
+ *   returned a URL instead would be playable with what is already installed.
+ *   `ListenButton` documents the same trade-off from the UI side.
+ *
+ * ★ The route is deliberately unauthenticated on the server — it runs before
+ *   a JWT exists during voice registration.
  */
 export const narrate = (text: string, locale: Locale) =>
-  post<{ audio_url: string }>('/voice/narrate', { text, locale });
+  post<{ audio_base64: string; audio_format: string; language_code: string }>(
+    '/voice/narrate',
+    { text, locale },
+  );

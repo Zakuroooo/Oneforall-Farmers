@@ -10,6 +10,7 @@ import {
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 const redOnions = require('../../assets/images/red_onions.jpg');
 
@@ -31,10 +32,7 @@ export default function S29_ConfirmAcceptance({ navigation }: any) {
           <Text style={styles.headerSub}>{t('confirm_header_sub')}</Text>
         </View>
         <Text style={styles.headerRef}>#LP-403</Text>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.primary} />
-          <Text style={styles.listenText}>{t('splash_listen')}</Text>
-        </TouchableOpacity>
+        <ListenButton text={t('confirm_net_hero_label')} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

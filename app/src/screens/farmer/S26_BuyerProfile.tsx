@@ -8,6 +8,7 @@ import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 export default function S26_BuyerProfile({ navigation }: any) {
   const { t } = useT();
@@ -38,10 +39,7 @@ export default function S26_BuyerProfile({ navigation }: any) {
           <Text style={styles.headerSub}>{t('buyer_header_sub')}</Text>
         </View>
         <Text style={styles.headerRef}>#LP-403</Text>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.primary} />
-          <Text style={styles.listenText}>{t('splash_listen')}</Text>
-        </TouchableOpacity>
+        <ListenButton text={t('buyer_profile_title')} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

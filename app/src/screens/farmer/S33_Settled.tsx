@@ -8,6 +8,7 @@ import { Image, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View 
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 const mandiWarehouse = require('../../assets/images/mandi_warehouse.jpg');
 
@@ -30,9 +31,7 @@ export default function S33_Settled({ navigation }: any) {
           </View>
           <Text style={styles.headerTitle}>{t('settled_header')}</Text>
         </View>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.primary} />
-        </TouchableOpacity>
+        <ListenButton text={t('settled_net_key')} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

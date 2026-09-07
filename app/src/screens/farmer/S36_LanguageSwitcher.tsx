@@ -8,6 +8,7 @@ import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 export default function S36_LanguageSwitcher({ navigation }: any) {
   const { t, locale, setLocale } = useT();
@@ -77,10 +78,7 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
           <Text style={styles.headerTitle}>{t('lang_header_title')}</Text>
           <Text style={styles.headerSub}>{t('lang_header_sub')}</Text>
         </View>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.primary} />
-          <Text style={styles.listenText}>{t('splash_listen')}</Text>
-        </TouchableOpacity>
+        <ListenButton text={t('select_language')} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

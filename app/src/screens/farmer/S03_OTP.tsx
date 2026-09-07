@@ -16,6 +16,7 @@ import { ApiError, requestOtp, verifyOtp } from '../../lib/api';
 import { getPendingAuth, setPendingAuth, useAuth } from '../../lib/auth';
 import { USE_FIXTURES } from '../../config';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S3_OTP'>;
 
@@ -114,10 +115,7 @@ export default function S03_OTP({ navigation }: Props) {
             <Text style={styles.headerTitle}>{t('otp_title')}</Text>
             <Text style={styles.headerStep}>{t('otp_step')}</Text>
           </View>
-          <TouchableOpacity style={styles.listenBtn}>
-            <Icon name="volume" size={14} color={colors.primary} />
-            <Text style={styles.listenText}>{t('splash_listen')}</Text>
-          </TouchableOpacity>
+          <ListenButton text={t('otp_title')} />
         </View>
 
         {/* Icon */}

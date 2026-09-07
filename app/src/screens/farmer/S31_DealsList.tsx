@@ -9,6 +9,7 @@ import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { useAuth } from '../../lib/auth';
+import { ListenButton } from '../../components/ui/ListenButton';
 
 const redOnions = require('../../assets/images/red_onions.jpg');
 
@@ -35,10 +36,7 @@ export default function S31_DealsList({ navigation }: any) {
           </View>
           <Text style={styles.headerFarmer}>{user?.name ?? ''}</Text>
         </View>
-        <TouchableOpacity style={styles.listenBtn}>
-          <Icon name="volume" size={13} color={colors.primary} />
-          <Text style={styles.listenText}>{t('splash_listen')}</Text>
-        </TouchableOpacity>
+        <ListenButton text={t('deals_page_title')} />
       </View>
 
       {/* Title */}
