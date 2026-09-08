@@ -184,15 +184,15 @@ echo "==> 4/4  pushing $DROP_BRANCH"
 if git push -u origin "$DROP_BRANCH" 2>/dev/null; then
   echo
   echo "done. open the PR:"
-  echo "  https://github.com/akashg7/Neolithic-Backend/compare/$DROP_BRANCH?expand=1"
+  echo "  https://github.com/akashg7/Neolithic/compare/$DROP_BRANCH?expand=1"
 else
   echo
   echo "no write access to their repo — pushing to your fork instead."
-  echo "fork it first if you have not:  https://github.com/akashg7/Neolithic-Backend/fork"
-  fork_url="${FORK_URL:-https://github.com/Zakuroooo/Neolithic-Backend.git}"
+  echo "fork it first if you have not:  https://github.com/akashg7/Neolithic/fork"
+  fork_url="${FORK_URL:-https://github.com/Zakuroooo/Neolithic.git}"
   git remote add fork "$fork_url"
   git push -u fork "$DROP_BRANCH"
   echo
   echo "done. open the PR:"
-  echo "  https://github.com/akashg7/Neolithic-Backend/compare/main...Zakuroooo:$DROP_BRANCH?expand=1"
+  echo "  https://github.com/akashg7/Neolithic/compare/main...Zakuroooo:$DROP_BRANCH?expand=1"
 fi
