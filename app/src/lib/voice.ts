@@ -31,7 +31,7 @@ import { buildVerdictNarrationFor } from './verdictVoice';
 //   file that does not exist, so the narration would have failed to bundle.
 //   `voice.ts` and `api.ts` are siblings in `lib/`.
 import { narrate } from './api';
-import { getSarvamSpeaker } from './voiceSettings';
+import { getSarvamPace, getSarvamSpeaker, getTtsRate } from './voiceSettings';
 
 /**
  * Every ASCII, Android-resource-safe (`[a-z0-9_]+`, no Devanagari) clip id
@@ -240,10 +240,78 @@ let ttsCurrentLocale: Locale | null = null;
  *   to whichever locale the caller is speaking in, and re-set when it
  *   changes.
  */
+/**
+ * The last rate we pushed to the engine, so we only call the bridge when the
+ * farmer has actually changed the setting.
+ */
+let ttsCurrentRate: number | null = null;
+
+/**
+ * Picks the best installed voice for a locale and remembers it.
+ *
+ * ★ Why this matters more than it looks. The stock Android engine, left to
+ *   itself, reads Marathi with whatever voice happens to be default — often a
+ *   low-quality or wrong-language one, which is exactly the "cannot understand
+ *   it" complaint about the fallback. `Tts.voices()` lists what is actually
+ *   installed, so we can choose a real `mr-IN` voice, prefer a non-network one
+ *   (it keeps working with no signal), and skip any the engine flags as
+ *   `notInstalled`.
+ *
+ * ★ Best-effort throughout. An engine that exposes no voices, or none for this
+ *   language, keeps its default — a wrong accent still beats silence.
+ */
+async function ensureTtsVoice(locale: Locale): Promise<void> {
+  try {
+    const wanted = TTS_LANGUAGE[locale].toLowerCase();
+    const voices = (await Tts.voices()) as Array<{
+      id: string;
+      language: string;
+      quality?: number;
+      notInstalled?: boolean;
+      networkConnectionRequired?: boolean;
+    }>;
+    const usable = voices.filter(
+      v => v.language?.toLowerCase().startsWith(wanted.slice(0, 2)) && !v.notInstalled,
+    );
+    if (usable.length === 0) return;
+    // Highest quality first, and among equals prefer one that does not need
+    // the network — the whole point of this path is that the server is gone.
+    usable.sort(
+      (a, b) =>
+        (b.quality ?? 0) - (a.quality ?? 0) ||
+        Number(a.networkConnectionRequired ?? false) - Number(b.networkConnectionRequired ?? false),
+    );
+    await Tts.setDefaultVoice(usable[0]!.id);
+  } catch {
+    // No voice list, or the engine refused the id. Keep the default.
+  }
+}
+
 async function ensureTtsLanguage(locale: Locale = 'mr'): Promise<void> {
+  // ★ The rate is applied every time, not only on a locale change — the
+  //   farmer can change speed without changing language, and the engine keeps
+  //   whatever rate it was last given.
+  const rate = getTtsRate();
+  if (ttsCurrentRate !== rate) {
+    try {
+      await Tts.setDefaultRate(rate, true);
+      ttsCurrentRate = rate;
+    } catch {
+      // Engine without rate control; it just speaks at its own pace.
+    }
+  }
+
   if (ttsCurrentLocale === locale) return;
   try {
     await Tts.setDefaultLanguage(TTS_LANGUAGE[locale]);
+    // A slightly lower pitch is easier to follow on a small phone speaker in
+    // an open-air mandi than the engine's default.
+    try {
+      await Tts.setDefaultPitch(0.95);
+    } catch {
+      /* optional */
+    }
+    await ensureTtsVoice(locale);
     ttsCurrentLocale = locale;
   } catch {
     // An engine without the language installed keeps whatever it had. Better
@@ -583,7 +651,7 @@ async function speakViaSarvam(
   locale: Locale = 'mr',
   generation?: number,
 ): Promise<void> {
-  const { audio_base64 } = await narrate(narration, locale, getSarvamSpeaker());
+  const { audio_base64 } = await narrate(narration, locale, getSarvamSpeaker(), getSarvamPace());
 
   // The farmer pressed stop while this was still coming down the wire.
   if (generation !== undefined && generation !== speechGeneration) return;

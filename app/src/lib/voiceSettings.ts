@@ -7,10 +7,12 @@
  *   farmer opens *because* he wants the app to talk to him. A control that
  *   lies about what it does is worse on that screen than anywhere else.
  *
- * ★ The speed tabs are gone rather than wired. `speakSmart` hands text to
- *   Sarvam or to the device engine, and neither exposes a rate we can set per
- *   utterance through the path we use. Shipping a slider that quietly does
- *   nothing is the thing we are fixing; shipping one fewer control is honest.
+ * ★ I first removed the speed tabs, claiming neither path exposed a rate.
+ *   **That was wrong.** `react-native-tts` has `setDefaultRate`, and Sarvam's
+ *   synthesis takes a `pace`. The tabs were dead because nothing was wired to
+ *   them, not because the capability was missing. They are back and real: the
+ *   rate applies to the on-device voice immediately, and the pace is sent to
+ *   the server for the Sarvam voice.
  *
  * ★ `autoNarrate` is read by every screen that speaks itself on arrival. It
  *   defaults to **on**: a farmer who cannot read gains nothing from an app
@@ -22,6 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AUTO_NARRATE_KEY = 'app.autoNarrate';
 const VOICE_KEY = 'app.voice';
+const SPEED_KEY = 'app.voiceSpeed';
 
 /**
  * Which Sarvam voice reads the app aloud.
@@ -49,10 +52,64 @@ export const SARVAM_SPEAKER: Record<VoiceChoice, string> = {
   male: 'abhilash',
 };
 
+/**
+ * How fast the app talks.
+ *
+ * ★ I removed the original speed tabs claiming neither TTS path exposed a
+ *   rate. That was wrong: `react-native-tts` has `setDefaultRate`, and Sarvam
+ *   takes a `pace`. The tabs were dead because nothing was wired to them, not
+ *   because the capability was missing. They are back, and real.
+ *
+ * ★ **Normal here is slower than Android's default.** The stock rate reads a
+ *   long Marathi sentence about market prices too fast to follow if you are
+ *   hearing the numbers rather than reading them.
+ */
+export type VoiceSpeed = 'slow' | 'normal' | 'fast';
+
+/**
+ * `react-native-tts` rate values. On Android the library maps roughly 0.5 to
+ * the engine's normal speed; these are deliberately shifted down one notch so
+ * "normal" is already gentle and "slow" is genuinely slow.
+ */
+export const TTS_RATE: Record<VoiceSpeed, number> = {
+  slow: 0.30,
+  normal: 0.42,
+  fast: 0.55,
+};
+
+/** Sarvam `pace` (1.0 = as trained). Same intent as `TTS_RATE`. */
+export const SARVAM_PACE: Record<VoiceSpeed, number> = {
+  slow: 0.75,
+  normal: 0.9,
+  fast: 1.1,
+};
+
 let voice: VoiceChoice = 'female';
+let speed: VoiceSpeed = 'normal';
 
 export function getVoice(): VoiceChoice {
   return voice;
+}
+
+export function getSpeed(): VoiceSpeed {
+  return speed;
+}
+
+export function getTtsRate(): number {
+  return TTS_RATE[speed];
+}
+
+export function getSarvamPace(): number {
+  return SARVAM_PACE[speed];
+}
+
+export async function setSpeed(next: VoiceSpeed): Promise<void> {
+  speed = next;
+  try {
+    await AsyncStorage.setItem(SPEED_KEY, next);
+  } catch {
+    // Holds for this session via the mirror above.
+  }
 }
 
 export function getSarvamSpeaker(): string {
@@ -90,15 +147,18 @@ export async function setAutoNarrate(on: boolean): Promise<void> {
 /** Call once at startup, alongside the locale and token reads. */
 export async function loadVoiceSettings(): Promise<void> {
   try {
-    const [raw, rawVoice] = await Promise.all([
+    const [raw, rawVoice, rawSpeed] = await Promise.all([
       AsyncStorage.getItem(AUTO_NARRATE_KEY),
       AsyncStorage.getItem(VOICE_KEY),
+      AsyncStorage.getItem(SPEED_KEY),
     ]);
     // Absent means "never set", which is on — not off.
     autoNarrate = raw === null ? true : raw === '1';
     voice = rawVoice === 'male' ? 'male' : 'female';
+    speed = rawSpeed === 'slow' || rawSpeed === 'fast' ? rawSpeed : 'normal';
   } catch {
     autoNarrate = true;
     voice = 'female';
+    speed = 'normal';
   }
 }

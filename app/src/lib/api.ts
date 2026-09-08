@@ -476,5 +476,5 @@ export interface NarrateRes {
  *   starts working the moment the route accepts it — no client release needed.
  *   Raised with Akash in `docs/BLOCKERS.md`.
  */
-export const narrate = (text: string, locale: Locale, speaker?: string) =>
-  post<NarrateRes>('/voice/narrate', speaker ? { text, locale, speaker } : { text, locale });
+export const narrate = (text: string, locale: Locale, speaker?: string, pace?: number) =>
+  post<NarrateRes>('/voice/narrate', { text, locale, ...(speaker ? { speaker } : {}), ...(pace ? { pace } : {}) });

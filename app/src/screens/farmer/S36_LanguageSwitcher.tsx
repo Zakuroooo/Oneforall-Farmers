@@ -11,11 +11,14 @@ import { translate, useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
 import { speakSmart, stopSpeaking } from '../../lib/voice';
 import {
+  getSpeed,
   getVoice,
   isAutoNarrateOn,
   setAutoNarrate,
+  setSpeed,
   setVoice,
   type VoiceChoice,
+  type VoiceSpeed,
 } from '../../lib/voiceSettings';
 import type { Locale } from '../../types/api';
 
@@ -24,6 +27,7 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
   const [selectedLang, setSelectedLang] = useState<'mr' | 'hi' | 'en'>(locale);
   const [voiceOn, setVoiceOn] = useState(isAutoNarrateOn());
   const [voiceChoice, setVoiceChoice] = useState<VoiceChoice>(getVoice());
+  const [speedChoice, setSpeedChoice] = useState<VoiceSpeed>(getSpeed());
   // Holds either a Locale (a language card's sample) or `voice_female` /
   // `voice_male` (a voice sample), so only one preview can play at a time.
   const [sampleLocale, setSampleLocale] = useState<string | null>(null);
@@ -86,6 +90,23 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
       // Same reasoning as playSample: silence, not a banner over a preview.
     } finally {
       setSampleLocale(cur => (cur === key ? null : cur));
+    }
+  };
+
+  /**
+   * Set the speed and immediately demonstrate it — three words are not enough
+   * for a farmer to choose between three speeds he has never heard.
+   */
+  const pickSpeed = async (s: VoiceSpeed) => {
+    setSpeedChoice(s);
+    await setSpeed(s);
+    setSampleLocale(`speed_${s}`);
+    try {
+      await speakSmart(translate('lang_voice_sample_line', selectedLang), selectedLang);
+    } catch {
+      // Silence, as with the other previews.
+    } finally {
+      setSampleLocale(cur => (cur === `speed_${s}` ? null : cur));
     }
   };
 
@@ -322,13 +343,42 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
 
           <Text style={styles.voiceDescText}>{t('lang_voice_auto_desc')}</Text>
 
-          {/* ★ A "reading speed" row with slow/normal/fast tabs sat here. It
-              was `useState` and nothing else: `speakSmart` hands text to
-              Sarvam or the device engine, and neither exposes a per-utterance
-              rate through the path we use, so the tabs could not have worked.
-              Removed rather than left decorative — see `lib/voiceSettings.ts`.
-              The three `lang_speed_*` keys are now unused in all three
-              dictionaries. */}
+          {/* Reading speed
+              ★ These tabs were `useState` wired to nothing, and I first
+                removed them saying neither voice path exposed a rate. That
+                was wrong — `react-native-tts` has `setDefaultRate` and Sarvam
+                takes a `pace`. They are back and real: the rate applies to
+                the on-device voice on the next utterance, and the pace rides
+                along to the server for the Sarvam voice.
+
+              ★ Tapping a speed speaks a sample at that speed, so the farmer
+                hears the difference instead of guessing at three words. */}
+          <View style={styles.speedRow}>
+            <Text style={styles.speedLabel}>{t('lang_speed_label')}</Text>
+          </View>
+          <View style={styles.speedTabs}>
+            {(['slow', 'normal', 'fast'] as const).map(s => {
+              const picked = speedChoice === s;
+              return (
+                <TouchableOpacity
+                  key={s}
+                  style={[styles.speedTab, picked && styles.speedTabActive]}
+                  onPress={() => pickSpeed(s)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: picked }}>
+                  <Text style={[styles.speedTabText, picked && styles.speedTabTextActive]}>
+                    {t(
+                      s === 'slow'
+                        ? 'lang_speed_slow'
+                        : s === 'normal'
+                          ? 'lang_speed_normal'
+                          : 'lang_speed_fast',
+                    )}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
 
           <View style={styles.offlineNote}>
             <Icon name="check-circle" size={12} color={colors.tertiary} />
