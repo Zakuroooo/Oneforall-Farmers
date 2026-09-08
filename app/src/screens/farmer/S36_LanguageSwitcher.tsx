@@ -3,18 +3,55 @@
  * Matched to Stitch `36_language_switcher_english_selection/screen.png`
  * ★ ZERO EMOJIS  ★ FULL I18N
  */
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
+import { speakSmart, stopSpeaking } from '../../lib/voice';
+import { isAutoNarrateOn, setAutoNarrate } from '../../lib/voiceSettings';
+import type { Locale } from '../../types/api';
 
 export default function S36_LanguageSwitcher({ navigation }: any) {
   const { t, locale, setLocale } = useT();
   const [selectedLang, setSelectedLang] = useState<'mr' | 'hi' | 'en'>(locale);
-  const [voiceOn, setVoiceOn] = useState(true);
-  const [speed, setSpeed] = useState<0 | 1 | 2>(1);
+  const [voiceOn, setVoiceOn] = useState(isAutoNarrateOn());
+  const [sampleLocale, setSampleLocale] = useState<Locale | null>(null);
+
+  /**
+   * Speaks one card's preview sentence in that card's own language.
+   *
+   * ★ `speakSmart` already stops whatever is playing before it starts, so
+   *   tapping a second card's sample mid-sentence swaps cleanly rather than
+   *   layering two voices — which is what a farmer comparing two languages
+   *   will actually do.
+   */
+  const playSample = async (code: Locale, sentence: string) => {
+    if (sampleLocale === code) {
+      setSampleLocale(null);
+      await stopSpeaking();
+      return;
+    }
+    setSampleLocale(code);
+    try {
+      await speakSmart(sentence, code);
+    } catch {
+      // The sentence is on screen either way; an error banner over a voice
+      // preview would be louder than the thing that failed.
+    } finally {
+      setSampleLocale(cur => (cur === code ? null : cur));
+    }
+  };
+
+  // Nothing should keep talking after the farmer has left the screen.
+  useEffect(() => () => void stopSpeaking(), []);
+
+  const toggleVoice = () => {
+    const next = !voiceOn;
+    setVoiceOn(next);
+    void setAutoNarrate(next);
+  };
 
   const LANGUAGES = [
     {
@@ -57,8 +94,6 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
       previewLabel: t('lang_en_preview_label'),
     },
   ] as const;
-  
-  const SPEEDS = [t('lang_speed_slow'), t('lang_speed_normal'), t('lang_speed_fast')] as const;
 
   const handleSave = () => {
     setLocale(selectedLang);
@@ -137,10 +172,29 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
                 <Text style={styles.previewText}>{lang.preview}</Text>
               </View>
 
-              {/* Voice sample */}
-              <TouchableOpacity style={styles.voiceSampleBtn}>
-                <Icon name="volume" size={14} color={colors.primary} />
-                <Text style={styles.voiceSampleText}>{lang.voiceLabel}</Text>
+              {/* Voice sample
+                  ★ This had no `onPress` at all — the button whose entire job
+                    is "hear this language before you pick it" was inert on
+                    the screen a farmer opens to change languages.
+
+                  ★ It speaks that card's own preview sentence, in that card's
+                    language, so what he hears is exactly what he reads above
+                    it. Tapping again stops it, and tapping a different card's
+                    sample switches without overlapping — `playSample` stops
+                    whatever is speaking first. */}
+              <TouchableOpacity
+                style={styles.voiceSampleBtn}
+                onPress={() => playSample(lang.id as Locale, lang.preview)}
+                accessibilityRole="button"
+                accessibilityLabel={lang.voiceLabel}>
+                <Icon
+                  name={sampleLocale === lang.id ? 'x-circle' : 'volume'}
+                  size={14}
+                  color={colors.primary}
+                />
+                <Text style={styles.voiceSampleText}>
+                  {sampleLocale === lang.id ? t('listening_button') : lang.voiceLabel}
+                </Text>
               </TouchableOpacity>
               <Text style={styles.voiceNote}>{lang.voiceNote}</Text>
             </TouchableOpacity>
@@ -155,30 +209,28 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
               <Text style={styles.voiceSectionTitle}>{t('lang_voice_title')}</Text>
               <Text style={styles.voiceSectionSub}>{t('lang_voice_sub')}</Text>
             </View>
+            {/* ★ Now a real setting. It persists to AsyncStorage and gates
+                whether a screen reads itself aloud when the farmer arrives —
+                previously it was `useState` wired to nothing at all. */}
             <TouchableOpacity
               style={[styles.toggleBtn, voiceOn && styles.toggleBtnActive]}
-              onPress={() => setVoiceOn(v => !v)}>
+              onPress={toggleVoice}
+              accessibilityRole="switch"
+              accessibilityState={{ checked: voiceOn }}
+              accessibilityLabel={t('lang_voice_title')}>
               {voiceOn && <Icon name="check" size={14} color={colors.onPrimary} />}
             </TouchableOpacity>
           </View>
 
           <Text style={styles.voiceDescText}>{t('lang_voice_desc')}</Text>
 
-          {/* Speed selection */}
-          <View style={styles.speedRow}>
-            <Text style={styles.speedLabel}>{t('lang_speed_label')}</Text>
-            <Text style={styles.speedCurrent}>{t('lang_speed_current')}</Text>
-          </View>
-          <View style={styles.speedTabs}>
-            {SPEEDS.map((s, i) => (
-              <TouchableOpacity
-                key={s}
-                style={[styles.speedTab, speed === i && styles.speedTabActive]}
-                onPress={() => setSpeed(i as 0 | 1 | 2)}>
-                <Text style={[styles.speedTabText, speed === i && styles.speedTabTextActive]}>{s}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          {/* ★ A "reading speed" row with slow/normal/fast tabs sat here. It
+              was `useState` and nothing else: `speakSmart` hands text to
+              Sarvam or the device engine, and neither exposes a per-utterance
+              rate through the path we use, so the tabs could not have worked.
+              Removed rather than left decorative — see `lib/voiceSettings.ts`.
+              The three `lang_speed_*` keys are now unused in all three
+              dictionaries. */}
 
           <View style={styles.offlineNote}>
             <Icon name="check-circle" size={12} color={colors.tertiary} />

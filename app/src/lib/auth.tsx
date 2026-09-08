@@ -42,6 +42,7 @@ import {
 import { USE_FIXTURES } from '../config';
 import { fxAuthRegistered } from '../fixtures/auth';
 import { getLocale } from './locale';
+import { loadVoiceSettings } from './voiceSettings';
 import type { AuthRes, Role, User } from '../types/api';
 
 /**
@@ -111,10 +112,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     let cancelled = false;
 
     (async () => {
+      // ★ `loadVoiceSettings` rides along here rather than in its own effect
+      //   so the auto-narrate preference is in memory before the first screen
+      //   mounts. A screen that decides whether to speak on arrival cannot
+      //   wait for a later AsyncStorage read — it would always miss its own
+      //   narration on the first screen of the session.
       const [token, locale, cachedUser] = await Promise.all([
         getToken(),
         getLocale(),
         getCachedUser(),
+        loadVoiceSettings(),
       ]);
       if (!cancelled) setHasLocale(locale !== null);
 

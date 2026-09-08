@@ -37,6 +37,33 @@ describe('parseFarmerDetails', () => {
     expect(r.districtId).toBeNull();
   });
 
+  /**
+   * ★ The shape that was actually broken on the device. Sarvam returns
+   *   continuous speech with **no punctuation at all**, and the parser used to
+   *   split on commas — so the whole sentence arrived as one segment and every
+   *   word landed in the name field. The farmer had said all three correctly.
+   */
+  it('parses continuous speech with no commas at all', () => {
+    const r = parseFarmerDetails('Pranay Sarkar district Pune village Kokamthan', fxDistricts);
+    expect(r.name).toBe('Pranay Sarkar');
+    expect(r.districtId).toBe(fxDistricts.find(d => d.name === 'Pune')?.id);
+    expect(r.village).toBe('Kokamthan');
+  });
+
+  it('parses continuous Marathi speech with the marker after the value', () => {
+    const r = parseFarmerDetails('प्रणय सरकार नाशिक जिल्हा निफाड गाव', fxDistricts);
+    expect(r.name).toBe('प्रणय सरकार');
+    expect(r.districtId).toBe(fxDistricts.find(d => d.name === 'Nashik')?.id);
+    expect(r.village).toBe('निफाड');
+  });
+
+  it('does not fire a marker inside a surname that contains it', () => {
+    // "Gaonkar" contains "gaon". Splitting there would truncate the name.
+    const r = parseFarmerDetails('Suresh Gaonkar', fxDistricts);
+    expect(r.name).toBe('Suresh Gaonkar');
+    expect(r.village).toBeNull();
+  });
+
   it('returns all nulls for an empty transcript', () => {
     expect(parseFarmerDetails('   ', fxDistricts)).toEqual({
       name: null,

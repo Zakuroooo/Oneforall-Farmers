@@ -22,10 +22,12 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { useAuth } from '../../lib/auth';
 import type { Locale } from '../../types/api';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { demoTodayRange } from '../../lib/demoPrice';
 import { ListenButton } from '../../components/ui/ListenButton';
+import { Logo } from '../../components/ui/Logo';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S0_Splash'>;
 
@@ -34,6 +36,7 @@ const mandiWarehouse = require('../../assets/images/mandi_warehouse.jpg');
 
 export default function S00_Splash({ navigation }: Props) {
   const { t, locale, setLocale } = useT();
+  const { hasLocale } = useAuth();
   const [selectedLang, setSelectedLang] = useState<Locale>(locale);
 
   const handleLangSwitch = (lang: Locale) => {
@@ -72,11 +75,15 @@ export default function S00_Splash({ navigation }: Props) {
         {/* ── 2. App emblem ─────────────────────────────────── */}
         <View style={styles.emblemContainer}>
           <View style={styles.emblemGlow} />
+          {/* ★ This drew a leaf, a white bar, and the literal text "SETU" —
+              the project's old name, on the first screen of an app called
+              Krishi Mitra. It is now the real mark: the same bridge shape the
+              bar was gesturing at, with the sprout growing through it, drawn
+              once in `components/ui/Logo` so the splash, the header and the
+              tab bar cannot drift apart. */}
           <View style={styles.emblemOuter}>
             <View style={styles.emblemInner}>
-              <Icon name="leaf" size={40} color="#FFFFFF" />
-              <View style={styles.emblemBridge} />
-              <Text style={styles.emblemSetuText}>SETU</Text>
+              <Logo size={80} bare background="transparent" foreground={colors.onPrimary} />
             </View>
           </View>
           {/* ★ A "Verified" badge used to sit here, under the emblem, on the
@@ -172,17 +179,32 @@ export default function S00_Splash({ navigation }: Props) {
           })}
         </View>
 
-        {/* CTA button */}
+        {/* CTA button
+            ★ Where this goes is the branch `AuthStack` used to make with
+              `initialRouteName`, moved here so the stack keeps a real
+              history. A farmer who has never chosen a language needs to
+              choose one; a returning farmer does not, and goes straight to
+              the phone number. Either way splash stays underneath, so the
+              back arrow on the next screen has somewhere to land. */}
         <TouchableOpacity
           style={styles.ctaBtn}
           activeOpacity={0.85}
-          onPress={() => navigation.navigate('S1_Language')}>
+          onPress={() => navigation.navigate(hasLocale ? 'S2_Phone' : 'S1_Language')}>
           <Text style={styles.ctaText}>{t('splash_get_started')}</Text>
           <Icon name="arrow-right" size={20} color={colors.onPrimary} />
         </TouchableOpacity>
 
-        {/* OTP login link */}
-        <TouchableOpacity style={styles.otpRow} activeOpacity={0.7}>
+        {/* OTP login link
+            ★ This had no `onPress` — it read "already registered? log in with
+              OTP" and did nothing at all. It is the shortcut for a returning
+              farmer, so it goes where that farmer wants to be: the phone
+              number, which is where the OTP is sent from. */}
+        <TouchableOpacity
+          style={styles.otpRow}
+          activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel={t('splash_otp_login')}
+          onPress={() => navigation.navigate('S2_Phone')}>
           <Icon name="zap" size={12} color={colors.tertiary} />
           <Text style={styles.otpText}>{t('splash_otp_login')}</Text>
         </TouchableOpacity>
@@ -322,20 +344,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-  },
-  emblemBridge: {
-    width: 40,
-    height: 4,
-    backgroundColor: 'rgba(255,255,255,0.8)',
-    borderRadius: 2,
-    marginTop: 4,
-    marginBottom: 2,
-  },
-  emblemSetuText: {
-    fontFamily: fontFamily.bold,
-    fontSize: 10,
-    letterSpacing: 2,
-    color: 'rgba(255,255,255,0.9)',
   },
 
   // App name

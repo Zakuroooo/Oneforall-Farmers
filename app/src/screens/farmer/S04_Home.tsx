@@ -43,6 +43,8 @@ import { fxHold } from '../../fixtures/window';
 import type { HomeStackParamList, FarmerTabParamList } from '../../navigation/FarmerTabs';
 import type { PricePoint } from '../../types/api';
 import { ListenButton } from '../../components/ui/ListenButton';
+import { buildHomeNarration } from '../../lib/pageNarration';
+import { Logo } from '../../components/ui/Logo';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'S4_Home'>;
 type ParentNav = CompositeNavigationProp<
@@ -184,38 +186,50 @@ export default function S04_Home({ navigation }: Props) {
   const verdict = verdictQuery.data;
 
   /**
-   * What the speaker reads out: this screen, in the order a farmer reads it —
-   * today's rate and its move, then the recommendation with both the gain and
-   * the worst case. Composed from the same query data the cards render, so
-   * the voice can never describe a number that is not on screen, and I16
-   * holds aloud as well: the worst case is always spoken with the gain.
+   * How many days running the price has moved the same way — the "why" behind
+   * a hold, and the one piece of reasoning a farmer can verify against his own
+   * memory of the mandi.
    */
-  const homeNarration = [
-    t('app_name'),
-    last ? `${t('home_todays_rate')}: ${formatPaise(last.modal_paise_per_qtl, locale)}` : null,
-    last && deltaPaise !== 0
-      ? `${deltaPaise > 0 ? '+' : '−'}${formatPaise(Math.abs(deltaPaise), locale)}`
-      : null,
-    verdict && verdict.action !== 'NO_ADVICE'
-      ? t(
-          verdict.action === 'HOLD'
-            ? 'action_hold'
-            : verdict.action === 'SELL_NOW'
-              ? 'action_sell_now'
-              : verdict.action === 'SPLIT'
-                ? 'action_split'
-                : 'action_sell_elsewhere',
-        )
-      : null,
-    verdict?.expected_gain_paise != null
-      ? `${t('expected_gain')}: ${formatPaise(verdict.expected_gain_paise, locale)}`
-      : null,
-    verdict?.worst_case_paise != null
-      ? `${t('worst_case')}: ${formatPaise(verdict.worst_case_paise, locale)}`
-      : null,
-  ]
-    .filter(Boolean)
-    .join('. ');
+  const streakDays = (() => {
+    if (points.length < 3) return null;
+    const rising = deltaPaise >= 0;
+    let n = 0;
+    for (let i = points.length - 1; i > 0; i -= 1) {
+      const step = points[i]!.modal_paise_per_qtl - points[i - 1]!.modal_paise_per_qtl;
+      if (rising ? step >= 0 : step < 0) n += 1;
+      else break;
+    }
+    return n;
+  })();
+
+  /**
+   * What the speaker reads out.
+   *
+   * ★ This used to be six `label: value` fragments joined with ". " — the
+   *   screen's numbers read out as a table. It never said how long to hold,
+   *   why the price was expected to move, what the holding cost covered, or
+   *   what to press next, which meant a farmer who cannot read received
+   *   strictly less than one who can, from the feature built for him.
+   *
+   * ★ `buildHomeNarration` writes it as sentences instead, in all three
+   *   languages, from this same query data — so the voice still cannot
+   *   describe a number that is not on screen, and I16 holds in the ear:
+   *   there is no path through it that speaks a gain without its risk.
+   */
+  const homeNarration = buildHomeNarration(
+    {
+      farmerName: user?.name ?? null,
+      marketName: t('home_market_name'),
+      cropName: t('nar_crop_onion'),
+      latest: last ?? null,
+      deltaPaise,
+      streakDays,
+      verdict: verdict ?? null,
+      lotKg: DEFAULT_QTY_KG,
+      holdCostPaisePerQtl: verdict?.costs.total_paise_per_qtl ?? null,
+    },
+    locale,
+  );
 
   return (
     <View style={styles.root}>
@@ -240,6 +254,10 @@ export default function S04_Home({ navigation }: Props) {
             <View style={styles.hamburgerLine} />
             <View style={styles.hamburgerLine} />
           </TouchableOpacity>
+          {/* ★ The mark sits beside the name so the brand a judge sees on the
+              splash is the same one on the screen they spend the most time
+              looking at. Same component, so they cannot drift. */}
+          <Logo size={26} />
           <View style={styles.topBarText}>
             <Text style={styles.topGreeting} numberOfLines={1}>
               {t('app_name')}
@@ -510,7 +528,9 @@ const styles = StyleSheet.create({
     borderRadius: 1,
     backgroundColor: colors.onSurface,
   },
-  topBarText: { flex: 1, alignItems: 'center' },
+  // ★ `marginLeft` rather than a gap on the row: the row also holds the
+  //   hamburger and the action buttons, and only this pairing needs tightening.
+  topBarText: { flex: 1, alignItems: 'center', marginLeft: 6 },
   topGreeting: {
     fontFamily: fontFamily.extraBold,
     fontSize: 19,

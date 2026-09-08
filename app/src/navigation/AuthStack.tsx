@@ -5,7 +5,6 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import { useAuth } from '../lib/auth';
 import S00_Splash from '../screens/farmer/S00_Splash';
 import S01_Language from '../screens/farmer/S01_Language';
 import S01b_ValueCarousel from '../screens/farmer/S01b_ValueCarousel';
@@ -30,11 +29,28 @@ export type AuthStackParamList = {
 const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export function AuthStack() {
-  const { hasLocale } = useAuth();
-
   return (
     <Stack.Navigator
-      initialRouteName={hasLocale ? 'S2_Phone' : 'S0_Splash'}
+      // ★ Always the splash, even for a returning farmer who has already
+      //   picked a language.
+      //
+      //   This used to be `hasLocale ? 'S2_Phone' : 'S0_Splash'`, which broke
+      //   two things at once and neither of them looked like a routing bug:
+      //
+      //   - **Back did nothing on the phone screen.** `initialRouteName` does
+      //     not push the screens before it; it *starts* the stack there. So
+      //     S2_Phone was the bottom of the stack, `goBack()` had no frame to
+      //     pop, and React Navigation logged "GO_BACK was not handled".
+      //   - **Splash became unreachable forever.** Once a locale was saved,
+      //     nothing could route back to a screen the stack never contained —
+      //     including us, when we wanted to demo it.
+      //
+      //   The branch it was making still has to happen; it just belongs on the
+      //   splash's own button, where it is a navigation choice rather than a
+      //   stack root. `S00_Splash` reads `hasLocale` and sends a returning
+      //   farmer straight to the phone screen — one extra tap for him, a real
+      //   back stack for everyone.
+      initialRouteName="S0_Splash"
       screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <Stack.Screen name="S0_Splash" component={S00_Splash} />
       <Stack.Screen name="S1_Language" component={S01_Language} />
