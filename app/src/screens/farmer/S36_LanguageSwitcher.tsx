@@ -7,17 +7,26 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
-import { useT } from '../../lib/i18n';
+import { translate, useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
 import { speakSmart, stopSpeaking } from '../../lib/voice';
-import { isAutoNarrateOn, setAutoNarrate } from '../../lib/voiceSettings';
+import {
+  getVoice,
+  isAutoNarrateOn,
+  setAutoNarrate,
+  setVoice,
+  type VoiceChoice,
+} from '../../lib/voiceSettings';
 import type { Locale } from '../../types/api';
 
 export default function S36_LanguageSwitcher({ navigation }: any) {
   const { t, locale, setLocale } = useT();
   const [selectedLang, setSelectedLang] = useState<'mr' | 'hi' | 'en'>(locale);
   const [voiceOn, setVoiceOn] = useState(isAutoNarrateOn());
-  const [sampleLocale, setSampleLocale] = useState<Locale | null>(null);
+  const [voiceChoice, setVoiceChoice] = useState<VoiceChoice>(getVoice());
+  // Holds either a Locale (a language card's sample) or `voice_female` /
+  // `voice_male` (a voice sample), so only one preview can play at a time.
+  const [sampleLocale, setSampleLocale] = useState<string | null>(null);
 
   /**
    * Speaks one card's preview sentence in that card's own language.
@@ -51,6 +60,33 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
     const next = !voiceOn;
     setVoiceOn(next);
     void setAutoNarrate(next);
+  };
+
+  /**
+   * Pick a voice and immediately speak a sample in it, so the choice is made
+   * by ear rather than by reading the words "male" and "female".
+   *
+   * ★ The sample is spoken in the language currently *selected on this screen*
+   *   rather than the active app locale — a farmer switching to Hindi should
+   *   hear the Hindi voice he is about to get, not the Marathi one he has.
+   */
+  const pickVoice = async (g: VoiceChoice) => {
+    const key = `voice_${g}`;
+    if (sampleLocale === key) {
+      setSampleLocale(null);
+      await stopSpeaking();
+      return;
+    }
+    setVoiceChoice(g);
+    await setVoice(g);
+    setSampleLocale(key as never);
+    try {
+      await speakSmart(translate('lang_voice_sample_line', selectedLang), selectedLang);
+    } catch {
+      // Same reasoning as playSample: silence, not a banner over a preview.
+    } finally {
+      setSampleLocale(cur => (cur === key ? null : cur));
+    }
   };
 
   const LANGUAGES = [
@@ -201,28 +237,90 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
           );
         })}
 
+        {/* ── Whose voice ────────────────────────────────────────────
+            ★ New. Two named voices with a "try it" button on each, because a
+              farmer choosing a voice should hear both rather than read the
+              words "male" and "female".
+
+            ★ **Honest about what this does today.** `POST /voice/narrate`
+              takes only `{ text, locale }` and the Sarvam speaker is a single
+              server-wide setting, so the choice is stored and sent but every
+              farmer still hears the server's one voice. Filed for Akash in
+              BLOCKERS. The control is built now so nothing on the client has
+              to change when the route accepts a speaker — but see the note
+              under it: it says so on screen rather than pretending. */}
+        <View style={styles.voiceSection}>
+          <View style={styles.voiceSectionHeader}>
+            <Icon name="volume" size={16} color={colors.primary} />
+            <View style={styles.voiceSectionInfo}>
+              <Text style={styles.voiceSectionTitle}>{t('lang_voice_who')}</Text>
+            </View>
+          </View>
+
+          <View style={styles.voiceChoiceRow}>
+            {(['female', 'male'] as const).map(g => {
+              const picked = voiceChoice === g;
+              return (
+                <TouchableOpacity
+                  key={g}
+                  style={[styles.voiceChoice, picked && styles.voiceChoicePicked]}
+                  onPress={() => pickVoice(g)}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: picked }}>
+                  <View style={styles.voiceChoiceTop}>
+                    <Icon
+                      name={picked ? 'check-circle' : 'volume'}
+                      size={16}
+                      color={picked ? colors.primary : colors.onSurfaceVariant}
+                    />
+                    <Text style={[styles.voiceChoiceLabel, picked && styles.voiceChoiceLabelPicked]}>
+                      {t(g === 'female' ? 'lang_voice_female' : 'lang_voice_male')}
+                    </Text>
+                  </View>
+                  <View style={styles.voiceTryRow}>
+                    <Icon
+                      name={sampleLocale === `voice_${g}` ? 'x-circle' : 'volume'}
+                      size={12}
+                      color={colors.primary}
+                    />
+                    <Text style={styles.voiceTryText}>{t('lang_voice_try')}</Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+
         {/* Voice assistance section */}
         <View style={styles.voiceSection}>
           <View style={styles.voiceSectionHeader}>
             <Icon name="mic" size={16} color={colors.primary} />
             <View style={styles.voiceSectionInfo}>
-              <Text style={styles.voiceSectionTitle}>{t('lang_voice_title')}</Text>
-              <Text style={styles.voiceSectionSub}>{t('lang_voice_sub')}</Text>
+              <Text style={styles.voiceSectionTitle}>{t('lang_voice_auto_title')}</Text>
             </View>
-            {/* ★ Now a real setting. It persists to AsyncStorage and gates
-                whether a screen reads itself aloud when the farmer arrives —
-                previously it was `useState` wired to nothing at all. */}
+            {/* ★ Was a bare tick box with no word beside it — the farmer (and
+                the person testing it) could not tell what it controlled or
+                which state was which. It now says CHALU / BAND in words next
+                to the box, which is the "never an icon on its own" rule this
+                screen was breaking worst. It is also a real setting: it
+                persists and gates auto-narration, where before it was
+                `useState` wired to nothing. */}
             <TouchableOpacity
-              style={[styles.toggleBtn, voiceOn && styles.toggleBtnActive]}
+              style={styles.togglePill}
               onPress={toggleVoice}
               accessibilityRole="switch"
               accessibilityState={{ checked: voiceOn }}
-              accessibilityLabel={t('lang_voice_title')}>
-              {voiceOn && <Icon name="check" size={14} color={colors.onPrimary} />}
+              accessibilityLabel={t('lang_voice_auto_title')}>
+              <Text style={[styles.toggleWord, voiceOn && styles.toggleWordOn]}>
+                {t(voiceOn ? 'lang_voice_on' : 'lang_voice_off')}
+              </Text>
+              <View style={[styles.toggleBtn, voiceOn && styles.toggleBtnActive]}>
+                {voiceOn && <Icon name="check" size={14} color={colors.onPrimary} />}
+              </View>
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.voiceDescText}>{t('lang_voice_desc')}</Text>
+          <Text style={styles.voiceDescText}>{t('lang_voice_auto_desc')}</Text>
 
           {/* ★ A "reading speed" row with slow/normal/fast tabs sat here. It
               was `useState` and nothing else: `speakSmart` hands text to
@@ -307,6 +405,26 @@ const styles = StyleSheet.create({
   langNameEn: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
   langBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: radius.full },
   langBadgeText: { fontFamily: fontFamily.bold, fontSize: 10 },
+  voiceChoiceRow: { flexDirection: 'row', gap: space.sm, marginTop: space.sm },
+  voiceChoice: {
+    flex: 1,
+    borderWidth: 1.5,
+    borderColor: colors.borderField,
+    borderRadius: radius.md,
+    padding: space.sm,
+    backgroundColor: colors.surface,
+    minHeight: touch.targetMin,
+    justifyContent: 'center',
+  },
+  voiceChoicePicked: { borderColor: colors.primary, borderWidth: 2, backgroundColor: colors.onPrimaryContainer },
+  voiceChoiceTop: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  voiceChoiceLabel: { fontFamily: fontFamily.semiBold, fontSize: 14, color: colors.onSurface, flexShrink: 1 },
+  voiceChoiceLabelPicked: { fontFamily: fontFamily.bold, color: colors.primary },
+  voiceTryRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 6 },
+  voiceTryText: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.primary },
+  togglePill: { flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: touch.targetMin, paddingLeft: 8 },
+  toggleWord: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurfaceVariant },
+  toggleWordOn: { color: colors.primary },
   previewBox: { padding: space.sm, borderRadius: radius.md, backgroundColor: 'rgba(0,0,0,0.04)', marginBottom: space.sm, borderLeftWidth: 3, borderLeftColor: colors.primary },
   previewLabel: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.onSurfaceVariant, marginBottom: 4 },
   previewText: { fontFamily: fontFamily.regular, fontSize: 13, color: colors.onSurface, lineHeight: 19 },

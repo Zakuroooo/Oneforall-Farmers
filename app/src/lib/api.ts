@@ -467,5 +467,14 @@ export interface NarrateRes {
   request_id?: string | null;
 }
 
-export const narrate = (text: string, locale: Locale) =>
-  post<NarrateRes>('/voice/narrate', { text, locale });
+/**
+ * ★ `speaker` is sent but **not yet honoured**. `NarrateRequest` on the server
+ *   is `{ text, locale }` and the Sarvam speaker comes from the server-wide
+ *   `SARVAM_TTS_SPEAKER` setting, so every farmer currently hears the same
+ *   voice whatever he picks in settings. FastAPI drops an unknown field rather
+ *   than rejecting the request, so sending it now is free and the feature
+ *   starts working the moment the route accepts it — no client release needed.
+ *   Raised with Akash in `docs/BLOCKERS.md`.
+ */
+export const narrate = (text: string, locale: Locale, speaker?: string) =>
+  post<NarrateRes>('/voice/narrate', speaker ? { text, locale, speaker } : { text, locale });

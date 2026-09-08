@@ -366,3 +366,20 @@ These are logged because **the baseline documents changed after they were writte
 ### [Pranay → Akash] FYI: two host ports in `docker-compose.yml` collide with common local services
 - `redis` binds 6379 and `postgis` binds 5432 on the host. Both are already taken on a machine running any other Redis/Postgres, and compose fails with "port is already allocated" before anything starts. The `api` container reaches them by service name on the compose network, so those host bindings are convenience only — worth dropping, or moving to non-default host ports.
 - **Raised:** H-current (2026-09-07)
+
+### [Pranay → Akash] CONTRACT: `/voice/narrate` needs a per-request `speaker`
+- **What I need:** `speaker: str | None` on `NarrateRequest`, passed through to
+  `voice_engine.text_to_speech(...)` instead of the fixed `settings.SARVAM_TTS_SPEAKER`.
+  Falling back to the configured default when absent keeps every existing caller working.
+- **Why:** the farmer picks a man's or a woman's voice in the language settings screen.
+  Right now `NarrateRequest` is `{text, locale}` and the Sarvam speaker is one server-wide
+  setting, so every farmer hears the same voice whatever he chooses. Sarvam's `bulbul`
+  takes `speaker` per call — this is a passthrough, not new synthesis work.
+- **Blocking:** the voice-choice control in S36_LanguageSwitcher. It is built, persisted,
+  and already sends `speaker` on every narrate call (FastAPI ignores the unknown field),
+  so this starts working with **no client change** the moment the route accepts it.
+- **Suggested values:** `anushka` (female) and `abhilash` (male) — both bulbul speakers.
+  If v3 uses different ids, send me the list and I will map to whatever you expose.
+- **Workaround in place:** the control saves the choice and the UI says plainly that
+  every voice sounds the same until the server supports it. Nothing pretends to work.
+- **Raised:** 2026-09-08

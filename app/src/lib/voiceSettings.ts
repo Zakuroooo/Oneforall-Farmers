@@ -21,6 +21,52 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AUTO_NARRATE_KEY = 'app.autoNarrate';
+const VOICE_KEY = 'app.voice';
+
+/**
+ * Which Sarvam voice reads the app aloud.
+ *
+ * ★ Named by who is speaking, not by a Sarvam speaker id, because the id is
+ *   the server's business and it changes when the model version does. The
+ *   mapping to a real speaker lives in one place (`SARVAM_SPEAKER` below) so
+ *   a model bump is one edit rather than a search across screens.
+ */
+export type VoiceChoice = 'female' | 'male';
+
+/**
+ * Sarvam `bulbul` speaker ids for each choice.
+ *
+ * ★ **These do not take effect yet.** `POST /voice/narrate` currently accepts
+ *   only `{ text, locale }`; the speaker is a single server-wide setting
+ *   (`SARVAM_TTS_SPEAKER`), so every farmer hears the same voice regardless of
+ *   what he picks here. The app sends the field anyway — FastAPI ignores an
+ *   unknown key rather than erroring — so the moment the route accepts it,
+ *   this starts working with no client change. Filed for Akash in
+ *   `docs/BLOCKERS.md`.
+ */
+export const SARVAM_SPEAKER: Record<VoiceChoice, string> = {
+  female: 'anushka',
+  male: 'abhilash',
+};
+
+let voice: VoiceChoice = 'female';
+
+export function getVoice(): VoiceChoice {
+  return voice;
+}
+
+export function getSarvamSpeaker(): string {
+  return SARVAM_SPEAKER[voice];
+}
+
+export async function setVoice(next: VoiceChoice): Promise<void> {
+  voice = next;
+  try {
+    await AsyncStorage.setItem(VOICE_KEY, next);
+  } catch {
+    // Holds for this session via the mirror above.
+  }
+}
 
 /** In-memory mirror so a screen mounting can decide synchronously, before the
  *  AsyncStorage read resolves — otherwise the first screen of the session
@@ -44,10 +90,15 @@ export async function setAutoNarrate(on: boolean): Promise<void> {
 /** Call once at startup, alongside the locale and token reads. */
 export async function loadVoiceSettings(): Promise<void> {
   try {
-    const raw = await AsyncStorage.getItem(AUTO_NARRATE_KEY);
+    const [raw, rawVoice] = await Promise.all([
+      AsyncStorage.getItem(AUTO_NARRATE_KEY),
+      AsyncStorage.getItem(VOICE_KEY),
+    ]);
     // Absent means "never set", which is on — not off.
     autoNarrate = raw === null ? true : raw === '1';
+    voice = rawVoice === 'male' ? 'male' : 'female';
   } catch {
     autoNarrate = true;
+    voice = 'female';
   }
 }

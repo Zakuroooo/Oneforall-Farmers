@@ -31,6 +31,7 @@ import { buildVerdictNarrationFor } from './verdictVoice';
 //   file that does not exist, so the narration would have failed to bundle.
 //   `voice.ts` and `api.ts` are siblings in `lib/`.
 import { narrate } from './api';
+import { getSarvamSpeaker } from './voiceSettings';
 
 /**
  * Every ASCII, Android-resource-safe (`[a-z0-9_]+`, no Devanagari) clip id
@@ -582,7 +583,7 @@ async function speakViaSarvam(
   locale: Locale = 'mr',
   generation?: number,
 ): Promise<void> {
-  const { audio_base64 } = await narrate(narration, locale);
+  const { audio_base64 } = await narrate(narration, locale, getSarvamSpeaker());
 
   // The farmer pressed stop while this was still coming down the wire.
   if (generation !== undefined && generation !== speechGeneration) return;
