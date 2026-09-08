@@ -35,6 +35,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
+import { useScreenNarration } from '../../lib/useScreenNarration';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
 
 type Props = NativeStackScreenProps<MyLotsStackParamList, 'S17_CameraGuide'>;
@@ -52,7 +54,10 @@ const TIPS: Array<{ key: string; icon: Parameters<typeof Icon>[0]['name'] }> = [
 ];
 
 export default function S17_CameraGuide({ navigation }: Props) {
-  const { t } = useT();
+  const { t, locale } = useT();
+
+  const narration = t('nar_scr_camera');
+  useScreenNarration(narration, locale);
   const [permissionDenied, setPermissionDenied] = useState(false);
 
   const openCamera = async () => {
@@ -91,6 +96,8 @@ export default function S17_CameraGuide({ navigation }: Props) {
           <Text style={styles.headerTitle}>{t('cam_title')}</Text>
           <Text style={styles.headerSub}>{t('cam_step', { n: '1' })}</Text>
         </View>
+        {/* ★ This screen had no speaker at all. */}
+        <ListenButton text={narration} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

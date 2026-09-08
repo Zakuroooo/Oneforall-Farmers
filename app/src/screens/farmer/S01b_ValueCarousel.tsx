@@ -27,6 +27,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
+import { useScreenNarration } from '../../lib/useScreenNarration';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S1b_ValueCarousel'>;
@@ -43,7 +45,10 @@ const VALUES: Array<{
 ];
 
 export default function S01b_ValueCarousel({ navigation }: Props) {
-  const { t } = useT();
+  const { t, locale } = useT();
+
+  const narration = t('nar_scr_value');
+  useScreenNarration(narration, locale);
   const goToPhone = () => navigation.navigate('S2_Phone');
 
   return (
@@ -62,6 +67,8 @@ export default function S01b_ValueCarousel({ navigation }: Props) {
         <TouchableOpacity onPress={goToPhone} accessibilityRole="button" style={styles.skipBtn}>
           <Text style={styles.skipText}>{t('vc_skip')}</Text>
         </TouchableOpacity>
+        {/* ★ This screen had no speaker at all. */}
+        <ListenButton text={narration} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

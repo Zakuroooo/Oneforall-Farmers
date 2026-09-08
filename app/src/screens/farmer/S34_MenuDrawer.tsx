@@ -27,6 +27,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
+import { ListenButton } from '../../components/ui/ListenButton';
+import { useScreenNarration } from '../../lib/useScreenNarration';
 import { useAuth } from '../../lib/auth';
 import { useT } from '../../lib/i18n';
 import type { FarmerRootStackParamList } from '../../navigation/RootNavigator';
@@ -43,6 +45,10 @@ const LANGUAGES: { code: Locale; label: string }[] = [
 export default function S34_MenuDrawer({ navigation }: Props) {
   const { user, signOut } = useAuth();
   const { t, locale } = useT();
+
+  const narration = t('nar_scr_menu');
+  useScreenNarration(narration, locale);
+
 
   // ★ Closing the menu with `navigate` used to just push the target screen on
   //   top of whatever the MyLots tab's stack already had piled up (the whole
@@ -93,7 +99,10 @@ export default function S34_MenuDrawer({ navigation }: Props) {
           <Icon name="x-circle" size={22} color={colors.onSurface} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{t('app_name')}</Text>
-        <View style={styles.closeBtn} />
+        {/* ★ Was an empty spacer. Now the menu can read its own options out,
+            which matters here more than most screens: this is where a farmer
+            goes when he is lost. */}
+        <ListenButton text={narration} />
       </View>
 
       <ScrollView contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>

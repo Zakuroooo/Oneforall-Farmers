@@ -31,6 +31,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
+import { useScreenNarration } from '../../lib/useScreenNarration';
 import { ApiError, requestOtp, transcribeAudio } from '../../lib/api';
 import { digitsFromSpeech } from '../../lib/spokenDigits';
 import { setPendingAuth } from '../../lib/auth';
@@ -64,6 +66,9 @@ async function ensureMicPermission(): Promise<boolean> {
 
 export default function S02_Phone({ navigation }: Props) {
   const { t, locale } = useT();
+
+  const narration = t('nar_scr_phone');
+  useScreenNarration(narration, locale);
   const [phone, setPhone] = useState('');
   // ★ One login flow for both sides. The role is chosen here, ridden through
   //   `pendingAuth`, and applied at registration — rather than a second set of
@@ -189,6 +194,8 @@ export default function S02_Phone({ navigation }: Props) {
             <Icon name="globe" size={16} color={colors.primary} />
             <Text style={styles.langBtnText}>{t(`lang_name_${locale}`)}</Text>
           </TouchableOpacity>
+          {/* ★ This screen had no speaker at all. */}
+          <ListenButton text={narration} />
         </View>
 
         {/* ── Heading ────────────────────────────────── */}

@@ -22,12 +22,17 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, radius, space, touch, type as typography } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { ListenButton } from '../../components/ui/ListenButton';
+import { useScreenNarration } from '../../lib/useScreenNarration';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
 
 type Props = NativeStackScreenProps<MyLotsStackParamList, 'S18_PhotoReview'>;
 
 export default function S18_PhotoReview({ route, navigation }: Props) {
-  const { t } = useT();
+  const { t, locale } = useT();
+
+  const narration = t('nar_scr_photo');
+  useScreenNarration(narration, locale);
   const { photoUri } = route.params;
 
   return (
@@ -46,6 +51,8 @@ export default function S18_PhotoReview({ route, navigation }: Props) {
           <Text style={styles.headerTitle}>{t('pr_title')}</Text>
           <Text style={styles.headerSub}>{t('pr_step')}</Text>
         </View>
+        {/* ★ This screen had no speaker at all. */}
+        <ListenButton text={narration} />
       </View>
 
       <View style={styles.body}>
