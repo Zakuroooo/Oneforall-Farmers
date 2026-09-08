@@ -367,19 +367,47 @@ These are logged because **the baseline documents changed after they were writte
 - `redis` binds 6379 and `postgis` binds 5432 on the host. Both are already taken on a machine running any other Redis/Postgres, and compose fails with "port is already allocated" before anything starts. The `api` container reaches them by service name on the compose network, so those host bindings are convenience only — worth dropping, or moving to non-default host ports.
 - **Raised:** H-current (2026-09-07)
 
-### [Pranay → Akash] CONTRACT: `/voice/narrate` needs a per-request `speaker`
-- **What I need:** `speaker: str | None` on `NarrateRequest`, passed through to
-  `voice_engine.text_to_speech(...)` instead of the fixed `settings.SARVAM_TTS_SPEAKER`.
-  Falling back to the configured default when absent keeps every existing caller working.
-- **Why:** the farmer picks a man's or a woman's voice in the language settings screen.
-  Right now `NarrateRequest` is `{text, locale}` and the Sarvam speaker is one server-wide
-  setting, so every farmer hears the same voice whatever he chooses. Sarvam's `bulbul`
-  takes `speaker` per call — this is a passthrough, not new synthesis work.
-- **Blocking:** the voice-choice control in S36_LanguageSwitcher. It is built, persisted,
-  and already sends `speaker` on every narrate call (FastAPI ignores the unknown field),
-  so this starts working with **no client change** the moment the route accepts it.
-- **Suggested values:** `anushka` (female) and `abhilash` (male) — both bulbul speakers.
-  If v3 uses different ids, send me the list and I will map to whatever you expose.
-- **Workaround in place:** the control saves the choice and the UI says plainly that
-  every voice sounds the same until the server supports it. Nothing pretends to work.
+### [Pranay → Akash] CONTRACT: `/voice/narrate` needs `speaker`, `pace`, and key rotation
+- **What I need — three things, all small:**
+
+  1. **`speaker`** on `NarrateRequest`, passed to `voice_engine.text_to_speech(...)`
+     instead of the fixed `settings.SARVAM_TTS_SPEAKER`. Default to the configured
+     value when absent, so every existing caller keeps working.
+  2. **`pace`** on the same request, forwarded as Sarvam's `pace` field. The farmer
+     picks slow / normal / fast; I send 0.75 / 0.9 / 1.1.
+  3. **Multiple `SARVAM_API_KEY`s with failover.** Pranay has 2–3 more keys. Take a
+     comma-separated `SARVAM_API_KEYS` env var, try the next key on a 429 or 401,
+     and log which index served the request. One rate-limited key currently kills
+     every voice in the app.
+
+  Exact shape I am already sending:
+
+  ```python
+  class NarrateRequest(BaseModel):
+      text: str
+      locale: str = "mr"
+      speaker: str | None = None      # NEW — falls back to SARVAM_TTS_SPEAKER
+      pace: float | None = None       # NEW — falls back to 1.0
+  ```
+
+- **Why:** the language settings screen has a working, persisted control for a man's
+  or a woman's voice and for reading speed. Right now `NarrateRequest` is
+  `{text, locale}` and the speaker is one server-wide setting, so every farmer hears
+  the same voice at the same speed whatever he picks. Sarvam's `bulbul` takes both
+  `speaker` and `pace` per call — this is a passthrough, not new synthesis work.
+
+- **Blocking:** the voice and speed controls in `S36_LanguageSwitcher`. Both are built,
+  persisted, and **already send `speaker` and `pace` on every narrate call** (FastAPI
+  drops unknown fields), so they start working with **no client change and no new APK**
+  the moment the route accepts them.
+
+- **Speaker ids I am sending:** `anushka` (female), `abhilash` (male). If bulbul:v3 uses
+  different ids, send me the list and I will map to whatever you expose — the mapping
+  lives in one constant (`SARVAM_SPEAKER` in `app/src/lib/voiceSettings.ts`).
+
+- **Also worth knowing:** if a farmer picks a voice and hears no difference, that reads
+  as a broken app in front of a judge. Until this lands the screen says plainly that the
+  voice is the same — but that note should come out once you ship it.
+
+- **Workaround in place:** choices are saved and sent; nothing pretends to work.
 - **Raised:** 2026-09-08
