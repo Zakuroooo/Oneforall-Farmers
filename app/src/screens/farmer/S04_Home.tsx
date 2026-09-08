@@ -423,6 +423,47 @@ export default function S04_Home({ navigation }: Props) {
                 </View>
               )}
 
+              {/* ── The two figures, drawn to scale ──────────────────────
+                  ★ I16 says the worst case renders at the same font size as
+                    the gain. That makes the pair *readable*; it does not make
+                    them *comparable* — you still have to read two numbers and
+                    do the arithmetic to see which is bigger.
+
+                  ★ These bars are the same two values as widths. A farmer who
+                    cannot read either figure can still see, in one glance,
+                    that the green one is longer. Both are scaled against the
+                    same maximum, so the comparison is honest: a bar is never
+                    normalised to its own width. */}
+              {verdict.expected_gain_paise !== null && verdict.worst_case_paise !== null && (
+                <View style={styles.compareBars}>
+                  {(() => {
+                    const gain = Math.abs(verdict.expected_gain_paise);
+                    const risk = Math.abs(verdict.worst_case_paise);
+                    const peak = Math.max(gain, risk) || 1;
+                    return (
+                      <>
+                        <View style={styles.compareRow}>
+                          <View
+                            style={[
+                              styles.compareBar,
+                              { width: `${(gain / peak) * 100}%`, backgroundColor: colors.positiveSolid },
+                            ]}
+                          />
+                        </View>
+                        <View style={styles.compareRow}>
+                          <View
+                            style={[
+                              styles.compareBar,
+                              { width: `${(risk / peak) * 100}%`, backgroundColor: colors.criticalSolid },
+                            ]}
+                          />
+                        </View>
+                      </>
+                    );
+                  })()}
+                </View>
+              )}
+
               <TouchableOpacity style={styles.costBreakdownBtn} onPress={() => navigation.navigate('S9_Verdict')}>
                 <Icon name="clipboard" size={13} color={colors.primary} />
                 <Text style={styles.costBreakdownText}>
@@ -850,6 +891,14 @@ const styles = StyleSheet.create({
     padding: space.sm,
     alignItems: 'center',
   },
+  compareBars: { marginTop: space.xs, gap: 5 },
+  compareRow: {
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    overflow: 'hidden',
+  },
+  compareBar: { height: '100%', borderRadius: 5, minWidth: 6 },
   advisoryStatDivider: {
     width: 1,
     backgroundColor: 'rgba(194,65,12,0.15)',

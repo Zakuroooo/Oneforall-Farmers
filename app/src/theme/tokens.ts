@@ -36,7 +36,8 @@ export const colors = {
   // Text
   onBackground: '#1C1C17',
   onSurface: '#1C1C17',
-  onSurfaceVariant: '#59413A',
+  // ★ Darkened from #59413A for AA contrast on the parchment ground.
+  onSurfaceVariant: '#4A342E',
   outline: '#8D7168',
   outlineVariant: '#E1BFB5',
 
@@ -61,6 +62,11 @@ export const colors = {
   // Semantic — separate from the brand accent, never doubling as it.
   positive: '#047857',
   positiveContainer: '#B9FFDE',
+  /** ★ A+D contrast upgrade: solid fills for the gain/risk pair, so the two
+   *   figures read at a glance in sunlight instead of as two pale tints. White
+   *   on these clears WCAG AA at the sizes we use them. */
+  positiveSolid: '#046C4E',
+  criticalSolid: '#B3261E',
   onPositive: '#FFFFFF',
   onPositiveContainer: '#00513A',
 
@@ -73,7 +79,8 @@ export const colors = {
   warningContainer: '#FFEDD5',
 
   // Structural borders — the jute-fiber warm tones
-  borderCard: '#EADEC7',
+  // ★ Darkened from #EADEC7 — the old card edge disappeared on a bright screen.
+  borderCard: '#DCC9A8',
   borderField: '#D6C7B2',
   borderActive: '#C2410C',
   borderInput: '#E5D9C3',
@@ -89,23 +96,34 @@ export const fontFamily = {
   extraBold: 'PlusJakartaSans-ExtraBold',
 } as const;
 
+/**
+ * ★ Sizes raised one step across the body and label roles (2026-09-08).
+ *
+ *   The scale was transcribed from a desktop mockup and read small on the
+ *   device it is actually for: a cheap phone, held at arm's length, in sunlight,
+ *   often by someone whose close vision is not what it was. Body text at 13-14px
+ *   is comfortable in a design tool and marginal in a mandi.
+ *
+ *   Headline roles are unchanged — they were never the problem, and moving them
+ *   would reflow every screen. Only the roles a farmer has to *read* moved.
+ */
 export const type = {
   displayLg: { fontFamily: fontFamily.extraBold, fontSize: 28, lineHeight: 34, letterSpacing: -0.4 },
   headlineLg: { fontFamily: fontFamily.bold, fontSize: 22, lineHeight: 28, letterSpacing: -0.2 },
   headlineMd: { fontFamily: fontFamily.bold, fontSize: 20, lineHeight: 26, letterSpacing: -0.2 },
   headlineSm: { fontFamily: fontFamily.semiBold, fontSize: 18, lineHeight: 24 },
   titleLg: { fontFamily: fontFamily.bold, fontSize: 16, lineHeight: 22 },
-  titleMd: { fontFamily: fontFamily.semiBold, fontSize: 15, lineHeight: 20 },
+  titleMd: { fontFamily: fontFamily.semiBold, fontSize: 16, lineHeight: 22 },
   bodyLg: { fontFamily: fontFamily.medium, fontSize: 16, lineHeight: 24 },
-  bodyMd: { fontFamily: fontFamily.regular, fontSize: 14, lineHeight: 20 },
-  bodySm: { fontFamily: fontFamily.regular, fontSize: 13, lineHeight: 18 },
-  labelLg: { fontFamily: fontFamily.bold, fontSize: 14, lineHeight: 18, letterSpacing: 0.3 },
-  labelMd: { fontFamily: fontFamily.semiBold, fontSize: 12, lineHeight: 16, letterSpacing: 0.4 },
-  labelSm: { fontFamily: fontFamily.bold, fontSize: 11, lineHeight: 14, letterSpacing: 0.5 },
+  bodyMd: { fontFamily: fontFamily.regular, fontSize: 16, lineHeight: 24 },
+  bodySm: { fontFamily: fontFamily.regular, fontSize: 14, lineHeight: 20 },
+  labelLg: { fontFamily: fontFamily.bold, fontSize: 15, lineHeight: 20, letterSpacing: 0.3 },
+  labelMd: { fontFamily: fontFamily.semiBold, fontSize: 13, lineHeight: 18, letterSpacing: 0.4 },
+  labelSm: { fontFamily: fontFamily.bold, fontSize: 12, lineHeight: 16, letterSpacing: 0.5 },
   // The two roles the mockups reserve for on-screen figures — a hero number
   // (today's price, the hero gain) and a smaller in-line data number.
-  numeralHero: { fontFamily: fontFamily.extraBold, fontSize: 32, lineHeight: 36, letterSpacing: -0.3 },
-  numeralData: { fontFamily: fontFamily.bold, fontSize: 18, lineHeight: 22 },
+  numeralHero: { fontFamily: fontFamily.extraBold, fontSize: 36, lineHeight: 42, letterSpacing: -0.3 },
+  numeralData: { fontFamily: fontFamily.bold, fontSize: 20, lineHeight: 26 },
 } as const;
 
 export const radius = { sm: 4, md: 12, lg: 16, xl: 24, full: 999 } as const;
@@ -114,8 +132,12 @@ export const space = { xxs: 4, xs: 8, sm: 12, md: 16, lg: 20, xl: 24, xxl: 32, x
 
 /** Touch target constants for outdoor usability on cheap screens. */
 export const touch = {
-  targetMin: 48,
-  targetHero: 56,
+  // ★ Raised from 48. Android's own guidance floor is 48dp for a fully-sighted
+  //   user indoors; this app is used one-handed, outdoors, sometimes with wet
+  //   or calloused hands, so the floor here is the hero size and the hero is
+  //   bigger again.
+  targetMin: 56,
+  targetHero: 64,
 } as const;
 
 /** ── Elevation System ─────────────────────────────────────────────
