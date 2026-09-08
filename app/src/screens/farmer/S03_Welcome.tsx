@@ -9,6 +9,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
+import { useAuth } from '../../lib/auth';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { demoTodayPrice } from '../../lib/demoPrice';
 import { ListenButton } from '../../components/ui/ListenButton';
@@ -19,6 +20,9 @@ const mandiWarehouse = require('../../assets/images/mandi_warehouse.jpg');
 
 export default function S03_Welcome({ navigation }: Props) {
   const { t, locale } = useT();
+  // ★ This screen greeted a hardcoded "Rambhau Vithal Patil" — shown to a
+  //   farmer who had just typed his own name two screens earlier.
+  const { user } = useAuth();
 
   const FEATURES = [
     { iconName: 'trending-up', titleKey: 'welcome_feat1_title', subKey: 'welcome_feat1_sub', highlightKey: 'welcome_feat1_hl', color: colors.primary },
@@ -39,7 +43,7 @@ export default function S03_Welcome({ navigation }: Props) {
             </View>
             <View>
               <Text style={styles.topBrand}>कृषी मित्र</Text>
-              <Text style={styles.topSub}>LASALGAON APMC NETWORK</Text>
+              <Text style={styles.topSub}>{t('home_market_name')}</Text>
             </View>
           </View>
           <ListenButton text={t('welcome_ticker_label')} />
@@ -74,7 +78,7 @@ export default function S03_Welcome({ navigation }: Props) {
             <Image source={farmerPortrait} style={styles.passPhoto} />
             <View style={styles.passInfo}>
               <View style={styles.passNameRow}>
-                <Text style={styles.passName}>Rambhau Vithal Patil</Text>
+                <Text style={styles.passName} numberOfLines={1}>{user?.name ?? ''}</Text>
                 <View style={styles.verifiedDot}><Icon name="check" size={9} color="#fff" /></View>
               </View>
               <View style={styles.passLocRow}>
@@ -88,7 +92,8 @@ export default function S03_Welcome({ navigation }: Props) {
             <View style={styles.passMetaItem}>
               <Text style={styles.passMetaLabel}>{t('welcome_primary_crop')}</Text>
               <Text style={styles.passMetaValue}>गावरान लाल कांदा</Text>
-              <Text style={styles.passMetaValueEn}>Nashik Red Onion</Text>
+              {/* ★ An English gloss under the Marathi name put two languages
+                  on a screen that has a language switcher. Removed. */}
             </View>
             <View style={styles.passMetaDivider} />
             <View style={styles.passMetaItem}>
@@ -152,7 +157,10 @@ export default function S03_Welcome({ navigation }: Props) {
           <Text style={styles.primaryCtaText}>{t('welcome_cta_dashboard')}</Text>
           <Icon name="arrow-right" size={20} color={colors.onPrimary} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryCta}>
+        {/* ★ Had no onPress at all. It now goes where it says it goes. */}
+        <TouchableOpacity
+          style={styles.secondaryCta}
+          onPress={() => navigation.getParent()?.navigate('FarmerTabs')}>
           <Icon name="plus" size={16} color={colors.primaryContainer} />
           <Text style={styles.secondaryCtaText}>{t('welcome_cta_list_lot')}</Text>
         </TouchableOpacity>

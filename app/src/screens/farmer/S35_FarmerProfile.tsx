@@ -26,7 +26,6 @@ import { colors, fontFamily, radius, space } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
-import { useScreenNarration } from '../../lib/useScreenNarration';
 import { useAuth } from '../../lib/auth';
 import { getDistricts } from '../../lib/api';
 import { USE_FIXTURES } from '../../config';
@@ -49,7 +48,6 @@ export default function S35_FarmerProfile({ navigation }: any) {
   ]
     .filter(Boolean)
     .join('. ');
-  useScreenNarration(narration, locale);
 
   const [districtName, setDistrictName] = useState<string | null>(null);
 
@@ -110,14 +108,14 @@ export default function S35_FarmerProfile({ navigation }: any) {
             <View style={styles.comingSoonIconBg}>
               <Icon name="building" size={16} color={colors.onSurfaceVariant} />
             </View>
-            <Text style={styles.comingSoonText}>Bank details for direct payouts</Text>
+            <Text style={styles.comingSoonText}>{t('profile_soon_bank')}</Text>
           </View>
           <View style={styles.comingSoonDivider} />
           <View style={styles.comingSoonRow}>
             <View style={styles.comingSoonIconBg}>
               <Icon name="leaf" size={16} color={colors.onSurfaceVariant} />
             </View>
-            <Text style={styles.comingSoonText}>Land records</Text>
+            <Text style={styles.comingSoonText}>{t('profile_soon_land')}</Text>
           </View>
         </View>
       </ScrollView>

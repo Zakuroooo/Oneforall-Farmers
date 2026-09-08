@@ -557,9 +557,45 @@ let activePlayer: { stopPlayer: () => Promise<unknown>; removePlayBackListener: 
  */
 let speechGeneration = 0;
 
+/**
+ * Everyone who wants to know when the app starts or stops talking.
+ *
+ * ★ Why this exists. Every `ListenButton` tracked its own run id, but there is
+ *   only **one** audio engine. Tap the speaker on a card while the header's is
+ *   playing and `speakSmart` stops the header — correctly — but the header's
+ *   button never finds out. Its own run id still matches, so it sits on
+ *   "Playing…" forever with nothing playing. Same on navigating away.
+ *
+ *   The generation counter already tells us when speech was superseded; it
+ *   just had no way to reach the UI. Now it does.
+ */
+type SpeechListener = () => void;
+const speechListeners = new Set<SpeechListener>();
+
+export function subscribeSpeech(cb: SpeechListener): () => void {
+  speechListeners.add(cb);
+  return () => speechListeners.delete(cb);
+}
+
+/** The generation a caller can compare against to see if it was superseded. */
+export function currentSpeechGeneration(): number {
+  return speechGeneration;
+}
+
+function notifySpeechChanged(): void {
+  for (const cb of speechListeners) {
+    try {
+      cb();
+    } catch {
+      // A listener that throws must not stop the others from being told.
+    }
+  }
+}
+
 /** Cancels anything in flight — TTS or Sarvam. Safe to call when silent. */
 export async function stopSpeaking(): Promise<void> {
   speechGeneration += 1;
+  notifySpeechChanged();
   try {
     await Tts.stop();
   } catch {
@@ -728,6 +764,34 @@ export function chunkForSarvam(
   }
   if (current.trim()) out.push(current.trim());
   return out.filter(c => c.length > 0);
+}
+
+/**
+ * Warms the cache for a narration the farmer has not asked for yet.
+ *
+ * ★ This is the real latency fix. Everything else — parallel chunks, a short
+ *   opening chunk, the clip cache — shortens the wait *after* the tap. The
+ *   wait itself is Sarvam synthesis plus a network round trip, and no amount
+ *   of reordering removes it while it starts on the tap.
+ *
+ *   So do not start it on the tap. A screen knows what it would say the moment
+ *   it renders; fetching the first chunk then means the audio is already on
+ *   the device by the time a thumb reaches the button, and playback is
+ *   immediate.
+ *
+ * ★ Only the **first** chunk. The rest stream in behind it while that one
+ *   plays, so a farmer who never taps has cost one short request rather than a
+ *   whole narration. Silent on failure — a warm-up that fails must never
+ *   surface anything; the real tap will simply take its normal path.
+ */
+export async function prefetchNarration(text: string, locale: Locale = 'mr'): Promise<void> {
+  if (!canPlaySarvam() || text.trim().length === 0) return;
+  try {
+    const first = chunkForSarvam(text)[0];
+    if (first) await fetchSarvamClip(first, locale);
+  } catch {
+    // Warming is best-effort by definition.
+  }
 }
 
 async function speakViaSarvam(

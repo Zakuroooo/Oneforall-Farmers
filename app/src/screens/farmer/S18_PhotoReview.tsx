@@ -23,7 +23,6 @@ import { colors, fontFamily, radius, space, touch, type as typography } from '..
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
-import { useScreenNarration } from '../../lib/useScreenNarration';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
 
 type Props = NativeStackScreenProps<MyLotsStackParamList, 'S18_PhotoReview'>;
@@ -32,7 +31,6 @@ export default function S18_PhotoReview({ route, navigation }: Props) {
   const { t, locale } = useT();
 
   const narration = t('nar_scr_photo');
-  useScreenNarration(narration, locale);
   const { photoUri } = route.params;
 
   return (

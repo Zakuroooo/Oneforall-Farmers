@@ -14,17 +14,12 @@
  *   rate applies to the on-device voice immediately, and the pace is sent to
  *   the server for the Sarvam voice.
  *
- * ★ `autoNarrate` defaults to **off**, and that is a reversal.
- *
- *   I shipped it on, reasoning that a farmer who cannot read gains nothing
- *   from an app that stays silent until he finds the speaker icon. In use it
- *   was intrusive: the phone starts talking the moment Home appears, before
- *   you have looked at anything, and it talks again every time you come back
- *   to the screen. Nobody wants that, farmer or not — and a demo where the
- *   phone starts announcing itself unprompted is worse than one that waits.
- *
- *   The speaker button is the way in. This setting stays because it is a real
- *   preference, but it is opt-in now.
+ * ★ `autoNarrate` defaults to **off**. Shipping it on was wrong — the phone
+ *   started talking the instant a screen appeared, before you had looked at
+ *   anything, and again every time you came back. But the setting itself is
+ *   worth having: a farmer who cannot read at all wants exactly this, and he
+ *   should be able to turn it on once and never hunt for the speaker again.
+ *   Off by default, his to switch on.
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -146,18 +141,7 @@ export function getSarvamSpeaker(): string {
   return SARVAM_SPEAKER[voice];
 }
 
-export async function setVoice(next: VoiceChoice): Promise<void> {
-  voice = next;
-  try {
-    await AsyncStorage.setItem(VOICE_KEY, next);
-  } catch {
-    // Holds for this session via the mirror above.
-  }
-}
-
-/** In-memory mirror so a screen mounting can decide synchronously, before the
- *  AsyncStorage read resolves — otherwise the first screen of the session
- *  always misses its own narration. Seeded by `loadVoiceSettings()` at boot. */
+/** Whether a screen reads itself aloud on arrival. Off unless he turns it on. */
 let autoNarrate = false;
 
 export function isAutoNarrateOn(): boolean {
@@ -169,10 +153,19 @@ export async function setAutoNarrate(on: boolean): Promise<void> {
   try {
     await AsyncStorage.setItem(AUTO_NARRATE_KEY, on ? '1' : '0');
   } catch {
-    // A preference that fails to persist is not worth surfacing to a farmer;
-    // it still holds for this session via the mirror above.
+    // Holds for this session via the mirror above.
   }
 }
+
+export async function setVoice(next: VoiceChoice): Promise<void> {
+  voice = next;
+  try {
+    await AsyncStorage.setItem(VOICE_KEY, next);
+  } catch {
+    // Holds for this session via the mirror above.
+  }
+}
+
 
 /** Call once at startup, alongside the locale and token reads. */
 export async function loadVoiceSettings(): Promise<void> {
@@ -182,7 +175,7 @@ export async function loadVoiceSettings(): Promise<void> {
       AsyncStorage.getItem(VOICE_KEY),
       AsyncStorage.getItem(SPEED_KEY),
     ]);
-    // Absent means "never set", which is OFF — the farmer opts in.
+    // Absent means never set, which is off — he opts in.
     autoNarrate = raw === '1';
     voice = VOICE_OPTIONS.some(o => o.id === rawVoice)
       ? (rawVoice as VoiceChoice)

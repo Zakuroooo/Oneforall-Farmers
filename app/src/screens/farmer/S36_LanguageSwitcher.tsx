@@ -26,9 +26,9 @@ import type { Locale } from '../../types/api';
 export default function S36_LanguageSwitcher({ navigation }: any) {
   const { t, locale, setLocale } = useT();
   const [selectedLang, setSelectedLang] = useState<'mr' | 'hi' | 'en'>(locale);
-  const [voiceOn, setVoiceOn] = useState(isAutoNarrateOn());
   const [voiceChoice, setVoiceChoice] = useState<VoiceChoice>(getVoice());
   const [speedChoice, setSpeedChoice] = useState<VoiceSpeed>(getSpeed());
+  const [voiceOn, setVoiceOn] = useState(isAutoNarrateOn());
   // Holds either a Locale (a language card's sample) or `voice_female` /
   // `voice_male` (a voice sample), so only one preview can play at a time.
   const [sampleLocale, setSampleLocale] = useState<string | null>(null);
@@ -61,11 +61,6 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
   // Nothing should keep talking after the farmer has left the screen.
   useEffect(() => () => void stopSpeaking(), []);
 
-  const toggleVoice = () => {
-    const next = !voiceOn;
-    setVoiceOn(next);
-    void setAutoNarrate(next);
-  };
 
   /**
    * Pick a voice and immediately speak a sample in it, so the choice is made
@@ -98,6 +93,12 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
    * Set the speed and immediately demonstrate it — three words are not enough
    * for a farmer to choose between three speeds he has never heard.
    */
+  const toggleVoice = () => {
+    const next = !voiceOn;
+    setVoiceOn(next);
+    void setAutoNarrate(next);
+  };
+
   const pickSpeed = async (s: VoiceSpeed) => {
     setSpeedChoice(s);
     await setSpeed(s);
@@ -317,20 +318,16 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
           </View>
         </View>
 
-        {/* Voice assistance section */}
+        {/* Voice assistance */}
         <View style={styles.voiceSection}>
           <View style={styles.voiceSectionHeader}>
             <Icon name="mic" size={16} color={colors.primary} />
             <View style={styles.voiceSectionInfo}>
               <Text style={styles.voiceSectionTitle}>{t('lang_voice_auto_title')}</Text>
             </View>
-            {/* ★ Was a bare tick box with no word beside it — the farmer (and
-                the person testing it) could not tell what it controlled or
-                which state was which. It now says CHALU / BAND in words next
-                to the box, which is the "never an icon on its own" rule this
-                screen was breaking worst. It is also a real setting: it
-                persists and gates auto-narration, where before it was
-                `useState` wired to nothing. */}
+            {/* ★ Says CHALU / BAND in words beside the box. It was a bare tick
+                with no label — nobody could tell what it controlled or which
+                state was which. **Off by default**: on was intrusive. */}
             <TouchableOpacity
               style={styles.togglePill}
               onPress={toggleVoice}

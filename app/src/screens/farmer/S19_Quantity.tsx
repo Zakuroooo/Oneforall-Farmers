@@ -30,7 +30,6 @@ import { Icon } from '../../components/ui/Icon';
 import { createLot } from '../../lib/api';
 import { useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
-import { useScreenNarration } from '../../lib/useScreenNarration';
 import { formatNumber, toQuintal } from '../../lib/money';
 import { DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, DEFAULT_QTY_KG, USE_FIXTURES } from '../../config';
 import { fxLotListed } from '../../fixtures/lots';
@@ -84,7 +83,6 @@ export default function S19_Quantity({ route, navigation }: Props) {
   const { t, locale } = useT();
 
   const narration = t('nar_scr_qty');
-  useScreenNarration(narration, locale);
   const queryClient = useQueryClient();
   const photoUri = route.params?.photoUri ?? null;
 

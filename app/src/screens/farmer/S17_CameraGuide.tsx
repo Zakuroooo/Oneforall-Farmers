@@ -36,7 +36,6 @@ import { colors, fontFamily, radius, space, touch, type as typography } from '..
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
-import { useScreenNarration } from '../../lib/useScreenNarration';
 import type { MyLotsStackParamList } from '../../navigation/FarmerTabs';
 
 type Props = NativeStackScreenProps<MyLotsStackParamList, 'S17_CameraGuide'>;
@@ -57,7 +56,6 @@ export default function S17_CameraGuide({ navigation }: Props) {
   const { t, locale } = useT();
 
   const narration = t('nar_scr_camera');
-  useScreenNarration(narration, locale);
   const [permissionDenied, setPermissionDenied] = useState(false);
 
   const openCamera = async () => {

@@ -1383,5 +1383,11 @@
   "lang_voice_off": "Off",
   "lang_voice_auto_title": "Read every screen aloud automatically",
   "lang_voice_auto_desc": "When this is on, the app reads each screen aloud as soon as you open it. When off, you press the Listen button yourself.",
-  "lang_voice_male_2": "Man's voice 2"
+  "lang_voice_male_2": "Man's voice 2",
+  "home_qty_label": "Qty",
+  "home_no_lots": "You have no lots yet. List one so buyers can bid on it.",
+  "home_list_lot": "List a lot",
+  "unit_quintal_short": "qtl",
+  "profile_soon_bank": "Bank details for direct payouts",
+  "profile_soon_land": "Land records"
 }

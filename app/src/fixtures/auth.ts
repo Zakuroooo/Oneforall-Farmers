@@ -34,7 +34,10 @@ export const fxAuthRegistered: AuthRes = {
   user: {
     id: 'usr_fixture_1',
     phone: '9876543210',
-    name: 'Fixture Farmer',
+    // ★ A real Marathi name, not "Fixture Farmer". Every screen that greets
+    //   the signed-in user renders this, so the placeholder was visible on the
+    //   menu, the profile and the narration — in English, on a Marathi app.
+    name: 'रामभाऊ पाटील',
     role: 'FARMER',
     locale: 'mr',
     district_id: 'dist_nashik',
@@ -53,7 +56,7 @@ export const fxAuthRegisteredBuyer: AuthRes = {
   user: {
     id: 'usr_fixture_buyer_1',
     phone: '9876543211',
-    name: 'Fixture Buyer',
+    name: 'सुनील ट्रेडर्स',
     role: 'BUYER',
     locale: 'mr',
     district_id: 'dist_nashik',

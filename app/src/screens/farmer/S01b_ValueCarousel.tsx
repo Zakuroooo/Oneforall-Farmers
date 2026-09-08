@@ -28,7 +28,6 @@ import { colors, fontFamily, radius, space, touch, type as typography } from '..
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
-import { useScreenNarration } from '../../lib/useScreenNarration';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S1b_ValueCarousel'>;
@@ -48,7 +47,6 @@ export default function S01b_ValueCarousel({ navigation }: Props) {
   const { t, locale } = useT();
 
   const narration = t('nar_scr_value');
-  useScreenNarration(narration, locale);
   const goToPhone = () => navigation.navigate('S2_Phone');
 
   return (

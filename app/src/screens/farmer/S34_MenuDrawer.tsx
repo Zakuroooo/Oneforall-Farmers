@@ -28,7 +28,6 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, radius, space } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { ListenButton } from '../../components/ui/ListenButton';
-import { useScreenNarration } from '../../lib/useScreenNarration';
 import { useAuth } from '../../lib/auth';
 import { useT } from '../../lib/i18n';
 import type { FarmerRootStackParamList } from '../../navigation/RootNavigator';
@@ -47,7 +46,6 @@ export default function S34_MenuDrawer({ navigation }: Props) {
   const { t, locale } = useT();
 
   const narration = t('nar_scr_menu');
-  useScreenNarration(narration, locale);
 
 
   // ★ Closing the menu with `navigate` used to just push the target screen on

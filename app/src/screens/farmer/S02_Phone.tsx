@@ -32,7 +32,6 @@ import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
-import { useScreenNarration } from '../../lib/useScreenNarration';
 import { ApiError, requestOtp, transcribeAudio } from '../../lib/api';
 import { digitsFromSpeech } from '../../lib/spokenDigits';
 import { setPendingAuth } from '../../lib/auth';
@@ -68,7 +67,6 @@ export default function S02_Phone({ navigation }: Props) {
   const { t, locale } = useT();
 
   const narration = t('nar_scr_phone');
-  useScreenNarration(narration, locale);
   const [phone, setPhone] = useState('');
   // ★ One login flow for both sides. The role is chosen here, ridden through
   //   `pendingAuth`, and applied at registration — rather than a second set of
