@@ -1389,5 +1389,13 @@
   "home_list_lot": "माल नोंदवा",
   "unit_quintal_short": "क्विंटल",
   "profile_soon_bank": "थेट पैसे मिळण्यासाठी बँक तपशील",
-  "profile_soon_land": "जमिनीचे कागदपत्र"
+  "profile_soon_land": "जमिनीचे कागदपत्र",
+  "splash_how_title": "तुम्ही बोला. ॲप ऐकेल आणि सांगेल.",
+  "splash_how_1": "बोला",
+  "splash_how_1_sub": "तुमच्या भाषेत विचारा",
+  "splash_how_2": "ॲप समजते",
+  "splash_how_2_sub": "मराठी, हिंदी, इंग्रजी",
+  "splash_how_3": "ऐका",
+  "splash_how_3_sub": "वाचता येत नसेल तरी चालेल",
+  "splash_no_net": "नेट नसतानाही आवाज चालतो"
 }

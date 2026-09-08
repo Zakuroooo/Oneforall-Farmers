@@ -1389,5 +1389,13 @@
   "home_list_lot": "माल दर्ज करें",
   "unit_quintal_short": "क्विंटल",
   "profile_soon_bank": "सीधे भुगतान के लिए बैंक विवरण",
-  "profile_soon_land": "ज़मीन के कागज़ात"
+  "profile_soon_land": "ज़मीन के कागज़ात",
+  "splash_how_title": "आप बोलिए. ऐप सुनेगा और बताएगा.",
+  "splash_how_1": "बोलिए",
+  "splash_how_1_sub": "अपनी भाषा में पूछिए",
+  "splash_how_2": "ऐप समझता है",
+  "splash_how_2_sub": "मराठी, हिंदी, अंग्रेज़ी",
+  "splash_how_3": "सुनिए",
+  "splash_how_3_sub": "पढ़ना न आता हो तब भी",
+  "splash_no_net": "बिना नेट के भी आवाज़ चलती है"
 }

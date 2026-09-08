@@ -11,7 +11,6 @@ import React, { useState } from 'react';
 import {
   Dimensions,
   Image,
-  ScrollView,
   StatusBar,
   StyleSheet,
   Text,
@@ -27,6 +26,7 @@ import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { demoTodayRange } from '../../lib/demoPrice';
 import { ListenButton } from '../../components/ui/ListenButton';
 import { Logo } from '../../components/ui/Logo';
+import { SpeakingFace } from '../../components/ui/SpeakingFace';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'S0_Splash'>;
 
@@ -51,10 +51,11 @@ export default function S00_Splash({ navigation }: Props) {
           frame, and are the visual signature of a generated layout rather
           than a designed one. The parchment ground is the background. */}
 
-      <ScrollView
-        style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}>
+      {/* ★ Deliberately not a ScrollView. Everything here has to fit one
+          screen: a farmer meeting the app for the first time should see the
+          whole offer at once, not discover half of it by scrolling. If
+          something new has to go on this screen, something else comes off. */}
+      <View style={styles.body}>
 
         {/* ── 1. Top ribbon ─────────────────────────────────── */}
         {/* ★ A pulsing green dot beside "LASALGAON DIRECT MANDI ONLINE" sat
@@ -111,54 +112,71 @@ export default function S00_Splash({ navigation }: Props) {
           <Text style={styles.taglineDevanagari}>{t('splash_tagline')}</Text>
         </View>
 
-        {/* ── 5. Live price strip ───────────────────────────── */}
-        <View style={styles.priceStrip}>
-          <View style={styles.priceStripInner}>
-            <Image source={mandiWarehouse} style={styles.pricePhoto} />
-            <View style={styles.priceInfo}>
-              <View style={styles.priceHeader}>
-                <View style={styles.priceLabelRow}>
-                  <Icon name="trending-up" size={12} color={colors.tertiary} />
-                  <Text style={styles.priceLabel}>{t('splash_today_price')}</Text>
-                </View>
-                <Text style={styles.priceMarket}>{t('splash_market_name')}</Text>
-              </View>
-              <Text style={styles.priceCommodity}>{t('splash_commodity')}</Text>
-              <Text style={styles.priceRange}>
-                {demoTodayRange(locale)}
-                <Text style={styles.priceUnit}> {t('splash_per_quintal')}</Text>
-              </Text>
+        {/* ── 5. How it works ───────────────────────────────
+            ★ A "today's onion price at Lasalgaon" card sat here, on the very
+              first screen. A farmer arriving here has told us nothing — not
+              his crop, not his mandi — so that number belonged to somebody
+              else's onion at somebody else's yard. It looked like data and
+              was decoration.
+
+            ★ What belongs on a first screen is the answer to "what is this,
+              and can I use it?". For a farmer who may not read, that answer
+              is: you talk to it, and it talks back. Three steps, each with a
+              picture of the action rather than an abstract glyph. */}
+        <View style={styles.howCard}>
+          <Text style={styles.howTitle}>{t('splash_how_title')}</Text>
+
+          <View style={styles.howRow}>
+            <View style={styles.howStep}>
+              {/* The same face used on every mic in the app, animating, so
+                  the control he will meet later is already familiar here. */}
+              <SpeakingFace listening size={54} />
+              <Text style={styles.howLabel}>{t('splash_how_1')}</Text>
+              <Text style={styles.howSub}>{t('splash_how_1_sub')}</Text>
             </View>
+
+            <View style={styles.howArrow}>
+              <Icon name="arrow-right" size={16} color={colors.outline} />
+            </View>
+
+            <View style={styles.howStep}>
+              <View style={styles.howIconBg}>
+                <Icon name="globe" size={26} color={colors.primary} />
+              </View>
+              <Text style={styles.howLabel}>{t('splash_how_2')}</Text>
+              <Text style={styles.howSub}>{t('splash_how_2_sub')}</Text>
+            </View>
+
+            <View style={styles.howArrow}>
+              <Icon name="arrow-right" size={16} color={colors.outline} />
+            </View>
+
+            <View style={styles.howStep}>
+              <View style={styles.howIconBg}>
+                <Icon name="volume" size={26} color={colors.primary} />
+              </View>
+              <Text style={styles.howLabel}>{t('splash_how_3')}</Text>
+              <Text style={styles.howSub}>{t('splash_how_3_sub')}</Text>
+            </View>
+          </View>
+
+          {/* ★ The one claim on this screen we have actually tested: with the
+              server stopped the app still speaks, through the phone's own
+              engine. Verified on device, not asserted. */}
+          <View style={styles.howOffline}>
+            <Icon name="check-circle" size={13} color={colors.tertiary} />
+            <Text style={styles.howOfflineText}>{t('splash_no_net')}</Text>
           </View>
         </View>
 
         {/* ── 6. Trust badges ───────────────────────────────── */}
-        <View style={styles.trustGrid}>
-          <View style={styles.trustCard}>
-            <View style={[styles.trustIconBg, { backgroundColor: 'rgba(155,47,0,0.08)' }]}>
-              <Icon name="building" size={16} color={colors.primary} />
-            </View>
-            <Text style={styles.trustTitle}>{t('splash_apmc_enam')}</Text>
-            <Text style={styles.trustSub}>{t('splash_apmc_sub')}</Text>
-          </View>
-          <View style={styles.trustCard}>
-            <View style={[styles.trustIconBg, { backgroundColor: 'rgba(0,97,70,0.08)' }]}>
-              <Icon name="lock" size={16} color={colors.tertiary} />
-            </View>
-            <Text style={styles.trustTitle}>{t('splash_secured')}</Text>
-            <Text style={[styles.trustSub, { color: colors.tertiary, fontFamily: fontFamily.bold }]}>
-              {t('splash_secured_sub')}
-            </Text>
-          </View>
-          <View style={styles.trustCard}>
-            <View style={[styles.trustIconBg, { backgroundColor: 'rgba(194,65,12,0.08)' }]}>
-              <Icon name="handshake" size={16} color={colors.secondaryContainer} />
-            </View>
-            <Text style={styles.trustTitle}>{t('splash_direct')}</Text>
-            <Text style={styles.trustSub}>{t('splash_direct_sub')}</Text>
-          </View>
-        </View>
-      </ScrollView>
+        {/* ★ Three "trust" cards sat here — both numbers always, it says when
+            it does not know, buyers direct. They are the right three points
+            and they are already made, at length and better, on the very next
+            screen ("Why Krishi Mitra"). Saying them twice was what pushed this
+            screen past one screenful and made it scroll. A splash that scrolls
+            is a splash that has not decided what it is for. */}
+      </View>
 
       {/* ── 7. Bottom action pad (fixed) ────────────────── */}
       <View style={styles.bottomDock}>
@@ -238,6 +256,11 @@ const styles = StyleSheet.create({
   },
   scroll: {
     flex: 1,
+  },
+  body: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingBottom: space.sm,
   },
   scrollContent: {
     alignItems: 'center',
@@ -425,6 +448,80 @@ const styles = StyleSheet.create({
   },
 
   // Trust grid
+  howCard: {
+    // ★ Narrower side margins and more inner padding than the default card.
+    //   Devanagari sets wider than Latin at the same point size — "मराठी,
+    //   हिंदी, इंग्रजी" needs noticeably more room than "Marathi, Hindi,
+    //   English" — so the three columns were cramped against the card edges in
+    //   exactly the two languages most farmers will use. The card takes the
+    //   width back from its own margins.
+    marginHorizontal: space.sm,
+    marginTop: space.md,
+    paddingVertical: space.md,
+    paddingHorizontal: space.sm,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.borderCard,
+  },
+  howTitle: {
+    fontFamily: fontFamily.bold,
+    fontSize: 15,
+    lineHeight: 21,
+    color: colors.onSurface,
+    textAlign: 'center',
+    marginBottom: space.md,
+  },
+  // ★ The arrows sit between three columns of unequal text height. Centring
+  //   the row on the icons (not the text) keeps the arrows level with the
+  //   circles, and the fixed label/sub heights stop a two-line label — Marathi
+  //   "ॲप समजते" wraps where English "It understands" does not — from pushing
+  //   its own subtitle down onto the divider below.
+  howRow: { flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between' },
+  howStep: { flex: 1, alignItems: 'center', gap: 3, paddingHorizontal: 2 },
+  // Half the 54px icon height, so the arrow lands on the circles' centre line.
+  // Narrow, so the arrows take as little of the row's width as possible —
+  // every pixel here belongs to the three labels.
+  howArrow: { height: 54, justifyContent: 'center', paddingHorizontal: 2 },
+  howIconBg: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: colors.onPrimaryContainer,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  howLabel: {
+    fontFamily: fontFamily.bold,
+    fontSize: 13,
+    lineHeight: 18,
+    color: colors.onSurface,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  howSub: {
+    fontFamily: fontFamily.regular,
+    fontSize: 11,
+    lineHeight: 15,
+    // Devanagari conjuncts get clipped by tight tracking at this size.
+    letterSpacing: 0.1,
+    // Two lines' worth, reserved, so all three columns end level regardless of
+    // how the translation happens to wrap.
+    minHeight: 30,
+    color: colors.onSurfaceVariant,
+    textAlign: 'center',
+  },
+  howOffline: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: space.md,
+    paddingTop: space.sm,
+    borderTopWidth: 1,
+    borderTopColor: colors.borderCard,
+  },
+  howOfflineText: { fontFamily: fontFamily.semiBold, fontSize: 12, color: colors.tertiary },
   trustGrid: {
     flexDirection: 'row',
     paddingHorizontal: space.md,

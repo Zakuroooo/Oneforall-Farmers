@@ -1389,5 +1389,13 @@
   "home_list_lot": "List a lot",
   "unit_quintal_short": "qtl",
   "profile_soon_bank": "Bank details for direct payouts",
-  "profile_soon_land": "Land records"
+  "profile_soon_land": "Land records",
+  "splash_how_title": "You speak. The app listens, and answers.",
+  "splash_how_1": "Speak",
+  "splash_how_1_sub": "Ask in your language",
+  "splash_how_2": "It understands",
+  "splash_how_2_sub": "Marathi, Hindi, English",
+  "splash_how_3": "Listen",
+  "splash_how_3_sub": "No reading needed",
+  "splash_no_net": "The voice works without internet"
 }
