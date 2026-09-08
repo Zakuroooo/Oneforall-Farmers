@@ -1376,11 +1376,12 @@
   "nar_scr_talks": "This shows your ongoing talks with buyers: what each offered, what you asked, and whose turn it is now. Talks waiting on your reply appear at the top.",
   "lang_voice_who": "Whose voice?",
   "lang_voice_female": "Woman's voice",
-  "lang_voice_male": "Man's voice",
+  "lang_voice_male": "Man's voice 1",
   "lang_voice_try": "Try it",
   "lang_voice_sample_line": "Hello. Today onion is selling at two thousand and fifty four rupees per quintal.",
   "lang_voice_on": "On",
   "lang_voice_off": "Off",
   "lang_voice_auto_title": "Read every screen aloud automatically",
-  "lang_voice_auto_desc": "When this is on, the app reads each screen aloud as soon as you open it. When off, you press the Listen button yourself."
+  "lang_voice_auto_desc": "When this is on, the app reads each screen aloud as soon as you open it. When off, you press the Listen button yourself.",
+  "lang_voice_male_2": "Man's voice 2"
 }

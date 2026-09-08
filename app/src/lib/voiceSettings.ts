@@ -34,33 +34,41 @@ const VOICE_KEY = 'app.voice';
 const SPEED_KEY = 'app.voiceSpeed';
 
 /**
- * Which Sarvam voice reads the app aloud.
+ * The voices a farmer can pick from, in the order they appear in settings.
  *
- * ★ Named by who is speaking, not by a Sarvam speaker id, because the id is
- *   the server's business and it changes when the model version does. The
- *   mapping to a real speaker lives in one place (`SARVAM_SPEAKER` below) so
- *   a model bump is one edit rather than a search across screens.
- */
-export type VoiceChoice = 'female' | 'male';
-
-/**
- * Sarvam `bulbul:v3` speaker ids for each choice.
+ * ★ Data-driven rather than a hardcoded male/female pair, because there are
+ *   three of them now and there is no reason a fourth should mean touching the
+ *   screen as well as this file. `S36_LanguageSwitcher` renders whatever is in
+ *   this array.
  *
- * ★ These must come from v3's own roster, which is not the v2 one. I first
- *   guessed `anushka` / `abhilash` from the older model and Sarvam rejected
- *   both outright:
+ * ★ `speaker` values must come from the roster of whichever `bulbul` model the
+ *   server runs. I first used `anushka` / `abhilash` from **v2** and v3
+ *   rejected both outright:
  *
  *       "Speaker 'anushka' is not compatible with model bulbul:v3"
  *
- *   The v3 list is: aditya, ritu, ashutosh, priya, neha, rahul, pooja, rohan,
+ *   v3's roster: aditya, ritu, ashutosh, priya, neha, rahul, pooja, rohan,
  *   simran, kavya, amit, dev, ishita, shreya, ratan, varun, manan, sumit,
  *   roopa, kabir, aayan, shubh, advait, anand, tanya, tarun. If the model is
- *   ever bumped again, this constant is the single place to re-map.
+ *   bumped again, this array is the only place to re-map.
+ *
+ * ★ All three below were checked against the live API: each returns a
+ *   different audio stream for the same sentence, so the choice is real rather
+ *   than three labels over one voice.
  */
-export const SARVAM_SPEAKER: Record<VoiceChoice, string> = {
-  female: 'priya',
-  male: 'aditya',
-};
+export const VOICE_OPTIONS = [
+  { id: 'female', speaker: 'simran', labelKey: 'lang_voice_female' },
+  { id: 'male', speaker: 'shubh', labelKey: 'lang_voice_male' },
+  { id: 'male_2', speaker: 'rohan', labelKey: 'lang_voice_male_2' },
+] as const;
+
+export type VoiceChoice = (typeof VOICE_OPTIONS)[number]['id'];
+
+/** Lookup kept beside the array so neither can drift from the other. */
+export const SARVAM_SPEAKER: Record<VoiceChoice, string> = VOICE_OPTIONS.reduce(
+  (acc, o) => ({ ...acc, [o.id]: o.speaker }),
+  {} as Record<VoiceChoice, string>,
+);
 
 /**
  * How fast the app talks.
@@ -171,7 +179,9 @@ export async function loadVoiceSettings(): Promise<void> {
     ]);
     // Absent means "never set", which is OFF — the farmer opts in.
     autoNarrate = raw === '1';
-    voice = rawVoice === 'male' ? 'male' : 'female';
+    voice = VOICE_OPTIONS.some(o => o.id === rawVoice)
+      ? (rawVoice as VoiceChoice)
+      : 'female';
     speed = rawSpeed === 'slow' || rawSpeed === 'fast' ? rawSpeed : 'normal';
   } catch {
     autoNarrate = false;

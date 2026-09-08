@@ -11,6 +11,7 @@ import { translate, useT } from '../../lib/i18n';
 import { ListenButton } from '../../components/ui/ListenButton';
 import { speakSmart, stopSpeaking } from '../../lib/voice';
 import {
+  VOICE_OPTIONS,
   getSpeed,
   getVoice,
   isAutoNarrateOn,
@@ -275,14 +276,19 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
             </View>
           </View>
 
-          <View style={styles.voiceChoiceRow}>
-            {(['female', 'male'] as const).map(g => {
-              const picked = voiceChoice === g;
+          {/* ★ Stacked, not a 3-across row: three cards side by side on a
+              phone leaves each too narrow for its label plus a "try it", and
+              the labels are longer in Marathi than English. One per line keeps
+              every option a full-width, easily-hit target. */}
+          <View style={styles.voiceChoiceCol}>
+            {VOICE_OPTIONS.map(opt => {
+              const picked = voiceChoice === opt.id;
+              const playing = sampleLocale === `voice_${opt.id}`;
               return (
                 <TouchableOpacity
-                  key={g}
+                  key={opt.id}
                   style={[styles.voiceChoice, picked && styles.voiceChoicePicked]}
-                  onPress={() => pickVoice(g)}
+                  onPress={() => pickVoice(opt.id)}
                   accessibilityRole="radio"
                   accessibilityState={{ selected: picked }}>
                   <View style={styles.voiceChoiceTop}>
@@ -291,17 +297,19 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
                       size={16}
                       color={picked ? colors.primary : colors.onSurfaceVariant}
                     />
-                    <Text style={[styles.voiceChoiceLabel, picked && styles.voiceChoiceLabelPicked]}>
-                      {t(g === 'female' ? 'lang_voice_female' : 'lang_voice_male')}
+                    <Text
+                      style={[styles.voiceChoiceLabel, picked && styles.voiceChoiceLabelPicked]}
+                      numberOfLines={1}>
+                      {t(opt.labelKey)}
                     </Text>
-                  </View>
-                  <View style={styles.voiceTryRow}>
-                    <Icon
-                      name={sampleLocale === `voice_${g}` ? 'x-circle' : 'volume'}
-                      size={12}
-                      color={colors.primary}
-                    />
-                    <Text style={styles.voiceTryText}>{t('lang_voice_try')}</Text>
+                    <View style={styles.voiceTryRow}>
+                      <Icon
+                        name={playing ? 'x-circle' : 'volume'}
+                        size={12}
+                        color={colors.primary}
+                      />
+                      <Text style={styles.voiceTryText}>{t('lang_voice_try')}</Text>
+                    </View>
                   </View>
                 </TouchableOpacity>
               );
@@ -452,9 +460,8 @@ const styles = StyleSheet.create({
   langNameEn: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.onSurfaceVariant },
   langBadge: { paddingHorizontal: 8, paddingVertical: 2, borderRadius: radius.full },
   langBadgeText: { fontFamily: fontFamily.bold, fontSize: 10 },
-  voiceChoiceRow: { flexDirection: 'row', gap: space.sm, marginTop: space.sm },
+  voiceChoiceCol: { gap: space.xs, marginTop: space.sm },
   voiceChoice: {
-    flex: 1,
     borderWidth: 1.5,
     borderColor: colors.borderField,
     borderRadius: radius.md,
@@ -464,10 +471,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   voiceChoicePicked: { borderColor: colors.primary, borderWidth: 2, backgroundColor: colors.onPrimaryContainer },
-  voiceChoiceTop: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  voiceChoiceLabel: { fontFamily: fontFamily.semiBold, fontSize: 14, color: colors.onSurface, flexShrink: 1 },
+  voiceChoiceTop: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  voiceChoiceLabel: { fontFamily: fontFamily.semiBold, fontSize: 15, color: colors.onSurface, flex: 1 },
   voiceChoiceLabelPicked: { fontFamily: fontFamily.bold, color: colors.primary },
-  voiceTryRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 6 },
+  voiceTryRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   voiceTryText: { fontFamily: fontFamily.medium, fontSize: 12, color: colors.primary },
   togglePill: { flexDirection: 'row', alignItems: 'center', gap: 8, minHeight: touch.targetMin, paddingLeft: 8 },
   toggleWord: { fontFamily: fontFamily.bold, fontSize: 13, color: colors.onSurfaceVariant },
