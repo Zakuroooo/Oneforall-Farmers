@@ -273,7 +273,20 @@ async function ensureTtsVoice(locale: Locale): Promise<void> {
     const usable = voices.filter(
       v => v.language?.toLowerCase().startsWith(wanted.slice(0, 2)) && !v.notInstalled,
     );
-    if (usable.length === 0) return;
+    if (usable.length === 0) {
+      // ★ The device has no voice for this language. `setDefaultLanguage`
+      //   often still reports success here and then reads the text with
+      //   whatever voice it does have — which is how Marathi text ends up
+      //   spoken by an English voice, and English text by a Marathi one. That
+      //   is the "wrong language" symptom, and it lives in the *fallback*
+      //   engine, never in Sarvam.
+      //
+      //   Nothing can be done about a missing voice from inside the app, so
+      //   the honest thing is to keep the flag unset and let the next call
+      //   retry rather than caching a language the engine never really took.
+      ttsCurrentLocale = null;
+      return;
+    }
     // Highest quality first, and among equals prefer one that does not need
     // the network — the whole point of this path is that the server is gone.
     usable.sort(
