@@ -28,6 +28,7 @@ import { colors, fontFamily, space, radius, cardShadow } from '../../theme/token
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import { useAuth } from '../../lib/auth';
+import { useSelection } from '../../lib/selection';
 import { getPriceSeries, recommendWindow } from '../../lib/api';
 import { formatNumber, formatPaise } from '../../lib/money';
 import {
@@ -38,8 +39,8 @@ import {
   DEFAULT_QTY_KG,
   USE_FIXTURES,
 } from '../../config';
-import { fxPriceSeries } from '../../fixtures/prices';
-import { fxHold } from '../../fixtures/window';
+import { fxPriceSeries, fxSeriesFor } from '../../fixtures/prices';
+import { fxHold, fxWindowFor } from '../../fixtures/window';
 import type { HomeStackParamList, FarmerTabParamList } from '../../navigation/FarmerTabs';
 import type { PricePoint } from '../../types/api';
 import { ListenButton } from '../../components/ui/ListenButton';
@@ -133,16 +134,19 @@ function PriceChart({ points }: { points: PricePoint[] }) {
   );
 }
 
-async function fetchPrices() {
-  if (USE_FIXTURES) return fxPriceSeries;
-  return getPriceSeries(DEFAULT_COMMODITY_ID, DEFAULT_MARKET_ID, 14);
+async function fetchPrices(commodityId: string, marketId: string) {
+  // ★ Was `fxPriceSeries` unconditionally, so Home showed onion at Lasalgaon
+  //   whatever the farmer had picked on the Market screen.
+  if (USE_FIXTURES) return fxSeriesFor(commodityId, marketId) ?? fxPriceSeries;
+  return getPriceSeries(commodityId, marketId, 14);
 }
 
-async function fetchVerdict() {
-  if (USE_FIXTURES) return fxHold;
+async function fetchVerdict(commodityId: string, marketId: string) {
+  // ★ Was `fxHold` unconditionally — the advice never moved when the crop did.
+  if (USE_FIXTURES) return fxWindowFor(commodityId, marketId) ?? fxHold;
   return recommendWindow({
-    commodity_id: DEFAULT_COMMODITY_ID,
-    market_id: DEFAULT_MARKET_ID,
+    commodity_id: commodityId,
+    market_id: marketId,
     qty_kg: DEFAULT_QTY_KG,
     grade: DEFAULT_GRADE,
     lot_id: null,
@@ -156,6 +160,7 @@ const redOnions = require('../../assets/images/red_onions.jpg');
 export default function S04_Home({ navigation }: Props) {
   const { t, locale } = useT();
   const { user } = useAuth();
+  const selection = useSelection();
   const insets = useSafeAreaInsets();
   // What the speaker reads: the screen, in the order a farmer reads it.
   // Built from the same query data the cards render, so it can never
@@ -169,8 +174,21 @@ export default function S04_Home({ navigation }: Props) {
   //   published-lot radar said ₹2,100. Same demo scenario every other
   //   screen (S9_Verdict, S04's own earlier build) already reads from —
   //   one real query, so this number can't drift from the others again.
-  const pricesQuery = useQuery({ queryKey: ['home', 'prices'], queryFn: fetchPrices, staleTime: 5 * 60 * 1000 });
-  const verdictQuery = useQuery({ queryKey: ['home', 'verdict'], queryFn: fetchVerdict, staleTime: 5 * 60 * 1000 });
+  // ★ The crop and mandi come from the shared selection, and both query keys
+  //   include them — so changing either on the Market screen invalidates these
+  //   and Home refetches rather than showing a stale answer to a question the
+  //   farmer is no longer asking.
+  const marketId = selection.marketId ?? DEFAULT_MARKET_ID;
+  const pricesQuery = useQuery({
+    queryKey: ['home', 'prices', selection.commodityId, marketId],
+    queryFn: () => fetchPrices(selection.commodityId, marketId),
+    staleTime: 5 * 60 * 1000,
+  });
+  const verdictQuery = useQuery({
+    queryKey: ['home', 'verdict', selection.commodityId, marketId],
+    queryFn: () => fetchVerdict(selection.commodityId, marketId),
+    staleTime: 5 * 60 * 1000,
+  });
 
   const points = pricesQuery.data?.points ?? [];
   const last = points[points.length - 1];

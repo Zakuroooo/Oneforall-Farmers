@@ -36,7 +36,7 @@
  * ★ ZERO EMOJIS — every glyph is the shared SVG `Icon`.
  */
 
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ScrollView,
   StatusBar,
@@ -47,6 +47,7 @@ import {
 } from 'react-native';
 import Svg, { Circle, Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 import { useQuery } from '@tanstack/react-query';
+import { useSelection } from '../../lib/selection';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import { colors, fontFamily, radius, space, type as typography } from '../../theme/tokens';
@@ -208,11 +209,14 @@ export default function PricesIndex({ navigation }: Props) {
    *   the default here, not the whole answer, because the mandi a farmer sells
    *   at is a choice and his district is only where he starts from.
    */
-  const [commodityId, setCommodityId] = useState<string>(DEFAULT_COMMODITY_ID);
-  const [districtId, setDistrictId] = useState<string>(
-    user?.district_id ?? DEFAULT_DISTRICT_ID,
-  );
-  const [pickedMarketId, setPickedMarketId] = useState<string | null>(null);
+  // ★ Crop, district and mandi now live in the shared selection rather than
+  //   this screen's own state. They used to be local `useState`, so picking
+  //   tomato here moved this screen's chart and left Home advising about
+  //   onion — the two screens disagreeing about what the farmer had asked.
+  const selection = useSelection();
+  const commodityId = selection.commodityId;
+  const districtId = selection.districtId;
+  const pickedMarketId = selection.marketId;
 
   const commodities = useQuery({ queryKey: ['ref', 'commodities'], queryFn: fetchCommodities });
   const districts = useQuery({ queryKey: ['ref', 'districts'], queryFn: fetchDistricts });
@@ -229,6 +233,14 @@ export default function PricesIndex({ navigation }: Props) {
     pickedMarketId && marketList.some(m => m.id === pickedMarketId)
       ? pickedMarketId
       : marketList[0]?.id ?? null;
+
+  // ★ When the district changes, `setDistrict` clears the mandi; the first one
+  //   of the new district then becomes the answer above. Writing it back keeps
+  //   Home asking about the same mandi this screen is showing, instead of
+  //   falling back to the demo default.
+  useEffect(() => {
+    if (marketId && marketId !== selection.marketId) selection.setMarket(marketId);
+  }, [marketId, selection]);
 
   const series = useQuery({
     queryKey: ['prices', 'series', '180', commodityId, marketId],
@@ -400,20 +412,16 @@ export default function PricesIndex({ navigation }: Props) {
           icon="leaf"
           options={commodityOptions}
           selectedId={commodityId}
-          onSelect={setCommodityId}
+          onSelect={selection.setCommodity}
         />
         <Picker
           label={t('mkt_pick_district')}
           icon="map-pin"
           options={districtOptions}
           selectedId={districtId}
-          onSelect={id => {
-            setDistrictId(id);
-            // The mandi belongs to the old district; let the new district's
-            // first yard take over rather than querying a pair that does not
-            // exist.
-            setPickedMarketId(null);
-          }}
+          // `setDistrict` clears the mandi itself — it belongs to the old
+          // district, and the new district's first yard takes over above.
+          onSelect={selection.setDistrict}
         />
       </View>
 
@@ -426,7 +434,7 @@ export default function PricesIndex({ navigation }: Props) {
             icon="building"
             options={marketOptions}
             selectedId={marketId}
-            onSelect={setPickedMarketId}
+            onSelect={selection.setMarket}
           />
         </View>
       ) : null}

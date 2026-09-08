@@ -1,7 +1,7 @@
 /**
  * Providers, in the order they have to be in.
  *
- *   SafeAreaProvider → QueryClientProvider → I18nProvider → AuthProvider
+ *   SafeAreaProvider → QueryClientProvider → I18nProvider → SelectionProvider → AuthProvider
  *     → NavigationContainer → RootNavigator
  *
  * `AuthProvider` sits *inside* `QueryClientProvider` because its boot path calls
@@ -19,6 +19,7 @@ import Sound from 'react-native-sound';
 import { ApiError } from './src/lib/api';
 import { AuthProvider } from './src/lib/auth';
 import { I18nProvider } from './src/lib/i18n';
+import { SelectionProvider } from './src/lib/selection';
 import { hydrateQueryClient, persistQueryClient } from './src/lib/offline';
 import { RootNavigator } from './src/navigation/RootNavigator';
 import { CACHE_STALE_MS } from './src/config';
@@ -86,12 +87,14 @@ export default function App() {
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>
         <I18nProvider>
-          <AuthProvider>
+          <SelectionProvider>
+            <AuthProvider>
             <NavigationContainer>
               <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
               <RootNavigator />
             </NavigationContainer>
-          </AuthProvider>
+            </AuthProvider>
+          </SelectionProvider>
         </I18nProvider>
       </QueryClientProvider>
     </SafeAreaProvider>

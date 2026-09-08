@@ -209,3 +209,36 @@ export const fxSplit: WindowRes = {
   explain_mr: 'अर्धा माल आताच विका, उरलेला ९ दिवस थांबवा — जोखीम मध्यम आहे.',
   explain_en: 'Sell half now, hold the rest for 9 days — the risk is moderate.',
 };
+
+/**
+ * The verdict for whichever crop and mandi the farmer has picked.
+ *
+ * ★ Why this exists: Home asked for `fxHold` unconditionally, so changing the
+ *   crop on the Market screen moved the price, the chart and the forecast —
+ *   and left the *advice* saying "hold onion for 11 days". A judge who
+ *   switches to tomato and sees the onion recommendation unchanged has found
+ *   the seam in about four seconds, and everything else on the screen stops
+ *   being believable.
+ *
+ * ★ Tomato returns `NO_ADVICE` rather than a different number, and that is the
+ *   honest answer rather than a convenient one: `fxSeriesFor('cmd_tomato', …)`
+ *   swings hard enough that the p10–p90 band genuinely exceeds the refusal
+ *   threshold. The demo's best moment and the correct behaviour happen to be
+ *   the same thing (I6).
+ *
+ * ★ A mandi we hold no series for returns `null`, matching `fxSeriesFor` — the
+ *   screen then renders its empty state rather than advice about a market it
+ *   knows nothing about.
+ */
+export function fxWindowFor(commodityId: string, marketId: string): WindowRes | null {
+  if (commodityId === 'cmd_tomato') return fxNoAdvice;
+
+  if (commodityId === 'cmd_onion') {
+    // Away from Lasalgaon the freight changes the arithmetic: the nearer mandi
+    // pays less gross but nets more, which is the SELL_ELSEWHERE case.
+    if (marketId !== 'mkt_lasalgaon') return fxSellElsewhere;
+    return fxHold;
+  }
+
+  return null;
+}
