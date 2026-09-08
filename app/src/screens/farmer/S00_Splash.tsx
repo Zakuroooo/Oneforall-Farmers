@@ -22,7 +22,6 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { colors, fontFamily, space, radius, touch } from '../../theme/tokens';
 import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
-import { useAuth } from '../../lib/auth';
 import type { Locale } from '../../types/api';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
 import { demoTodayRange } from '../../lib/demoPrice';
@@ -36,7 +35,6 @@ const mandiWarehouse = require('../../assets/images/mandi_warehouse.jpg');
 
 export default function S00_Splash({ navigation }: Props) {
   const { t, locale, setLocale } = useT();
-  const { hasLocale } = useAuth();
   const [selectedLang, setSelectedLang] = useState<Locale>(locale);
 
   const handleLangSwitch = (lang: Locale) => {
@@ -184,16 +182,24 @@ export default function S00_Splash({ navigation }: Props) {
         </View>
 
         {/* CTA button
-            ★ Where this goes is the branch `AuthStack` used to make with
-              `initialRouteName`, moved here so the stack keeps a real
-              history. A farmer who has never chosen a language needs to
-              choose one; a returning farmer does not, and goes straight to
-              the phone number. Either way splash stays underneath, so the
-              back arrow on the next screen has somewhere to land. */}
+            ★ "Get started" always runs the whole journey: language, then why
+              this app exists, then the phone number.
+
+              It used to skip to the phone screen whenever a language was
+              already saved — which is true of any device the app has been
+              opened on once, so the two onboarding screens became unreachable
+              in practice. That is wrong twice over: they are where a farmer
+              learns what the product is, and they are the part of the flow we
+              most need to be able to show.
+
+              A returning farmer is not made to sit through it: the "log in
+              with a one-time code" link below goes straight to the phone
+              screen. Starting fresh and coming back are different intents and
+              now have different buttons, instead of one button guessing. */}
         <TouchableOpacity
           style={styles.ctaBtn}
           activeOpacity={0.85}
-          onPress={() => navigation.navigate(hasLocale ? 'S2_Phone' : 'S1_Language')}>
+          onPress={() => navigation.navigate('S1_Language')}>
           <Text style={styles.ctaText}>{t('splash_get_started')}</Text>
           <Icon name="arrow-right" size={20} color={colors.onPrimary} />
         </TouchableOpacity>
