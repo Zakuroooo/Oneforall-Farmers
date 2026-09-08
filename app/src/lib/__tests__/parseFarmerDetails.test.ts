@@ -64,6 +64,34 @@ describe('parseFarmerDetails', () => {
     expect(r.village).toBeNull();
   });
 
+  /**
+   * ★ What Sarvam actually returns. Verified by a real round trip: the app's
+   *   own TTS spoke the sentence, the WAV went back through /voice/transcribe,
+   *   and these are the transcripts that came out. Every one of them broke the
+   *   parser at some point.
+   */
+  describe('real Sarvam transcripts', () => {
+    const cases: Array<[string, string, string | null, string | null]> = [
+      // Marathi, prefix order with commas — the shape that found the bug.
+      ['माझे नाव रामभाऊ पाटील, जिल्हा नाशिक, गाव निफाड.', 'रामभाऊ पाटील', 'Nashik', 'निफाड'],
+      // Marathi, prefix order, no punctuation at all.
+      ['माझे नाव रामभाऊ पाटील जिल्हा नाशिक गाव निफाड', 'रामभाऊ पाटील', 'Nashik', 'निफाड'],
+      // Marathi, postfix order.
+      ['रामभाऊ पाटील, नाशिक जिल्हा, निफाड गाव', 'रामभाऊ पाटील', 'Nashik', 'निफाड'],
+      // Hindi — 'गाँव' with chandrabindu, not the anusvara spelling.
+      ['मेरा नाम प्रणय सरकार है, जिला पुणे, गाँव कोकमठाण', 'प्रणय सरकार', 'Pune', 'कोकमठाण'],
+      // English, both word orders.
+      ['My name is Pranay Sarkar, district Pune, village Kokamthan', 'Pranay Sarkar', 'Pune', 'Kokamthan'],
+      ['Pranay Sarkar district Pune village Kokamthan', 'Pranay Sarkar', 'Pune', 'Kokamthan'],
+    ];
+    it.each(cases)('parses %s', (input, name, district, village) => {
+      const r = parseFarmerDetails(input, fxDistricts);
+      expect(r.name).toBe(name);
+      expect(r.districtId).toBe(fxDistricts.find(d => d.name === district)?.id);
+      expect(r.village).toBe(village);
+    });
+  });
+
   it('returns all nulls for an empty transcript', () => {
     expect(parseFarmerDetails('   ', fxDistricts)).toEqual({
       name: null,

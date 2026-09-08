@@ -48,9 +48,10 @@ export default function S00_Splash({ navigation }: Props) {
     <View style={styles.root}>
       <StatusBar barStyle="dark-content" backgroundColor={colors.background} />
 
-      {/* Ambient glow effects */}
-      <View style={styles.glowTopLeft} />
-      <View style={styles.glowMidRight} />
+      {/* ★ Two large tinted circles floated behind this screen as "ambient
+          glow". They carried no meaning, cost two extra views on the first
+          frame, and are the visual signature of a generated layout rather
+          than a designed one. The parchment ground is the background. */}
 
       <ScrollView
         style={styles.scroll}
@@ -58,11 +59,14 @@ export default function S00_Splash({ navigation }: Props) {
         showsVerticalScrollIndicator={false}>
 
         {/* ── 1. Top ribbon ─────────────────────────────────── */}
+        {/* ★ A pulsing green dot beside "LASALGAON DIRECT MANDI ONLINE" sat
+            here. It was the first thing on the first screen and it was pure
+            chrome — nothing is live, nothing connects to Lasalgaon in real
+            time, and a status light that reports no status is decoration
+            pretending to be information. It also reads as marketing rather
+            than as something written for a farmer. Removed; the speaker now
+            has the ribbon to itself. */}
         <View style={styles.topRibbon}>
-          <View style={styles.liveChip}>
-            <View style={styles.liveDot} />
-            <Text style={styles.liveText}>{t('splash_live_mandi')}</Text>
-          </View>
           {/* ★ This pill had no `onPress` at all — the very first speaker a
               farmer meets did nothing when tapped. `ListenButton` owns the
               behaviour so it cannot go dead again by copy-paste, and it reads
@@ -235,58 +239,17 @@ const styles = StyleSheet.create({
   },
 
   // Ambient glow
-  glowTopLeft: {
-    position: 'absolute',
-    top: -96,
-    left: -80,
-    width: 384,
-    height: 384,
-    borderRadius: 192,
-    backgroundColor: 'rgba(194,65,12,0.06)',
-  },
-  glowMidRight: {
-    position: 'absolute',
-    top: 250,
-    right: -96,
-    width: 320,
-    height: 320,
-    borderRadius: 160,
-    backgroundColor: 'rgba(155,47,0,0.04)',
-  },
-
   // Top ribbon
   topRibbon: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // Only the speaker lives here now that the "live mandi" chip is gone;
+    // `space-between` would strand it on the left.
+    justifyContent: 'flex-end',
     alignItems: 'center',
     paddingHorizontal: space.md,
     paddingTop: space.xl + 20,
     paddingBottom: space.xs,
     width: '100%',
-  },
-  liveChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: radius.full,
-    backgroundColor: colors.surfaceContainer,
-    borderWidth: 1,
-    borderColor: colors.outlineVariant,
-  },
-  liveDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: colors.tertiary,
-    marginRight: 6,
-  },
-  liveText: {
-    fontFamily: fontFamily.bold,
-    fontSize: 10,
-    letterSpacing: 0.5,
-    color: colors.tertiary,
-    textTransform: 'uppercase',
   },
   listenPill: {
     flexDirection: 'row',

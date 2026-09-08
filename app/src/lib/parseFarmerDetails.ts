@@ -32,7 +32,11 @@ function normalize(s: string): string {
  * part of the name — in all three languages, plus the bare English forms.
  * "Niphad village" and "निफाड गाव" both have to work.
  */
-const VILLAGE_MARKERS = ['village', 'gaon', 'gav', 'गाव', 'गाव्', 'गांव', 'ता', 'taluka'];
+// ★ Both nasal forms of the Hindi word are here on purpose: 'गांव' uses
+//   anusvara (U+0902) and 'गाँव' chandrabindu (U+0901). They look nearly
+//   identical and are different codepoints — Sarvam returns the chandrabindu
+//   form, which the anusvara spelling silently failed to match.
+const VILLAGE_MARKERS = ['village', 'gaon', 'gav', 'गाव', 'गाव्', 'गांव', 'गाँव', 'ता', 'taluka'];
 const DISTRICT_MARKERS = ['district', 'jila', 'zilla', 'जिल्हा', 'जिला', 'ज़िला'];
 
 /**
@@ -146,7 +150,15 @@ export function parseFarmerDetails(
   const clean = (s: string): string | null => {
     const out = s
       .replace(/[.,،!?।]/g, ' ')
-      .replace(/^\s*(?:आणि|और|and|is|मी|माझं|माझे|my name is|name is)\s+/i, '')
+      // ★ Sarvam returns the whole spoken sentence, so a farmer who says
+      //   "माझे नाव रामभाऊ" hands us the words "my name" as part of the name.
+      //   Stripped in one pass, longest opener first.
+      .replace(
+        /^\s*(?:माझे\s+नाव|माझं\s+नाव|मेरा\s+नाम|my\s+name\s+is|name\s+is|आणि|और|and|is|मी|नाव|नाम)\s+/i,
+        '',
+      )
+      // Hindi sentences end "... है"; it is not part of anyone's name.
+      .replace(/\s+(?:है|आहे)\s*$/i, '')
       .replace(/\s+/g, ' ')
       .trim();
     return out.length > 0 ? out : null;
@@ -185,7 +197,7 @@ export function parseFarmerDetails(
      *   his district in one unbroken run; taking the whole run would swallow
      *   the name into the district. A district or village is one word here.
      */
-    const takeBefore = (): { value: string | null; start: number } => {
+    const takeBefore = (): { value: string | null; start: number; end: number } => {
       const floor = Math.max(prevBreak(hit.start), consumedUpTo);
       const chunk = raw.slice(floor, hit.start);
       const trimmed = chunk.replace(/[\s,،।]+$/, '');
@@ -195,35 +207,65 @@ export function parseFarmerDetails(
         trimmed.lastIndexOf('।'),
       );
       const start = floor + lastGap + 1;
-      return { value: clean(raw.slice(start, hit.start)), start };
+      return { value: clean(raw.slice(start, hit.start)), start, end: hit.end };
     };
 
-    // ★ A marker takes the words **after** it in English word order ("district
-    //   Pune") and the words **before** it in Marathi and Hindi ("नाशिक
-    //   जिल्हा"). Devanagari is unambiguous, so it goes straight to before;
-    //   Latin tries after first and falls back, because English speakers say
-    //   it both ways.
+    /** The words immediately after the marker, bounded by the next marker or
+     *  the next comma. */
+    const takeAfter = (): { value: string | null; start: number; end: number } => {
+      const end = Math.min(next ? next.start : raw.length, nextBreak(hit.end));
+      return { value: clean(raw.slice(hit.end, end)), start: hit.start, end };
+    };
+
+    /**
+     * ★ Both word orders occur, in every language, and the transcriber returns
+     *   whichever was said. English speakers say "district Pune" and "Nashik
+     *   district"; Marathi says "जिल्हा नाशिक" and "नाशिक जिल्हा".
+     *
+     *   I first assumed Devanagari was always postfix. It is not — Sarvam
+     *   returned "माझे नाव रामभाऊ पाटील, जिल्हा नाशिक, गाव निफाड", which is
+     *   prefix, and the parser found no district at all.
+     *
+     *   So try both sides and let the data decide: for a district, whichever
+     *   side names a district we actually carry wins. That is a fact we can
+     *   check, rather than a grammar rule we guessed.
+     */
+    const after = takeAfter();
+    const before = takeBefore();
+
     let value: string | null;
     let valueStart: number;
+    // ★ Where this marker's claim ends. Without it, "जिल्हा नाशिक गाव निफाड"
+    //   let `गाव` reach back and take "नाशिक" — a word `जिल्हा` had already
+    //   claimed — so the village came out as the district's name.
+    let valueEnd: number;
 
-    if (hit.postfix) {
-      const b = takeBefore();
-      value = b.value;
-      valueStart = b.start;
+    if (hit.field === 'district') {
+      const known = (v: string | null) =>
+        v !== null &&
+        districts.some(d => {
+          const n = normalize(v);
+          return n.includes(normalize(d.name_mr)) || n.includes(normalize(d.name));
+        });
+      if (known(after.value)) ({ value, start: valueStart, end: valueEnd } = after);
+      else if (known(before.value)) ({ value, start: valueStart, end: valueEnd } = before);
+      // Neither side names a district we carry. Prefer the postfix reading so
+      // the unknown word is at least not left inside the farmer's name.
+      else if (before.value !== null) ({ value, start: valueStart, end: valueEnd } = before);
+      else ({ value, start: valueStart, end: valueEnd } = after);
     } else {
-      const afterEnd = Math.min(next ? next.start : raw.length, nextBreak(hit.end));
-      const after = clean(raw.slice(hit.end, afterEnd));
-      if (after !== null) {
-        value = after;
-        valueStart = hit.start;
-      } else {
-        const b = takeBefore();
-        value = b.value;
-        valueStart = b.start;
-      }
+      // A village has no list to check against, so prefer the side that has
+      // words at all, and the marker's own script as the tie-break.
+      // A postfix marker normally looks back — unless the word behind it has
+      // already been claimed, which is what happens in prefix word order.
+      const backTaken = before.start < consumedUpTo;
+      const preferred = hit.postfix && !backTaken ? before : after;
+      const other = hit.postfix && !backTaken ? after : before;
+      ({ value, start: valueStart, end: valueEnd } =
+        preferred.value !== null ? preferred : other);
     }
 
-    consumedUpTo = Math.max(consumedUpTo, hit.end);
+    consumedUpTo = Math.max(consumedUpTo, valueEnd, hit.end);
     if (value === null) continue;
     earliestValue = Math.min(earliestValue, valueStart);
 
