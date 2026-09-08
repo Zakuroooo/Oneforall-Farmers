@@ -23,7 +23,6 @@ import { Icon } from '../../components/ui/Icon';
 import { useT } from '../../lib/i18n';
 import type { Locale } from '../../types/api';
 import type { AuthStackParamList } from '../../navigation/AuthStack';
-import { demoTodayRange } from '../../lib/demoPrice';
 import { ListenButton } from '../../components/ui/ListenButton';
 import { Logo } from '../../components/ui/Logo';
 import { SpeakingFace } from '../../components/ui/SpeakingFace';
@@ -70,9 +69,18 @@ export default function S00_Splash({ navigation }: Props) {
               farmer meets did nothing when tapped. `ListenButton` owns the
               behaviour so it cannot go dead again by copy-paste, and it reads
               the screen: the product name, the tagline, and today's price. */}
-          <ListenButton
-            text={`${t('splash_app_name')}. ${t('splash_tagline')}. ${t('splash_today_price')}: ${demoTodayRange(locale)}.`}
-          />
+          {/* ★ It was reading the app name, the tagline and *today's onion
+              price* — a line left pointing at the price strip after that strip
+              was deleted, so the first thing a farmer heard was a number no
+              longer on the screen.
+
+              It now speaks a written summary of what this screen offers
+              rather than reading its labels back: what the app decides, that
+              he can talk to it in his own language, that he need not read, and
+              which button to press. `large` because this is the first control
+              a farmer meets and it has to be findable without being looked
+              for. */}
+          <ListenButton text={t('splash_narration')} large />
         </View>
 
         {/* ── 2. App emblem ─────────────────────────────────── */}

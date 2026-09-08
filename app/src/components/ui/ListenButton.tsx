@@ -25,7 +25,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
-import { colors, fontFamily, radius } from '../../theme/tokens';
+import { colors, fontFamily, radius, touch } from '../../theme/tokens';
 import { Icon } from './Icon';
 import { useT } from '../../lib/i18n';
 import {
@@ -36,7 +36,17 @@ import {
   subscribeSpeech,
 } from '../../lib/voice';
 
-export function ListenButton({ text, label }: { text: string; label?: string }) {
+export function ListenButton({
+  text,
+  label,
+  large = false,
+}: {
+  text: string;
+  label?: string;
+  /** A bigger target and bigger text. For the first speaker a farmer meets,
+   *  which has to be findable without being looked for. */
+  large?: boolean;
+}) {
   const { t, locale } = useT();
   const [speaking, setSpeaking] = useState(false);
 
@@ -141,7 +151,7 @@ export function ListenButton({ text, label }: { text: string; label?: string }) 
 
   return (
     <TouchableOpacity
-      style={[styles.btn, speaking && styles.btnActive]}
+      style={[styles.btn, large && styles.btnLarge, speaking && styles.btnActive]}
       onPress={onPress}
       accessibilityRole="button"
       accessibilityState={{ selected: speaking }}
@@ -152,10 +162,10 @@ export function ListenButton({ text, label }: { text: string; label?: string }) 
           mute it. The icon now says what the tap will do. */}
       <Icon
         name={speaking ? 'x-circle' : 'volume'}
-        size={14}
+        size={large ? 20 : 14}
         color={speaking ? colors.onPrimary : colors.primary}
       />
-      <Text style={[styles.label, speaking && styles.labelActive]}>
+      <Text style={[styles.label, large && styles.labelLarge, speaking && styles.labelActive]}>
         {speaking ? t('listening_button') : t('splash_listen')}
       </Text>
     </TouchableOpacity>
@@ -175,7 +185,19 @@ const styles = StyleSheet.create({
     borderColor: colors.outlineVariant,
     flexShrink: 0,
   },
+  // ★ Comfortably past the 56dp touch floor, with a brand-tinted ground so it
+  //   reads as the primary affordance on the screen rather than chrome.
+  btnLarge: {
+    gap: 8,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    minHeight: touch.targetMin,
+    backgroundColor: colors.onPrimaryContainer,
+    borderColor: colors.primary,
+    borderWidth: 1.5,
+  },
   btnActive: { backgroundColor: colors.primaryContainer, borderColor: colors.primaryContainer },
   label: { fontFamily: fontFamily.bold, fontSize: 11, color: colors.primary },
+  labelLarge: { fontSize: 16 },
   labelActive: { color: colors.onPrimary },
 });
