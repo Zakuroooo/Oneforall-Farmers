@@ -137,8 +137,23 @@ export default function S03_Profile({ navigation }: Props) {
     setError(null);
     try {
       const trimmedVillage = village.trim();
+      // ★ The fixture path used to return `fxAuthRegistered` verbatim, which
+      //   threw away everything the farmer had just typed — he entered his own
+      //   name, district and village, and every screen afterwards greeted the
+      //   fixture's name instead. Carry his details onto the fixture response
+      //   so the demo shows the person actually using it.
       const res = USE_FIXTURES
-        ? fxAuthRegistered
+        ? {
+            ...fxAuthRegistered,
+            user: {
+              ...fxAuthRegistered.user,
+              name: name.trim() || fxAuthRegistered.user.name,
+              phone: pending.phone,
+              role: pending.role,
+              locale,
+              district_id: districtId!,
+            },
+          }
         : await register({
             phone: pending.phone,
             code: pending.code,

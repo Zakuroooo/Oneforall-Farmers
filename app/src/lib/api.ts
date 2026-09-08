@@ -50,7 +50,11 @@ import type {
 } from '../types/api';
 
 const TOKEN_KEY = 'auth.token';
-const USER_KEY = 'auth.user';
+// ★ Versioned. The cached user survives reinstalls of the JS bundle, so a
+//   farmer who signed in before a fixture or shape change keeps the *old*
+//   record forever — which is why the app kept greeting "Fixture Farmer" long
+//   after that name was changed. Bumping the suffix retires the stale copy.
+const USER_KEY = 'auth.user.v2';
 
 /**
  * Phase 1 stores the JWT in AsyncStorage, and we say so out loud rather than
