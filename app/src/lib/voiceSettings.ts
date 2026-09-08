@@ -14,10 +14,17 @@
  *   rate applies to the on-device voice immediately, and the pace is sent to
  *   the server for the Sarvam voice.
  *
- * ★ `autoNarrate` is read by every screen that speaks itself on arrival. It
- *   defaults to **on**: a farmer who cannot read gains nothing from an app
- *   that stays silent until he finds the speaker icon, and the one who can
- *   read will turn it off once.
+ * ★ `autoNarrate` defaults to **off**, and that is a reversal.
+ *
+ *   I shipped it on, reasoning that a farmer who cannot read gains nothing
+ *   from an app that stays silent until he finds the speaker icon. In use it
+ *   was intrusive: the phone starts talking the moment Home appears, before
+ *   you have looked at anything, and it talks again every time you come back
+ *   to the screen. Nobody wants that, farmer or not — and a demo where the
+ *   phone starts announcing itself unprompted is worse than one that waits.
+ *
+ *   The speaker button is the way in. This setting stays because it is a real
+ *   preference, but it is opt-in now.
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -37,19 +44,22 @@ const SPEED_KEY = 'app.voiceSpeed';
 export type VoiceChoice = 'female' | 'male';
 
 /**
- * Sarvam `bulbul` speaker ids for each choice.
+ * Sarvam `bulbul:v3` speaker ids for each choice.
  *
- * ★ **These do not take effect yet.** `POST /voice/narrate` currently accepts
- *   only `{ text, locale }`; the speaker is a single server-wide setting
- *   (`SARVAM_TTS_SPEAKER`), so every farmer hears the same voice regardless of
- *   what he picks here. The app sends the field anyway — FastAPI ignores an
- *   unknown key rather than erroring — so the moment the route accepts it,
- *   this starts working with no client change. Filed for Akash in
- *   `docs/BLOCKERS.md`.
+ * ★ These must come from v3's own roster, which is not the v2 one. I first
+ *   guessed `anushka` / `abhilash` from the older model and Sarvam rejected
+ *   both outright:
+ *
+ *       "Speaker 'anushka' is not compatible with model bulbul:v3"
+ *
+ *   The v3 list is: aditya, ritu, ashutosh, priya, neha, rahul, pooja, rohan,
+ *   simran, kavya, amit, dev, ishita, shreya, ratan, varun, manan, sumit,
+ *   roopa, kabir, aayan, shubh, advait, anand, tanya, tarun. If the model is
+ *   ever bumped again, this constant is the single place to re-map.
  */
 export const SARVAM_SPEAKER: Record<VoiceChoice, string> = {
-  female: 'anushka',
-  male: 'abhilash',
+  female: 'priya',
+  male: 'aditya',
 };
 
 /**
@@ -60,28 +70,35 @@ export const SARVAM_SPEAKER: Record<VoiceChoice, string> = {
  *   takes a `pace`. The tabs were dead because nothing was wired to them, not
  *   because the capability was missing. They are back, and real.
  *
- * ★ **Normal here is slower than Android's default.** The stock rate reads a
- *   long Marathi sentence about market prices too fast to follow if you are
- *   hearing the numbers rather than reading them.
+ * ★ **Normal means the engine's normal.** I first shifted every rate down a
+ *   notch on the theory that a slower read is easier to follow by ear. On the
+ *   device it was simply draggy, and the fallback voice became the most
+ *   irritating thing in the app. A farmer who wants it slower has the slow tab.
  */
 export type VoiceSpeed = 'slow' | 'normal' | 'fast';
 
-/**
- * `react-native-tts` rate values. On Android the library maps roughly 0.5 to
- * the engine's normal speed; these are deliberately shifted down one notch so
- * "normal" is already gentle and "slow" is genuinely slow.
- */
+/** `react-native-tts` rate values; on Android 0.5 is the engine's own normal. */
 export const TTS_RATE: Record<VoiceSpeed, number> = {
-  slow: 0.30,
-  normal: 0.42,
-  fast: 0.55,
+  slow: 0.40,
+  // ★ 0.5 is the engine's own normal on Android. I previously set this to
+  //   0.42 thinking a slower read would be easier to follow; on the device it
+  //   was just draggy and irritating. Normal means normal — a farmer who wants
+  //   it slower has the slow tab.
+  normal: 0.5,
+  fast: 0.62,
 };
 
-/** Sarvam `pace` (1.0 = as trained). Same intent as `TTS_RATE`. */
+/**
+ * Sarvam `pace` — 1.0 is the voice as trained.
+ *
+ * ★ Normal is a true 1.0, not a slowed-down 0.9. The server voice at its own
+ *   natural pace is the one people actually want to listen to; anything below
+ *   it reads as sluggish rather than clear.
+ */
 export const SARVAM_PACE: Record<VoiceSpeed, number> = {
-  slow: 0.75,
-  normal: 0.9,
-  fast: 1.1,
+  slow: 0.6,
+  normal: 1.0,
+  fast: 1.15,
 };
 
 let voice: VoiceChoice = 'female';
@@ -128,7 +145,7 @@ export async function setVoice(next: VoiceChoice): Promise<void> {
 /** In-memory mirror so a screen mounting can decide synchronously, before the
  *  AsyncStorage read resolves — otherwise the first screen of the session
  *  always misses its own narration. Seeded by `loadVoiceSettings()` at boot. */
-let autoNarrate = true;
+let autoNarrate = false;
 
 export function isAutoNarrateOn(): boolean {
   return autoNarrate;
@@ -152,12 +169,12 @@ export async function loadVoiceSettings(): Promise<void> {
       AsyncStorage.getItem(VOICE_KEY),
       AsyncStorage.getItem(SPEED_KEY),
     ]);
-    // Absent means "never set", which is on — not off.
-    autoNarrate = raw === null ? true : raw === '1';
+    // Absent means "never set", which is OFF — the farmer opts in.
+    autoNarrate = raw === '1';
     voice = rawVoice === 'male' ? 'male' : 'female';
     speed = rawSpeed === 'slow' || rawSpeed === 'fast' ? rawSpeed : 'normal';
   } catch {
-    autoNarrate = true;
+    autoNarrate = false;
     voice = 'female';
     speed = 'normal';
   }

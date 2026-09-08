@@ -263,13 +263,10 @@ export default function S36_LanguageSwitcher({ navigation }: any) {
               farmer choosing a voice should hear both rather than read the
               words "male" and "female".
 
-            ★ **Honest about what this does today.** `POST /voice/narrate`
-              takes only `{ text, locale }` and the Sarvam speaker is a single
-              server-wide setting, so the choice is stored and sent but every
-              farmer still hears the server's one voice. Filed for Akash in
-              BLOCKERS. The control is built now so nothing on the client has
-              to change when the route accepts a speaker — but see the note
-              under it: it says so on screen rather than pretending. */}
+            ★ This is live now. `/voice/narrate` accepts a per-request
+              `speaker` and `pace`, so picking a voice really changes who
+              reads the app out — verified against Sarvam with two different
+              audio streams coming back for the same sentence. */}
         <View style={styles.voiceSection}>
           <View style={styles.voiceSectionHeader}>
             <Icon name="volume" size={16} color={colors.primary} />

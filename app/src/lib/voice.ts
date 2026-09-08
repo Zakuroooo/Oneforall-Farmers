@@ -646,16 +646,93 @@ function canPlaySarvam(): boolean {
   return sarvamPlayable;
 }
 
+/**
+ * Sarvam rejects any single input over 500 characters:
+ *
+ *     "inputs.0: String should have at most 500 characters"
+ *
+ * ★ This is the bug that made the server voice look broken. The narration used
+ *   to be a handful of "label: value" fragments and fitted easily; once it
+ *   became a real explanation — price, advice, reason, gain, risk, cost, next
+ *   step — it blew past 500, Sarvam 400'd, the API turned that into a 502, and
+ *   `speakSmart` quietly fell back to the device engine. The symptom on the
+ *   phone was "the server voice stopped working", with nothing in the app's own
+ *   logs to say why.
+ *
+ * 480 rather than 500 leaves room for the sentence-boundary trim below.
+ */
+const SARVAM_MAX_CHARS = 480;
+
+/**
+ * Splits narration into pieces Sarvam will accept, breaking at sentence ends
+ * so each chunk is a whole thought.
+ *
+ * ★ Boundaries include the Devanagari danda (`।`) as well as the full stop —
+ *   Marathi and Hindi narration uses both, and splitting only on `.` would
+ *   hand back one oversized chunk for a paragraph written with dandas.
+ */
+export function chunkForSarvam(text: string, max: number = SARVAM_MAX_CHARS): string[] {
+  const trimmed = text.trim();
+  if (trimmed.length <= max) return [trimmed];
+
+  // Keep the terminator attached to the sentence it ends.
+  const sentences = trimmed.match(/[^.।?!]+[.।?!]*\s*/g) ?? [trimmed];
+  const out: string[] = [];
+  let current = '';
+
+  for (const s of sentences) {
+    if (current.length + s.length <= max) {
+      current += s;
+      continue;
+    }
+    if (current.trim()) out.push(current.trim());
+    if (s.length <= max) {
+      current = s;
+      continue;
+    }
+    // A single sentence longer than the limit — rare, but it must not be
+    // dropped. Break it on spaces rather than mid-word.
+    current = '';
+    let piece = '';
+    for (const word of s.split(/\s+/)) {
+      if (piece.length + word.length + 1 > max) {
+        if (piece.trim()) out.push(piece.trim());
+        piece = word;
+      } else {
+        piece = piece ? `${piece} ${word}` : word;
+      }
+    }
+    current = piece;
+  }
+  if (current.trim()) out.push(current.trim());
+  return out.filter(c => c.length > 0);
+}
+
 async function speakViaSarvam(
   narration: string,
   locale: Locale = 'mr',
   generation?: number,
 ): Promise<void> {
-  const { audio_base64 } = await narrate(narration, locale, getSarvamSpeaker(), getSarvamPace());
+  const chunks = chunkForSarvam(narration);
+
+  // ★ Fetched in parallel, played in order. Sequential fetching would put a
+  //   synthesis round trip between every sentence, which the farmer hears as
+  //   the voice stalling mid-explanation.
+  const audios = await Promise.all(
+    chunks.map(c => narrate(c, locale, getSarvamSpeaker(), getSarvamPace())),
+  );
 
   // The farmer pressed stop while this was still coming down the wire.
   if (generation !== undefined && generation !== speechGeneration) return;
 
+  for (const { audio_base64 } of audios) {
+    if (generation !== undefined && generation !== speechGeneration) return;
+    await playSarvamClip(audio_base64, generation);
+  }
+}
+
+/** Writes one base64 WAV to the cache and plays it to completion. */
+async function playSarvamClip(audio_base64: string, generation?: number): Promise<void> {
   // Decode the base64 WAV to bytes and park it in a temp cache file the
   // native player can read. CachesDirectory is sandboxed, app-owned, and
   // survives long enough for one playback.
