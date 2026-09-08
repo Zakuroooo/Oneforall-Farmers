@@ -35,7 +35,9 @@
 
 set -euo pipefail
 
-THEIR_REPO="${THEIR_REPO:-https://github.com/akashg7/Neolithic-Backend.git}"
+# ★ The backend repo was renamed Neolithic-Backend -> Neolithic. The old URL
+#   404s, so this script silently stopped delivering the app.
+THEIR_REPO="${THEIR_REPO:-https://github.com/akashg7/Neolithic.git}"
 DROP_BRANCH="${DROP_BRANCH:-frontend-drop}"
 DEST_DIR="${DEST_DIR:-frontend}"
 
