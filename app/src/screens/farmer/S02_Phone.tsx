@@ -304,10 +304,10 @@ export default function S02_Phone({ navigation }: Props) {
         <View style={styles.priceStrip}>
           <Image source={mandiWarehouse} style={styles.pricePhoto} />
           <View style={styles.priceInfo}>
-            <View style={styles.priceLiveRow}>
-              <View style={styles.liveDot} />
-              <Text style={styles.priceLiveText}>{t('phone_auction_live')}</Text>
-            </View>
+            {/* ★ "Live Auction Started" with a pulsing dot sat here. No
+                auction is running and nothing is live — it was a status light
+                reporting no status, which is decoration dressed as
+                information. Same removal as the splash chip. */}
             <Text style={styles.priceTitle}>{t('phone_today_price')}</Text>
             <Text style={styles.priceValue}>{demoTodayRange(locale)}<Text style={styles.priceUnit}>/qtl</Text></Text>
           </View>

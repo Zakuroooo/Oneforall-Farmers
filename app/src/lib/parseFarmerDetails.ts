@@ -38,6 +38,35 @@ function normalize(s: string): string {
 //   form, which the anusvara spelling silently failed to match.
 const VILLAGE_MARKERS = ['village', 'gaon', 'gav', 'गाव', 'गाव्', 'गांव', 'गाँव', 'ता', 'taluka'];
 const DISTRICT_MARKERS = ['district', 'jila', 'zilla', 'जिल्हा', 'जिला', 'ज़िला'];
+/**
+ * ★ The name gets markers too, so the three facts can arrive in **any order**.
+ *   A farmer does not recite a form top to bottom — he says "my village is
+ *   Niphad, my name is Rambhau Patil, district Nashik". Treating the name as
+ *   "whatever came before the first marker" only works when he happens to
+ *   start with it, and silently mangles every other ordering.
+ */
+const NAME_MARKERS = ['name', 'नाव', 'नाम'];
+
+/**
+ * Words that can sit next to a marker but are never the answer.
+ *
+ * ★ "माझं गाव निफाड आहे" put the village marker after a possessive, so the
+ *   postfix reading picked up "माझं" — "my" — as the village name. A value
+ *   that is one of these is not a value; look at the other side instead.
+ */
+const NOT_A_VALUE = new Set([
+  'my', 'is', 'the', 'a', 'and', 'in',
+  'माझं', 'माझे', 'माझा', 'मेरा', 'मेरी', 'मेरे', 'आहे', 'है', 'का', 'की', 'चा', 'ची', 'चे',
+]);
+
+/** True when this word could never be a place or person's name. */
+function isFiller(v: string | null): boolean {
+  if (v === null) return true;
+  return v
+    .trim()
+    .split(/\s+/)
+    .every(w => NOT_A_VALUE.has(w.toLowerCase()));
+}
 
 /**
  * Strips a trailing marker word: "Niphad village" -> "Niphad", "निफाड गाव" ->
@@ -66,7 +95,7 @@ function stripMarkers(phrase: string, markers: string[]): string {
  * and where its own word starts and ends.
  */
 interface MarkerHit {
-  field: 'district' | 'village';
+  field: 'district' | 'village' | 'name';
   start: number;
   end: number;
   /**
@@ -87,7 +116,7 @@ interface MarkerHit {
 function findMarkers(lower: string): MarkerHit[] {
   const hits: MarkerHit[] = [];
 
-  const scan = (markers: string[], field: 'district' | 'village') => {
+  const scan = (markers: string[], field: 'district' | 'village' | 'name') => {
     for (const m of markers) {
       const isLatin = /^[a-z]+$/i.test(m);
       // `\b` is ASCII-only in JavaScript, so it never matches a Devanagari
@@ -112,6 +141,7 @@ function findMarkers(lower: string): MarkerHit[] {
 
   scan(DISTRICT_MARKERS, 'district');
   scan(VILLAGE_MARKERS, 'village');
+  scan(NAME_MARKERS, 'name');
 
   return hits.sort((a, b) => a.start - b.start);
 }
@@ -178,6 +208,7 @@ export function parseFarmerDetails(
 
   let districtId: string | null = null;
   let village: string | null = null;
+  let markedName: string | null = null;
   // Where the field values begin. The name is whatever sits before all of it.
   let earliestValue = raw.length;
   // How far the previous marker's value reached, so two markers cannot claim
@@ -240,7 +271,11 @@ export function parseFarmerDetails(
     //   claimed — so the village came out as the district's name.
     let valueEnd: number;
 
-    if (hit.field === 'district') {
+    if (hit.field === 'name') {
+      // "my name is Rambhau Patil" — the words after it, always. Nobody says
+      // "Rambhau Patil name".
+      ({ value, start: valueStart, end: valueEnd } = after);
+    } else if (hit.field === 'district') {
       const known = (v: string | null) =>
         v !== null &&
         districts.some(d => {
@@ -258,18 +293,22 @@ export function parseFarmerDetails(
       // words at all, and the marker's own script as the tie-break.
       // A postfix marker normally looks back — unless the word behind it has
       // already been claimed, which is what happens in prefix word order.
-      const backTaken = before.start < consumedUpTo;
-      const preferred = hit.postfix && !backTaken ? before : after;
-      const other = hit.postfix && !backTaken ? after : before;
-      ({ value, start: valueStart, end: valueEnd } =
-        preferred.value !== null ? preferred : other);
+      // A postfix marker normally looks back — unless the word behind it has
+      // already been claimed, or is a filler that cannot be a place name.
+      const backUnusable = before.start < consumedUpTo || isFiller(before.value);
+      const preferred = hit.postfix && !backUnusable ? before : after;
+      const other = hit.postfix && !backUnusable ? after : before;
+      const first = !isFiller(preferred.value) ? preferred : other;
+      ({ value, start: valueStart, end: valueEnd } = first);
     }
 
     consumedUpTo = Math.max(consumedUpTo, valueEnd, hit.end);
     if (value === null) continue;
     earliestValue = Math.min(earliestValue, valueStart);
 
-    if (hit.field === 'district' && districtId === null) {
+    if (hit.field === 'name' && markedName === null) {
+      markedName = value;
+    } else if (hit.field === 'district' && districtId === null) {
       const n = normalize(value);
       const matched = districts.find(
         d => n.includes(normalize(d.name_mr)) || n.includes(normalize(d.name)),
@@ -281,10 +320,11 @@ export function parseFarmerDetails(
     }
   }
 
-  // Everything before the first claimed word is the name. With no markers at
-  // all, the whole utterance is the name — someone answering "what is your
-  // name?" says only their name.
-  const name = clean(raw.slice(0, earliestValue));
+  // ★ An explicitly marked name wins. Only when nobody said "name" do we fall
+  //   back to "whatever came before the first marker" — which is right for
+  //   "Rambhau Patil, Nashik district" and wrong for "my village is Niphad, my
+  //   name is Rambhau Patil", where the leading words are the village.
+  const name = markedName ?? clean(raw.slice(0, earliestValue));
 
   // ★ A district can also be named without any marker word — "Pranay Sarkar,
   //   Nashik" — but only trust that when the farmer said nothing that looked

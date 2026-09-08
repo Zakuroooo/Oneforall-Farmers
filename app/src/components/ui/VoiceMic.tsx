@@ -28,6 +28,7 @@ import AudioRecorderPlayer, { AudioEncoderAndroidType, AudioSourceAndroidType, O
 import { transcribeAudio } from '../../lib/api';
 import { translate } from '../../lib/i18n';
 import { Icon } from './Icon';
+import { SpeakingFace } from './SpeakingFace';
 import { colors, fontFamily, radius, space } from '../../theme/tokens';
 import type { Locale } from '../../types/api';
 
@@ -57,10 +58,14 @@ export function VoiceMic({
   locale,
   onTranscript,
   disabled = false,
+  showManualEntry = false,
 }: {
   locale: Locale;
   onTranscript: (text: string) => void;
   disabled?: boolean;
+  /** Render the "or type here" fallback. Off by default — most screens
+   *  already have their own input, and a second one competes with it. */
+  showManualEntry?: boolean;
 }) {
   const [state, setState] = useState<MicState>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -92,7 +97,10 @@ export function VoiceMic({
       await recorder.startRecorder(undefined, AUDIO_SET);
       recorder.addRecordBackListener(() => undefined);
       setState('recording');
-    } catch {
+    } catch (err) {
+      // ★ Say why in dev. This was a bare catch, which is how "the mic does
+      //   not work" went undiagnosed through two separate root causes.
+      if (__DEV__) console.warn('[mic] startRecorder failed:', (err as Error)?.message ?? String(err));
       setError(translate('voice_mic_error', locale));
     }
   };
@@ -103,11 +111,10 @@ export function VoiceMic({
       const uri = await recorder.stopRecorder();
       recorder.removeRecordBackListener();
       const { transcript } = await transcribeAudio(uri, locale);
+      if (__DEV__) console.warn('[mic] transcript:', transcript);
       onTranscript(transcript);
-    } catch {
-      // Expected today — `/voice/transcribe` is not live yet (see this
-      // file's header). The manual fallback below is what actually carries
-      // the farmer through registration until it is.
+    } catch (err) {
+      if (__DEV__) console.warn('[mic] stop/transcribe failed:', (err as Error)?.message ?? String(err));
       setError(translate('voice_mic_error', locale));
     } finally {
       setState('idle');
@@ -147,16 +154,26 @@ export function VoiceMic({
         activeOpacity={0.85}
         accessibilityRole="button"
         accessibilityLabel={label}>
-        <Icon
-          name="mic"
-          size={20}
-          color={state === 'recording' ? colors.critical : colors.primary}
-        />
+        {/* ★ A face speaking into a phone, not a microphone glyph. A mic icon
+
+            depicts a studio object most farmers have never held; a person
+
+            talking into a phone is the action itself. The waves move while
+
+            it is listening, which is how he knows to keep talking. */}
+
+        <SpeakingFace listening={state === 'recording'} size={56} />
         <Text style={styles.micLabel}>{label}</Text>
       </TouchableOpacity>
 
       {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
+      {/* ★ Off by default. On the OTP screen the six code boxes are already
+          typeable, so a second "or type here" box asked the same question
+          twice and doubled the screen's controls — on the screen a farmer is
+          most likely to be stuck on. Screens that have no other input can
+          still opt in with `showManualEntry`. */}
+      {showManualEntry ? (
       <View style={styles.manualRow}>
         <Text style={styles.manualLabel}>{translate('voice_or_type_label', locale)}</Text>
         <View style={styles.manualInputRow}>
@@ -177,6 +194,7 @@ export function VoiceMic({
           </TouchableOpacity>
         </View>
       </View>
+      ) : null}
     </View>
   );
 }
