@@ -44,6 +44,7 @@ import type { HomeStackParamList, FarmerTabParamList } from '../../navigation/Fa
 import type { PricePoint } from '../../types/api';
 import { ListenButton } from '../../components/ui/ListenButton';
 import { buildHomeNarration } from '../../lib/pageNarration';
+import { useScreenNarration } from '../../lib/useScreenNarration';
 import { Logo } from '../../components/ui/Logo';
 
 type Props = NativeStackScreenProps<HomeStackParamList, 'S4_Home'>;
@@ -230,6 +231,13 @@ export default function S04_Home({ navigation }: Props) {
     },
     locale,
   );
+
+  // ★ Home speaks itself on arrival, gated on the farmer's setting. Held back
+  //   until both queries have landed (`ready`) so he hears the real rate and
+  //   the real advice rather than a half-empty screen.
+  useScreenNarration(homeNarration, locale, {
+    ready: !pricesQuery.isLoading && !verdictQuery.isLoading,
+  });
 
   return (
     <View style={styles.root}>
