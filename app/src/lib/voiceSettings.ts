@@ -85,15 +85,20 @@ export const SARVAM_SPEAKER: Record<VoiceChoice, string> = VOICE_OPTIONS.reduce(
  */
 export type VoiceSpeed = 'slow' | 'normal' | 'fast';
 
-/** `react-native-tts` rate values; on Android 0.5 is the engine's own normal. */
+/**
+ * Rates handed to `Tts.setDefaultRate(rate, skipTransform = true)`.
+ *
+ * ★ `skipTransform: true` passes the number straight to Android's
+ *   `TextToSpeech.setSpeechRate()`, where **1.0 is normal speed** — not 0.5.
+ *   I had these on the library's transformed scale where 0.5 reads as normal,
+ *   so every value was roughly half what it should have been and the fallback
+ *   voice literally spoke at half speed. That is the whole "the voice is too
+ *   slow and irritating" bug; it was arithmetic, not the engine.
+ */
 export const TTS_RATE: Record<VoiceSpeed, number> = {
-  slow: 0.40,
-  // ★ 0.5 is the engine's own normal on Android. I previously set this to
-  //   0.42 thinking a slower read would be easier to follow; on the device it
-  //   was just draggy and irritating. Normal means normal — a farmer who wants
-  //   it slower has the slow tab.
-  normal: 0.5,
-  fast: 0.62,
+  slow: 0.75,
+  normal: 0.9,
+  fast: 1.2,
 };
 
 /**

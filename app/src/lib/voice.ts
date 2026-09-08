@@ -511,6 +511,10 @@ export async function speakSmart(text: string, locale: Locale = 'mr'): Promise<v
   //   clip. Trying anyway costs a full network round trip and ends in the
   //   same place, which is precisely the delay farmers were feeling.
   if (!canPlaySarvam()) {
+    // ★ Say why out loud in dev. This path used to be silent, which is how
+    //   "the server voice never plays" went undiagnosed: the app fell back
+    //   correctly and told nobody it had.
+    if (__DEV__) console.warn('[voice] Sarvam unavailable: react-native-fs missing → device TTS');
     await ensureTtsLanguage(locale);
     if (generation !== speechGeneration) return;
     await speakViaTts(text);
@@ -519,10 +523,13 @@ export async function speakSmart(text: string, locale: Locale = 'mr'): Promise<v
 
   try {
     await speakViaSarvam(text, locale, generation);
-  } catch {
+  } catch (err) {
     // The farmer pressed stop while the clip was still coming down; do not
     // start the fallback on top of a deliberate silence.
     if (generation !== speechGeneration) return;
+    if (__DEV__) {
+      console.warn('[voice] Sarvam failed → device TTS:', (err as Error)?.message ?? String(err));
+    }
     await ensureTtsLanguage(locale);
     if (generation !== speechGeneration) return;
     await speakViaTts(text);
@@ -671,9 +678,22 @@ const SARVAM_MAX_CHARS = 480;
  *   Marathi and Hindi narration uses both, and splitting only on `.` would
  *   hand back one oversized chunk for a paragraph written with dandas.
  */
-export function chunkForSarvam(text: string, max: number = SARVAM_MAX_CHARS): string[] {
+export function chunkForSarvam(
+  text: string,
+  max: number = SARVAM_MAX_CHARS,
+  /**
+   * Cap for the **first** chunk only.
+   *
+   * ★ Time-to-first-word is what a farmer experiences as "the delay". Synthesis
+   *   time scales with input length, so a deliberately short opening chunk
+   *   comes back sooner and the voice starts while the rest are still being
+   *   made. The remaining chunks use the full limit, so this costs at most one
+   *   extra request and buys roughly half the perceived wait.
+   */
+  firstMax: number = 180,
+): string[] {
   const trimmed = text.trim();
-  if (trimmed.length <= max) return [trimmed];
+  if (trimmed.length <= firstMax) return [trimmed];
 
   // Keep the terminator attached to the sentence it ends.
   const sentences = trimmed.match(/[^.।?!]+[.।?!]*\s*/g) ?? [trimmed];
@@ -681,12 +701,14 @@ export function chunkForSarvam(text: string, max: number = SARVAM_MAX_CHARS): st
   let current = '';
 
   for (const s of sentences) {
-    if (current.length + s.length <= max) {
+    // The first chunk gets the tighter cap; everything after uses the full one.
+    const cap = out.length === 0 ? firstMax : max;
+    if (current.length + s.length <= cap) {
       current += s;
       continue;
     }
     if (current.trim()) out.push(current.trim());
-    if (s.length <= max) {
+    if (s.length <= cap) {
       current = s;
       continue;
     }
@@ -695,7 +717,7 @@ export function chunkForSarvam(text: string, max: number = SARVAM_MAX_CHARS): st
     current = '';
     let piece = '';
     for (const word of s.split(/\s+/)) {
-      if (piece.length + word.length + 1 > max) {
+      if (piece.length + word.length + 1 > cap) {
         if (piece.trim()) out.push(piece.trim());
         piece = word;
       } else {
@@ -715,20 +737,60 @@ async function speakViaSarvam(
 ): Promise<void> {
   const chunks = chunkForSarvam(narration);
 
-  // ★ Fetched in parallel, played in order. Sequential fetching would put a
-  //   synthesis round trip between every sentence, which the farmer hears as
-  //   the voice stalling mid-explanation.
-  const audios = await Promise.all(
-    chunks.map(c => narrate(c, locale, getSarvamSpeaker(), getSarvamPace())),
-  );
+  // ★ Every chunk starts synthesizing at once, but each is awaited **in turn**
+  //   so playback begins the moment the *first* one lands.
+  //
+  //   This was `await Promise.all(...)` — which meant the farmer waited for the
+  //   slowest chunk before hearing a single word. On a two-chunk narration that
+  //   is roughly double the necessary delay, and it got worse the more the
+  //   narration explained. The requests still overlap; only the waiting changed.
+  const pending = chunks.map(c => fetchSarvamClip(c, locale));
 
-  // The farmer pressed stop while this was still coming down the wire.
-  if (generation !== undefined && generation !== speechGeneration) return;
-
-  for (const { audio_base64 } of audios) {
+  for (const p of pending) {
+    const audio = await p;
+    // The farmer pressed stop while this was still coming down the wire.
     if (generation !== undefined && generation !== speechGeneration) return;
-    await playSarvamClip(audio_base64, generation);
+    await playSarvamClip(audio, generation);
   }
+}
+
+/**
+ * Synthesized audio we already have, keyed by exactly what produced it.
+ *
+ * ★ Why cache at all: a farmer taps Listen, hears the first sentence, taps it
+ *   again — and every screen's narration is the same text until the underlying
+ *   data changes. Without this, each tap is a fresh round trip to Sarvam for a
+ *   clip we just had. With it, a repeat is instant and costs no quota.
+ *
+ * ★ Keyed on speaker and pace as well as text and locale, so switching voice
+ *   or speed in settings does not replay the old voice from cache.
+ */
+const sarvamCache = new Map<string, string>();
+/** Bounded so a long session cannot grow this without limit; base64 WAV is
+ *  ~250KB a clip, so a few dozen is already a lot of memory. */
+const SARVAM_CACHE_MAX = 24;
+
+async function fetchSarvamClip(text: string, locale: Locale): Promise<string> {
+  const speaker = getSarvamSpeaker();
+  const pace = getSarvamPace();
+  const key = `${locale}|${speaker}|${pace}|${text}`;
+
+  const hit = sarvamCache.get(key);
+  if (hit !== undefined) {
+    // Refresh recency — Map preserves insertion order, so re-inserting moves
+    // this to the end and keeps the eviction below approximately LRU.
+    sarvamCache.delete(key);
+    sarvamCache.set(key, hit);
+    return hit;
+  }
+
+  const { audio_base64 } = await narrate(text, locale, speaker, pace);
+  if (sarvamCache.size >= SARVAM_CACHE_MAX) {
+    const oldest = sarvamCache.keys().next().value;
+    if (oldest !== undefined) sarvamCache.delete(oldest);
+  }
+  sarvamCache.set(key, audio_base64);
+  return audio_base64;
 }
 
 /** Writes one base64 WAV to the cache and plays it to completion. */
@@ -742,51 +804,61 @@ async function playSarvamClip(audio_base64: string, generation?: number): Promis
   //   speaking in quick succession were writing over each other's audio
   //   mid-playback, which on Android is a truncated clip rather than an
   //   error — the voice simply stopped mid-sentence.
-  let filePath = `${cacheDir}/sarvam_${Date.now()}.wav`;
-  // iOS's AVPlayer wants an explicit file:// scheme; Android's MediaPlayer
-  // does not. Prepend only when it is missing so neither platform chokes.
-  if (!filePath.startsWith('file://')) {
-    filePath = `file://${filePath}`;
-  }
+  // ★ A plain absolute path, with no `file://` scheme. That prefix was here
+  //   for `AudioRecorderPlayer`; `react-native-sound` resolves an absolute
+  //   path directly on Android and fails to load a `file://` URL, so adding it
+  //   would swap one silent fallback for another.
+  const filePath = `${cacheDir}/sarvam_${Date.now()}.wav`;
   await RNFS.writeFile(filePath, audio_base64, 'base64');
   if (generation !== undefined && generation !== speechGeneration) return;
 
-  const AudioRecorderPlayer = require('react-native-audio-recorder-player').default;
-  const player = new AudioRecorderPlayer();
-  // ★ Registered before playback starts, so `stopSpeaking()` can reach it.
-  //   Without this the Sarvam path was unstoppable: the Listen button's stop
-  //   only spoke to the TTS engine, and a farmer who tapped it heard the
-  //   voice carry on.
-  activePlayer = player;
-  try {
-    await player.startPlayer(filePath);
-    // Wait for the native finish event before resolving — otherwise we'd
-    // tear the file down while it is still playing. Bound it so a hung
-    // player (no event ever fires) cannot hang the farmer's session: fall
-    // through to stop after a generous ceiling.
-    await Promise.race([
-      new Promise<void>(resolve => {
-        const onStatus = (e: { isFinished?: boolean }) => {
-          if (e.isFinished) {
-            player.removePlayBackListener();
-            resolve();
-          }
-        };
-        player.addPlayBackListener(onStatus);
-      }),
-      new Promise<void>(resolve => setTimeout(resolve, 60_000)),
-    ]);
-  } finally {
-    if (activePlayer === player) activePlayer = null;
-    try {
-      await player.stopPlayer();
-    } catch {
-      // already stopped
-    }
-    player.removePlayBackListener();
+  // ★ Played with `react-native-sound`, not `react-native-audio-recorder-player`.
+  //
+  //   This is the fix for "it only ever uses the fallback voice". The server
+  //   was returning audio perfectly — 200s in the API log — but constructing
+  //   `AudioRecorderPlayer` threw, because that native module is not in the
+  //   installed APK. `speakSmart` caught the throw and fell back to the device
+  //   engine, silently and every single time. `dumpsys audio` proved it: the
+  //   active player was `com.google.android.tts`, never our own.
+  //
+  //   `canPlaySarvam()` only probed `react-native-fs`, so it happily reported
+  //   the Sarvam path as available. Rather than add a second probe and keep a
+  //   dependency this build does not carry, playback moves to
+  //   `react-native-sound` — already imported at the top of this file for the
+  //   pre-generated clips, already in the binary, and the library 12_STACK
+  //   sanctions for exactly this.
+  await new Promise<void>((resolve, reject) => {
+    const sound = new Sound(filePath, '', error => {
+      if (error) {
+        reject(new Error(`Sarvam clip failed to load: ${error.message}`));
+        return;
+      }
+      if (generation !== undefined && generation !== speechGeneration) {
+        sound.release();
+        resolve();
+        return;
+      }
+      // Registered before playback starts so `stopSpeaking()` can reach it —
+      // without this the Sarvam path was unstoppable and a farmer who tapped
+      // stop heard the voice carry on.
+      activePlayer = {
+        stopPlayer: async () => {
+          sound.stop();
+          sound.release();
+        },
+        removePlayBackListener: () => {},
+      };
+      sound.play(() => {
+        // Fires on natural end *and* on stop; both mean we are done with it.
+        if (activePlayer !== null) activePlayer = null;
+        sound.release();
+        resolve();
+      });
+    });
+  }).finally(() => {
     // Best effort — a stale cache file is harmless, a crash on cleanup is not.
     RNFS.unlink(filePath).catch(() => {});
-  }
+  });
 }
 
 export async function speakVerdict(v: WindowRes, _t?: TFn): Promise<void> {
