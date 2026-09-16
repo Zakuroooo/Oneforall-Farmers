@@ -31,6 +31,7 @@ import { fxProvenance } from '../../../fixtures/provenance';
 import { translate } from '../../../lib/i18n';
 import { formatBps, formatNumber } from '../../../lib/money';
 import { formatDate } from '../../../lib/dates';
+import { colors } from '../../../theme/tokens';
 import type { DataSource, ProvenanceRes, ProvenanceRow } from '../../../types/api';
 
 jest.mock('../../../lib/locale', () => ({
@@ -133,11 +134,20 @@ function allText(tree: renderer.ReactTestRenderer): string {
 /**
  * Style assertions go through the serialised tree rather than through `allText`.
  * That is the wrong tool for reading copy — it escapes quotes and interleaves
- * style ids — but a hex colour is unambiguous in it, and it does not care how
+ * style ids — but a colour is unambiguous in it, and it does not care how
  * `Card` forwards its `style` prop.
+ *
+ * ★ The colour comes from the design tokens, not from a hex literal copied out
+ *   of the screen. This test used to look for `#FEB2B2`, and when the buyer
+ *   console moved onto the Mandi Tactile Modern palette it failed — reporting
+ *   that flagged rows had lost their outline, which was false. The outline was
+ *   there, in the system's critical colour. What the invariant actually says is
+ *   "a row outside the allowlist is visibly flagged", so the assertion follows
+ *   whatever the system's critical colour is and breaks only if the flag itself
+ *   disappears.
  */
 const rendersFlaggedBorder = (tree: renderer.ReactTestRenderer): boolean =>
-  JSON.stringify(tree.toJSON()).includes('#FEB2B2');
+  JSON.stringify(tree.toJSON()).includes(colors.criticalContainer);
 
 const links = (tree: renderer.ReactTestRenderer) =>
   tree.root.findAll(n => n.type === TouchableOpacity && n.props.accessibilityRole === 'link');
