@@ -5,6 +5,9 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
+import { BuyerSplash } from '../screens/buyer/BuyerSplash';
+import { useAuth } from '../lib/auth';
+import { fxAuthRegisteredBuyer } from '../fixtures/auth';
 import S00_Splash from '../screens/farmer/S00_Splash';
 import S01_Language from '../screens/farmer/S01_Language';
 import S01b_ValueCarousel from '../screens/farmer/S01b_ValueCarousel';
@@ -15,6 +18,16 @@ import S03_Welcome from '../screens/farmer/S03_Welcome';
 
 export type AuthStackParamList = {
   S0_Splash: undefined;
+  /**
+   * ★ The trader's way in, on the phone.
+   *
+   *   The role comes from the JWT, so the buyer console had no entry point in
+   *   this build at all — the only way to see it was to be seeded as a buyer.
+   *   That made the whole console undemonstrable on a device. The splash now
+   *   offers this door, and it signs in with the fixture buyer, exactly as the
+   *   web landing does.
+   */
+  Buyer_Splash: undefined;
   S1_Language: undefined;
   /** Stitch 03 — "why Krishi Mitr", between the language choice and the
    * phone number. `S1b` because three screens already carry the `S03_`
@@ -27,6 +40,16 @@ export type AuthStackParamList = {
 };
 
 const Stack = createNativeStackNavigator<AuthStackParamList>();
+
+/**
+ * The buyer splash, wired to the one thing it asks for. There is no separate
+ * trader login yet, and inventing one on this screen would be a promise the
+ * backend cannot keep.
+ */
+function BuyerSplashRoute() {
+  const { signIn } = useAuth();
+  return <BuyerSplash onSignIn={() => void signIn(fxAuthRegisteredBuyer)} />;
+}
 
 export function AuthStack() {
   return (
@@ -53,6 +76,7 @@ export function AuthStack() {
       initialRouteName="S0_Splash"
       screenOptions={{ headerShown: false, animation: 'slide_from_right' }}>
       <Stack.Screen name="S0_Splash" component={S00_Splash} />
+      <Stack.Screen name="Buyer_Splash" component={BuyerSplashRoute} />
       <Stack.Screen name="S1_Language" component={S01_Language} />
       <Stack.Screen name="S1b_ValueCarousel" component={S01b_ValueCarousel} />
       <Stack.Screen name="S2_Phone" component={S02_Phone} />
