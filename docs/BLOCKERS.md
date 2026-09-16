@@ -411,3 +411,24 @@ These are logged because **the baseline documents changed after they were writte
 
 - **Workaround in place:** choices are saved and sent; nothing pretends to work.
 - **Raised:** 2026-09-08
+
+### [Pranay → Akash] CONTRACT: the buyer's match rows need what a trader decides on
+- **What I need:** `GET /demands/{id}/matches` to carry, per match: `lot_ref`,
+  `farmer_label`, `village`, `asking_paise_per_qtl`, `market_paise_per_qtl`,
+  `moisture_pct`, `bags`, `pickup_at_farm`, `assayed`.
+- **Why:** the approved Stitch design for S19 ("Buyer Console — जुळणी") shows a
+  trader whose lot it is, what the farmer is asking, and what the mandi pays
+  today — the asking price and the mandi rate side by side at equal weight are
+  the decision the screen exists for. CANON §7.6 returns none of it: a match
+  answers "which lots fill this order" and the lot rows carry ids only. The
+  screen has carried a TODO about this since it was written.
+- **Blocking:** nothing hard — I added all nine to `MatchDto` as **optional**
+  and the fixture supplies them, so the screen renders the design today and
+  degrades to ids-and-quantities when the server omits them. It also prints
+  "the farmer details on this screen are sample data" whenever they came from
+  the fixture (I8), and that note disappears by itself once they come from you.
+- **Also needed:** a buyer-visible lot summary, or these fields on the match.
+  `GET /lots/{id}` is actor-scoped (I4), so a buyer cannot resolve a `lot_id`
+  himself — which is why inventing the farmer's name client-side was never an
+  option.
+- **Raised:** after the Stitch buyer designs landed.
