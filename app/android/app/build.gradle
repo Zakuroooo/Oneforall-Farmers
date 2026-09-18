@@ -85,6 +85,22 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    /**
+     * ★ Release was signed with the DEBUG keystore, which is two separate
+     *   problems. Google Play rejects a debug-signed upload outright, so the
+     *   app could never have been published as it stood. And the debug key
+     *   ships with the Android SDK — its password is literally "android" and
+     *   every developer on earth has the same one — so anyone could have built
+     *   an "update" that our users' phones would have accepted as genuine.
+     *
+     *   The real key lives outside this repository and its password is in
+     *   ~/.gradle/gradle.properties, which git cannot see (I10). A key in git
+     *   history cannot be rotated away: whoever has it can sign as us forever.
+     *
+     *   If the properties are absent — a teammate's machine, CI — the release
+     *   build falls back to the debug key and says so, rather than failing the
+     *   build for someone who only wants to run the app.
+     */
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -92,15 +108,27 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            if (project.hasProperty('KRISHIMITR_STORE_FILE')) {
+                storeFile file(KRISHIMITR_STORE_FILE)
+                storePassword KRISHIMITR_STORE_PASSWORD
+                keyAlias KRISHIMITR_KEY_ALIAS
+                keyPassword KRISHIMITR_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            if (project.hasProperty('KRISHIMITR_STORE_FILE')) {
+                signingConfig signingConfigs.release
+            } else {
+                logger.warn("WARNING: KRISHIMITR_STORE_FILE is not set — this release build is " +
+                            "signed with the public debug key and CANNOT be uploaded to Play.")
+                signingConfig signingConfigs.debug
+            }
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

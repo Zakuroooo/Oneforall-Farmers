@@ -82,3 +82,9 @@ htmlcov/
 #
 #  Do not add a blanket *.pkl, *.csv or *.mp3 rule. It will silently break the
 #  offline demo and you will find out at H34.
+
+# Release signing. The upload key must never enter git history —
+# a key that has been committed cannot be rotated away.
+!android/app/debug.keystore
+keystore.properties
+signing.properties
