@@ -51,7 +51,26 @@ const DEV_TRANSPORT: DevTransport = 'adb-reverse';
  */
 const LAN_IP = '192.168.1.7';
 
-const PROD_HOST = 'http://<ec2-host>'; // TODO(kartik): real host at K9, the H28 deploy rehearsal
+/**
+ * ★ THE RELEASE APK'S HOST. This was the literal string `http://<ec2-host>`,
+ *   which is not a host — and `__DEV__` is false in a release build, so every
+ *   installed APK pointed every request at a placeholder. It failed instantly,
+ *   which is why a shared build spoke in the device's robotic TTS instead of
+ *   Sarvam and why the mic never transcribed anything: `speakSaleWindow()`
+ *   falls back to on-device TTS whenever `/voice/narrate` is unreachable, so
+ *   the bug degraded the voice silently rather than showing an error.
+ *
+ *   It now points at the deployed serverless voice functions, which hold the
+ *   Sarvam keys in Vercel environment variables (never in this repo — I10).
+ *   Verified live: `/voice/narrate` returns 200 with real Marathi wav audio.
+ *
+ *   The vercel.app alias is used rather than krishimitr.in on purpose: the
+ *   apex answers POST with a 308 redirect to www, and a redirected POST is a
+ *   class of bug that is miserable to diagnose on someone else's phone. Switch
+ *   to 'https://www.krishimitr.in' — with the www — if you ever prefer the
+ *   brand domain.
+ */
+const PROD_HOST = 'https://krishi-mitr-alpha.vercel.app';
 
 const DEV_HOST: Record<DevTransport, string> = {
   'adb-reverse': 'http://localhost:8000',

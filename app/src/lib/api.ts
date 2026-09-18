@@ -15,6 +15,7 @@
  */
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNFS from 'react-native-fs';
 
 import { API_BASE_URL } from '../config';
 import type {
@@ -401,44 +402,36 @@ export const getDataProvenance = () => get<ProvenanceRes>('/meta/data-provenance
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
- * Uploads a recorded clip for transcription. Not `post()` — that helper
- * always sends `Content-Type: application/json`, which is wrong for a
- * multipart body (and would stop `fetch` from setting its own boundary).
+ * Uploads a recorded clip for transcription.
+ *
+ * ★ This used to send a multipart `FormData` with the clip as a file part.
+ *   The deployed `/voice/transcribe` does not accept multipart — it wants
+ *   JSON `{ audio_base64, mime_type, locale }` and rebuilds the file on its
+ *   side before handing it to Sarvam. So the mic came back empty on every
+ *   installed build regardless of the host: the request was rejected with
+ *   `VALIDATION / audio_base64 is required` before Sarvam was ever reached.
+ *
+ *   The recorder writes a real file and hands back its `uri`, so the clip is
+ *   read off disk and base64-encoded here. `react-native-fs` wants a bare
+ *   path, not a `file://` URL — passing the URL through fails on Android with
+ *   a "file not found" that names a path which plainly exists.
+ *
+ *   It can use `post()` now, which means one Authorization header and one
+ *   error envelope for this route like every other.
  */
 export async function transcribeAudio(audioUri: string, locale: Locale): Promise<{ transcript: string }> {
-  const token = await getToken();
-  const form = new FormData();
-  // React Native's `FormData` accepts this `{uri, type, name}` shape in
-  // place of a real `Blob` — it reads the file at `uri` off disk at send
-  // time. `audioUri` is whatever `VoiceMic`'s recorder handed back.
-  form.append('audio', {
-    uri: audioUri,
-    type: 'audio/mp4',
-    name: 'clip.m4a',
-  } as unknown as Blob);
-  form.append('locale', locale);
+  const path = audioUri.replace(/^file:\/\//, '');
+  const audio_base64 = await RNFS.readFile(path, 'base64');
 
-  const res = await fetch(`${API_BASE_URL}/voice/transcribe`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      // No Content-Type here — `fetch` sets `multipart/form-data` with the
-      // correct boundary itself only when it is left to do so.
-    },
-    body: form,
+  return post<{ transcript: string }>('/voice/transcribe', {
+    audio_base64,
+    // What `VoiceMic`'s recorder produces on Android.
+    mime_type: 'audio/mp4',
+    // The locale the farmer picked, so the recogniser is told which acoustic
+    // model to use. Sending the wrong one is what returned English words for
+    // Marathi digits.
+    locale,
   });
-
-  if (!res.ok) {
-    const body = (await res.json().catch(() => null)) as ApiErrorBody | null;
-    throw new ApiError(
-      body?.error?.code ?? 'NETWORK',
-      body?.error?.message ?? `HTTP ${res.status}`,
-      res.status,
-      body?.error?.field ?? null,
-    );
-  }
-  return (await res.json()) as { transcript: string };
 }
 
 /**
