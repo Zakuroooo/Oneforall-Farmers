@@ -55,3 +55,20 @@ jest.mock('react-native-tts', () => ({
     removeEventListener: () => {},
   },
 }));
+
+/**
+ * `react-native-fs` builds a NativeEventEmitter at import time, which throws
+ * under Jest (no native module). `lib/api.ts` imports it at module scope, so any
+ * test that pulls in `api.ts` (directly or through `voice.ts`) died before
+ * running. This mock covers only what the app calls: CachesDirectoryPath,
+ * writeFile, readFile and unlink.
+ */
+jest.mock('react-native-fs', () => ({
+  __esModule: true,
+  default: {
+    CachesDirectoryPath: '/tmp/caches',
+    writeFile: () => Promise.resolve(),
+    readFile: () => Promise.resolve(''),
+    unlink: () => Promise.resolve(),
+  },
+}));
